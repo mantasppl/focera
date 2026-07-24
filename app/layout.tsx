@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Source_Sans_3, Syne } from "next/font/google";
-import { siteMetadata } from "@/lib/seo";
+import { Geist_Mono, Plus_Jakarta_Sans, Syne } from "next/font/google";
+import Analytics from "@/components/Analytics";
+import JsonLd from "@/components/JsonLd";
+import {
+  organizationSchema,
+  siteMetadata,
+  websiteSchema,
+} from "@/lib/seo";
 import "./globals.css";
 
 const syne = Syne({
@@ -9,7 +15,7 @@ const syne = Syne({
   weight: ["600", "700", "800"],
 });
 
-const sourceSans = Source_Sans_3({
+const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -20,7 +26,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = siteMetadata();
+const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+
+export const metadata: Metadata = siteMetadata({
+  verification: googleVerification
+    ? { google: googleVerification }
+    : undefined,
+});
 
 export default function RootLayout({
   children,
@@ -30,9 +42,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${sourceSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${syne.variable} ${plusJakarta.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <JsonLd data={[organizationSchema(), websiteSchema()]} />
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

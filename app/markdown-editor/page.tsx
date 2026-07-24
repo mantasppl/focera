@@ -1,17 +1,43 @@
 import type { Metadata } from "next";
-import ComingSoon from "@/components/tools/ComingSoon";
+import JsonLd from "@/components/JsonLd";
 import ToolPageShell from "@/components/tools/ToolPageShell";
+import MarkdownEditorLanding from "@/components/tools/MarkdownEditorLanding";
+import { MarkdownEditorLazy } from "@/components/tools/HeavyTools";
 import { getToolBySlug } from "@/data/tools";
-import { toolMetadata } from "@/lib/seo";
+import {
+  breadcrumbSchema,
+  faqPageSchema,
+  toolLandingMetadata,
+  webApplicationSchema,
+} from "@/lib/seo";
 
 const tool = getToolBySlug("markdown-editor")!;
 
-export const metadata: Metadata = toolMetadata(tool);
+export const metadata: Metadata = toolLandingMetadata(tool);
 
 export default function MarkdownEditorPage() {
+  const schema = [
+    webApplicationSchema(tool),
+    faqPageSchema(tool.faq),
+    breadcrumbSchema([
+      { name: "Home", href: "/" },
+      { name: "All tools", href: "/tools" },
+      { name: tool.name, href: tool.href },
+    ]),
+  ];
+
   return (
-    <ToolPageShell slug="markdown-editor">
-      <ComingSoon name={tool.name} />
-    </ToolPageShell>
+    <>
+      <JsonLd data={schema} />
+      <ToolPageShell
+        slug="markdown-editor"
+        workspaceId="markdown-editor-tool"
+        content={<MarkdownEditorLanding />}
+        ctaTitle="Explore more free developer and utility tools"
+        ctaDescription="From Markdown and JSON utilities to QR codes and generators, Focera keeps everyday tools fast, private, and free."
+      >
+        <MarkdownEditorLazy />
+      </ToolPageShell>
+    </>
   );
 }

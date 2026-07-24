@@ -1,0 +1,32 @@
+"use client";
+
+import dynamic from "next/dynamic";
+
+function ToolLoading() {
+  return (
+    <div className="tool-loading" role="status" aria-live="polite">
+      <span className="tool-loading__spinner" aria-hidden="true" />
+      Loading tool…
+    </div>
+  );
+}
+
+export const BackgroundRemoverLazy = dynamic(
+  () => import("@/components/tools/BackgroundRemover"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const MarkdownEditorLazy = dynamic(
+  () => import("@/components/tools/MarkdownEditor"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const InvoiceGeneratorLazy = dynamic(
+  () => import("@/components/tools/InvoiceGenerator"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const HtmlCssJsMinifierLazy = dynamic(
+  () => import("@/components/tools/HtmlCssJsMinifier"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);

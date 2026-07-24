@@ -1,17 +1,43 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
 import ToolPageShell from "@/components/tools/ToolPageShell";
 import QRGenerator from "@/components/tools/QRGenerator";
+import QRGeneratorLanding from "@/components/tools/QRGeneratorLanding";
 import { getToolBySlug } from "@/data/tools";
-import { toolMetadata } from "@/lib/seo";
+import {
+  breadcrumbSchema,
+  faqPageSchema,
+  toolLandingMetadata,
+  webApplicationSchema,
+} from "@/lib/seo";
 
 const tool = getToolBySlug("qr-generator")!;
 
-export const metadata: Metadata = toolMetadata(tool);
+export const metadata: Metadata = toolLandingMetadata(tool);
 
 export default function QRGeneratorPage() {
+  const schema = [
+    webApplicationSchema(tool),
+    faqPageSchema(tool.faq),
+    breadcrumbSchema([
+      { name: "Home", href: "/" },
+      { name: "All tools", href: "/tools" },
+      { name: tool.name, href: tool.href },
+    ]),
+  ];
+
   return (
-    <ToolPageShell slug="qr-generator">
-      <QRGenerator />
-    </ToolPageShell>
+    <>
+      <JsonLd data={schema} />
+      <ToolPageShell
+        slug="qr-generator"
+        workspaceId="qr-generator-tool"
+        content={<QRGeneratorLanding />}
+        ctaTitle="Explore more free online tools"
+        ctaDescription="From campaign tracking to profit modeling, Focera keeps your everyday utilities in one fast, mobile-friendly hub."
+      >
+        <QRGenerator />
+      </ToolPageShell>
+    </>
   );
 }

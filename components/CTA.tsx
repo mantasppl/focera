@@ -11,7 +11,7 @@ type CTAProps = {
 
 export default function CTA({
   title = "Need another free tool?",
-  description = "Browse the full collection — more utilities ship regularly.",
+  description = "Browse the Focera collection — free online tools and AI utilities that run in your browser.",
   href = "/tools",
   label = "Browse all tools",
   className,

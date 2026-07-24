@@ -1,5 +1,6 @@
 export type ToolCategory =
   | "generators"
+  | "converters"
   | "marketing"
   | "finance"
   | "images"
@@ -27,6 +28,7 @@ export type Tool = {
 
 export const categoryLabels: Record<ToolCategory, string> = {
   generators: "Generators",
+  converters: "Converters",
   marketing: "Marketing",
   finance: "Finance",
   images: "Images",
@@ -36,23 +38,176 @@ export const categoryLabels: Record<ToolCategory, string> = {
 
 export const tools: Tool[] = [
   {
+    slug: "color-palette-generator",
+    name: "Free Color Palette Generator",
+    shortName: "Palettes",
+    description:
+      "Generate random color palettes, lock favorites, check WCAG contrast, and export CSS, Tailwind, HEX, or RGB — free and local in your browser.",
+    category: "generators",
+    status: "ready",
+    href: "/color-palette-generator",
+    keywords: [
+      "color palette generator",
+      "free color palette generator",
+      "random color palette",
+      "hex color palette",
+      "css color palette",
+      "tailwind color palette",
+      "color scheme generator",
+      "contrast checker",
+      "wcag contrast",
+    ],
+    faq: [
+      {
+        question: "Is this color palette generator free?",
+        answer:
+          "Yes. Generate, lock, copy, and export unlimited palettes with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Can I lock colors while regenerating others?",
+        answer:
+          "Yes. Lock any swatch to keep it. The next generate refreshes only unlocked colors so you can iterate around a brand accent.",
+      },
+      {
+        question: "Which export formats are supported?",
+        answer:
+          "Export CSS custom properties, Tailwind theme color keys, a HEX list, or an RGB list — then copy the result in one click.",
+      },
+      {
+        question: "How do I copy a single color?",
+        answer:
+          "Click the HEX value on any swatch to copy it to your clipboard. You can also adjust the color with the built-in color picker.",
+      },
+      {
+        question: "What does the contrast checker do?",
+        answer:
+          "It measures the WCAG contrast ratio between any two palette colors and reports AA/AAA pass or fail for normal and large text.",
+      },
+      {
+        question: "Are my palettes uploaded to a server?",
+        answer:
+          "No. Generation, locking, exports, and contrast checks run entirely in your browser. Nothing is sent to Focera for processing.",
+      },
+      {
+        question: "How many colors are in each palette?",
+        answer:
+          "Each palette has five colors — a practical size for brand accents, surfaces, and supporting tones in UI and marketing work.",
+      },
+    ],
+  },
+  {
     slug: "qr-generator",
-    name: "QR Code Generator",
+    name: "Free QR Code Generator",
     shortName: "QR Generator",
-    description: "Create downloadable QR codes from any link or text.",
+    description: "Generate QR codes instantly online for free.",
     category: "generators",
     status: "ready",
     href: "/qr-generator",
-    keywords: ["qr", "qr code", "barcode", "scan"],
+    keywords: [
+      "free qr code generator",
+      "qr code generator",
+      "qr code maker",
+      "create qr code online",
+      "qr",
+      "barcode",
+    ],
     faq: [
+      {
+        question: "Is this free QR code generator really free?",
+        answer:
+          "Yes. You can generate, preview, and download QR codes without paying, creating an account, or hitting a daily limit.",
+      },
       {
         question: "Is the QR code generated on my device?",
         answer:
-          "Yes. Codes are created in your browser — nothing is uploaded to a server.",
+          "Yes. Codes are created in your browser — nothing is uploaded to a server during generation.",
       },
       {
         question: "What format can I download?",
-        answer: "You get a high-contrast PNG ready to print or share.",
+        answer:
+          "You get a high-contrast PNG file ready to print, embed in slides, or share on social media.",
+      },
+      {
+        question: "Can I encode URLs, text, email, and phone numbers?",
+        answer:
+          "Yes. Paste any string — a full https URL, plain text, phone number, or email address — and the tool encodes it into a scannable QR code.",
+      },
+      {
+        question: "Do I need to sign up to use the generator?",
+        answer:
+          "No account is required. Open the page, enter your content, and download your code immediately.",
+      },
+      {
+        question: "What size should my QR code be for printing?",
+        answer:
+          "Size depends on scan distance. Business cards often work from 2–3 cm; posters need larger codes. Always test with a phone before bulk printing.",
+      },
+      {
+        question: "Can I use generated QR codes for commercial projects?",
+        answer:
+          "Yes. Codes you create here are yours to use in marketing, packaging, events, and client work.",
+      },
+      {
+        question: "How is a QR code different from a barcode?",
+        answer:
+          "Traditional barcodes store limited numeric data in one dimension. QR codes store much more information in two dimensions and are readable from any angle with a smartphone camera.",
+      },
+    ],
+  },
+  {
+    slug: "lorem-ipsum-generator",
+    name: "Free Lorem Ipsum Generator",
+    shortName: "Lorem Ipsum",
+    description:
+      "Generate classic Lorem Ipsum placeholder text by words, sentences, or paragraphs. Copy instantly or download a TXT file — free, private, and local.",
+    category: "generators",
+    status: "ready",
+    href: "/lorem-ipsum-generator",
+    keywords: [
+      "lorem ipsum generator",
+      "free lorem ipsum generator",
+      "dummy text generator",
+      "placeholder text generator",
+      "lorem ipsum paragraphs",
+      "lorem ipsum words",
+      "lorem ipsum sentences",
+      "filler text generator",
+    ],
+    faq: [
+      {
+        question: "What is Lorem Ipsum?",
+        answer:
+          "Lorem Ipsum is classic placeholder Latin-style text used in design mockups, wireframes, and typesetting so layout and typography can be judged without real copy distracting the eye.",
+      },
+      {
+        question: "Can I generate words, sentences, or paragraphs?",
+        answer:
+          "Yes. Choose Words, Sentences, or Paragraphs, set the count, and generate. Each mode produces filler text sized for that unit.",
+      },
+      {
+        question: "Can I copy or download the result?",
+        answer:
+          "Yes. Use Copy to place the text on your clipboard, or Download TXT to save a plain-text file for design tools, docs, or CMS drafts.",
+      },
+      {
+        question: "Does the generator start with the classic Lorem Ipsum phrase?",
+        answer:
+          "Optionally. Keep “Start with Lorem ipsum” enabled to begin with the familiar opening line, or turn it off for fully randomized filler text.",
+      },
+      {
+        question: "Is this Lorem Ipsum generator free?",
+        answer:
+          "Yes. Generate unlimited placeholder text with no account, watermarks, or daily limits.",
+      },
+      {
+        question: "Is my text uploaded to a server?",
+        answer:
+          "No. Generation runs entirely in your browser. Nothing is sent to Focera servers when you create, copy, or download filler text.",
+      },
+      {
+        question: "When should I use Lorem Ipsum instead of real copy?",
+        answer:
+          "Use it early in design and layout work when content is not ready yet. Replace it with real writing before launch so SEO, accessibility, and meaning are accurate.",
       },
     ],
   },
@@ -60,49 +215,306 @@ export const tools: Tool[] = [
     slug: "invoice-generator",
     name: "Invoice Generator",
     shortName: "Invoices",
-    description: "Build clean invoices and export them for clients.",
+    description:
+      "Create professional invoices with company and client details, unlimited line items, VAT, and instant PDF download.",
     category: "finance",
-    status: "soon",
+    status: "ready",
     href: "/invoice-generator",
-    keywords: ["invoice", "billing", "pdf"],
+    keywords: [
+      "invoice generator",
+      "free invoice",
+      "invoice pdf",
+      "invoice template",
+      "billing",
+      "vat invoice",
+      "online invoice maker",
+    ],
     faq: [
       {
         question: "Will invoices be saved online?",
         answer:
-          "No. Drafts stay in your browser until you export or download them.",
+          "No. Drafts stay in your browser until you export or download them. Nothing is uploaded to Focera servers.",
+      },
+      {
+        question: "Can I add unlimited products and services?",
+        answer:
+          "Yes. Add as many line items as you need. Each row includes description, quantity, and unit price with automatic amount calculation.",
+      },
+      {
+        question: "Does the invoice generator support VAT?",
+        answer:
+          "Yes. Toggle VAT or sales tax on, set your percentage rate, and subtotal, tax, and total update automatically in the preview and PDF.",
+      },
+      {
+        question: "How do I download my invoice as a PDF?",
+        answer:
+          "Fill in your invoice details and click Download PDF. The file is generated locally in your browser and saved to your device.",
+      },
+      {
+        question: "Do I need an account to create invoices?",
+        answer:
+          "No account is required. Open the tool, build your invoice, and download — no sign-up or subscription.",
+      },
+      {
+        question: "Which currencies are supported?",
+        answer:
+          "You can choose USD, EUR, GBP, CAD, or AUD. Amounts are formatted with the correct currency symbol in the preview and PDF.",
+      },
+    ],
+  },
+  {
+    slug: "unit-converter",
+    name: "Free Unit Converter",
+    shortName: "Units",
+    description:
+      "Convert length, weight, temperature, volume, area, speed, and data storage instantly in your browser.",
+    category: "converters",
+    status: "ready",
+    href: "/unit-converter",
+    keywords: [
+      "unit converter",
+      "free unit converter",
+      "metric to imperial",
+      "length converter",
+      "weight converter",
+      "temperature converter",
+      "volume converter",
+      "online unit conversion",
+    ],
+    faq: [
+      {
+        question: "Which units can I convert?",
+        answer:
+          "Length, weight, temperature, volume, area, speed, and data storage — including common metric and imperial units, plus Celsius, Fahrenheit, and Kelvin.",
+      },
+      {
+        question: "Do conversions happen on a server?",
+        answer:
+          "No. All math runs locally in your browser. Values you enter are not uploaded to Focera for processing.",
+      },
+      {
+        question: "How does temperature conversion work?",
+        answer:
+          "Temperature uses the standard formulas between Celsius, Fahrenheit, and Kelvin rather than a simple scale factor, so results stay accurate around freezing and absolute zero.",
+      },
+      {
+        question: "Are data storage units 1000-based or 1024-based?",
+        answer:
+          "Kilobytes through petabytes use 1024-based multiples (binary-style), matching how most operating systems report file sizes.",
+      },
+      {
+        question: "Can I swap from and to units?",
+        answer:
+          "Yes. Use the swap control to reverse the units and carry the current result into the From field.",
+      },
+      {
+        question: "Is this unit converter free?",
+        answer:
+          "Yes. Convert unlimited values with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Does it work on mobile?",
+        answer:
+          "Yes. The converter is responsive — category tabs scroll horizontally on small screens so you can switch types quickly on a phone.",
+      },
+    ],
+  },
+  {
+    slug: "text-case-converter",
+    name: "Free Text Case Converter",
+    shortName: "Text Case",
+    description:
+      "Convert text to UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, and kebab-case — instantly in your browser.",
+    category: "converters",
+    status: "ready",
+    href: "/text-case-converter",
+    keywords: [
+      "text case converter",
+      "uppercase converter",
+      "lowercase converter",
+      "title case converter",
+      "sentence case converter",
+      "camelCase converter",
+      "PascalCase converter",
+      "snake_case converter",
+      "kebab-case converter",
+      "convert text case online",
+    ],
+    faq: [
+      {
+        question: "Which case styles are supported?",
+        answer:
+          "UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, and kebab-case.",
+      },
+      {
+        question: "Does conversion happen on a server?",
+        answer:
+          "No. All case changes run locally in your browser. Text you enter is not uploaded to Focera for processing.",
+      },
+      {
+        question: "How do camelCase and snake_case handle mixed input?",
+        answer:
+          "The converter splits words on spaces, punctuation, underscores, hyphens, and camelCase boundaries, then rebuilds the string in the selected style.",
+      },
+      {
+        question: "Can I see character and word counts?",
+        answer:
+          "Yes. Character and word counts update live under the input field as you type or paste.",
+      },
+      {
+        question: "How do I copy the result?",
+        answer:
+          "Use the Copy button next to the output. You can also use “Use as input” to chain another conversion.",
+      },
+      {
+        question: "Is this text case converter free?",
+        answer:
+          "Yes. Convert unlimited text with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Does it work on mobile?",
+        answer:
+          "Yes. The layout stacks on small screens so you can switch case styles and copy results comfortably on a phone.",
       },
     ],
   },
   {
     slug: "utm-builder",
-    name: "UTM Builder",
+    name: "Free UTM Builder",
     shortName: "UTM Builder",
-    description: "Add campaign parameters to URLs for cleaner tracking.",
+    description:
+      "Build campaign URLs with utm_source, utm_medium, and utm_campaign — copy clean tracking links instantly in your browser.",
     category: "marketing",
     status: "ready",
     href: "/utm-builder",
-    keywords: ["utm", "campaign", "analytics", "tracking"],
+    keywords: [
+      "utm builder",
+      "utm generator",
+      "campaign url builder",
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "google analytics utm",
+      "tracking link builder",
+    ],
     faq: [
       {
         question: "Which UTM parameters are supported?",
         answer:
-          "Source, medium, and campaign are included. More parameters can be added later.",
+          "utm_source, utm_medium, and utm_campaign. Enter a base URL and optional values; empty fields are omitted from the final link.",
+      },
+      {
+        question: "Is this UTM builder free?",
+        answer:
+          "Yes. Build and copy unlimited campaign URLs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Does my URL leave the browser?",
+        answer:
+          "No. Links are assembled locally in your browser. Nothing is uploaded to Focera for processing.",
+      },
+      {
+        question: "Can I use the result with Google Analytics?",
+        answer:
+          "Yes. Standard UTM parameters are recognized by GA4 and many other analytics platforms when someone clicks your link.",
+      },
+      {
+        question: "What if my base URL is invalid?",
+        answer:
+          "Enter a full URL including https://. If the URL cannot be parsed, the builder will not produce a result until it is fixed.",
       },
     ],
   },
   {
     slug: "profit-calculator",
-    name: "Profit Calculator",
+    name: "Free Profit Calculator",
     shortName: "Profit Calc",
-    description: "Calculate profit and margin from revenue and cost.",
+    description:
+      "Calculate profit and margin from revenue and cost instantly — free, private, and local in your browser.",
     category: "finance",
     status: "ready",
     href: "/profit-calculator",
-    keywords: ["profit", "margin", "revenue", "cost"],
+    keywords: [
+      "profit calculator",
+      "margin calculator",
+      "revenue minus cost",
+      "profit margin",
+      "gross profit calculator",
+      "free profit calculator",
+    ],
     faq: [
       {
+        question: "How is profit calculated?",
+        answer: "Profit = revenue − cost. Enter both values to see the result immediately.",
+      },
+      {
         question: "How is margin calculated?",
-        answer: "Margin = (revenue − cost) ÷ revenue × 100.",
+        answer:
+          "Margin = (revenue − cost) ÷ revenue × 100. If revenue is zero, margin is shown as zero to avoid division errors.",
+      },
+      {
+        question: "Is this profit calculator free?",
+        answer:
+          "Yes. Calculate unlimited scenarios with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my numbers uploaded?",
+        answer:
+          "No. All math runs locally in your browser. Values you enter are not sent to Focera servers.",
+      },
+      {
+        question: "Can I use this for pricing decisions?",
+        answer:
+          "Yes as a quick check. For accounting, taxes, or formal reports, verify figures with your bookkeeping tools or advisor.",
+      },
+    ],
+  },
+  {
+    slug: "background-remover",
+    name: "AI Background Remover Online Free",
+    shortName: "BG Remover",
+    description: "Remove image backgrounds instantly for free.",
+    category: "images",
+    status: "ready",
+    href: "/background-remover",
+    keywords: [
+      "background remover",
+      "remove background",
+      "ai background remover",
+      "transparent png",
+      "remove bg online",
+      "free background eraser",
+    ],
+    faq: [
+      {
+        question: "Is this background remover really free?",
+        answer:
+          "Yes. You can upload, process, preview, and download transparent PNGs without paying or creating an account.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Background removal runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a transparent PNG.",
+      },
+      {
+        question: "Why does the first removal take longer?",
+        answer:
+          "The AI model downloads once and is cached by your browser. Later runs are significantly faster.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After processing, drag the slider on the preview to compare the original image with the cutout.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, e-commerce, client work, and personal projects.",
       },
     ],
   },
@@ -140,17 +552,57 @@ export const tools: Tool[] = [
   },
   {
     slug: "password-generator",
-    name: "Password Generator",
+    name: "Free Password Generator",
     shortName: "Passwords",
-    description: "Generate strong, random passwords with custom rules.",
+    description:
+      "Generate strong, random passwords with length controls, symbols, numbers, uppercase, lowercase, strength meter, and entropy.",
     category: "security",
-    status: "soon",
+    status: "ready",
     href: "/password-generator",
-    keywords: ["password", "generator", "security"],
+    keywords: [
+      "password generator",
+      "free password generator",
+      "random password generator",
+      "strong password generator",
+      "secure password maker",
+      "password entropy",
+      "password strength meter",
+    ],
     faq: [
       {
-        question: "Are generated passwords stored?",
-        answer: "No. They are created locally and never sent to a server.",
+        question: "Are generated passwords stored or uploaded?",
+        answer:
+          "No. Passwords are created locally in your browser with the Web Crypto API and are never sent to Focera servers.",
+      },
+      {
+        question: "How does the strength meter work?",
+        answer:
+          "Strength is estimated from password entropy — length multiplied by log₂ of the selected character pool. Higher entropy maps to stronger labels.",
+      },
+      {
+        question: "What is password entropy?",
+        answer:
+          "Entropy measures unpredictability in bits. A longer password from a larger character set has higher entropy and is harder to brute-force when generation is random.",
+      },
+      {
+        question: "Can I include or exclude symbols and numbers?",
+        answer:
+          "Yes. Toggle lowercase, uppercase, numbers, and symbols independently. At least one character set must stay enabled.",
+      },
+      {
+        question: "What password length should I use?",
+        answer:
+          "Sixteen characters or more is a solid default for most accounts. Use 20+ for email, banking, and admin access when the site allows it.",
+      },
+      {
+        question: "Is this password generator free?",
+        answer:
+          "Yes. Generate and copy unlimited passwords with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are the passwords cryptographically random?",
+        answer:
+          "Yes. The generator uses crypto.getRandomValues for secure randomness rather than Math.random.",
       },
     ],
   },
@@ -172,34 +624,172 @@ export const tools: Tool[] = [
     ],
   },
   {
-    slug: "json-formatter",
-    name: "JSON Formatter",
-    shortName: "JSON",
-    description: "Format, validate, and tidy JSON for debugging.",
+    slug: "html-css-js-minifier",
+    name: "Free HTML CSS JS Minifier",
+    shortName: "Minifier",
+    description:
+      "Minify HTML, CSS, and JavaScript online — compress code in your browser, then copy or download. Free, private, and fast.",
     category: "developers",
-    status: "soon",
+    status: "ready",
+    href: "/html-css-js-minifier",
+    keywords: [
+      "html minifier",
+      "css minifier",
+      "javascript minifier",
+      "js minifier",
+      "minify html css js",
+      "online code minifier",
+      "compress html",
+      "compress css",
+      "minify javascript online",
+    ],
+    faq: [
+      {
+        question: "Does my code leave the browser?",
+        answer:
+          "No. HTML, CSS, and JavaScript minification run locally in your browser. Nothing is uploaded to Focera for processing.",
+      },
+      {
+        question: "Which languages are supported?",
+        answer:
+          "HTML, CSS, and JavaScript. Switch modes with the tabs, paste your source, then click Minify.",
+      },
+      {
+        question: "How does JavaScript minification work?",
+        answer:
+          "JS is minified with Terser in your browser — compression, mangling, and comment removal for compact production output.",
+      },
+      {
+        question: "Can I download the minified file?",
+        answer:
+          "Yes. After minifying, use Download to save a .html, .css, or .js file generated on your device. You can also copy the result to the clipboard.",
+      },
+      {
+        question: "Will HTML minification break my layout?",
+        answer:
+          "Significant whitespace inside tags like pre, code, script, and style is preserved. Most other comments and inter-tag whitespace are removed safely for typical markup.",
+      },
+      {
+        question: "Is this minifier free?",
+        answer:
+          "Yes. Minify, copy, and download with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Do I need to install anything?",
+        answer:
+          "No. Open the page in a modern browser, paste your code, and minify immediately.",
+      },
+    ],
+  },
+  {
+    slug: "json-formatter",
+    name: "Free JSON Formatter & Validator",
+    shortName: "JSON",
+    description:
+      "Format, validate, and minify JSON online with error highlighting, copy, download, and a dark editor mode.",
+    category: "developers",
+    status: "ready",
     href: "/json-formatter",
-    keywords: ["json", "format", "validate", "pretty"],
+    keywords: [
+      "json formatter",
+      "json validator",
+      "json beautifier",
+      "minify json",
+      "pretty print json",
+      "format json online",
+      "json lint",
+    ],
     faq: [
       {
         question: "Does my JSON leave the browser?",
-        answer: "No. Formatting and validation stay on your device.",
+        answer:
+          "No. Formatting, validation, and minification run locally with your browser’s JSON parser. Nothing is uploaded to Focera.",
+      },
+      {
+        question: "Can I minify JSON as well as format it?",
+        answer:
+          "Yes. Use Format for readable 2-space indentation, or Minify to collapse whitespace into a compact single line.",
+      },
+      {
+        question: "How does error highlighting work?",
+        answer:
+          "When JSON is invalid, the status bar shows the message with line and column when available, and the matching line is marked in the editor gutter.",
+      },
+      {
+        question: "Can I download the result as a file?",
+        answer:
+          "Yes. After your JSON validates, click Download to save a .json file generated on your device.",
+      },
+      {
+        question: "Is there a dark mode for the editor?",
+        answer:
+          "Yes. Toggle Dark / Light in the toolbar. Your preference is stored in local storage on your device only.",
+      },
+      {
+        question: "Is this JSON formatter free?",
+        answer:
+          "Yes. Format, validate, minify, copy, and download with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Do I need to install anything?",
+        answer:
+          "No. Open the page in a modern browser, paste your JSON, and use the toolbar actions immediately.",
       },
     ],
   },
   {
     slug: "markdown-editor",
-    name: "Markdown Editor",
+    name: "Free Markdown Editor with Live Preview",
     shortName: "Markdown",
-    description: "Write Markdown with a live preview side by side.",
+    description:
+      "Write Markdown with a live preview, syntax highlighting, dark mode, and export to Markdown, HTML, or PDF — all in your browser.",
     category: "developers",
-    status: "soon",
+    status: "ready",
     href: "/markdown-editor",
-    keywords: ["markdown", "md", "editor", "preview"],
+    keywords: [
+      "markdown editor",
+      "markdown preview",
+      "online markdown editor",
+      "markdown to html",
+      "markdown to pdf",
+      "live markdown preview",
+      "md editor",
+    ],
     faq: [
       {
-        question: "Can I export my Markdown?",
-        answer: "Export options are planned once the editor ships.",
+        question: "Does my Markdown leave the browser?",
+        answer:
+          "No. Parsing, preview, sanitization, and exports run locally in your browser. Nothing is uploaded to Focera.",
+      },
+      {
+        question: "What can I export?",
+        answer:
+          "Download your document as Markdown (.md), a self-contained HTML file, or a PDF generated on your device. You can also copy rendered HTML to the clipboard.",
+      },
+      {
+        question: "Does the preview support syntax highlighting?",
+        answer:
+          "Yes. Fenced code blocks with a language tag (for example ts or python) are highlighted in the live preview.",
+      },
+      {
+        question: "Is there a dark mode?",
+        answer:
+          "Yes. Toggle Dark / Light in the toolbar. Your preference is stored in local storage on your device only.",
+      },
+      {
+        question: "Will my draft be saved?",
+        answer:
+          "Yes. The editor autosaves your draft to local storage on this device so you can refresh without losing work. Clear removes the draft.",
+      },
+      {
+        question: "Is this Markdown editor free?",
+        answer:
+          "Yes. Write, preview, copy, and export with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Do I need to install anything?",
+        answer:
+          "No. Open the page in a modern browser and start writing immediately.",
       },
     ],
   },

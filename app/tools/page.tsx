@@ -4,14 +4,17 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ToolCard from "@/components/ToolCard";
 import { categoryLabels, tools, type ToolCategory } from "@/data/tools";
+import { pageMetadata, SITE_NAME } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "All tools",
-  description: "Browse every ToolHub utility — ready tools and upcoming releases.",
-};
+export const metadata: Metadata = pageMetadata({
+  title: "All Free Online Tools",
+  description: `Browse every ${SITE_NAME} utility — generators, converters, calculators, image tools, and developer helpers. Ready tools and upcoming releases.`,
+  path: "/tools",
+});
 
 const categoryOrder: ToolCategory[] = [
   "generators",
+  "converters",
   "marketing",
   "finance",
   "images",
@@ -25,11 +28,11 @@ export default function ToolsPage() {
       <Header />
       <main className="page-main">
         <section className="page-hero">
-          <p className="page-hero__brand">ToolHub</p>
-          <h1 className="page-hero__title">All tools</h1>
+          <p className="page-hero__brand">{SITE_NAME}</p>
+          <h1 className="page-hero__title">All free online tools</h1>
           <p className="page-hero__lede">
-            One catalog for every utility. Add a tool in data/tools.ts and wire
-            a page — the shell stays shared.
+            One catalog for every Focera utility. Pick a category, open a tool,
+            and work privately in your browser.
           </p>
         </section>
 
@@ -40,8 +43,8 @@ export default function ToolsPage() {
           return (
             <section
               key={category}
+              className="page-section"
               aria-labelledby={`cat-${category}`}
-              style={{ marginBottom: "2.5rem" }}
             >
               <h2 id={`cat-${category}`} className="section-heading">
                 {categoryLabels[category]}
@@ -55,12 +58,14 @@ export default function ToolsPage() {
           );
         })}
 
-        <CTA
-          title="Missing something?"
-          description="New tools plug into the same layout, SEO helpers, and UI primitives."
-          href="/"
-          label="Back to home"
-        />
+        <div className="page-section">
+          <CTA
+            title="Looking for something specific?"
+            description="Start from the homepage for featured tools, or open any category above."
+            href="/"
+            label="Back to home"
+          />
+        </div>
       </main>
       <Footer />
     </div>
