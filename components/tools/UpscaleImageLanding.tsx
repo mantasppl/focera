@@ -112,6 +112,10 @@ export default function UpscaleImageLanding() {
             Cut out subjects before or after increasing resolution.
           </li>
           <li>
+            <Link href="/remove-watermark">Remove Watermark</Link> — Brush
+            out logos or text overlays from photos you own.
+          </li>
+          <li>
             <Link href="/image-compressor">Image Compressor</Link> — Shrink
             file size after exporting a larger PNG.
           </li>

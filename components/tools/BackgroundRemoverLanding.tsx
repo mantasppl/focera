@@ -120,6 +120,10 @@ export default function BackgroundRemoverLanding() {
               resolution before or after exporting transparent PNGs.
             </li>
             <li>
+              <Link href="/remove-watermark">Remove Watermark</Link> — Brush
+              out logos or text overlays from photos you own.
+            </li>
+            <li>
               <Link href="/image-compressor">Image Compressor</Link> — Reduce
               file size before or after exporting transparent PNGs.
             </li>

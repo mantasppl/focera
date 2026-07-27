@@ -126,6 +126,10 @@ export default function PdfToJpgLanding() {
             into one file before converting pages to images.
           </li>
           <li>
+            <Link href="/split-pdf">Split PDF</Link> — Break a PDF into pages or
+            ranges before converting.
+          </li>
+          <li>
             <Link href="/compress-pdf">Compress PDF</Link> — Shrink PDFs for
             email and uploads when you need a smaller document, not images.
           </li>

@@ -123,6 +123,10 @@ export default function CompressPdfLanding() {
             into one file before or after compressing.
           </li>
           <li>
+            <Link href="/split-pdf">Split PDF</Link> — Break a PDF into pages,
+            ranges, or fixed-size chunks before compressing.
+          </li>
+          <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, or
             extract pages before compressing the result.
           </li>

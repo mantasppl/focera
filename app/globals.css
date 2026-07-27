@@ -3932,6 +3932,7 @@ a {
 /* -- PDF to JPG -- */
 .pdf-to-jpg__options,
 .compress-pdf__options,
+.split-pdf__options,
 .upscale-image__options {
   display: grid;
   gap: 1rem;
@@ -3939,6 +3940,7 @@ a {
 
 .pdf-to-jpg__chips,
 .compress-pdf__chips,
+.split-pdf__chips,
 .upscale-image__chips {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3951,6 +3953,7 @@ a {
 
 .pdf-to-jpg__chip,
 .compress-pdf__chip,
+.split-pdf__chip,
 .upscale-image__chip {
   display: flex;
   flex-direction: column;
@@ -3970,12 +3973,14 @@ a {
 
 .pdf-to-jpg__chip:hover:not(:disabled),
 .compress-pdf__chip:hover:not(:disabled),
+.split-pdf__chip:hover:not(:disabled),
 .upscale-image__chip:hover:not(:disabled) {
   border-color: var(--accent);
 }
 
 .pdf-to-jpg__chip.is-active,
 .compress-pdf__chip.is-active,
+.split-pdf__chip.is-active,
 .upscale-image__chip.is-active {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.1);
@@ -3984,6 +3989,7 @@ a {
 
 .pdf-to-jpg__chip:disabled,
 .compress-pdf__chip:disabled,
+.split-pdf__chip:disabled,
 .upscale-image__chip:disabled {
   opacity: 0.55;
   cursor: not-allowed;
@@ -3991,6 +3997,7 @@ a {
 
 .pdf-to-jpg__chip-label,
 .compress-pdf__chip-label,
+.split-pdf__chip-label,
 .upscale-image__chip-label {
   font-size: 0.9rem;
   font-weight: 600;
@@ -3998,6 +4005,7 @@ a {
 
 .pdf-to-jpg__chip-hint,
 .compress-pdf__chip-hint,
+.split-pdf__chip-hint,
 .upscale-image__chip-hint {
   font-size: 0.75rem;
   color: var(--muted);
@@ -4005,6 +4013,7 @@ a {
 
 .pdf-to-jpg__chip.is-active .pdf-to-jpg__chip-hint,
 .compress-pdf__chip.is-active .compress-pdf__chip-hint,
+.split-pdf__chip.is-active .split-pdf__chip-hint,
 .upscale-image__chip.is-active .upscale-image__chip-hint {
   color: var(--accent-deep);
 }
@@ -4067,6 +4076,7 @@ a {
 @media (max-width: 640px) {
   .pdf-to-jpg__chips,
   .compress-pdf__chips,
+  .split-pdf__chips,
   .upscale-image__chips {
     grid-template-columns: 1fr;
   }
@@ -4114,6 +4124,216 @@ a {
   font-size: 0.85rem;
   color: var(--muted);
   text-align: center;
+}
+
+/* -- Remove watermark -- */
+.remove-watermark__options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.35rem;
+}
+
+.remove-watermark__chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.remove-watermark__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.remove-watermark__chip:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  background: color-mix(in srgb, var(--surface) 70%, var(--accent-soft));
+}
+
+.remove-watermark__chip.is-active {
+  border-color: color-mix(in srgb, var(--accent) 65%, var(--line));
+  background: color-mix(in srgb, var(--accent-soft) 70%, var(--surface));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.remove-watermark__chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.remove-watermark__chip-label {
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.remove-watermark__chip-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.remove-watermark__chip.is-active .remove-watermark__chip-hint {
+  color: color-mix(in srgb, var(--ink) 55%, var(--muted));
+}
+
+.remove-watermark__paint {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.remove-watermark__paint-frame {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background:
+    linear-gradient(45deg, #d7d7d7 25%, transparent 25%),
+    linear-gradient(-45deg, #d7d7d7 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #d7d7d7 75%),
+    linear-gradient(-45deg, transparent 75%, #d7d7d7 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-color: #efefef;
+}
+
+.remove-watermark__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+}
+
+.remove-watermark__mask {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.remove-watermark__mask.is-erase {
+  cursor: cell;
+}
+
+.remove-watermark__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.remove-watermark__result-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* -- Image to Text -- */
+.image-to-text__options {
+  display: grid;
+  gap: 1rem;
+}
+
+.image-to-text__chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.image-to-text__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.image-to-text__chip:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.image-to-text__chip.is-active {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.1);
+  color: var(--accent-deep);
+}
+
+.image-to-text__chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.image-to-text__chip-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.image-to-text__chip-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.image-to-text__chip.is-active .image-to-text__chip-hint {
+  color: var(--accent-deep);
+}
+
+.image-to-text__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.image-to-text__result-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.image-to-text__textarea {
+  min-height: 16rem;
+  resize: vertical;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 640px) {
+  .image-to-text__chips {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 /* -- Compress PDF -- */
@@ -4197,6 +4417,65 @@ a {
   .compress-pdf__preview {
     height: 220px;
   }
+}
+
+/* -- Split PDF -- */
+.split-pdf__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  text-align: center;
+}
+
+.split-pdf__success-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.split-pdf__success-meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 34rem;
+}
+
+.split-pdf__parts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: min(100%, 26rem);
+  max-height: 16rem;
+  overflow: auto;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.split-pdf__parts li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.split-pdf__part-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.split-pdf__part-meta {
+  font-size: 0.8rem;
+  color: var(--muted);
+  white-space: nowrap;
 }
 
 /* -- AI Image Generator -- */

@@ -494,6 +494,68 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "split-pdf",
+    name: "Free Split PDF Tool",
+    shortName: "Split PDF",
+    description:
+      "Split a PDF into separate files online — every page, custom ranges, or fixed-size chunks. Free, private, and local in your browser.",
+    category: "converters",
+    status: "ready",
+    href: "/split-pdf",
+    keywords: [
+      "split pdf",
+      "pdf splitter",
+      "split pdf pages",
+      "extract pdf pages",
+      "separate pdf pages",
+      "split pdf online",
+      "free pdf splitter",
+      "break pdf into pages",
+    ],
+    faq: [
+      {
+        question: "Is this PDF splitter free?",
+        answer:
+          "Yes. Split and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Splitting runs entirely in your browser with pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "How can I split a PDF?",
+        answer:
+          "Choose every page for one PDF per page, enter page ranges like 1-3, 5, 8-10, or split into fixed chunks of N pages each.",
+      },
+      {
+        question: "Do I get a ZIP or a single PDF?",
+        answer:
+          "One output range downloads as a PDF. Multiple outputs download together as a ZIP of PDF files.",
+      },
+      {
+        question: "Does splitting keep text and layout?",
+        answer:
+          "Yes. Pages are copied as real PDF pages — text, vector graphics, and layout are preserved.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per split.",
+      },
+      {
+        question: "Can I split password-protected PDFs?",
+        answer:
+          "Not yet. Remove the password from protected files first, then upload them to split.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and split immediately.",
+      },
+    ],
+  },
+  {
     slug: "compress-pdf",
     name: "Free Compress PDF Tool",
     shortName: "Compress PDF",
@@ -749,6 +811,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "remove-watermark",
+    name: "Remove Watermark from Photo Online Free",
+    shortName: "Remove Watermark",
+    description:
+      "Remove watermarks from photos online — brush over logos or text and restore the image. Free, private, and local in your browser.",
+    category: "images",
+    status: "ready",
+    href: "/remove-watermark",
+    keywords: [
+      "remove watermark",
+      "watermark remover",
+      "remove watermark from photo",
+      "remove logo from image",
+      "erase watermark",
+      "photo watermark remover",
+      "remove text from image",
+      "free watermark remover",
+      "remove watermark online",
+      "clean watermark from photo",
+    ],
+    faq: [
+      {
+        question: "Is this watermark remover free?",
+        answer:
+          "Yes. Upload a photo, mark the watermark, restore the area, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Watermark removal runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How do I remove a watermark?",
+        answer:
+          "Upload your photo, paint over the watermark or logo with the brush, then click Remove watermark. The tool fills the marked area using nearby pixels.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a cleaned PNG.",
+      },
+      {
+        question: "Does it work on text and logo watermarks?",
+        answer:
+          "Yes. Brush carefully over text overlays, stamps, or logos. Smaller, solid watermarks usually restore more cleanly than very large areas.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After processing, drag the preview slider to compare the original photo with the cleaned result.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use. Only remove watermarks from images you own or have permission to edit.",
+      },
+    ],
+  },
+  {
     slug: "upscale-image",
     name: "Upscale Image Online Free — Increase Resolution",
     shortName: "Upscale Image",
@@ -804,6 +925,65 @@ export const tools: Tool[] = [
         question: "Can I use the results commercially?",
         answer:
           "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "image-to-text",
+    name: "Image to Text Online Free — OCR Converter",
+    shortName: "Image to Text",
+    description:
+      "Extract text from images online with OCR — convert photos, screenshots, and scans to editable text. Free, private, and local in your browser.",
+    category: "images",
+    status: "ready",
+    href: "/image-to-text",
+    keywords: [
+      "image to text",
+      "ocr online",
+      "extract text from image",
+      "photo to text",
+      "image to text converter",
+      "screenshot to text",
+      "scan to text",
+      "free ocr",
+      "picture to text",
+      "ocr converter",
+    ],
+    faq: [
+      {
+        question: "Is this image to text converter free?",
+        answer:
+          "Yes. Upload an image, extract text, copy, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. OCR runs entirely in your browser with Tesseract. Your files stay on your device.",
+      },
+      {
+        question: "Which languages are supported?",
+        answer:
+          "Choose English, Spanish, French, German, Portuguese, Simplified Chinese, or Japanese before extracting text.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. Clear, high-contrast text usually recognizes best.",
+      },
+      {
+        question: "Can I edit the extracted text?",
+        answer:
+          "Yes. After OCR finishes, edit the result in the text panel, then copy it or download a .txt file.",
+      },
+      {
+        question: "Does handwriting work?",
+        answer:
+          "Printed or typed text works best. Neat, high-contrast handwriting may work, but results vary.",
+      },
+      {
+        question: "Can I use the text commercially?",
+        answer:
+          "Yes. Text you extract is yours to use. Only process images you own or have permission to convert.",
       },
     ],
   },

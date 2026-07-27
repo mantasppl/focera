@@ -46,6 +46,11 @@ export const CompressPdfLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const SplitPdfLazy = dynamic(
+  () => import("@/components/tools/SplitPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PdfEditorLazy = dynamic(
   () => import("@/components/tools/PdfEditor"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -53,5 +58,15 @@ export const PdfEditorLazy = dynamic(
 
 export const UpscaleImageLazy = dynamic(
   () => import("@/components/tools/UpscaleImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const RemoveWatermarkLazy = dynamic(
+  () => import("@/components/tools/RemoveWatermark"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const ImageToTextLazy = dynamic(
+  () => import("@/components/tools/ImageToText"),
   { ssr: false, loading: () => <ToolLoading /> },
 );

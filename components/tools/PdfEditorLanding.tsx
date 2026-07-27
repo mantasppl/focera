@@ -120,6 +120,10 @@ export default function PdfEditorLanding() {
             into one file before or after editing pages.
           </li>
           <li>
+            <Link href="/split-pdf">Split PDF</Link> — Break a PDF into pages,
+            ranges, or fixed-size chunks.
+          </li>
+          <li>
             <Link href="/compress-pdf">Compress PDF</Link> — Shrink edited PDFs
             for email, uploads, and sharing.
           </li>
