@@ -8,6 +8,7 @@ type BeforeAfterPreviewProps = {
   afterSrc: string;
   beforeAlt?: string;
   afterAlt?: string;
+  hint?: string;
   className?: string;
 };
 
@@ -16,6 +17,7 @@ export default function BeforeAfterPreview({
   afterSrc,
   beforeAlt = "Original image",
   afterAlt = "Background removed",
+  hint = "Drag the slider to compare the original and transparent PNG.",
   className,
 }: BeforeAfterPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -79,7 +81,7 @@ export default function BeforeAfterPreview({
         <span className="compare__badge compare__badge--before">Before</span>
         <span className="compare__badge compare__badge--after">After</span>
       </div>
-      <p className="tool-hint">Drag the slider to compare the original and transparent PNG.</p>
+      <p className="tool-hint">{hint}</p>
     </div>
   );
 }
