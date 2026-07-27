@@ -1541,6 +1541,38 @@ a {
   gap: 0.6rem;
 }
 
+.export-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.export-slider__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.export-slider__value {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.88rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.export-slider__input {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 /* -- Invoice generator -- */
 .invoice-tool {
   display: grid;

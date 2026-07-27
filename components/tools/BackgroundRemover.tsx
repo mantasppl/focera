@@ -8,7 +8,7 @@ import BackgroundExportOptions, {
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
 import { removeImageBackground } from "@/lib/background-removal";
-import { compositeOnColor, compositeOnImage } from "@/lib/composite-image";
+import { compositeOnColor, compositeOnImage, compositeWithBlur, BLUR_RADIUS } from "@/lib/composite-image";
 import {
   downloadBlob,
   fileBaseName,
@@ -33,6 +33,7 @@ export default function BackgroundRemover() {
   const [resultUrl, setResultUrl] = useState("");
   const [exportMode, setExportMode] = useState<ExportMode>("transparent");
   const [bgColor, setBgColor] = useState("#ffffff");
+  const [blurRadius, setBlurRadius] = useState<number>(BLUR_RADIUS.default);
   const [bgImageFile, setBgImageFile] = useState<File | null>(null);
   const [compositeBlob, setCompositeBlob] = useState<Blob | null>(null);
   const [compositeUrl, setCompositeUrl] = useState("");
@@ -43,12 +44,14 @@ export default function BackgroundRemover() {
 
   const compositeUrlRef = useRef("");
   const debouncedBgColor = useDebouncedValue(bgColor, 180);
+  const debouncedBlurRadius = useDebouncedValue(blurRadius, 120);
 
   const hasSource = Boolean(sourceFile && originalUrl);
   const hasResult = Boolean(resultBlob && resultUrl);
   const canProcess = hasSource && !loading;
   const canDownloadComposite =
     exportMode === "color" ||
+    exportMode === "blur" ||
     (exportMode === "image" && Boolean(bgImageFile && compositeBlob));
 
   const handleBgColorChange = useCallback((color: string) => {
@@ -81,6 +84,7 @@ export default function BackgroundRemover() {
   function resetExportOptions() {
     setExportMode("transparent");
     setBgColor("#ffffff");
+    setBlurRadius(BLUR_RADIUS.default);
     setBgImageFile(null);
     clearCompositeState();
   }
@@ -148,16 +152,30 @@ export default function BackgroundRemover() {
       return;
     }
 
+    if (exportMode === "blur" && !sourceFile) {
+      clearCompositeState();
+      return;
+    }
+
     let cancelled = false;
 
     async function buildComposite() {
       setCompositing(true);
 
       try {
-        const blob =
-          exportMode === "color"
-            ? await compositeOnColor(resultBlob!, debouncedBgColor)
-            : await compositeOnImage(resultBlob!, bgImageFile!);
+        let blob: Blob;
+
+        if (exportMode === "color") {
+          blob = await compositeOnColor(resultBlob!, debouncedBgColor);
+        } else if (exportMode === "blur") {
+          blob = await compositeWithBlur(
+            sourceFile!,
+            resultBlob!,
+            debouncedBlurRadius,
+          );
+        } else {
+          blob = await compositeOnImage(resultBlob!, bgImageFile!);
+        }
 
         if (cancelled) return;
 
@@ -181,9 +199,10 @@ export default function BackgroundRemover() {
     return () => {
       cancelled = true;
     };
-  }, [resultBlob, hasResult, exportMode, debouncedBgColor, bgImageFile]);
+  }, [resultBlob, hasResult, exportMode, debouncedBgColor, debouncedBlurRadius, bgImageFile, sourceFile]);
 
-  function handleDownload() {    if (!sourceFile) return;
+  function handleDownload() {
+    if (!sourceFile) return;
 
     const baseName = fileBaseName(sourceFile);
 
@@ -195,7 +214,12 @@ export default function BackgroundRemover() {
 
     if (!compositeBlob) return;
 
-    const suffix = exportMode === "color" ? "bg-color" : "with-bg";
+    const suffix =
+      exportMode === "color"
+        ? "bg-color"
+        : exportMode === "blur"
+          ? "blur-bg"
+          : "with-bg";
     downloadBlob(compositeBlob, `${baseName}-${suffix}.png`);
   }
 
@@ -213,7 +237,9 @@ export default function BackgroundRemover() {
       ? "Drag the slider to compare the original and transparent PNG."
       : exportMode === "color"
         ? "Preview with your selected background color."
-        : "Preview with your uploaded background image.";
+        : exportMode === "blur"
+          ? "Preview with portrait-style background blur."
+          : "Preview with your uploaded background image.";
 
   return (
     <div className="tool-grid">
@@ -252,6 +278,8 @@ export default function BackgroundRemover() {
             onModeChange={setExportMode}
             bgColor={bgColor}
             onBgColorChange={handleBgColorChange}
+            blurRadius={blurRadius}
+            onBlurRadiusChange={setBlurRadius}
             bgImageName={bgImageFile?.name}
             onBgImageSelect={setBgImageFile}
             onBgImageError={setError}
@@ -336,7 +364,7 @@ export default function BackgroundRemover() {
         </div>
         <p className="tool-hint">
           {hasResult
-            ? "Export as transparent PNG, solid color, or custom background · processed locally"
+            ? "Export as transparent PNG, blurred background, solid color, or custom photo · processed locally"
             : "Transparent PNG output · processed locally in your browser · no upload to our servers"}
         </p>
       </div>

@@ -1,3 +1,5 @@
+export const BLUR_RADIUS = { min: 4, max: 48, step: 2, default: 18 } as const;
+
 function loadImage(source: Blob): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(source);
@@ -80,6 +82,32 @@ export async function compositeOnImage(
   if (!ctx) throw new Error("Canvas is not supported in this browser");
 
   drawBackgroundCover(ctx, bg, canvas.width, canvas.height);
+  ctx.drawImage(fg, 0, 0);
+
+  return canvasToBlob(canvas);
+}
+
+export async function compositeWithBlur(
+  original: Blob,
+  foreground: Blob,
+  blurRadius: number,
+): Promise<Blob> {
+  const [originalImage, fg] = await Promise.all([
+    loadImage(original),
+    loadImage(foreground),
+  ]);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = fg.naturalWidth;
+  canvas.height = fg.naturalHeight;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas is not supported in this browser");
+
+  const radius = Math.max(0, blurRadius);
+  ctx.filter = radius > 0 ? `blur(${radius}px)` : "none";
+  ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+  ctx.filter = "none";
   ctx.drawImage(fg, 0, 0);
 
   return canvasToBlob(canvas);

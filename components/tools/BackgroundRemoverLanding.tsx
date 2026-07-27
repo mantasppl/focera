@@ -18,6 +18,11 @@ const features = [
       "Download a clean PNG with alpha transparency, ready for e-commerce listings, social posts, presentations, and design tools.",
   },
   {
+    title: "Portrait background blur",
+    description:
+      "Apply a pro-style depth effect — keep your subject sharp while softly blurring the original scene, with an adjustable intensity slider.",
+  },
+  {
     title: "Drag & drop workflow",
     description:
       "Drop a JPG, PNG, or WebP file onto the upload zone or browse from your device. A before/after slider helps you verify quality.",

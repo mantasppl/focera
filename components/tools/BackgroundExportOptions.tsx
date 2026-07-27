@@ -4,8 +4,9 @@ import { useId } from "react";
 import Button from "@/components/Button";
 import { ACCEPTED_IMAGE_TYPES, validateImageFile } from "@/lib/image";
 import { cn } from "@/lib/utils";
+import { BLUR_RADIUS } from "@/lib/composite-image";
 
-export type ExportMode = "transparent" | "color" | "image";
+export type ExportMode = "transparent" | "color" | "image" | "blur";
 
 const PRESET_COLORS = [
   "#ffffff",
@@ -21,6 +22,8 @@ type BackgroundExportOptionsProps = {
   onModeChange: (mode: ExportMode) => void;
   bgColor: string;
   onBgColorChange: (color: string) => void;
+  blurRadius: number;
+  onBlurRadiusChange: (radius: number) => void;
   bgImageName?: string;
   onBgImageSelect: (file: File) => void;
   onBgImageError: (message: string) => void;
@@ -35,6 +38,8 @@ export default function BackgroundExportOptions({
   onModeChange,
   bgColor,
   onBgColorChange,
+  blurRadius,
+  onBlurRadiusChange,
   bgImageName,
   onBgImageSelect,
   onBgImageError,
@@ -65,8 +70,8 @@ export default function BackgroundExportOptions({
         Export options
       </h2>
       <p className="export-options__lede">
-        Download a transparent PNG or place your cutout on a solid color or custom
-        background image.
+        Download a transparent PNG, blur the original background like a portrait
+        lens, or place your cutout on a solid color or custom photo.
       </p>
 
       <div className="export-options__choices" role="radiogroup" aria-label="Export type">
@@ -105,6 +110,50 @@ export default function BackgroundExportOptions({
             </span>
           </span>
         </label>
+
+        <label className={cn("export-option", mode === "blur" && "is-active")}>
+          <input
+            type="radio"
+            name="export-mode"
+            value="blur"
+            checked={mode === "blur"}
+            disabled={disabled}
+            onChange={() => onModeChange("blur")}
+          />
+          <span className="export-option__content">
+            <span className="export-option__title">Background blur</span>
+            <span className="export-option__desc">
+              Keep your subject sharp while softly blurring the original scene.
+            </span>
+          </span>
+        </label>
+
+        {mode === "blur" ? (
+          <div className="export-option__panel">
+            <div className="export-slider">
+              <label className="export-slider__label" htmlFor="blur-radius">
+                Blur intensity
+                <span className="export-slider__value">{blurRadius}px</span>
+              </label>
+              <input
+                id="blur-radius"
+                type="range"
+                min={BLUR_RADIUS.min}
+                max={BLUR_RADIUS.max}
+                step={BLUR_RADIUS.step}
+                value={blurRadius}
+                disabled={disabled}
+                className="export-slider__input"
+                onChange={(event) =>
+                  onBlurRadiusChange(Number.parseInt(event.target.value, 10))
+                }
+              />
+              <p className="ui-hint">
+                Portrait-style depth effect — drag to fine-tune the background softness.
+              </p>
+            </div>
+          </div>
+        ) : null}
 
         {mode === "color" ? (
           <div className="export-option__panel">
@@ -194,7 +243,9 @@ export default function BackgroundExportOptions({
             ? "Preparing…"
             : mode === "transparent"
               ? "Download transparent PNG"
-              : "Download PNG"}
+              : mode === "blur"
+                ? "Download blurred PNG"
+                : "Download PNG"}
         </Button>
       </div>
     </section>
