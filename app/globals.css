@@ -3897,3 +3897,122 @@ a {
   }
 }
 
+/* -- PDF to JPG -- */
+.pdf-to-jpg__options {
+  display: grid;
+  gap: 1rem;
+}
+
+.pdf-to-jpg__chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.pdf-to-jpg__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.pdf-to-jpg__chip:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.pdf-to-jpg__chip.is-active {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.1);
+  color: var(--accent-deep);
+}
+
+.pdf-to-jpg__chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.pdf-to-jpg__chip-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.pdf-to-jpg__chip-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.pdf-to-jpg__chip.is-active .pdf-to-jpg__chip-hint {
+  color: var(--accent-deep);
+}
+
+.pdf-to-jpg__preview-image {
+  max-width: min(100%, 420px);
+  max-height: 360px;
+}
+
+.pdf-to-jpg__thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+  max-height: 11rem;
+  overflow: auto;
+  padding: 0.15rem;
+}
+
+.pdf-to-jpg__thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.pdf-to-jpg__thumb:hover {
+  border-color: var(--accent);
+}
+
+.pdf-to-jpg__thumb.is-active {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.1);
+}
+
+.pdf-to-jpg__thumb-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: contain;
+  background: #fff;
+}
+
+.pdf-to-jpg__thumb-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.pdf-to-jpg__thumb.is-active .pdf-to-jpg__thumb-label {
+  color: var(--accent-deep);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .pdf-to-jpg__chips {
+    grid-template-columns: 1fr;
+  }
+}
+

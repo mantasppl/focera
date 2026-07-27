@@ -551,6 +551,63 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "pdf-to-jpg",
+    name: "Free PDF to JPG Converter",
+    shortName: "PDF to JPG",
+    description:
+      "Convert PDF pages to JPG images online — preview each page, download singly or as a ZIP. Free, private, and local in your browser.",
+    category: "images",
+    status: "ready",
+    href: "/pdf-to-jpg",
+    keywords: [
+      "pdf to jpg",
+      "pdf to jpeg",
+      "convert pdf to jpg",
+      "pdf to jpg converter",
+      "pdf to image",
+      "pdf page to jpg",
+      "free pdf to jpg",
+      "pdf to jpg online",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to JPG converter free?",
+        answer:
+          "Yes. Convert, preview, and download unlimited PDFs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "Can I download all pages at once?",
+        answer:
+          "Yes. After conversion, download the current page as a JPG or use Download all (ZIP) to get every page in one archive.",
+      },
+      {
+        question: "What quality and resolution options are available?",
+        answer:
+          "Choose Smaller, Balanced, or High JPEG quality, and 1×, 1.5×, or 2× render scale for sharper page images.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "Why do JPG pages have a white background?",
+        answer:
+          "JPEG does not support transparency. Transparent PDF areas are filled with white so pages look correct in viewers and editors.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "password-generator",
     name: "Free Password Generator",
     shortName: "Passwords",

@@ -30,3 +30,8 @@ export const HtmlCssJsMinifierLazy = dynamic(
   () => import("@/components/tools/HtmlCssJsMinifier"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
+
+export const PdfToJpgLazy = dynamic(
+  () => import("@/components/tools/PdfToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
