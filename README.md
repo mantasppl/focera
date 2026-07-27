@@ -21,6 +21,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `NEXT_PUBLIC_SITE_URL` | Canonical site URL (default `https://focera.co`) |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | GA4 measurement ID (optional) |
 | `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Search Console HTML tag verification (optional) |
+| `POLLINATIONS_API_KEY` | Optional Pollinations key for AI Image Generator limits |
 
 ## Scripts
 

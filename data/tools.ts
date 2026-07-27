@@ -379,6 +379,121 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "pdf-editor",
+    name: "Free PDF Editor",
+    shortName: "PDF Editor",
+    description:
+      "Edit PDFs online for free — reorder, rotate, delete, duplicate, and extract pages with a visual workspace. Private, no watermark, and local in your browser.",
+    category: "converters",
+    status: "ready",
+    href: "/pdf-editor",
+    keywords: [
+      "pdf editor",
+      "edit pdf",
+      "free pdf editor",
+      "pdf editor online",
+      "reorder pdf pages",
+      "rotate pdf pages",
+      "delete pdf pages",
+      "extract pdf pages",
+      "online pdf editor",
+    ],
+    faq: [
+      {
+        question: "Is this PDF editor free?",
+        answer:
+          "Yes. Edit and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Editing runs entirely in your browser with pdf-lib and PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What can I edit?",
+        answer:
+          "Reorder pages with drag and drop, rotate left or right, duplicate or delete pages, insert blank pages, extract a selection, and download the full edited PDF.",
+      },
+      {
+        question: "Can I edit text or annotations inside pages?",
+        answer:
+          "This editor focuses on page-level tools — order, rotation, duplication, deletion, blank pages, and extraction. Text and vector content on each page is preserved when you export.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per edit session.",
+      },
+      {
+        question: "Can I edit password-protected PDFs?",
+        answer:
+          "Not yet. Remove the password from protected files first, then open them in the editor.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and edit immediately.",
+      },
+    ],
+  },
+  {
+    slug: "merge-pdf",
+    name: "Free Merge PDF Tool",
+    shortName: "Merge PDF",
+    description:
+      "Merge two or more PDFs into one file online — reorder pages, combine documents, and download instantly. Free, private, and local in your browser.",
+    category: "converters",
+    status: "ready",
+    href: "/merge-pdf",
+    keywords: [
+      "merge pdf",
+      "combine pdf",
+      "pdf merger",
+      "merge pdfs online",
+      "join pdf files",
+      "combine pdf files",
+      "free pdf merger",
+      "merge multiple pdfs",
+    ],
+    faq: [
+      {
+        question: "Is this PDF merger free?",
+        answer:
+          "Yes. Merge unlimited PDFs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Merging runs entirely in your browser with pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "Can I change the order of PDFs before merging?",
+        answer:
+          "Yes. After uploading, use the up and down controls to set the exact merge order, or remove files you do not want included.",
+      },
+      {
+        question: "How many PDFs can I merge at once?",
+        answer:
+          "You can merge up to 20 PDF files in one go. Each file can be up to 25 MB, with a combined size limit of 100 MB.",
+      },
+      {
+        question: "Does merging keep text and layout?",
+        answer:
+          "Yes. Pages are copied as real PDF pages — text, vector graphics, and layout are preserved. This is not a print-to-image merge.",
+      },
+      {
+        question: "Can I merge password-protected PDFs?",
+        answer:
+          "Not yet. Remove the password from protected files first, then upload them to merge.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDFs, and merge immediately.",
+      },
+    ],
+  },
+  {
     slug: "utm-builder",
     name: "Free UTM Builder",
     shortName: "UTM Builder",
@@ -515,6 +630,64 @@ export const tools: Tool[] = [
         question: "Can I use the results commercially?",
         answer:
           "Yes. PNGs you download are yours to use in marketing, e-commerce, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "ai-image-generator",
+    name: "Free AI Image Generator",
+    shortName: "AI Images",
+    description:
+      "Generate AI images from text prompts online — pick a style and size, preview instantly, and download a PNG. Free, no account required.",
+    category: "images",
+    status: "ready",
+    href: "/ai-image-generator",
+    keywords: [
+      "ai image generator",
+      "free ai image generator",
+      "text to image",
+      "ai art generator",
+      "generate image from text",
+      "ai picture generator",
+      "prompt to image",
+      "free text to image",
+      "ai image maker",
+    ],
+    faq: [
+      {
+        question: "Is this AI image generator free?",
+        answer:
+          "Yes. Write a prompt, generate images, and download PNGs with no account, subscription, or credit card.",
+      },
+      {
+        question: "How does text-to-image generation work?",
+        answer:
+          "You describe the scene in plain language. The tool sends your prompt to an AI image model, which returns a new image you can preview and download.",
+      },
+      {
+        question: "Are my prompts stored by Focera?",
+        answer:
+          "Focera does not keep a gallery of your prompts or images. Your prompt is sent to the generation provider to create the image, then the result is shown in your browser for download.",
+      },
+      {
+        question: "Which sizes and styles are available?",
+        answer:
+          "Choose square, landscape, or portrait sizes, plus styles such as photorealistic, illustration, digital art, anime, and more. You can also leave the style on Auto.",
+      },
+      {
+        question: "Can I download the generated image?",
+        answer:
+          "Yes. After generation, download a PNG to use in mockups, social posts, presentations, and creative projects.",
+      },
+      {
+        question: "Why did generation fail or take long?",
+        answer:
+          "The free model can be busy or rate-limited. Wait a few seconds and try again, or shorten the prompt and regenerate with a new seed.",
+      },
+      {
+        question: "Do I need an account or API key?",
+        answer:
+          "No. Open the page, enter a prompt, and generate. Nothing to install and no signup required.",
       },
     ],
   },

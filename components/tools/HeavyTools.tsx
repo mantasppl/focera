@@ -35,3 +35,13 @@ export const PdfToJpgLazy = dynamic(
   () => import("@/components/tools/PdfToJpg"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
+
+export const MergePdfLazy = dynamic(
+  () => import("@/components/tools/MergePdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PdfEditorLazy = dynamic(
+  () => import("@/components/tools/PdfEditor"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);

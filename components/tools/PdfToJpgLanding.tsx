@@ -118,12 +118,16 @@ export default function PdfToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <Link href="/background-remover">AI Background Remover</Link> —
-            Cut subjects from photos after you export page images.
+            <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, or
+            extract pages before converting them to images.
           </li>
           <li>
-            <Link href="/image-converter">Image Converter</Link> — Convert
-            between PNG, JPG, and WebP when you need another format.
+            <Link href="/merge-pdf">Merge PDF</Link> — Combine multiple PDFs
+            into one file before converting pages to images.
+          </li>
+          <li>
+            <Link href="/background-remover">AI Background Remover</Link> —
+            Cut subjects from photos after you export page images.
           </li>
           <li>
             <Link href="/invoice-generator">Invoice Generator</Link> — Create
