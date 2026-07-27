@@ -123,6 +123,10 @@ export default function MergePdfLanding() {
             or extract pages before or after merging files.
           </li>
           <li>
+            <Link href="/compress-pdf">Compress PDF</Link> — Shrink the merged
+            file for email, uploads, and sharing.
+          </li>
+          <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert merged pages
             into JPEG images for sharing and design tools.
           </li>

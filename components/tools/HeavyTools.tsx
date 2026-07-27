@@ -41,7 +41,17 @@ export const MergePdfLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const CompressPdfLazy = dynamic(
+  () => import("@/components/tools/CompressPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PdfEditorLazy = dynamic(
   () => import("@/components/tools/PdfEditor"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const UpscaleImageLazy = dynamic(
+  () => import("@/components/tools/UpscaleImage"),
   { ssr: false, loading: () => <ToolLoading /> },
 );

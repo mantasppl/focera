@@ -120,6 +120,10 @@ export default function PdfEditorLanding() {
             into one file before or after editing pages.
           </li>
           <li>
+            <Link href="/compress-pdf">Compress PDF</Link> — Shrink edited PDFs
+            for email, uploads, and sharing.
+          </li>
+          <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert edited pages
             into JPEG images for sharing and design tools.
           </li>

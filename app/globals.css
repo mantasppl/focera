@@ -3898,18 +3898,28 @@ a {
 }
 
 /* -- PDF to JPG -- */
-.pdf-to-jpg__options {
+.pdf-to-jpg__options,
+.compress-pdf__options,
+.upscale-image__options {
   display: grid;
   gap: 1rem;
 }
 
-.pdf-to-jpg__chips {
+.pdf-to-jpg__chips,
+.compress-pdf__chips,
+.upscale-image__chips {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
 }
 
-.pdf-to-jpg__chip {
+.compress-pdf__chips {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.pdf-to-jpg__chip,
+.compress-pdf__chip,
+.upscale-image__chip {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -3926,32 +3936,44 @@ a {
     color 160ms ease;
 }
 
-.pdf-to-jpg__chip:hover:not(:disabled) {
+.pdf-to-jpg__chip:hover:not(:disabled),
+.compress-pdf__chip:hover:not(:disabled),
+.upscale-image__chip:hover:not(:disabled) {
   border-color: var(--accent);
 }
 
-.pdf-to-jpg__chip.is-active {
+.pdf-to-jpg__chip.is-active,
+.compress-pdf__chip.is-active,
+.upscale-image__chip.is-active {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.1);
   color: var(--accent-deep);
 }
 
-.pdf-to-jpg__chip:disabled {
+.pdf-to-jpg__chip:disabled,
+.compress-pdf__chip:disabled,
+.upscale-image__chip:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
 
-.pdf-to-jpg__chip-label {
+.pdf-to-jpg__chip-label,
+.compress-pdf__chip-label,
+.upscale-image__chip-label {
   font-size: 0.9rem;
   font-weight: 600;
 }
 
-.pdf-to-jpg__chip-hint {
+.pdf-to-jpg__chip-hint,
+.compress-pdf__chip-hint,
+.upscale-image__chip-hint {
   font-size: 0.75rem;
   color: var(--muted);
 }
 
-.pdf-to-jpg__chip.is-active .pdf-to-jpg__chip-hint {
+.pdf-to-jpg__chip.is-active .pdf-to-jpg__chip-hint,
+.compress-pdf__chip.is-active .compress-pdf__chip-hint,
+.upscale-image__chip.is-active .upscale-image__chip-hint {
   color: var(--accent-deep);
 }
 
@@ -4011,8 +4033,137 @@ a {
 }
 
 @media (max-width: 640px) {
-  .pdf-to-jpg__chips {
+  .pdf-to-jpg__chips,
+  .compress-pdf__chips,
+  .upscale-image__chips {
     grid-template-columns: 1fr;
+  }
+}
+
+/* -- Upscale Image -- */
+.upscale-image__enhance {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+}
+
+.upscale-image__enhance input {
+  margin-top: 0.2rem;
+  accent-color: var(--accent);
+}
+
+.upscale-image__enhance-title {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.upscale-image__enhance-hint {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.upscale-image__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.upscale-image__result-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* -- Compress PDF -- */
+.compress-pdf__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  text-align: center;
+}
+
+.compress-pdf__success-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.compress-pdf__success-meta {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 34rem;
+}
+
+.compress-pdf__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  width: min(100%, 22rem);
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.compress-pdf__stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.compress-pdf__stat-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.compress-pdf__stat-value {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.compress-pdf__stat-value.is-positive {
+  color: var(--accent-deep);
+}
+
+.compress-pdf__stat-value.is-muted {
+  color: var(--muted);
+}
+
+.compress-pdf__preview {
+  width: min(100%, 420px);
+  height: 280px;
+  margin-top: 0.35rem;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+@media (max-width: 640px) {
+  .compress-pdf__stats {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .compress-pdf__preview {
+    height: 220px;
   }
 }
 

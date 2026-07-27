@@ -494,6 +494,63 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "compress-pdf",
+    name: "Free Compress PDF Tool",
+    shortName: "Compress PDF",
+    description:
+      "Compress PDF files online to reduce size — choose Extreme, Strong, Balanced, or Light compression and download instantly. Free, private, and local in your browser.",
+    category: "converters",
+    status: "ready",
+    href: "/compress-pdf",
+    keywords: [
+      "compress pdf",
+      "pdf compressor",
+      "reduce pdf size",
+      "shrink pdf",
+      "optimize pdf",
+      "compress pdf online",
+      "free pdf compressor",
+      "make pdf smaller",
+    ],
+    faq: [
+      {
+        question: "Is this PDF compressor free?",
+        answer:
+          "Yes. Compress and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Compression runs entirely in your browser with PDF.js and pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "How does compression work?",
+        answer:
+          "Each page is rendered and re-encoded as a compact JPEG, then rebuilt into a smaller PDF. Stronger levels use lower resolution and quality for more savings.",
+      },
+      {
+        question: "Will text stay selectable?",
+        answer:
+          "Compression flattens pages into images, so text is no longer selectable or searchable. Visual layout is preserved for sharing, email, and uploads.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per compression.",
+      },
+      {
+        question: "Can I compress password-protected PDFs?",
+        answer:
+          "Not yet. Remove the password from protected files first, then upload them to compress.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and compress immediately.",
+      },
+    ],
+  },
+  {
     slug: "utm-builder",
     name: "Free UTM Builder",
     shortName: "UTM Builder",
@@ -688,6 +745,65 @@ export const tools: Tool[] = [
         question: "Do I need an account or API key?",
         answer:
           "No. Open the page, enter a prompt, and generate. Nothing to install and no signup required.",
+      },
+    ],
+  },
+  {
+    slug: "upscale-image",
+    name: "Upscale Image Online Free — Increase Resolution",
+    shortName: "Upscale Image",
+    description:
+      "Increase image resolution online — upscale 2×, 3×, or 4× with detail enhancement. Free, private, and local in your browser.",
+    category: "images",
+    status: "ready",
+    href: "/upscale-image",
+    keywords: [
+      "upscale image",
+      "increase image resolution",
+      "image upscaler",
+      "enlarge image",
+      "upscale photo",
+      "increase photo resolution",
+      "make image larger",
+      "free image upscaler",
+      "upscale image online",
+      "4x image upscaler",
+    ],
+    faq: [
+      {
+        question: "Is this image upscaler free?",
+        answer:
+          "Yes. Upload, upscale, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Upscaling runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which scale factors are available?",
+        answer:
+          "Choose 2×, 3×, or 4×. Output is capped at 8192 pixels on the longest side for browser stability.",
+      },
+      {
+        question: "What does Enhance details do?",
+        answer:
+          "After enlarging, a light sharpening pass restores edge clarity so the result looks crisper than plain resizing.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a high-resolution PNG.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After upscaling, drag the preview slider to compare the original with the enlarged image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },

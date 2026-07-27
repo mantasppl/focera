@@ -126,6 +126,10 @@ export default function PdfToJpgLanding() {
             into one file before converting pages to images.
           </li>
           <li>
+            <Link href="/compress-pdf">Compress PDF</Link> — Shrink PDFs for
+            email and uploads when you need a smaller document, not images.
+          </li>
+          <li>
             <Link href="/background-remover">AI Background Remover</Link> —
             Cut subjects from photos after you export page images.
           </li>

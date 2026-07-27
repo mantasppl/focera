@@ -111,6 +111,10 @@ export default function BackgroundRemoverLanding() {
           </p>
           <ul className="tool-content__list">
             <li>
+              <Link href="/upscale-image">Upscale Image</Link> — Increase
+              resolution before or after exporting transparent PNGs.
+            </li>
+            <li>
               <Link href="/image-compressor">Image Compressor</Link> — Reduce
               file size before or after exporting transparent PNGs.
             </li>
@@ -118,10 +122,6 @@ export default function BackgroundRemoverLanding() {
               <Link href="/image-converter">Image Converter</Link> — Convert
               between PNG, JPG, and WebP when your destination requires a
               specific format.
-            </li>
-            <li>
-              <Link href="/qr-generator">QR Code Generator</Link> — Create
-              scannable codes for product pages that use your cutout assets.
             </li>
             <li>
               <Link href="/tools">All tools</Link> — Browse every free utility
