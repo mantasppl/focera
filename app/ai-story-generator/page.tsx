@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import ToolPageShell from "@/components/tools/ToolPageShell";
-import ImageCompressorLanding from "@/components/tools/ImageCompressorLanding";
-import { ImageCompressorLazy } from "@/components/tools/HeavyTools";
+import AiStoryGenerator from "@/components/tools/AiStoryGenerator";
+import AiStoryGeneratorLanding from "@/components/tools/AiStoryGeneratorLanding";
 import { getToolBySlug } from "@/data/tools";
 import {
   breadcrumbSchema,
@@ -11,11 +11,11 @@ import {
   webApplicationSchema,
 } from "@/lib/seo";
 
-const tool = getToolBySlug("image-compressor")!;
+const tool = getToolBySlug("ai-story-generator")!;
 
 export const metadata: Metadata = toolLandingMetadata(tool);
 
-export default function ImageCompressorPage() {
+export default function AiStoryGeneratorPage() {
   const schema = [
     webApplicationSchema(tool),
     faqPageSchema(tool.faq),
@@ -30,13 +30,13 @@ export default function ImageCompressorPage() {
     <>
       <JsonLd data={schema} />
       <ToolPageShell
-        slug="image-compressor"
-        workspaceId="image-compressor-tool"
-        content={<ImageCompressorLanding />}
-        ctaTitle="Need more image utilities?"
-        ctaDescription="Upscale photos, remove backgrounds, or convert formats — Focera keeps everyday image tools fast, private, and free."
+        slug="ai-story-generator"
+        workspaceId="ai-story-generator-tool"
+        content={<AiStoryGeneratorLanding />}
+        ctaTitle="Explore more free writing tools"
+        ctaDescription="Generate placeholder copy, format Markdown, and keep everyday writing utilities in one fast hub."
       >
-        <ImageCompressorLazy />
+        <AiStoryGenerator />
       </ToolPageShell>
     </>
   );

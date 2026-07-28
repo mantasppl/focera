@@ -16,6 +16,11 @@ export const BackgroundRemoverLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const ChangeBackgroundLazy = dynamic(
+  () => import("@/components/tools/ChangeBackground"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const MarkdownEditorLazy = dynamic(
   () => import("@/components/tools/MarkdownEditor"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -33,6 +38,11 @@ export const HtmlCssJsMinifierLazy = dynamic(
 
 export const PdfToJpgLazy = dynamic(
   () => import("@/components/tools/PdfToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PdfToWordLazy = dynamic(
+  () => import("@/components/tools/PdfToWord"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -58,6 +68,11 @@ export const PdfEditorLazy = dynamic(
 
 export const UpscaleImageLazy = dynamic(
   () => import("@/components/tools/UpscaleImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const ImageCompressorLazy = dynamic(
+  () => import("@/components/tools/ImageCompressor"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

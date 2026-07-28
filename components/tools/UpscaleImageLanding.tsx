@@ -112,6 +112,10 @@ export default function UpscaleImageLanding() {
             Cut out subjects before or after increasing resolution.
           </li>
           <li>
+            <Link href="/change-background">Change Background</Link> —
+            Replace the scene with a color, custom photo, or portrait blur.
+          </li>
+          <li>
             <Link href="/remove-watermark">Remove Watermark</Link> — Brush
             out logos or text overlays from photos you own.
           </li>

@@ -118,6 +118,10 @@ export default function PdfToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/pdf-to-word">PDF to Word</Link> — Convert PDF pages
+            into an editable Word (.docx) document.
+          </li>
+          <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, or
             extract pages before converting them to images.
           </li>

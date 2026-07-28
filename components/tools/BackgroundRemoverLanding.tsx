@@ -116,6 +116,11 @@ export default function BackgroundRemoverLanding() {
           </p>
           <ul className="tool-content__list">
             <li>
+              <Link href="/change-background">Change Background</Link> —
+              Replace the scene with a solid color, custom photo, or portrait
+              blur after cutout.
+            </li>
+            <li>
               <Link href="/upscale-image">Upscale Image</Link> — Increase
               resolution before or after exporting transparent PNGs.
             </li>

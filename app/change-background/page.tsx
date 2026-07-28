@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import ToolPageShell from "@/components/tools/ToolPageShell";
-import ImageCompressorLanding from "@/components/tools/ImageCompressorLanding";
-import { ImageCompressorLazy } from "@/components/tools/HeavyTools";
+import ChangeBackgroundLanding from "@/components/tools/ChangeBackgroundLanding";
+import { ChangeBackgroundLazy } from "@/components/tools/HeavyTools";
 import { getToolBySlug } from "@/data/tools";
 import {
   breadcrumbSchema,
@@ -11,11 +11,11 @@ import {
   webApplicationSchema,
 } from "@/lib/seo";
 
-const tool = getToolBySlug("image-compressor")!;
+const tool = getToolBySlug("change-background")!;
 
 export const metadata: Metadata = toolLandingMetadata(tool);
 
-export default function ImageCompressorPage() {
+export default function ChangeBackgroundPage() {
   const schema = [
     webApplicationSchema(tool),
     faqPageSchema(tool.faq),
@@ -30,13 +30,13 @@ export default function ImageCompressorPage() {
     <>
       <JsonLd data={schema} />
       <ToolPageShell
-        slug="image-compressor"
-        workspaceId="image-compressor-tool"
-        content={<ImageCompressorLanding />}
-        ctaTitle="Need more image utilities?"
-        ctaDescription="Upscale photos, remove backgrounds, or convert formats — Focera keeps everyday image tools fast, private, and free."
+        slug="change-background"
+        workspaceId="change-background-tool"
+        content={<ChangeBackgroundLanding />}
+        ctaTitle="Need a transparent cutout instead?"
+        ctaDescription="Remove backgrounds, compress images, or upscale photos — Focera keeps everyday image utilities in one fast hub."
       >
-        <ImageCompressorLazy />
+        <ChangeBackgroundLazy />
       </ToolPageShell>
     </>
   );

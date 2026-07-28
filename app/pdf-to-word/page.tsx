@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import ToolPageShell from "@/components/tools/ToolPageShell";
-import ImageCompressorLanding from "@/components/tools/ImageCompressorLanding";
-import { ImageCompressorLazy } from "@/components/tools/HeavyTools";
+import PdfToWordLanding from "@/components/tools/PdfToWordLanding";
+import { PdfToWordLazy } from "@/components/tools/HeavyTools";
 import { getToolBySlug } from "@/data/tools";
 import {
   breadcrumbSchema,
@@ -11,11 +11,11 @@ import {
   webApplicationSchema,
 } from "@/lib/seo";
 
-const tool = getToolBySlug("image-compressor")!;
+const tool = getToolBySlug("pdf-to-word")!;
 
 export const metadata: Metadata = toolLandingMetadata(tool);
 
-export default function ImageCompressorPage() {
+export default function PdfToWordPage() {
   const schema = [
     webApplicationSchema(tool),
     faqPageSchema(tool.faq),
@@ -30,13 +30,13 @@ export default function ImageCompressorPage() {
     <>
       <JsonLd data={schema} />
       <ToolPageShell
-        slug="image-compressor"
-        workspaceId="image-compressor-tool"
-        content={<ImageCompressorLanding />}
-        ctaTitle="Need more image utilities?"
-        ctaDescription="Upscale photos, remove backgrounds, or convert formats — Focera keeps everyday image tools fast, private, and free."
+        slug="pdf-to-word"
+        workspaceId="pdf-to-word-tool"
+        content={<PdfToWordLanding />}
+        ctaTitle="Need more PDF utilities?"
+        ctaDescription="Merge, split, compress, or convert pages to JPG — Focera keeps everyday tools fast, private, and free."
       >
-        <ImageCompressorLazy />
+        <PdfToWordLazy />
       </ToolPageShell>
     </>
   );

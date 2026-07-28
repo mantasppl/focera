@@ -212,6 +212,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "ai-story-generator",
+    name: "Free AI Story Generator",
+    shortName: "AI Stories",
+    description:
+      "Generate AI short stories from a prompt — pick genre, length, and tone, then copy or download the text. Free, no account required.",
+    category: "generators",
+    status: "ready",
+    href: "/ai-story-generator",
+    keywords: [
+      "ai story generator",
+      "free ai story generator",
+      "story generator",
+      "ai writing tool",
+      "generate a story",
+      "short story generator",
+      "fiction generator",
+      "creative writing ai",
+      "prompt to story",
+      "free story writer",
+    ],
+    faq: [
+      {
+        question: "Is this AI story generator free?",
+        answer:
+          "Yes. Enter a premise, generate stories, and copy or download the text with no account, subscription, or credit card.",
+      },
+      {
+        question: "How does AI story generation work?",
+        answer:
+          "You describe an idea in plain language, then choose genre, length, and tone. The tool sends your prompt to an AI writing model and returns a complete short story.",
+      },
+      {
+        question: "Are my prompts stored by Focera?",
+        answer:
+          "Focera does not keep a library of your prompts or stories. Your idea is sent to the generation provider to create the text, then the result is shown in your browser to copy or download.",
+      },
+      {
+        question: "Which genres and lengths are available?",
+        answer:
+          "Choose genres such as adventure, fantasy, mystery, sci-fi, romance, horror, comedy, and fable. Length options range from flash fiction to medium short stories, with tones from warm to dark or epic.",
+      },
+      {
+        question: "Can I copy or download the story?",
+        answer:
+          "Yes. After generation, copy the text to your clipboard or download a plain TXT file for drafts, classrooms, and creative projects.",
+      },
+      {
+        question: "Why did generation fail or take long?",
+        answer:
+          "The free model can be busy or rate-limited. Wait a few seconds and try again, or shorten the prompt and regenerate with a new variation.",
+      },
+      {
+        question: "Do I need an account or API key?",
+        answer:
+          "No. Open the page, enter a story idea, and generate. Nothing to install and no signup required.",
+      },
+    ],
+  },
+  {
     slug: "invoice-generator",
     name: "Invoice Generator",
     shortName: "Invoices",
@@ -753,6 +812,59 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "change-background",
+    name: "Change Background of Image Online Free",
+    shortName: "Change BG",
+    description:
+      "Replace any photo background with a solid color, custom image, or portrait blur — free AI cutout in your browser.",
+    category: "images",
+    status: "ready",
+    href: "/change-background",
+    keywords: [
+      "change background of image",
+      "change image background",
+      "replace background",
+      "change photo background",
+      "ai change background",
+      "background changer online",
+      "swap background",
+      "new background for photo",
+      "free background changer",
+    ],
+    faq: [
+      {
+        question: "Is this background changer free?",
+        answer:
+          "Yes. Upload a photo, pick a new background, preview the result, and download a PNG with no account or payment.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. AI cutout and compositing run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "What background options can I use?",
+        answer:
+          "Choose a solid color, upload a custom background image, or apply a portrait-style blur to the original scene.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB for both the subject photo and an optional background image. Exports are PNG.",
+      },
+      {
+        question: "Why does the first run take longer?",
+        answer:
+          "The AI model downloads once and is cached by your browser. Later background changes are significantly faster.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in e-commerce, marketing, client work, and personal projects.",
+      },
+    ],
+  },
+  {
     slug: "ai-image-generator",
     name: "Free AI Image Generator",
     shortName: "AI Images",
@@ -989,17 +1101,61 @@ export const tools: Tool[] = [
   },
   {
     slug: "image-compressor",
-    name: "Image Compressor",
-    shortName: "Compressor",
-    description: "Shrink image file size without leaving your browser.",
+    name: "Compress Image Size Online Free",
+    shortName: "Image Compressor",
+    description:
+      "Compress image file size online — shrink JPG, PNG, and WebP with Extreme, Strong, Balanced, or Light presets. Free, private, and local in your browser.",
     category: "images",
-    status: "soon",
+    status: "ready",
     href: "/image-compressor",
-    keywords: ["compress", "optimize", "jpg", "png", "webp"],
+    keywords: [
+      "compress image",
+      "image compressor",
+      "compress image size",
+      "reduce image size",
+      "shrink image",
+      "optimize image",
+      "compress jpg",
+      "compress png",
+      "compress webp",
+      "free image compressor",
+      "compress photo online",
+    ],
     faq: [
       {
-        question: "Are my images uploaded?",
-        answer: "No. Compression will run locally in your browser.",
+        question: "Is this image compressor free?",
+        answer:
+          "Yes. Upload, compress, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Compression runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How does compression work?",
+        answer:
+          "Your image is optionally resized to a max dimension for the chosen level, then re-encoded as JPEG or WebP at a lower quality. Stronger levels use lower quality and smaller dimensions for more savings.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. Output can be Auto, JPEG, or WebP.",
+      },
+      {
+        question: "Will quality look the same?",
+        answer:
+          "Light keeps more detail; Extreme saves the most space. Use the before/after slider to judge quality, then try another level if needed.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your image, and compress immediately.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. Compressed files you download are yours to use in marketing, web, client work, and personal projects.",
       },
     ],
   },
@@ -1016,6 +1172,68 @@ export const tools: Tool[] = [
       {
         question: "Which formats will be supported?",
         answer: "PNG, JPG, and WebP are planned for the first release.",
+      },
+    ],
+  },
+  {
+    slug: "pdf-to-word",
+    name: "Free PDF to Word Converter",
+    shortName: "PDF to Word",
+    description:
+      "Convert PDF to Word (.docx) online — extract editable text or embed exact page images. Free, private, and local in your browser.",
+    category: "converters",
+    status: "ready",
+    href: "/pdf-to-word",
+    keywords: [
+      "pdf to word",
+      "pdf to docx",
+      "convert pdf to word",
+      "pdf to word converter",
+      "pdf to microsoft word",
+      "pdf to editable word",
+      "free pdf to word",
+      "pdf to word online",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to Word converter free?",
+        answer:
+          "Yes. Convert and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between Editable text and Exact pages?",
+        answer:
+          "Editable text extracts selectable text into a Word document you can edit. Exact pages embeds each PDF page as an image so the layout matches visually, but text inside images is not editable.",
+      },
+      {
+        question: "Will formatting match the original PDF?",
+        answer:
+          "Editable text rebuilds paragraphs and may not preserve complex columns, tables, or precise positioning. Exact pages keeps a visual match by embedding page images.",
+      },
+      {
+        question: "What file do I download?",
+        answer:
+          "You get a .docx file compatible with Microsoft Word, Google Docs, LibreOffice, and most modern word processors.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "Can I convert password-protected PDFs?",
+        answer:
+          "Not yet. Remove the password from protected files first, then upload them to convert.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
       },
     ],
   },
