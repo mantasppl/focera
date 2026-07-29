@@ -104,8 +104,9 @@ export default function TermsPage() {
           <section>
             <h2>9. Contact</h2>
             <p>
-              Questions about these terms can be sent via the contact methods
-              published on {SITE_URL}.
+              Questions about these terms can be sent to{" "}
+              <a href="mailto:support@focera.co">support@focera.co</a> or via
+              the contact form on {SITE_URL}/contact.
             </p>
           </section>
         </article>

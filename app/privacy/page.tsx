@@ -97,7 +97,9 @@ export default function PrivacyPage() {
             <p>
               You can stop using the site, clear browser storage, and block
               analytics cookies via browser or OS controls. For privacy
-              questions, contact us through the channels listed on {SITE_URL}.
+              questions, email{" "}
+              <a href="mailto:support@focera.co">support@focera.co</a> or use
+              the contact form on {SITE_URL}/contact.
             </p>
           </section>
 

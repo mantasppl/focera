@@ -146,6 +146,13 @@ export function organizationSchema() {
     url: SITE_URL,
     description: SITE_DESCRIPTION,
     slogan: SITE_TAGLINE,
+    email: "support@focera.co",
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: "support@focera.co",
+      contactType: "customer support",
+      url: absoluteUrl("/contact"),
+    },
   };
 }
 

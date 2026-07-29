@@ -26,6 +26,7 @@ export default function Footer({ className }: FooterProps) {
             <p className="site-footer__col-title">Explore</p>
             <Link href="/tools">All tools</Link>
             <Link href="/">Home</Link>
+            <Link href="/contact">Contact</Link>
           </div>
           <div className="site-footer__col">
             <p className="site-footer__col-title">Legal</p>

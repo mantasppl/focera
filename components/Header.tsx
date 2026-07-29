@@ -16,6 +16,7 @@ export default function Header({ className }: HeaderProps) {
         </Link>
         <nav className="site-nav" aria-label="Primary">
           <Link href="/#ready-tools">Features</Link>
+          <Link href="/contact">Contact</Link>
           <Link href="/tools" className="site-nav__cta">
             All tools
           </Link>
