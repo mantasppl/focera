@@ -25,8 +25,17 @@ export default function Footer({ className }: FooterProps) {
           <div className="site-footer__col">
             <p className="site-footer__col-title">Explore</p>
             <Link href="/tools">All tools</Link>
-            <Link href="/">Home</Link>
+            <Link href="/#categories">Categories</Link>
+            <Link href="/#top-tools">Top tools</Link>
             <Link href="/contact">Contact</Link>
+          </div>
+          <div className="site-footer__col">
+            <p className="site-footer__col-title">Categories</p>
+            <Link href="/tools#cat-pdf">PDF Tools</Link>
+            <Link href="/tools#cat-image">Image Tools</Link>
+            <Link href="/tools#cat-video">Video Tools</Link>
+            <Link href="/tools#cat-ai">AI Tools</Link>
+            <Link href="/tools#cat-file">File Tools</Link>
           </div>
           <div className="site-footer__col">
             <p className="site-footer__col-title">Legal</p>

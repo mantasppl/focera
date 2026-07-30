@@ -1,11 +1,4 @@
-export type ToolCategory =
-  | "generators"
-  | "converters"
-  | "marketing"
-  | "finance"
-  | "images"
-  | "security"
-  | "developers";
+export type ToolCategory = "pdf" | "image" | "video" | "ai" | "file";
 
 export type ToolStatus = "ready" | "soon";
 
@@ -19,22 +12,48 @@ export type Tool = {
   name: string;
   shortName: string;
   description: string;
-  category: ToolCategory;
+  categories: ToolCategory[];
   status: ToolStatus;
   href: string;
   keywords: string[];
   faq: ToolFaq[];
 };
 
+export const categoryOrder: ToolCategory[] = [
+  "pdf",
+  "image",
+  "video",
+  "ai",
+  "file",
+];
+
 export const categoryLabels: Record<ToolCategory, string> = {
-  generators: "Generators",
-  converters: "Converters",
-  marketing: "Marketing",
-  finance: "Finance",
-  images: "Images",
-  security: "Security",
-  developers: "Developers",
+  pdf: "PDF Tools",
+  image: "Image Tools",
+  video: "Video Tools",
+  ai: "AI Tools",
+  file: "File Tools",
 };
+
+export const categoryDescriptions: Record<ToolCategory, string> = {
+  pdf: "Merge, split, compress, edit, and convert PDFs in your browser.",
+  image: "Compress, upscale, remove backgrounds, and convert images.",
+  video: "Video utilities are on the way — check back soon.",
+  ai: "Generate images and stories, plus smart cutouts and OCR.",
+  file: "Converters, generators, and everyday utilities for any file.",
+};
+
+/** Curated homepage picks — popular ready tools across categories. */
+export const topToolSlugs: string[] = [
+  "merge-pdf",
+  "compress-pdf",
+  "background-remover",
+  "ai-image-generator",
+  "pdf-to-word",
+  "image-compressor",
+  "qr-generator",
+  "password-generator",
+];
 
 export const tools: Tool[] = [
   {
@@ -43,7 +62,7 @@ export const tools: Tool[] = [
     shortName: "Palettes",
     description:
       "Generate random color palettes, lock favorites, check WCAG contrast, and export CSS, Tailwind, HEX, or RGB — free and local in your browser.",
-    category: "generators",
+    categories: ["image"],
     status: "ready",
     href: "/color-palette-generator",
     keywords: [
@@ -100,7 +119,7 @@ export const tools: Tool[] = [
     name: "Free QR Code Generator",
     shortName: "QR Generator",
     description: "Generate QR codes instantly online for free.",
-    category: "generators",
+    categories: ["file"],
     status: "ready",
     href: "/qr-generator",
     keywords: [
@@ -160,7 +179,7 @@ export const tools: Tool[] = [
     shortName: "Lorem Ipsum",
     description:
       "Generate classic Lorem Ipsum placeholder text by words, sentences, or paragraphs. Copy instantly or download a TXT file — free, private, and local.",
-    category: "generators",
+    categories: ["file"],
     status: "ready",
     href: "/lorem-ipsum-generator",
     keywords: [
@@ -217,7 +236,7 @@ export const tools: Tool[] = [
     shortName: "AI Stories",
     description:
       "Generate AI short stories from a prompt — pick genre, length, and tone, then copy or download the text. Free, no account required.",
-    category: "generators",
+    categories: ["ai"],
     status: "ready",
     href: "/ai-story-generator",
     keywords: [
@@ -276,7 +295,7 @@ export const tools: Tool[] = [
     shortName: "Invoices",
     description:
       "Create professional invoices with company and client details, unlimited line items, VAT, and instant PDF download.",
-    category: "finance",
+    categories: ["file"],
     status: "ready",
     href: "/invoice-generator",
     keywords: [
@@ -327,7 +346,7 @@ export const tools: Tool[] = [
     shortName: "Units",
     description:
       "Convert length, weight, temperature, volume, area, speed, and data storage instantly in your browser.",
-    category: "converters",
+    categories: ["file"],
     status: "ready",
     href: "/unit-converter",
     keywords: [
@@ -384,7 +403,7 @@ export const tools: Tool[] = [
     shortName: "Text Case",
     description:
       "Convert text to UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, and kebab-case — instantly in your browser.",
-    category: "converters",
+    categories: ["file"],
     status: "ready",
     href: "/text-case-converter",
     keywords: [
@@ -443,7 +462,7 @@ export const tools: Tool[] = [
     shortName: "PDF Editor",
     description:
       "Edit PDFs online for free — reorder, rotate, delete, duplicate, and extract pages with a visual workspace. Private, no watermark, and local in your browser.",
-    category: "converters",
+    categories: ["pdf"],
     status: "ready",
     href: "/pdf-editor",
     keywords: [
@@ -501,7 +520,7 @@ export const tools: Tool[] = [
     shortName: "Merge PDF",
     description:
       "Merge two or more PDFs into one file online — reorder pages, combine documents, and download instantly. Free, private, and local in your browser.",
-    category: "converters",
+    categories: ["pdf"],
     status: "ready",
     href: "/merge-pdf",
     keywords: [
@@ -558,7 +577,7 @@ export const tools: Tool[] = [
     shortName: "Split PDF",
     description:
       "Split a PDF into separate files online — every page, custom ranges, or fixed-size chunks. Free, private, and local in your browser.",
-    category: "converters",
+    categories: ["pdf"],
     status: "ready",
     href: "/split-pdf",
     keywords: [
@@ -620,7 +639,7 @@ export const tools: Tool[] = [
     shortName: "Compress PDF",
     description:
       "Compress PDF files online to reduce size — choose Extreme, Strong, Balanced, or Light compression and download instantly. Free, private, and local in your browser.",
-    category: "converters",
+    categories: ["pdf"],
     status: "ready",
     href: "/compress-pdf",
     keywords: [
@@ -677,7 +696,7 @@ export const tools: Tool[] = [
     shortName: "UTM Builder",
     description:
       "Build campaign URLs with utm_source, utm_medium, and utm_campaign — copy clean tracking links instantly in your browser.",
-    category: "marketing",
+    categories: ["file"],
     status: "ready",
     href: "/utm-builder",
     keywords: [
@@ -724,7 +743,7 @@ export const tools: Tool[] = [
     shortName: "Profit Calc",
     description:
       "Calculate profit and margin from revenue and cost instantly — free, private, and local in your browser.",
-    category: "finance",
+    categories: ["file"],
     status: "ready",
     href: "/profit-calculator",
     keywords: [
@@ -767,7 +786,7 @@ export const tools: Tool[] = [
     name: "AI Background Remover Online Free",
     shortName: "BG Remover",
     description: "Remove image backgrounds instantly for free.",
-    category: "images",
+    categories: ["image", "ai"],
     status: "ready",
     href: "/background-remover",
     keywords: [
@@ -817,7 +836,7 @@ export const tools: Tool[] = [
     shortName: "Change BG",
     description:
       "Replace any photo background with a solid color, custom image, or portrait blur — free AI cutout in your browser.",
-    category: "images",
+    categories: ["image", "ai"],
     status: "ready",
     href: "/change-background",
     keywords: [
@@ -870,7 +889,7 @@ export const tools: Tool[] = [
     shortName: "AI Images",
     description:
       "Generate AI images from text prompts online — pick a style and size, preview instantly, and download a PNG. Free, no account required.",
-    category: "images",
+    categories: ["ai", "image"],
     status: "ready",
     href: "/ai-image-generator",
     keywords: [
@@ -928,7 +947,7 @@ export const tools: Tool[] = [
     shortName: "Remove Watermark",
     description:
       "Remove watermarks from photos online — brush over logos or text and restore the image. Free, private, and local in your browser.",
-    category: "images",
+    categories: ["image"],
     status: "ready",
     href: "/remove-watermark",
     keywords: [
@@ -987,7 +1006,7 @@ export const tools: Tool[] = [
     shortName: "Upscale Image",
     description:
       "Increase image resolution online — upscale 2×, 3×, or 4× with detail enhancement. Free, private, and local in your browser.",
-    category: "images",
+    categories: ["image"],
     status: "ready",
     href: "/upscale-image",
     keywords: [
@@ -1046,7 +1065,7 @@ export const tools: Tool[] = [
     shortName: "Image to Text",
     description:
       "Extract text from images online with OCR — convert photos, screenshots, and scans to editable text. Free, private, and local in your browser.",
-    category: "images",
+    categories: ["image", "ai"],
     status: "ready",
     href: "/image-to-text",
     keywords: [
@@ -1105,7 +1124,7 @@ export const tools: Tool[] = [
     shortName: "Image Compressor",
     description:
       "Compress image file size online — shrink JPG, PNG, and WebP with Extreme, Strong, Balanced, or Light presets. Free, private, and local in your browser.",
-    category: "images",
+    categories: ["image"],
     status: "ready",
     href: "/image-compressor",
     keywords: [
@@ -1164,7 +1183,7 @@ export const tools: Tool[] = [
     name: "Image Converter",
     shortName: "Converter",
     description: "Convert images between PNG, JPG, WebP, and more.",
-    category: "images",
+    categories: ["image"],
     status: "soon",
     href: "/image-converter",
     keywords: ["convert", "png", "jpg", "webp"],
@@ -1181,7 +1200,7 @@ export const tools: Tool[] = [
     shortName: "PDF to Word",
     description:
       "Convert PDF to Word (.docx) online — extract editable text or embed exact page images. Free, private, and local in your browser.",
-    category: "converters",
+    categories: ["pdf", "file"],
     status: "ready",
     href: "/pdf-to-word",
     keywords: [
@@ -1243,7 +1262,7 @@ export const tools: Tool[] = [
     shortName: "PDF to JPG",
     description:
       "Convert PDF pages to JPG images online — preview each page, download singly or as a ZIP. Free, private, and local in your browser.",
-    category: "images",
+    categories: ["pdf", "image"],
     status: "ready",
     href: "/pdf-to-jpg",
     keywords: [
@@ -1300,7 +1319,7 @@ export const tools: Tool[] = [
     shortName: "Passwords",
     description:
       "Generate strong, random passwords with length controls, symbols, numbers, uppercase, lowercase, strength meter, and entropy.",
-    category: "security",
+    categories: ["file"],
     status: "ready",
     href: "/password-generator",
     keywords: [
@@ -1355,7 +1374,7 @@ export const tools: Tool[] = [
     name: "Password Checker",
     shortName: "Strength Check",
     description: "Estimate password strength and spot weak patterns.",
-    category: "security",
+    categories: ["file"],
     status: "soon",
     href: "/password-checker",
     keywords: ["password", "strength", "security"],
@@ -1373,7 +1392,7 @@ export const tools: Tool[] = [
     shortName: "Minifier",
     description:
       "Minify HTML, CSS, and JavaScript online — compress code in your browser, then copy or download. Free, private, and fast.",
-    category: "developers",
+    categories: ["file"],
     status: "ready",
     href: "/html-css-js-minifier",
     keywords: [
@@ -1431,7 +1450,7 @@ export const tools: Tool[] = [
     shortName: "JSON",
     description:
       "Format, validate, and minify JSON online with error highlighting, copy, download, and a dark editor mode.",
-    category: "developers",
+    categories: ["file"],
     status: "ready",
     href: "/json-formatter",
     keywords: [
@@ -1487,7 +1506,7 @@ export const tools: Tool[] = [
     shortName: "Markdown",
     description:
       "Write Markdown with a live preview, syntax highlighting, dark mode, and export to Markdown, HTML, or PDF — all in your browser.",
-    category: "developers",
+    categories: ["file"],
     status: "ready",
     href: "/markdown-editor",
     keywords: [
@@ -1548,5 +1567,25 @@ export function getReadyTools(): Tool[] {
 }
 
 export function getToolsByCategory(category: ToolCategory): Tool[] {
-  return tools.filter((tool) => tool.category === category);
+  return tools.filter((tool) => tool.categories.includes(category));
+}
+
+export function toolHasCategory(tool: Tool, category: ToolCategory): boolean {
+  return tool.categories.includes(category);
+}
+
+export function getPrimaryCategory(tool: Tool): ToolCategory {
+  return tool.categories[0] ?? "file";
+}
+
+export function getTopTools(limit = 8): Tool[] {
+  const bySlug = new Map(tools.map((tool) => [tool.slug, tool]));
+  return topToolSlugs
+    .map((slug) => bySlug.get(slug))
+    .filter((tool): tool is Tool => Boolean(tool && tool.status === "ready"))
+    .slice(0, limit);
+}
+
+export function formatToolCategories(tool: Tool): string {
+  return tool.categories.map((c) => categoryLabels[c]).join(" · ");
 }

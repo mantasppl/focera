@@ -10,19 +10,22 @@ type RelatedToolsProps = {
   className?: string;
 };
 
+function sharesCategory(a: Tool, b: Tool): boolean {
+  return a.categories.some((category) => b.categories.includes(category));
+}
+
 export function getRelatedTools(currentSlug: string, limit = 4): Tool[] {
   const ready = getReadyTools();
   const current = ready.find((tool) => tool.slug === currentSlug);
+  if (!current) {
+    return ready.filter((tool) => tool.slug !== currentSlug).slice(0, limit);
+  }
+
   const sameCategory = ready.filter(
-    (tool) =>
-      tool.slug !== currentSlug &&
-      current &&
-      tool.category === current.category,
+    (tool) => tool.slug !== currentSlug && sharesCategory(tool, current),
   );
   const others = ready.filter(
-    (tool) =>
-      tool.slug !== currentSlug &&
-      (!current || tool.category !== current.category),
+    (tool) => tool.slug !== currentSlug && !sharesCategory(tool, current),
   );
   return [...sameCategory, ...others].slice(0, limit);
 }
