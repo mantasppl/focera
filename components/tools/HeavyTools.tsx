@@ -85,3 +85,8 @@ export const ImageToTextLazy = dynamic(
   () => import("@/components/tools/ImageToText"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
+
+export const VideoAutocaptionLazy = dynamic(
+  () => import("@/components/tools/VideoAutocaption"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);

@@ -6,6 +6,7 @@ import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import RelatedTools from "@/components/RelatedTools";
+import ToolFeedbackPrompt from "@/components/ToolFeedbackPrompt";
 import { cn } from "@/lib/utils";
 
 type ToolLayoutProps = {
@@ -56,6 +57,8 @@ export default function ToolLayout({
         >
           {children}
         </section>
+
+        <ToolFeedbackPrompt toolSlug={tool.slug} />
 
         {content}
 

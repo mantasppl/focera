@@ -38,7 +38,7 @@ export const categoryLabels: Record<ToolCategory, string> = {
 export const categoryDescriptions: Record<ToolCategory, string> = {
   pdf: "Merge, split, compress, edit, and convert PDFs in your browser.",
   image: "Compress, upscale, remove backgrounds, and convert images.",
-  video: "Video utilities are on the way — check back soon.",
+  video: "Auto-caption clips from speech, style on-screen text, and export in your browser.",
   ai: "Generate images and stories, plus smart cutouts and OCR.",
   file: "Converters, generators, and everyday utilities for any file.",
 };
@@ -56,6 +56,72 @@ export const topToolSlugs: string[] = [
 ];
 
 export const tools: Tool[] = [
+  {
+    slug: "video-autocaption",
+    name: "Free Video Autocaption Tool",
+    shortName: "Video Captions",
+    description:
+      "Auto-caption video from speech online — spoken words are transcribed with exact timing, then you edit, style font/size/location, and download. Free, no model download on your device.",
+    categories: ["video"],
+    status: "ready",
+    href: "/video-autocaption",
+    keywords: [
+      "video autocaption",
+      "auto caption video",
+      "speech to caption",
+      "transcribe video captions",
+      "add captions to video",
+      "video caption generator",
+      "burn captions into video",
+      "srt generator",
+      "vtt captions online",
+      "free video captions",
+      "whisper captions online",
+      "on screen text video",
+    ],
+    faq: [
+      {
+        question: "Is this video autocaption tool free?",
+        answer:
+          "Yes. Upload a clip, auto-transcribe speech, edit captions, style them, and download with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Do I need to download a speech model?",
+        answer:
+          "No. Transcription runs on Focera’s speech API. Your browser extracts the audio track and applies caption styling locally — there is no large model download for each visitor.",
+      },
+      {
+        question: "Is my full video uploaded?",
+        answer:
+          "No. Only a compressed audio extract is sent for transcription. Caption styling and burned-in export stay in your browser. Audio is not kept as a permanent library on Focera.",
+      },
+      {
+        question: "How does autocaption work?",
+        answer:
+          "The tool extracts audio from your video and transcribes speech with timed segments. Captions appear when each phrase was spoken. You can edit any line before export.",
+      },
+      {
+        question: "Do I need to type the caption text?",
+        answer:
+          "No. Text is generated automatically from the video’s speech. Typing is only for optional edits if a word was misheard.",
+      },
+      {
+        question: "Can I choose font style, size, and location?",
+        answer:
+          "Yes. Pick Sans, Serif, Mono, Display, or Impact; Small through XL size; and any of nine positions. The preview updates live.",
+      },
+      {
+        question: "What can I download?",
+        answer:
+          "Download a WebM with burned-in captions, or export SRT and VTT subtitle files for use in editors and players.",
+      },
+      {
+        question: "Which video formats are supported?",
+        answer:
+          "Upload MP4, WebM, or MOV files up to 100 MB and 10 minutes long. Clear speech works best.",
+      },
+    ],
+  },
   {
     slug: "color-palette-generator",
     name: "Free Color Palette Generator",
