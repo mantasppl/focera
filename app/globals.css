@@ -4400,7 +4400,8 @@ a {
 .pdf-to-word__options,
 .split-pdf__options,
 .upscale-image__options,
-.image-compressor__options {
+.image-compressor__options,
+.compress-video__options {
   display: grid;
   gap: 1rem;
 }
@@ -4410,14 +4411,16 @@ a {
 .pdf-to-word__chips,
 .split-pdf__chips,
 .upscale-image__chips,
-.image-compressor__chips {
+.image-compressor__chips,
+.compress-video__chips {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
 }
 
 .compress-pdf__chips,
-.image-compressor__chips--levels {
+.image-compressor__chips--levels,
+.compress-video__chips--levels {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
@@ -4426,7 +4429,8 @@ a {
 .pdf-to-word__chip,
 .split-pdf__chip,
 .upscale-image__chip,
-.image-compressor__chip {
+.image-compressor__chip,
+.compress-video__chip {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -4448,7 +4452,8 @@ a {
 .pdf-to-word__chip:hover:not(:disabled),
 .split-pdf__chip:hover:not(:disabled),
 .upscale-image__chip:hover:not(:disabled),
-.image-compressor__chip:hover:not(:disabled) {
+.image-compressor__chip:hover:not(:disabled),
+.compress-video__chip:hover:not(:disabled) {
   border-color: var(--accent);
 }
 
@@ -4457,7 +4462,8 @@ a {
 .pdf-to-word__chip.is-active,
 .split-pdf__chip.is-active,
 .upscale-image__chip.is-active,
-.image-compressor__chip.is-active {
+.image-compressor__chip.is-active,
+.compress-video__chip.is-active {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.1);
   color: var(--accent-deep);
@@ -4468,7 +4474,8 @@ a {
 .pdf-to-word__chip:disabled,
 .split-pdf__chip:disabled,
 .upscale-image__chip:disabled,
-.image-compressor__chip:disabled {
+.image-compressor__chip:disabled,
+.compress-video__chip:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
@@ -4478,7 +4485,8 @@ a {
 .pdf-to-word__chip-label,
 .split-pdf__chip-label,
 .upscale-image__chip-label,
-.image-compressor__chip-label {
+.image-compressor__chip-label,
+.compress-video__chip-label {
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -4488,7 +4496,8 @@ a {
 .pdf-to-word__chip-hint,
 .split-pdf__chip-hint,
 .upscale-image__chip-hint,
-.image-compressor__chip-hint {
+.image-compressor__chip-hint,
+.compress-video__chip-hint {
   font-size: 0.75rem;
   color: var(--muted);
 }
@@ -4498,7 +4507,8 @@ a {
 .pdf-to-word__chip.is-active .pdf-to-word__chip-hint,
 .split-pdf__chip.is-active .split-pdf__chip-hint,
 .upscale-image__chip.is-active .upscale-image__chip-hint,
-.image-compressor__chip.is-active .image-compressor__chip-hint {
+.image-compressor__chip.is-active .image-compressor__chip-hint,
+.compress-video__chip.is-active .compress-video__chip-hint {
   color: var(--accent-deep);
 }
 
@@ -4564,7 +4574,9 @@ a {
   .split-pdf__chips,
   .upscale-image__chips,
   .image-compressor__chips,
-  .image-compressor__chips--levels {
+  .image-compressor__chips--levels,
+  .compress-video__chips,
+  .compress-video__chips--levels {
     grid-template-columns: 1fr;
   }
 }
@@ -4823,9 +4835,10 @@ a {
   }
 }
 
-/* -- Compress PDF / Image Compressor -- */
+/* -- Compress PDF / Image Compressor / Compress Video -- */
 .compress-pdf__success,
-.image-compressor__success {
+.image-compressor__success,
+.compress-video__success {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4835,7 +4848,8 @@ a {
 }
 
 .compress-pdf__success-title,
-.image-compressor__success-title {
+.image-compressor__success-title,
+.compress-video__success-title {
   margin: 0;
   font-size: 1.05rem;
   font-weight: 650;
@@ -4843,7 +4857,8 @@ a {
 }
 
 .compress-pdf__success-meta,
-.image-compressor__success-meta {
+.image-compressor__success-meta,
+.compress-video__success-meta {
   margin: 0;
   font-size: 0.9rem;
   color: var(--muted);
@@ -4851,7 +4866,8 @@ a {
 }
 
 .compress-pdf__stats,
-.image-compressor__stats {
+.image-compressor__stats,
+.compress-video__stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.55rem;
@@ -4862,7 +4878,8 @@ a {
 }
 
 .compress-pdf__stats li,
-.image-compressor__stats li {
+.image-compressor__stats li,
+.compress-video__stats li {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -4872,7 +4889,8 @@ a {
 }
 
 .compress-pdf__stat-label,
-.image-compressor__stat-label {
+.image-compressor__stat-label,
+.compress-video__stat-label {
   font-size: 0.72rem;
   color: var(--muted);
   text-transform: uppercase;
@@ -4880,19 +4898,22 @@ a {
 }
 
 .compress-pdf__stat-value,
-.image-compressor__stat-value {
+.image-compressor__stat-value,
+.compress-video__stat-value {
   font-size: 0.95rem;
   font-weight: 650;
   color: var(--ink);
 }
 
 .compress-pdf__stat-value.is-positive,
-.image-compressor__stat-value.is-positive {
+.image-compressor__stat-value.is-positive,
+.compress-video__stat-value.is-positive {
   color: var(--accent-deep);
 }
 
 .compress-pdf__stat-value.is-muted,
-.image-compressor__stat-value.is-muted {
+.image-compressor__stat-value.is-muted,
+.compress-video__stat-value.is-muted {
   color: var(--muted);
 }
 
@@ -4904,6 +4925,14 @@ a {
   background: #fff;
 }
 
+.compress-video__preview {
+  width: min(100%, 420px);
+  max-height: 280px;
+  margin-top: 0.35rem;
+  border: 1px solid var(--line);
+  background: #000;
+}
+
 .image-compressor__success .compare {
   width: 100%;
   margin-top: 0.35rem;
@@ -4911,13 +4940,18 @@ a {
 
 @media (max-width: 640px) {
   .compress-pdf__stats,
-  .image-compressor__stats {
+  .image-compressor__stats,
+  .compress-video__stats {
     grid-template-columns: 1fr;
     width: 100%;
   }
 
   .compress-pdf__preview {
     height: 220px;
+  }
+
+  .compress-video__preview {
+    max-height: 220px;
   }
 }
 
@@ -5481,6 +5515,249 @@ a {
   .youtube-to-text__chips {
     grid-template-columns: 1fr;
   }
+}
+
+/* -- Instagram video downloader -- */
+.instagram-video__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.instagram-video__example {
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.instagram-video__example:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  color: var(--fg);
+  background: color-mix(in oklab, var(--accent) 8%, var(--surface));
+}
+
+.instagram-video__example:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.instagram-video__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.instagram-video__chip {
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  color: var(--muted);
+  border-radius: 0.65rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.instagram-video__chip:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+}
+
+.instagram-video__chip.is-active {
+  border-color: color-mix(in oklab, var(--accent) 65%, var(--border));
+  background: color-mix(in oklab, var(--accent) 10%, var(--surface));
+  color: var(--fg);
+}
+
+.instagram-video__chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.instagram-video__stage {
+  min-height: 420px;
+}
+
+.instagram-video__stage.is-loading {
+  display: grid;
+  place-items: center;
+}
+
+.instagram-video__stage.is-ready {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.instagram-video__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.instagram-video__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.instagram-video__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--fg);
+}
+
+.instagram-video__result-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.instagram-video__link {
+  width: fit-content;
+  font-size: 0.84rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.instagram-video__link:hover {
+  color: color-mix(in oklab, var(--accent) 80%, var(--fg));
+}
+
+.instagram-video__poster,
+.instagram-video__poster-fallback {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  background: color-mix(in oklab, var(--surface) 70%, #000 8%);
+}
+
+.instagram-video__poster-fallback {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.instagram-video__caption {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--fg) 82%, var(--muted));
+  max-height: 7.5rem;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+/* -- TikTok video downloader -- */
+.tiktok-video__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tiktok-video__example {
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.tiktok-video__example:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  color: var(--fg);
+  background: color-mix(in oklab, var(--accent) 8%, var(--surface));
+}
+
+.tiktok-video__example:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.tiktok-video__stage {
+  min-height: 420px;
+}
+
+.tiktok-video__stage.is-loading {
+  display: grid;
+  place-items: center;
+}
+
+.tiktok-video__stage.is-ready {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.tiktok-video__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.tiktok-video__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tiktok-video__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--fg);
+}
+
+.tiktok-video__result-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.tiktok-video__link {
+  width: fit-content;
+  font-size: 0.84rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.tiktok-video__link:hover {
+  color: color-mix(in oklab, var(--accent) 80%, var(--fg));
+}
+
+.tiktok-video__poster,
+.tiktok-video__poster-fallback {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  background: color-mix(in oklab, var(--surface) 70%, #000 8%);
+}
+
+.tiktok-video__poster-fallback {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.tiktok-video__caption {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--fg) 82%, var(--muted));
+  max-height: 7.5rem;
+  overflow: auto;
+  white-space: pre-wrap;
 }
 
 /* -- Merge PDF -- */

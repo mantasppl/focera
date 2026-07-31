@@ -38,7 +38,7 @@ export const categoryLabels: Record<ToolCategory, string> = {
 export const categoryDescriptions: Record<ToolCategory, string> = {
   pdf: "Merge, split, compress, edit, and convert PDFs in your browser.",
   image: "Compress, upscale, remove backgrounds, and convert images.",
-  video: "Auto-caption clips, pull YouTube transcripts, style on-screen text, and export in your browser.",
+  video: "Auto-caption clips, download TikTok and Instagram videos, pull YouTube transcripts, and export in your browser.",
   ai: "Generate images and stories, plus smart cutouts and OCR.",
   file: "Converters, generators, and everyday utilities for any file.",
 };
@@ -51,11 +51,67 @@ export const topToolSlugs: string[] = [
   "ai-image-generator",
   "pdf-to-word",
   "image-compressor",
+  "compress-video",
   "qr-generator",
   "password-generator",
 ];
 
 export const tools: Tool[] = [
+  {
+    slug: "compress-video",
+    name: "Free Compress Video Tool",
+    shortName: "Compress Video",
+    description:
+      "Compress video file size online — shrink MP4, WebM, and MOV with Extreme, Strong, Balanced, or Light presets. Free, private, and local in your browser.",
+    categories: ["video"],
+    status: "ready",
+    href: "/compress-video",
+    keywords: [
+      "compress video",
+      "video compressor",
+      "compress video size",
+      "reduce video size",
+      "shrink video",
+      "optimize video",
+      "compress mp4",
+      "compress webm",
+      "make video smaller",
+      "free video compressor",
+      "compress video online",
+    ],
+    faq: [
+      {
+        question: "Is this video compressor free?",
+        answer:
+          "Yes. Upload, compress, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my videos uploaded to a server?",
+        answer:
+          "No. Compression runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How does compression work?",
+        answer:
+          "Your video is optionally scaled down for the chosen level, then re-encoded at a lower bitrate. Stronger levels use lower resolution and bitrate for more savings.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          "Upload MP4, WebM, or MOV files up to 100 MB and 10 minutes long. Output is usually WebM; some browsers may export MP4.",
+      },
+      {
+        question: "Will quality look the same?",
+        answer:
+          "Light keeps more detail; Extreme saves the most space. Preview the result, then try another level if needed.",
+      },
+      {
+        question: "Does audio stay in the file?",
+        answer:
+          "Yes when the browser can mix the audio track into the export. If audio cannot be captured, you still get a compressed video-only file.",
+      },
+    ],
+  },
   {
     slug: "video-autocaption",
     name: "Free Video Autocaption Tool",
@@ -119,6 +175,124 @@ export const tools: Tool[] = [
         question: "Which video formats are supported?",
         answer:
           "Upload MP4, WebM, or MOV files up to 100 MB and 10 minutes long. Clear speech works best.",
+      },
+    ],
+  },
+  {
+    slug: "tiktok-video-downloader",
+    name: "Free TikTok Video Downloader",
+    shortName: "TikTok Video",
+    description:
+      "Download TikTok videos online — paste a public TikTok link or short URL, preview the clip, and save an MP4. Free, no account required.",
+    categories: ["video"],
+    status: "ready",
+    href: "/tiktok-video-downloader",
+    keywords: [
+      "tiktok video downloader",
+      "download tiktok video",
+      "tiktok downloader",
+      "download tiktok mp4",
+      "save tiktok video",
+      "tiktok video saver",
+      "tiktok to mp4",
+      "download tt video",
+      "free tiktok downloader",
+      "tiktok short link download",
+    ],
+    faq: [
+      {
+        question: "Is this TikTok video downloader free?",
+        answer:
+          "Yes. Paste a public TikTok link, preview the video, and download an MP4 with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Which TikTok links work?",
+        answer:
+          "Public www.tiktok.com/@user/video links work, plus vm.tiktok.com and vt.tiktok.com short share URLs. Private, region-blocked, and deleted videos cannot be fetched.",
+      },
+      {
+        question: "Do I need a TikTok account?",
+        answer:
+          "No. Open the page, paste a public URL, and download. Nothing to install and no signup required.",
+      },
+      {
+        question: "Can I download photo slideshows?",
+        answer:
+          "No. This tool downloads video posts only. Photo mode / image slideshow posts cannot be saved here.",
+      },
+      {
+        question: "Can I download private TikTok videos?",
+        answer:
+          "No. Only public media is available. If a video is private or login-walled, the download will fail.",
+      },
+      {
+        question: "Am I allowed to download any video?",
+        answer:
+          "Only download content you have the right to use — for example your own posts, or material you are permitted to save. Respect TikTok’s terms and the creator’s rights.",
+      },
+    ],
+  },
+  {
+    slug: "instagram-video-downloader",
+    name: "Free Instagram Video Downloader",
+    shortName: "Instagram Video",
+    description:
+      "Download Instagram videos and Reels online — paste a public post or Reel link, preview the clip, and save an MP4. Free, no account required.",
+    categories: ["video"],
+    status: "ready",
+    href: "/instagram-video-downloader",
+    keywords: [
+      "instagram video downloader",
+      "download instagram video",
+      "instagram reel downloader",
+      "download instagram reels",
+      "instagram mp4 download",
+      "save instagram video",
+      "instagram video saver",
+      "download ig reel",
+      "instagram post video download",
+      "free instagram downloader",
+    ],
+    faq: [
+      {
+        question: "Is this Instagram video downloader free?",
+        answer:
+          "Yes. Paste a public Instagram link, preview the video, and download an MP4 with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Which Instagram links work?",
+        answer:
+          "Public posts, Reels, and TV links are supported, including username/reel URLs and shortcodes. Private, age-restricted, and deleted posts cannot be fetched.",
+      },
+      {
+        question: "Can I download Instagram Reels?",
+        answer:
+          "Yes. Paste a Reel URL and Focera resolves the highest-quality MP4 Instagram hosts for that public Reel.",
+      },
+      {
+        question: "What if the post has several videos?",
+        answer:
+          "For carousel posts with multiple clips, choose which video to download after fetching the post.",
+      },
+      {
+        question: "Do I need an Instagram account?",
+        answer:
+          "No. Open the page, paste a public URL, and download. Nothing to install and no signup required.",
+      },
+      {
+        question: "Is photo-only content supported?",
+        answer:
+          "No. This tool downloads videos only. Image posts and carousels without video clips cannot be saved here.",
+      },
+      {
+        question: "Can I download private Instagram videos?",
+        answer:
+          "No. Only public media is available. If a post is private or login-walled, the download will fail.",
+      },
+      {
+        question: "Am I allowed to download any video?",
+        answer:
+          "Only download content you have the right to use — for example your own posts, or material you are permitted to save. Respect Instagram’s terms and the creator’s rights.",
       },
     ],
   },

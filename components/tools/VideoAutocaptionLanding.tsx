@@ -112,6 +112,10 @@ export default function VideoAutocaptionLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/compress-video">Compress Video</Link> — Shrink the
+            captioned export before email or upload.
+          </li>
+          <li>
             <Link href="/image-to-text">Image to Text</Link> — Extract text
             from screenshots or slides with OCR.
           </li>

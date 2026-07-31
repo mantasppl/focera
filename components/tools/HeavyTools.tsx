@@ -91,7 +91,22 @@ export const VideoAutocaptionLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const CompressVideoLazy = dynamic(
+  () => import("@/components/tools/CompressVideo"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const YoutubeToTextLazy = dynamic(
   () => import("@/components/tools/YoutubeToText"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const InstagramVideoDownloaderLazy = dynamic(
+  () => import("@/components/tools/InstagramVideoDownloader"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const TikTokVideoDownloaderLazy = dynamic(
+  () => import("@/components/tools/TikTokVideoDownloader"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
