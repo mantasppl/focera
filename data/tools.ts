@@ -38,7 +38,7 @@ export const categoryLabels: Record<ToolCategory, string> = {
 export const categoryDescriptions: Record<ToolCategory, string> = {
   pdf: "Merge, split, compress, edit, and convert PDFs in your browser.",
   image: "Compress, upscale, remove backgrounds, and convert images.",
-  video: "Auto-caption clips from speech, style on-screen text, and export in your browser.",
+  video: "Auto-caption clips, pull YouTube transcripts, style on-screen text, and export in your browser.",
   ai: "Generate images and stories, plus smart cutouts and OCR.",
   file: "Converters, generators, and everyday utilities for any file.",
 };
@@ -119,6 +119,71 @@ export const tools: Tool[] = [
         question: "Which video formats are supported?",
         answer:
           "Upload MP4, WebM, or MOV files up to 100 MB and 10 minutes long. Clear speech works best.",
+      },
+    ],
+  },
+  {
+    slug: "youtube-to-text",
+    name: "Free YouTube to Text Converter",
+    shortName: "YouTube to Text",
+    description:
+      "Convert YouTube videos to text online — paste a link, extract captions or auto-generated subtitles, then copy, download TXT, or export SRT. Free, no account required.",
+    categories: ["video", "ai"],
+    status: "ready",
+    href: "/youtube-to-text",
+    keywords: [
+      "youtube to text",
+      "youtube transcript",
+      "youtube to text converter",
+      "youtube captions to text",
+      "extract youtube transcript",
+      "youtube subtitle download",
+      "youtube video to text",
+      "transcribe youtube video",
+      "youtube srt download",
+      "free youtube transcript",
+      "youtube auto captions text",
+    ],
+    faq: [
+      {
+        question: "Is this YouTube to text converter free?",
+        answer:
+          "Yes. Paste a link, extract the transcript, copy, and download with no account, subscription, or daily limit.",
+      },
+      {
+        question: "How does YouTube to text work?",
+        answer:
+          "Focera reads the captions YouTube already provides for the video — uploaded subtitles when available, otherwise auto-generated captions — then formats them as plain text or timestamped lines.",
+      },
+      {
+        question: "Do I need the video to have captions?",
+        answer:
+          "Yes. The tool needs captions or auto-generated subtitles on the YouTube video. If there is no CC track, extraction cannot run.",
+      },
+      {
+        question: "What can I download?",
+        answer:
+          "Copy the transcript, download a .txt file, or export an .srt subtitle file for editors and players.",
+      },
+      {
+        question: "Which YouTube links are supported?",
+        answer:
+          "Watch URLs, youtu.be short links, Shorts, Live links, and 11-character video IDs are supported.",
+      },
+      {
+        question: "Is the full video downloaded?",
+        answer:
+          "No. Only caption data is fetched. The video file itself is not downloaded or re-transcribed from audio.",
+      },
+      {
+        question: "Can I get timestamps?",
+        answer:
+          "Yes. Choose With timestamps to keep [mm:ss] markers on each line, or Plain text for readable paragraphs.",
+      },
+      {
+        question: "Do I need an account?",
+        answer:
+          "No. Open the page, paste a YouTube URL, and extract. Nothing to install and no signup required.",
       },
     ],
   },

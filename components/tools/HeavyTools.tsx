@@ -90,3 +90,8 @@ export const VideoAutocaptionLazy = dynamic(
   () => import("@/components/tools/VideoAutocaption"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
+
+export const YoutubeToTextLazy = dynamic(
+  () => import("@/components/tools/YoutubeToText"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
