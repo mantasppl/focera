@@ -38,8 +38,8 @@ export const categoryLabels: Record<ToolCategory, string> = {
 export const categoryDescriptions: Record<ToolCategory, string> = {
   pdf: "Merge, split, compress, edit, and convert PDFs in your browser.",
   image: "Compress, upscale, remove backgrounds, and convert images.",
-  video: "Auto-caption clips, download TikTok and Instagram videos, pull YouTube transcripts, and export in your browser.",
-  ai: "Generate images and stories, plus smart cutouts and OCR.",
+  video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, and export in your browser.",
+  ai: "Generate images and stories, plus smart cutouts, OCR, and speech-to-text.",
   file: "Converters, generators, and everyday utilities for any file.",
 };
 
@@ -57,6 +57,61 @@ export const topToolSlugs: string[] = [
 ];
 
 export const tools: Tool[] = [
+  {
+    slug: "video-to-gif",
+    name: "Free Video to GIF Converter",
+    shortName: "Video to GIF",
+    description:
+      "Convert video to GIF online — turn MP4, WebM, and MOV into animated GIFs with size, fps, and color controls. Free, private, and local in your browser.",
+    categories: ["video", "file"],
+    status: "ready",
+    href: "/video-to-gif",
+    keywords: [
+      "video to gif",
+      "convert video to gif",
+      "mp4 to gif",
+      "video to gif converter",
+      "make gif from video",
+      "webm to gif",
+      "mov to gif",
+      "animated gif maker",
+      "free video to gif",
+      "gif converter online",
+      "turn video into gif",
+    ],
+    faq: [
+      {
+        question: "Is this video to GIF converter free?",
+        answer:
+          "Yes. Upload a short video, convert to GIF, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my videos uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How does video to GIF conversion work?",
+        answer:
+          "Your browser samples frames from the video at the fps you choose, scales them to the selected size, reduces colors, and encodes an animated GIF locally.",
+      },
+      {
+        question: "Which formats and limits are supported?",
+        answer:
+          "Upload MP4, WebM, or MOV files up to 100 MB. For GIF conversion, clips must be 30 seconds or shorter. Output is a standard .gif file.",
+      },
+      {
+        question: "Which settings should I pick?",
+        answer:
+          "Medium size, 10 fps, and Medium colors is a solid default. Use Small or 8 fps for lighter files, or Large / 15 fps / High colors for smoother, sharper GIFs.",
+      },
+      {
+        question: "Does the GIF include audio?",
+        answer:
+          "No. GIF is a silent image format. Use Extract Audio or MP4 to MP3 if you need the soundtrack separately.",
+      },
+    ],
+  },
   {
     slug: "compress-video",
     name: "Free Compress Video Tool",
@@ -109,6 +164,171 @@ export const tools: Tool[] = [
         question: "Does audio stay in the file?",
         answer:
           "Yes when the browser can mix the audio track into the export. If audio cannot be captured, you still get a compressed video-only file.",
+      },
+    ],
+  },
+  {
+    slug: "trim-video",
+    name: "Free Trim Video Tool",
+    shortName: "Trim Video",
+    description:
+      "Trim video online — set a start and end time on MP4, WebM, or MOV, then download the cut clip. Free, private, and local in your browser.",
+    categories: ["video"],
+    status: "ready",
+    href: "/trim-video",
+    keywords: [
+      "trim video",
+      "cut video",
+      "video trimmer",
+      "trim video online",
+      "cut video online",
+      "clip video",
+      "edit video length",
+      "crop video time",
+      "shorten video",
+      "cut mp4",
+      "trim mp4",
+      "free video trimmer",
+    ],
+    faq: [
+      {
+        question: "Is this video trimmer free?",
+        answer:
+          "Yes. Upload, set start and end times, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my videos uploaded to a server?",
+        answer:
+          "No. Trimming runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How does trimming work?",
+        answer:
+          "You choose a start and end time on the timeline. Focera then re-encodes only that segment so you can download a shorter clip.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          "Upload MP4, WebM, or MOV files up to 100 MB and 10 minutes long. Output is usually WebM; some browsers may export MP4.",
+      },
+      {
+        question: "How precise are the cuts?",
+        answer:
+          "You can set start and end to the tenth of a second. Exact frame accuracy depends on the source video and your browser’s encoder.",
+      },
+      {
+        question: "Does audio stay in the file?",
+        answer:
+          "Yes when the browser can mix the audio track into the export. If audio cannot be captured, you still get a trimmed video-only file.",
+      },
+    ],
+  },
+  {
+    slug: "extract-audio",
+    name: "Free Extract Audio from Video Tool",
+    shortName: "Extract Audio",
+    description:
+      "Extract audio from your video online — pull soundtrack from MP4, WebM, and MOV as high-quality MP3. Free, private, and local in your browser.",
+    categories: ["video", "file"],
+    status: "ready",
+    href: "/extract-audio",
+    keywords: [
+      "extract audio from video",
+      "extract audio from your video",
+      "video to audio",
+      "pull audio from video",
+      "save audio from video",
+      "video soundtrack extractor",
+      "get audio from mp4",
+      "download audio from video",
+      "extract mp3 from video",
+      "free extract audio",
+      "rip audio from video online",
+    ],
+    faq: [
+      {
+        question: "Is this extract audio from video tool free?",
+        answer:
+          "Yes. Upload a video, extract the audio as MP3, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my videos uploaded to a server?",
+        answer:
+          "No. Extraction runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How does audio extraction work?",
+        answer:
+          "Your browser reads the audio track from the video, then encodes it as an MP3 at the bitrate you choose (128, 192, or 320 kbps).",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          "Upload MP4, WebM, or MOV files up to 100 MB and 10 minutes long. Output is a standard .mp3 file.",
+      },
+      {
+        question: "Which quality should I pick?",
+        answer:
+          "192 kbps is a solid default. Use 128 kbps for smaller files or 320 kbps when you want the highest quality.",
+      },
+      {
+        question: "What if my video has no sound?",
+        answer:
+          "The tool needs an audio track. Silent or video-only files cannot produce an MP3.",
+      },
+    ],
+  },
+  {
+    slug: "mp4-to-mp3",
+    name: "Free MP4 to MP3 Converter",
+    shortName: "MP4 to MP3",
+    description:
+      "Convert MP4 to MP3 online — turn MP4, WebM, and MOV into high-quality MP3. Free, private, and local in your browser.",
+    categories: ["video", "file"],
+    status: "ready",
+    href: "/mp4-to-mp3",
+    keywords: [
+      "mp4 to mp3",
+      "convert mp4 to mp3",
+      "mp4 to mp3 converter",
+      "video to mp3",
+      "mp4 audio extract",
+      "download mp3 from video",
+      "webm to mp3",
+      "mov to mp3",
+      "free mp4 to mp3",
+      "convert video to mp3 online",
+    ],
+    faq: [
+      {
+        question: "Is this MP4 to MP3 converter free?",
+        answer:
+          "Yes. Upload a video, convert to MP3, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my videos uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How does MP4 to MP3 conversion work?",
+        answer:
+          "Your browser extracts the audio track from the video, then encodes it as an MP3 at the bitrate you choose (128, 192, or 320 kbps).",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          "Upload MP4, WebM, or MOV files up to 100 MB and 10 minutes long. Output is a standard .mp3 file.",
+      },
+      {
+        question: "Which quality should I pick?",
+        answer:
+          "192 kbps is a solid default. Use 128 kbps for smaller files or 320 kbps when you want the highest quality.",
+      },
+      {
+        question: "What if my video has no sound?",
+        answer:
+          "The converter needs an audio track. Silent or video-only files cannot be turned into an MP3.",
       },
     ],
   },
@@ -297,11 +517,70 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "twitter-video-downloader",
+    name: "Free Twitter/X Video Downloader",
+    shortName: "Twitter Video",
+    description:
+      "Download Twitter/X videos online — paste a public x.com or twitter.com post link, preview the clip, and save an MP4. Free, no account required.",
+    categories: ["video"],
+    status: "ready",
+    href: "/twitter-video-downloader",
+    keywords: [
+      "twitter video downloader",
+      "x video downloader",
+      "download twitter video",
+      "download x video",
+      "twitter mp4 download",
+      "save twitter video",
+      "twitter video saver",
+      "download tweet video",
+      "x.com video download",
+      "free twitter downloader",
+    ],
+    faq: [
+      {
+        question: "Is this Twitter/X video downloader free?",
+        answer:
+          "Yes. Paste a public Twitter or X post link, preview the video, and download an MP4 with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Which Twitter/X links work?",
+        answer:
+          "Public x.com and twitter.com status URLs work, including mobile.twitter.com links. Private, suspended, and deleted posts cannot be fetched.",
+      },
+      {
+        question: "Do I need a Twitter/X account?",
+        answer:
+          "No. Open the page, paste a public URL, and download. Nothing to install and no signup required.",
+      },
+      {
+        question: "What if the post has several videos?",
+        answer:
+          "For posts with multiple clips, choose which video to download after fetching the post.",
+      },
+      {
+        question: "Can I download Twitter GIFs?",
+        answer:
+          "Yes. Animated GIF posts on Twitter/X are stored as MP4 files and can be downloaded the same way as regular videos.",
+      },
+      {
+        question: "Can I download private Twitter/X videos?",
+        answer:
+          "No. Only public media is available. If a post is private, protected, or login-walled, the download will fail.",
+      },
+      {
+        question: "Am I allowed to download any video?",
+        answer:
+          "Only download content you have the right to use — for example your own posts, or material you are permitted to save. Respect X’s terms and the creator’s rights.",
+      },
+    ],
+  },
+  {
     slug: "youtube-to-text",
-    name: "Free YouTube to Text Converter",
+    name: "Free YouTube Video Transcriber — YouTube to Text",
     shortName: "YouTube to Text",
     description:
-      "Convert YouTube videos to text online — paste a link, extract captions or auto-generated subtitles, then copy, download TXT, or export SRT. Free, no account required.",
+      "Transcribe YouTube videos to text online — paste a link, pull captions when available, or speech-transcribe audio up to 10 minutes, then copy, download TXT, or export SRT. Free, no account required.",
     categories: ["video", "ai"],
     status: "ready",
     href: "/youtube-to-text",
@@ -314,25 +593,27 @@ export const tools: Tool[] = [
       "youtube subtitle download",
       "youtube video to text",
       "transcribe youtube video",
+      "youtube speech to text",
       "youtube srt download",
       "free youtube transcript",
       "youtube auto captions text",
+      "whisper youtube transcript",
     ],
     faq: [
       {
-        question: "Is this YouTube to text converter free?",
+        question: "Is this YouTube video transcriber free?",
         answer:
-          "Yes. Paste a link, extract the transcript, copy, and download with no account, subscription, or daily limit.",
+          "Yes. Paste a link, get the transcript, copy, and download with no account, subscription, or daily limit.",
       },
       {
-        question: "How does YouTube to text work?",
+        question: "How does YouTube transcription work?",
         answer:
-          "Focera reads the captions YouTube already provides for the video — uploaded subtitles when available, otherwise auto-generated captions — then formats them as plain text or timestamped lines.",
+          "Focera first reads captions YouTube already provides — uploaded subtitles when available, otherwise auto-generated captions. If there is no caption track, it downloads the audio and transcribes speech (videos up to about 10 minutes).",
       },
       {
         question: "Do I need the video to have captions?",
         answer:
-          "Yes. The tool needs captions or auto-generated subtitles on the YouTube video. If there is no CC track, extraction cannot run.",
+          "No. Captions are preferred when present. Without captions, speech transcription runs from the video’s audio for clips up to 10 minutes.",
       },
       {
         question: "What can I download?",
@@ -347,7 +628,7 @@ export const tools: Tool[] = [
       {
         question: "Is the full video downloaded?",
         answer:
-          "No. Only caption data is fetched. The video file itself is not downloaded or re-transcribed from audio.",
+          "When captions exist, only caption data is fetched. When speech transcription is needed, a compressed audio track is downloaded temporarily for transcription and is not kept as a permanent library.",
       },
       {
         question: "Can I get timestamps?",
@@ -357,7 +638,139 @@ export const tools: Tool[] = [
       {
         question: "Do I need an account?",
         answer:
-          "No. Open the page, paste a YouTube URL, and extract. Nothing to install and no signup required.",
+          "No. Open the page, paste a YouTube URL, and transcribe. Nothing to install and no signup required.",
+      },
+    ],
+  },
+  {
+    slug: "audio-to-text",
+    name: "Free Audio to Text Converter — Speech Transcription",
+    shortName: "Audio to Text",
+    description:
+      "Transcribe audio to text online — convert MP3, WAV, M4A, and more into editable transcripts. Copy, download TXT, or export SRT. Free, no account required.",
+    categories: ["ai", "video"],
+    status: "ready",
+    href: "/audio-to-text",
+    keywords: [
+      "audio to text",
+      "speech to text",
+      "transcribe audio",
+      "audio transcription",
+      "voice to text",
+      "mp3 to text",
+      "wav to text",
+      "speech recognition online",
+      "free audio transcript",
+      "stt online",
+      "whisper transcription",
+      "convert audio to text",
+    ],
+    faq: [
+      {
+        question: "Is this audio to text converter free?",
+        answer:
+          "Yes. Upload audio, transcribe speech, copy, and download with no account, subscription, or daily limit.",
+      },
+      {
+        question: "How does audio to text work?",
+        answer:
+          "Your browser sends the audio file to Focera’s transcription API, which converts speech into timed text segments. You can edit the result, then copy or download it.",
+      },
+      {
+        question: "Which audio formats are supported?",
+        answer:
+          "Upload MP3, WAV, M4A, WebM, OGG, AAC, or FLAC files up to 24 MB and about 10 minutes long.",
+      },
+      {
+        question: "What can I download?",
+        answer:
+          "Copy the transcript, download a .txt file (plain or timestamped), or export an .srt subtitle file when timed segments are available.",
+      },
+      {
+        question: "Do I need to download a speech model?",
+        answer:
+          "No. Transcription runs on Focera’s speech API. There is no large model download for each visitor.",
+      },
+      {
+        question: "Is my audio kept permanently?",
+        answer:
+          "No. Audio is processed for transcription and is not stored as a permanent library on Focera.",
+      },
+      {
+        question: "Can I get timestamps?",
+        answer:
+          "Yes. Choose With timestamps for [mm:ss] markers on each line, or Plain text for readable paragraphs.",
+      },
+      {
+        question: "Do I need an account?",
+        answer:
+          "No. Open the page, upload a recording, and transcribe. Nothing to install and no signup required.",
+      },
+    ],
+  },
+  {
+    slug: "video-to-text",
+    name: "Free Video to Text Converter — Transcribe Video",
+    shortName: "Video to Text",
+    description:
+      "Transcribe video to text online — upload MP4, WebM, or MOV, extract speech, and get an editable transcript. Copy, download TXT, or export SRT. Free, no account required.",
+    categories: ["video", "ai"],
+    status: "ready",
+    href: "/video-to-text",
+    keywords: [
+      "video to text",
+      "transcribe video",
+      "video transcription",
+      "video to text converter",
+      "speech to text video",
+      "mp4 to text",
+      "extract text from video",
+      "video transcript online",
+      "video speech recognition",
+      "free video transcript",
+      "whisper video transcription",
+      "convert video to text",
+    ],
+    faq: [
+      {
+        question: "Is this video to text converter free?",
+        answer:
+          "Yes. Upload a clip, transcribe speech, copy, and download with no account, subscription, or daily limit.",
+      },
+      {
+        question: "How does video to text work?",
+        answer:
+          "Your browser extracts a compressed audio track from the video, then Focera’s transcription API converts speech into timed text. You can edit the result, then copy or download it.",
+      },
+      {
+        question: "Which video formats are supported?",
+        answer:
+          "Upload MP4, WebM, or MOV files up to 100 MB and about 10 minutes long.",
+      },
+      {
+        question: "Is my full video uploaded?",
+        answer:
+          "No. Only a compressed audio extract is sent for transcription. The video file stays in your browser. Audio is not kept as a permanent library on Focera.",
+      },
+      {
+        question: "What can I download?",
+        answer:
+          "Copy the transcript, download a .txt file (plain or timestamped), or export an .srt subtitle file when timed segments are available.",
+      },
+      {
+        question: "Do I need to download a speech model?",
+        answer:
+          "No. Transcription runs on Focera’s speech API. There is no large model download for each visitor.",
+      },
+      {
+        question: "Can I get timestamps?",
+        answer:
+          "Yes. Choose With timestamps for [mm:ss] markers on each line, or Plain text for readable paragraphs.",
+      },
+      {
+        question: "Do I need an account?",
+        answer:
+          "No. Open the page, upload a video, and transcribe. Nothing to install and no signup required.",
       },
     ],
   },

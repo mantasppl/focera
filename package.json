@@ -9,10 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "@imgly/background-removal": "^1.7.0",
     "csso": "^5.0.5",
     "docx": "^9.7.1",
     "dompurify": "^3.4.12",
+    "gifenc": "^1.0.3",
     "highlight.js": "^11.11.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",

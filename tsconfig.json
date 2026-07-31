@@ -26,6 +26,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.d.ts",
     "**/*.js",
     "**/*.jsx",
     ".next/types/**/*.ts",

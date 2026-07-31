@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import ToolPageShell from "@/components/tools/ToolPageShell";
-import YoutubeToTextLanding from "@/components/tools/YoutubeToTextLanding";
-import { YoutubeToTextLazy } from "@/components/tools/HeavyTools";
+import TwitterVideoDownloaderLanding from "@/components/tools/TwitterVideoDownloaderLanding";
+import { TwitterVideoDownloaderLazy } from "@/components/tools/HeavyTools";
 import { getToolBySlug } from "@/data/tools";
 import {
   breadcrumbSchema,
@@ -11,11 +11,11 @@ import {
   webApplicationSchema,
 } from "@/lib/seo";
 
-const tool = getToolBySlug("youtube-to-text")!;
+const tool = getToolBySlug("twitter-video-downloader")!;
 
 export const metadata: Metadata = toolLandingMetadata(tool);
 
-export default function YoutubeToTextPage() {
+export default function TwitterVideoDownloaderPage() {
   const schema = [
     webApplicationSchema(tool),
     faqPageSchema(tool.faq),
@@ -30,13 +30,13 @@ export default function YoutubeToTextPage() {
     <>
       <JsonLd data={schema} />
       <ToolPageShell
-        slug="youtube-to-text"
-        workspaceId="youtube-to-text-tool"
-        content={<YoutubeToTextLanding />}
-        ctaTitle="Need more transcript or video utilities?"
-        ctaDescription="Transcribe local audio, auto-caption your own clips, or convert text case — Focera keeps everyday tools fast and free."
+        slug="twitter-video-downloader"
+        workspaceId="twitter-video-tool"
+        content={<TwitterVideoDownloaderLanding />}
+        ctaTitle="Need more video utilities?"
+        ctaDescription="Download TikTok or Instagram clips, auto-caption your videos, or pull YouTube transcripts — Focera keeps everyday tools fast and free."
       >
-        <YoutubeToTextLazy />
+        <TwitterVideoDownloaderLazy />
       </ToolPageShell>
     </>
   );

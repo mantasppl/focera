@@ -4401,7 +4401,10 @@ a {
 .split-pdf__options,
 .upscale-image__options,
 .image-compressor__options,
-.compress-video__options {
+.compress-video__options,
+.trim-video__options,
+.mp4-to-mp3__options,
+.video-to-gif__options {
   display: grid;
   gap: 1rem;
 }
@@ -4412,7 +4415,9 @@ a {
 .split-pdf__chips,
 .upscale-image__chips,
 .image-compressor__chips,
-.compress-video__chips {
+.compress-video__chips,
+.mp4-to-mp3__chips,
+.video-to-gif__chips {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
@@ -4430,7 +4435,9 @@ a {
 .split-pdf__chip,
 .upscale-image__chip,
 .image-compressor__chip,
-.compress-video__chip {
+.compress-video__chip,
+.mp4-to-mp3__chip,
+.video-to-gif__chip {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -4453,7 +4460,9 @@ a {
 .split-pdf__chip:hover:not(:disabled),
 .upscale-image__chip:hover:not(:disabled),
 .image-compressor__chip:hover:not(:disabled),
-.compress-video__chip:hover:not(:disabled) {
+.compress-video__chip:hover:not(:disabled),
+.mp4-to-mp3__chip:hover:not(:disabled),
+.video-to-gif__chip:hover:not(:disabled) {
   border-color: var(--accent);
 }
 
@@ -4463,7 +4472,9 @@ a {
 .split-pdf__chip.is-active,
 .upscale-image__chip.is-active,
 .image-compressor__chip.is-active,
-.compress-video__chip.is-active {
+.compress-video__chip.is-active,
+.mp4-to-mp3__chip.is-active,
+.video-to-gif__chip.is-active {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.1);
   color: var(--accent-deep);
@@ -4475,7 +4486,9 @@ a {
 .split-pdf__chip:disabled,
 .upscale-image__chip:disabled,
 .image-compressor__chip:disabled,
-.compress-video__chip:disabled {
+.compress-video__chip:disabled,
+.mp4-to-mp3__chip:disabled,
+.video-to-gif__chip:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
@@ -4486,7 +4499,9 @@ a {
 .split-pdf__chip-label,
 .upscale-image__chip-label,
 .image-compressor__chip-label,
-.compress-video__chip-label {
+.compress-video__chip-label,
+.mp4-to-mp3__chip-label,
+.video-to-gif__chip-label {
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -4497,7 +4512,9 @@ a {
 .split-pdf__chip-hint,
 .upscale-image__chip-hint,
 .image-compressor__chip-hint,
-.compress-video__chip-hint {
+.compress-video__chip-hint,
+.mp4-to-mp3__chip-hint,
+.video-to-gif__chip-hint {
   font-size: 0.75rem;
   color: var(--muted);
 }
@@ -4508,7 +4525,9 @@ a {
 .split-pdf__chip.is-active .split-pdf__chip-hint,
 .upscale-image__chip.is-active .upscale-image__chip-hint,
 .image-compressor__chip.is-active .image-compressor__chip-hint,
-.compress-video__chip.is-active .compress-video__chip-hint {
+.compress-video__chip.is-active .compress-video__chip-hint,
+.mp4-to-mp3__chip.is-active .mp4-to-mp3__chip-hint,
+.video-to-gif__chip.is-active .video-to-gif__chip-hint {
   color: var(--accent-deep);
 }
 
@@ -4576,7 +4595,9 @@ a {
   .image-compressor__chips,
   .image-compressor__chips--levels,
   .compress-video__chips,
-  .compress-video__chips--levels {
+  .compress-video__chips--levels,
+  .mp4-to-mp3__chips,
+  .video-to-gif__chips {
     grid-template-columns: 1fr;
   }
 }
@@ -4835,10 +4856,13 @@ a {
   }
 }
 
-/* -- Compress PDF / Image Compressor / Compress Video -- */
+/* -- Compress PDF / Image Compressor / Compress Video / MP4 to MP3 / Video to GIF -- */
 .compress-pdf__success,
 .image-compressor__success,
-.compress-video__success {
+.compress-video__success,
+.trim-video__success,
+.mp4-to-mp3__success,
+.video-to-gif__success {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4849,7 +4873,10 @@ a {
 
 .compress-pdf__success-title,
 .image-compressor__success-title,
-.compress-video__success-title {
+.compress-video__success-title,
+.trim-video__success-title,
+.mp4-to-mp3__success-title,
+.video-to-gif__success-title {
   margin: 0;
   font-size: 1.05rem;
   font-weight: 650;
@@ -4858,7 +4885,10 @@ a {
 
 .compress-pdf__success-meta,
 .image-compressor__success-meta,
-.compress-video__success-meta {
+.compress-video__success-meta,
+.trim-video__success-meta,
+.mp4-to-mp3__success-meta,
+.video-to-gif__success-meta {
   margin: 0;
   font-size: 0.9rem;
   color: var(--muted);
@@ -4867,7 +4897,10 @@ a {
 
 .compress-pdf__stats,
 .image-compressor__stats,
-.compress-video__stats {
+.compress-video__stats,
+.trim-video__stats,
+.mp4-to-mp3__stats,
+.video-to-gif__stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.55rem;
@@ -4879,7 +4912,10 @@ a {
 
 .compress-pdf__stats li,
 .image-compressor__stats li,
-.compress-video__stats li {
+.compress-video__stats li,
+.trim-video__stats li,
+.mp4-to-mp3__stats li,
+.video-to-gif__stats li {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -4890,7 +4926,10 @@ a {
 
 .compress-pdf__stat-label,
 .image-compressor__stat-label,
-.compress-video__stat-label {
+.compress-video__stat-label,
+.trim-video__stat-label,
+.mp4-to-mp3__stat-label,
+.video-to-gif__stat-label {
   font-size: 0.72rem;
   color: var(--muted);
   text-transform: uppercase;
@@ -4899,7 +4938,10 @@ a {
 
 .compress-pdf__stat-value,
 .image-compressor__stat-value,
-.compress-video__stat-value {
+.compress-video__stat-value,
+.trim-video__stat-value,
+.mp4-to-mp3__stat-value,
+.video-to-gif__stat-value {
   font-size: 0.95rem;
   font-weight: 650;
   color: var(--ink);
@@ -4925,12 +4967,21 @@ a {
   background: #fff;
 }
 
-.compress-video__preview {
+.compress-video__preview,
+.trim-video__preview,
+.mp4-to-mp3__preview,
+.video-to-gif__preview {
   width: min(100%, 420px);
   max-height: 280px;
   margin-top: 0.35rem;
   border: 1px solid var(--line);
   background: #000;
+  object-fit: contain;
+}
+
+.mp4-to-mp3__player {
+  width: min(100%, 22rem);
+  margin-top: 0.35rem;
 }
 
 .image-compressor__success .compare {
@@ -4941,7 +4992,10 @@ a {
 @media (max-width: 640px) {
   .compress-pdf__stats,
   .image-compressor__stats,
-  .compress-video__stats {
+  .compress-video__stats,
+  .trim-video__stats,
+  .mp4-to-mp3__stats,
+  .video-to-gif__stats {
     grid-template-columns: 1fr;
     width: 100%;
   }
@@ -4950,8 +5004,125 @@ a {
     height: 220px;
   }
 
-  .compress-video__preview {
+  .compress-video__preview,
+  .trim-video__preview,
+  .mp4-to-mp3__preview,
+  .video-to-gif__preview {
     max-height: 220px;
+  }
+}
+
+/* -- Trim Video timeline -- */
+.trim-video__times {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.trim-video__timeline {
+  --trim-start: 0%;
+  --trim-end: 100%;
+  position: relative;
+  height: 2.5rem;
+  margin-top: 0.15rem;
+}
+
+.trim-video__track {
+  position: absolute;
+  inset: 1rem 0 auto;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line) 85%, var(--ink));
+  overflow: hidden;
+}
+
+.trim-video__selection {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--trim-start);
+  right: calc(100% - var(--trim-end));
+  background: color-mix(in srgb, var(--accent) 75%, var(--ink));
+}
+
+.trim-video__range {
+  position: absolute;
+  left: 0;
+  top: 0.35rem;
+  width: 100%;
+  height: 1.8rem;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+
+.trim-video__range::-webkit-slider-runnable-track {
+  height: 0.45rem;
+  background: transparent;
+}
+
+.trim-video__range::-moz-range-track {
+  height: 0.45rem;
+  background: transparent;
+  border: none;
+}
+
+.trim-video__range::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: -0.3rem;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--accent-deep);
+  box-shadow: var(--shadow-sm);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.trim-video__range::-moz-range-thumb {
+  width: 1.05rem;
+  height: 1.05rem;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--accent-deep);
+  box-shadow: var(--shadow-sm);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.trim-video__range:focus-visible {
+  outline: none;
+}
+
+.trim-video__range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.trim-video__range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.trim-video__range:disabled::-webkit-slider-thumb {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.trim-video__range:disabled::-moz-range-thumb {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.trim-video__playhead-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .trim-video__times {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -5517,6 +5688,131 @@ a {
   }
 }
 
+/* -- Audio / video to text -- */
+.audio-to-text__options,
+.video-to-text__options {
+  display: grid;
+  gap: 1rem;
+}
+
+.audio-to-text__chips,
+.video-to-text__chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.audio-to-text__chip,
+.video-to-text__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  border-radius: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.audio-to-text__chip:hover:not(:disabled),
+.video-to-text__chip:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+}
+
+.audio-to-text__chip.is-active,
+.video-to-text__chip.is-active {
+  border-color: color-mix(in oklab, var(--accent) 70%, var(--border));
+  background: color-mix(in oklab, var(--accent) 12%, var(--surface));
+}
+
+.audio-to-text__chip:disabled,
+.video-to-text__chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.audio-to-text__chip-label,
+.video-to-text__chip-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.audio-to-text__chip-hint,
+.video-to-text__chip-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.audio-to-text__chip.is-active .audio-to-text__chip-hint,
+.video-to-text__chip.is-active .video-to-text__chip-hint {
+  color: color-mix(in oklab, var(--text) 70%, var(--muted));
+}
+
+.audio-to-text__stage.is-loading,
+.video-to-text__stage.is-loading {
+  min-height: 280px;
+}
+
+.audio-to-text__stage.is-ready,
+.video-to-text__stage.is-ready {
+  align-items: stretch;
+}
+
+.audio-to-text__result,
+.video-to-text__result {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.audio-to-text__result-meta,
+.video-to-text__result-meta {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.audio-to-text__textarea,
+.video-to-text__textarea {
+  min-height: 300px;
+  resize: vertical;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.audio-to-text__preview,
+.video-to-text__preview {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  justify-items: stretch;
+}
+
+.audio-to-text__player,
+.video-to-text__player {
+  width: 100%;
+  max-width: 100%;
+}
+
+.video-to-text__player {
+  max-height: 320px;
+  background: #000;
+  border-radius: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .audio-to-text__chips,
+  .video-to-text__chips {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* -- Instagram video downloader -- */
 .instagram-video__examples {
   display: flex;
@@ -5645,6 +5941,143 @@ a {
 }
 
 .instagram-video__caption {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--fg) 82%, var(--muted));
+  max-height: 7.5rem;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+/* -- Twitter/X video downloader -- */
+.twitter-video__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.twitter-video__example {
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.twitter-video__example:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  color: var(--fg);
+  background: color-mix(in oklab, var(--accent) 8%, var(--surface));
+}
+
+.twitter-video__example:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.twitter-video__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.twitter-video__chip {
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  color: var(--muted);
+  border-radius: 0.65rem;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+.twitter-video__chip:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+}
+
+.twitter-video__chip.is-active {
+  border-color: color-mix(in oklab, var(--accent) 65%, var(--border));
+  background: color-mix(in oklab, var(--accent) 10%, var(--surface));
+  color: var(--fg);
+}
+
+.twitter-video__chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.twitter-video__stage {
+  min-height: 420px;
+}
+
+.twitter-video__stage.is-loading {
+  display: grid;
+  place-items: center;
+}
+
+.twitter-video__stage.is-ready {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.twitter-video__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.twitter-video__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.twitter-video__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  color: var(--fg);
+}
+
+.twitter-video__result-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.twitter-video__link {
+  width: fit-content;
+  font-size: 0.84rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.twitter-video__link:hover {
+  color: color-mix(in oklab, var(--accent) 80%, var(--fg));
+}
+
+.twitter-video__poster,
+.twitter-video__poster-fallback {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  background: color-mix(in oklab, var(--surface) 70%, #000 8%);
+}
+
+.twitter-video__poster-fallback {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.twitter-video__caption {
   margin: 0;
   font-size: 0.88rem;
   line-height: 1.55;

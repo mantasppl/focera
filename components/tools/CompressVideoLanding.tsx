@@ -109,6 +109,14 @@ export default function CompressVideoLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/video-to-gif">Video to GIF</Link> — Turn a short clip
+            into an animated GIF after you shrink it.
+          </li>
+          <li>
+            <Link href="/extract-audio">Extract Audio</Link> — Pull the audio
+            track as an MP3 after you shrink the clip.
+          </li>
+          <li>
             <Link href="/video-autocaption">Video Autocaption</Link> — Add
             timed captions and burn them into a clip after you shrink it.
           </li>
@@ -121,6 +129,12 @@ export default function CompressVideoLanding() {
               Instagram Video Downloader
             </Link>{" "}
             — Download Reels or posts, then reduce file size locally.
+          </li>
+          <li>
+            <Link href="/twitter-video-downloader">
+              Twitter/X Video Downloader
+            </Link>{" "}
+            — Save a public X post video, then compress it for sharing.
           </li>
           <li>
             <Link href="/image-compressor">Image Compressor</Link> — Shrink

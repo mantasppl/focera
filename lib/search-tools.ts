@@ -33,6 +33,11 @@ const TOKEN_ALIASES: Record<string, string[]> = {
   compr: ["compress", "compressor", "compression"],
   upsc: ["upscale", "upscaler"],
   ocr: ["ocr", "text"],
+  stt: ["speech", "transcribe", "transcript", "audio", "video"],
+  asr: ["speech", "transcribe", "transcript", "audio", "video"],
+  whisper: ["transcribe", "transcript", "speech", "audio", "video"],
+  rip: ["extract", "audio"],
+  gif: ["gif", "video"],
 };
 
 function normalize(value: string): string {

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import ToolPageShell from "@/components/tools/ToolPageShell";
-import YoutubeToTextLanding from "@/components/tools/YoutubeToTextLanding";
-import { YoutubeToTextLazy } from "@/components/tools/HeavyTools";
+import ExtractAudioLanding from "@/components/tools/ExtractAudioLanding";
+import { ExtractAudioLazy } from "@/components/tools/HeavyTools";
 import { getToolBySlug } from "@/data/tools";
 import {
   breadcrumbSchema,
@@ -11,11 +11,11 @@ import {
   webApplicationSchema,
 } from "@/lib/seo";
 
-const tool = getToolBySlug("youtube-to-text")!;
+const tool = getToolBySlug("extract-audio")!;
 
 export const metadata: Metadata = toolLandingMetadata(tool);
 
-export default function YoutubeToTextPage() {
+export default function ExtractAudioPage() {
   const schema = [
     webApplicationSchema(tool),
     faqPageSchema(tool.faq),
@@ -30,13 +30,13 @@ export default function YoutubeToTextPage() {
     <>
       <JsonLd data={schema} />
       <ToolPageShell
-        slug="youtube-to-text"
-        workspaceId="youtube-to-text-tool"
-        content={<YoutubeToTextLanding />}
-        ctaTitle="Need more transcript or video utilities?"
-        ctaDescription="Transcribe local audio, auto-caption your own clips, or convert text case — Focera keeps everyday tools fast and free."
+        slug="extract-audio"
+        workspaceId="extract-audio-tool"
+        content={<ExtractAudioLanding />}
+        ctaTitle="Need more video utilities?"
+        ctaDescription="Compress clips, convert MP4 to MP3, or transcribe audio — Focera keeps everyday tools fast, private, and free."
       >
-        <YoutubeToTextLazy />
+        <ExtractAudioLazy />
       </ToolPageShell>
     </>
   );

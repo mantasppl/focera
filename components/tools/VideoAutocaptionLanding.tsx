@@ -112,6 +112,10 @@ export default function VideoAutocaptionLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/video-to-text">Video to Text</Link> — Get a plain
+            transcript, TXT, or SRT without burning captions into the video.
+          </li>
+          <li>
             <Link href="/compress-video">Compress Video</Link> — Shrink the
             captioned export before email or upload.
           </li>

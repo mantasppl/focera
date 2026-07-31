@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Paste a link, get the transcript",
+    title: "Transcribe any public YouTube link",
     description:
-      "Convert YouTube videos to text using available captions — watch links, youtu.be, Shorts, and Live URLs all work.",
+      "Paste a watch, youtu.be, Shorts, or Live URL. Captions are used when available; otherwise speech is transcribed from audio.",
   },
   {
     title: "Plain text or timestamps",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Free and fast",
     description:
-      "No account, install, or credit card. Pull captions when YouTube provides them — including many auto-generated tracks.",
+      "No account, install, or credit card. Prefer captions for speed, with speech transcription as a fallback for caption-free clips.",
   },
 ];
 
@@ -29,7 +29,7 @@ export default function YoutubeToTextLanding() {
     <article className="tool-content">
       <FeatureGrid
         id="youtube-to-text-features"
-        title="Everything you need in a free YouTube to text converter"
+        title="Everything you need to transcribe a YouTube video"
         features={FEATURES}
       />
 
@@ -41,10 +41,10 @@ export default function YoutubeToTextLanding() {
           How It Works
         </h2>
         <p>
-          Turning a YouTube video into text should be quick. Focera reads the
-          captions YouTube already has for the video — manual subtitles when
-          available, otherwise auto-generated captions — then lets you edit and
-          export on one page.
+          Turning a YouTube video into text should be quick. Focera first checks
+          for captions YouTube already has — manual subtitles when available,
+          otherwise auto-generated captions. If there is no CC track, it
+          transcribes speech from the audio for videos up to about 10 minutes.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -53,11 +53,13 @@ export default function YoutubeToTextLanding() {
           </li>
           <li>
             <strong>Choose plain text or timestamps.</strong> Plain text builds
-            readable paragraphs; timestamps keep a line per caption cue.
+            readable paragraphs; timestamps keep a line per cue or speech
+            segment.
           </li>
           <li>
-            <strong>Extract, edit, and export.</strong> Review the transcript,
-            fix wording if needed, then copy, download TXT, or download SRT.
+            <strong>Transcribe, edit, and export.</strong> Review the
+            transcript, fix wording if needed, then copy, download TXT, or
+            download SRT.
           </li>
         </ol>
         <p>
@@ -84,8 +86,8 @@ export default function YoutubeToTextLanding() {
             drafts, newsletters, show notes, or social posts.
           </li>
           <li>
-            <strong>Accessibility drafts</strong> — Start from existing captions
-            when building cleaner subtitles or written alternatives.
+            <strong>Accessibility drafts</strong> — Start from captions or
+            speech transcription when building cleaner subtitles.
           </li>
           <li>
             <strong>Study and review</strong> — Keep a searchable transcript
@@ -93,9 +95,8 @@ export default function YoutubeToTextLanding() {
           </li>
         </ul>
         <p>
-          Videos without any captions (manual or auto-generated) cannot be
-          converted. If extraction fails, try another video that shows a CC
-          button on YouTube.
+          Speech transcription works best on clear audio under 10 minutes. Very
+          long videos still work when YouTube already provides captions.
         </p>
       </section>
 
@@ -112,16 +113,20 @@ export default function YoutubeToTextLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/video-to-text">Video to Text</Link> — Upload an MP4 or
+            other local clip to transcribe speech without a YouTube link.
+          </li>
+          <li>
+            <Link href="/audio-to-text">Audio to Text</Link> — Upload an MP3
+            or other recording to transcribe speech you already have locally.
+          </li>
+          <li>
             <Link href="/video-autocaption">Video Autocaption</Link> — Upload
             your own clip to generate timed captions and burn them into video.
           </li>
           <li>
             <Link href="/text-case-converter">Text Case Converter</Link> —
             Change capitalization of the extracted transcript.
-          </li>
-          <li>
-            <Link href="/markdown-editor">Markdown Editor</Link> — Turn notes
-            from the transcript into formatted docs with live preview.
           </li>
           <li>
             <Link href="/tools">All tools</Link> — Browse every free utility in

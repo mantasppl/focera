@@ -110,6 +110,16 @@ export default function InstagramVideoDownloaderLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/tiktok-video-downloader">TikTok Video Downloader</Link>{" "}
+            — Save public TikTok videos the same way.
+          </li>
+          <li>
+            <Link href="/twitter-video-downloader">
+              Twitter/X Video Downloader
+            </Link>{" "}
+            — Save public videos from x.com and twitter.com posts.
+          </li>
+          <li>
             <Link href="/compress-video">Compress Video</Link> — Shrink the
             downloaded MP4 before email, upload, or sharing.
           </li>

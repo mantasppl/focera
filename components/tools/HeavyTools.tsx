@@ -96,8 +96,38 @@ export const CompressVideoLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const TrimVideoLazy = dynamic(
+  () => import("@/components/tools/TrimVideo"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const VideoToGifLazy = dynamic(
+  () => import("@/components/tools/VideoToGif"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const Mp4ToMp3Lazy = dynamic(
+  () => import("@/components/tools/Mp4ToMp3"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const ExtractAudioLazy = dynamic(
+  () => import("@/components/tools/ExtractAudio"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const YoutubeToTextLazy = dynamic(
   () => import("@/components/tools/YoutubeToText"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const AudioToTextLazy = dynamic(
+  () => import("@/components/tools/AudioToText"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const VideoToTextLazy = dynamic(
+  () => import("@/components/tools/VideoToText"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -108,5 +138,10 @@ export const InstagramVideoDownloaderLazy = dynamic(
 
 export const TikTokVideoDownloaderLazy = dynamic(
   () => import("@/components/tools/TikTokVideoDownloader"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const TwitterVideoDownloaderLazy = dynamic(
+  () => import("@/components/tools/TwitterVideoDownloader"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
