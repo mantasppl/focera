@@ -32,12 +32,17 @@ const TOKEN_ALIASES: Record<string, string[]> = {
   mrg: ["merge", "merger"],
   compr: ["compress", "compressor", "compression"],
   upsc: ["upscale", "upscaler"],
+  colorize: ["colorize", "colourise", "color", "colour"],
+  colourise: ["colorize", "colourise", "color", "colour"],
   ocr: ["ocr", "text"],
   stt: ["speech", "transcribe", "transcript", "audio", "video"],
   asr: ["speech", "transcribe", "transcript", "audio", "video"],
   whisper: ["transcribe", "transcript", "speech", "audio", "video"],
   rip: ["extract", "audio"],
   gif: ["gif", "video"],
+  fb: ["facebook"],
+  ig: ["instagram"],
+  tt: ["tiktok"],
 };
 
 function normalize(value: string): string {

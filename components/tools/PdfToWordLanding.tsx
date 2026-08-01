@@ -140,6 +140,10 @@ export default function PdfToWordLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/pdf-to-text">PDF to Text</Link> — Extract plain text
+            from a PDF to copy or download as .txt.
+          </li>
+          <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert PDF pages to
             JPEG images for sharing and design tools.
           </li>

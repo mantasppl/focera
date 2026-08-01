@@ -131,6 +131,10 @@ export default function CompressPdfLanding() {
             extract pages before compressing the result.
           </li>
           <li>
+            <Link href="/pdf-watermark">PDF Watermark</Link> — Stamp a logo or
+            image watermark on every page.
+          </li>
+          <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert pages into JPEG
             images for sharing and design tools.
           </li>

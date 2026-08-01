@@ -5,31 +5,31 @@ const FEATURES = [
   {
     title: "Paste a link, download the MP4",
     description:
-      "Drop in a public TikTok video URL or short link and save the file without installing an app.",
+      "Drop in a public Facebook watch, reel, or video URL and save the file without installing an app.",
   },
   {
-    title: "Full URLs and short links",
+    title: "Watch, Reels, and short links",
     description:
-      "Works with www.tiktok.com/@user/video links plus vm.tiktok.com and vt.tiktok.com share URLs.",
+      "Works with facebook.com/watch, /reel, /videos links, plus many fb.watch share URLs.",
   },
   {
     title: "Preview before you save",
     description:
-      "See the creator, caption, and cover frame in-page, then download the MP4 when you are ready.",
+      "See the title, caption, and cover frame in-page, then download the MP4 when you are ready.",
   },
   {
     title: "Free and no signup",
     description:
-      "No account, browser extension, or credit card. Use it whenever you need a clean TikTok video file.",
+      "No account, browser extension, or credit card. Use it whenever you need a clean Facebook video file.",
   },
 ];
 
-export default function TikTokVideoDownloaderLanding() {
+export default function FacebookVideoDownloaderLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="tiktok-video-features"
-        title="Everything you need in a free TikTok video downloader"
+        id="facebook-video-features"
+        title="Everything you need in a free Facebook video downloader"
         features={FEATURES}
       />
 
@@ -41,18 +41,18 @@ export default function TikTokVideoDownloaderLanding() {
           How It Works
         </h2>
         <p>
-          Saving a TikTok video should take seconds. Focera reads the public
-          post you paste, finds the MP4 TikTok already hosts, then lets you
+          Saving a Facebook video should take seconds. Focera reads the public
+          post you paste, finds the MP4 Facebook already hosts, then lets you
           preview and download it on one page.
         </p>
         <ol className="tool-content__steps">
           <li>
-            <strong>Paste the TikTok URL.</strong> Use a full video link or a
-            vm/vt short share link from a public account.
+            <strong>Paste the Facebook URL.</strong> Use a watch, reel, videos,
+            or fb.watch short link from a public post.
           </li>
           <li>
             <strong>Fetch the video.</strong> Focera resolves the media and
-            shows a preview with username and caption when available.
+            shows a preview with title and caption when available.
           </li>
           <li>
             <strong>Download the MP4.</strong> Save the file to your device —
@@ -61,8 +61,8 @@ export default function TikTokVideoDownloaderLanding() {
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#tiktok-video-tool">TikTok video downloader</a> anytime to
-          grab another clip.
+          <a href="#facebook-video-tool">Facebook video downloader</a> anytime
+          to grab another clip.
         </p>
       </section>
 
@@ -76,7 +76,7 @@ export default function TikTokVideoDownloaderLanding() {
         <ul className="tool-content__list">
           <li>
             <strong>Save your own posts</strong> — Keep an offline copy of
-            TikToks you published before editing or archiving.
+            Facebook videos you published before editing or archiving.
           </li>
           <li>
             <strong>Reference and research</strong> — Download public clips for
@@ -87,12 +87,12 @@ export default function TikTokVideoDownloaderLanding() {
             add burned-in captions with Focera’s autocaption tool.
           </li>
           <li>
-            <strong>Quick offline viewing</strong> — Watch a public TikTok later
-            without opening the app.
+            <strong>Quick offline viewing</strong> — Watch a public Facebook
+            video later without opening the app.
           </li>
         </ul>
         <p>
-          Private, region-blocked, and deleted videos cannot be downloaded. Only
+          Private, age-restricted, and deleted videos cannot be downloaded. Only
           download content you have the right to use.
         </p>
       </section>
@@ -105,21 +105,19 @@ export default function TikTokVideoDownloaderLanding() {
           Related Free Tools
         </h2>
         <p>
-          After you download a TikTok video, these Focera tools often fit the
+          After you download a Facebook video, these Focera tools often fit the
           same workflow:
         </p>
         <ul className="tool-content__list">
-          <li>
-            <Link href="/facebook-video-downloader">
-              Facebook Video Downloader
-            </Link>{" "}
-            — Save public Facebook watch videos and Reels the same way.
-          </li>
           <li>
             <Link href="/instagram-video-downloader">
               Instagram Video Downloader
             </Link>{" "}
             — Save public Instagram Reels and post videos the same way.
+          </li>
+          <li>
+            <Link href="/tiktok-video-downloader">TikTok Video Downloader</Link>{" "}
+            — Save public TikTok videos from full or short links.
           </li>
           <li>
             <Link href="/twitter-video-downloader">
@@ -134,10 +132,6 @@ export default function TikTokVideoDownloaderLanding() {
           <li>
             <Link href="/video-autocaption">Video Autocaption</Link> — Upload
             the MP4 to generate timed captions and burn them into the video.
-          </li>
-          <li>
-            <Link href="/youtube-to-text">YouTube to Text</Link> — Extract
-            transcripts from YouTube videos when you need text instead of a file.
           </li>
           <li>
             <Link href="/tools">All tools</Link> — Browse every free utility in

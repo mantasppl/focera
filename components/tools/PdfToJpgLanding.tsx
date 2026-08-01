@@ -118,6 +118,10 @@ export default function PdfToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/pdf-to-text">PDF to Text</Link> — Extract selectable
+            text from a PDF to copy or download as .txt.
+          </li>
+          <li>
             <Link href="/pdf-to-word">PDF to Word</Link> — Convert PDF pages
             into an editable Word (.docx) document.
           </li>

@@ -111,6 +111,10 @@ export default function ImageToTextLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/pdf-to-text">PDF to Text</Link> — Extract selectable
+            text from digital PDFs without OCR.
+          </li>
+          <li>
             <Link href="/text-case-converter">Text Case Converter</Link> —
             Change capitalization of the extracted text.
           </li>

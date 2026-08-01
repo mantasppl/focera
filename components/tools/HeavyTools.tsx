@@ -46,6 +46,11 @@ export const PdfToWordLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PdfToTextLazy = dynamic(
+  () => import("@/components/tools/PdfToText"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const MergePdfLazy = dynamic(
   () => import("@/components/tools/MergePdf"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -66,8 +71,18 @@ export const PdfEditorLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PdfWatermarkLazy = dynamic(
+  () => import("@/components/tools/PdfWatermark"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const UpscaleImageLazy = dynamic(
   () => import("@/components/tools/UpscaleImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const ColorizePhotoLazy = dynamic(
+  () => import("@/components/tools/ColorizePhoto"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -143,5 +158,10 @@ export const TikTokVideoDownloaderLazy = dynamic(
 
 export const TwitterVideoDownloaderLazy = dynamic(
   () => import("@/components/tools/TwitterVideoDownloader"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const FacebookVideoDownloaderLazy = dynamic(
+  () => import("@/components/tools/FacebookVideoDownloader"),
   { ssr: false, loading: () => <ToolLoading /> },
 );

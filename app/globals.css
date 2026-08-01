@@ -4398,8 +4398,11 @@ a {
 .pdf-to-jpg__options,
 .compress-pdf__options,
 .pdf-to-word__options,
+.pdf-to-text__options,
 .split-pdf__options,
+.pdf-watermark__options,
 .upscale-image__options,
+.colorize-photo__options,
 .image-compressor__options,
 .compress-video__options,
 .trim-video__options,
@@ -4412,8 +4415,11 @@ a {
 .pdf-to-jpg__chips,
 .compress-pdf__chips,
 .pdf-to-word__chips,
+.pdf-to-text__chips,
 .split-pdf__chips,
+.pdf-watermark__chips,
 .upscale-image__chips,
+.colorize-photo__chips,
 .image-compressor__chips,
 .compress-video__chips,
 .mp4-to-mp3__chips,
@@ -4421,6 +4427,14 @@ a {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
+}
+
+.pdf-watermark__chips--positions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pdf-watermark__chips--rotation {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .compress-pdf__chips,
@@ -4432,8 +4446,11 @@ a {
 .pdf-to-jpg__chip,
 .compress-pdf__chip,
 .pdf-to-word__chip,
+.pdf-to-text__chip,
 .split-pdf__chip,
+.pdf-watermark__chip,
 .upscale-image__chip,
+.colorize-photo__chip,
 .image-compressor__chip,
 .compress-video__chip,
 .mp4-to-mp3__chip,
@@ -4457,8 +4474,11 @@ a {
 .pdf-to-jpg__chip:hover:not(:disabled),
 .compress-pdf__chip:hover:not(:disabled),
 .pdf-to-word__chip:hover:not(:disabled),
+.pdf-to-text__chip:hover:not(:disabled),
 .split-pdf__chip:hover:not(:disabled),
+.pdf-watermark__chip:hover:not(:disabled),
 .upscale-image__chip:hover:not(:disabled),
+.colorize-photo__chip:hover:not(:disabled),
 .image-compressor__chip:hover:not(:disabled),
 .compress-video__chip:hover:not(:disabled),
 .mp4-to-mp3__chip:hover:not(:disabled),
@@ -4469,8 +4489,11 @@ a {
 .pdf-to-jpg__chip.is-active,
 .compress-pdf__chip.is-active,
 .pdf-to-word__chip.is-active,
+.pdf-to-text__chip.is-active,
 .split-pdf__chip.is-active,
+.pdf-watermark__chip.is-active,
 .upscale-image__chip.is-active,
+.colorize-photo__chip.is-active,
 .image-compressor__chip.is-active,
 .compress-video__chip.is-active,
 .mp4-to-mp3__chip.is-active,
@@ -4483,8 +4506,11 @@ a {
 .pdf-to-jpg__chip:disabled,
 .compress-pdf__chip:disabled,
 .pdf-to-word__chip:disabled,
+.pdf-to-text__chip:disabled,
 .split-pdf__chip:disabled,
+.pdf-watermark__chip:disabled,
 .upscale-image__chip:disabled,
+.colorize-photo__chip:disabled,
 .image-compressor__chip:disabled,
 .compress-video__chip:disabled,
 .mp4-to-mp3__chip:disabled,
@@ -4496,8 +4522,11 @@ a {
 .pdf-to-jpg__chip-label,
 .compress-pdf__chip-label,
 .pdf-to-word__chip-label,
+.pdf-to-text__chip-label,
 .split-pdf__chip-label,
+.pdf-watermark__chip-label,
 .upscale-image__chip-label,
+.colorize-photo__chip-label,
 .image-compressor__chip-label,
 .compress-video__chip-label,
 .mp4-to-mp3__chip-label,
@@ -4509,8 +4538,11 @@ a {
 .pdf-to-jpg__chip-hint,
 .compress-pdf__chip-hint,
 .pdf-to-word__chip-hint,
+.pdf-to-text__chip-hint,
 .split-pdf__chip-hint,
+.pdf-watermark__chip-hint,
 .upscale-image__chip-hint,
+.colorize-photo__chip-hint,
 .image-compressor__chip-hint,
 .compress-video__chip-hint,
 .mp4-to-mp3__chip-hint,
@@ -4522,8 +4554,11 @@ a {
 .pdf-to-jpg__chip.is-active .pdf-to-jpg__chip-hint,
 .compress-pdf__chip.is-active .compress-pdf__chip-hint,
 .pdf-to-word__chip.is-active .pdf-to-word__chip-hint,
+.pdf-to-text__chip.is-active .pdf-to-text__chip-hint,
 .split-pdf__chip.is-active .split-pdf__chip-hint,
+.pdf-watermark__chip.is-active .pdf-watermark__chip-hint,
 .upscale-image__chip.is-active .upscale-image__chip-hint,
+.colorize-photo__chip.is-active .colorize-photo__chip-hint,
 .image-compressor__chip.is-active .image-compressor__chip-hint,
 .compress-video__chip.is-active .compress-video__chip-hint,
 .mp4-to-mp3__chip.is-active .mp4-to-mp3__chip-hint,
@@ -4590,8 +4625,13 @@ a {
   .pdf-to-jpg__chips,
   .compress-pdf__chips,
   .pdf-to-word__chips,
+  .pdf-to-text__chips,
   .split-pdf__chips,
+  .pdf-watermark__chips,
+  .pdf-watermark__chips--positions,
+  .pdf-watermark__chips--rotation,
   .upscale-image__chips,
+  .colorize-photo__chips,
   .image-compressor__chips,
   .image-compressor__chips--levels,
   .compress-video__chips,
@@ -4632,14 +4672,16 @@ a {
   color: var(--muted);
 }
 
-.upscale-image__result {
+.upscale-image__result,
+.colorize-photo__result {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   width: 100%;
 }
 
-.upscale-image__result-meta {
+.upscale-image__result-meta,
+.colorize-photo__result-meta {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
@@ -4828,21 +4870,24 @@ a {
   color: var(--accent-deep);
 }
 
-.image-to-text__result {
+.image-to-text__result,
+.pdf-to-text__result {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
   width: 100%;
 }
 
-.image-to-text__result-meta {
+.image-to-text__result-meta,
+.pdf-to-text__result-meta {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
   text-align: center;
 }
 
-.image-to-text__textarea {
+.image-to-text__textarea,
+.pdf-to-text__textarea {
   min-height: 16rem;
   resize: vertical;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -4858,6 +4903,7 @@ a {
 
 /* -- Compress PDF / Image Compressor / Compress Video / MP4 to MP3 / Video to GIF -- */
 .compress-pdf__success,
+.pdf-watermark__success,
 .image-compressor__success,
 .compress-video__success,
 .trim-video__success,
@@ -4872,6 +4918,7 @@ a {
 }
 
 .compress-pdf__success-title,
+.pdf-watermark__success-title,
 .image-compressor__success-title,
 .compress-video__success-title,
 .trim-video__success-title,
@@ -4884,6 +4931,7 @@ a {
 }
 
 .compress-pdf__success-meta,
+.pdf-watermark__success-meta,
 .image-compressor__success-meta,
 .compress-video__success-meta,
 .trim-video__success-meta,
@@ -4959,12 +5007,38 @@ a {
   color: var(--muted);
 }
 
-.compress-pdf__preview {
+.compress-pdf__preview,
+.pdf-watermark__preview {
   width: min(100%, 420px);
   height: 280px;
   margin-top: 0.35rem;
   border: 1px solid var(--line);
   background: #fff;
+}
+
+.pdf-watermark__stamp-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pdf-watermark__stamp-thumb {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex-shrink: 0;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(45deg, #ececec 25%, transparent 25%),
+    linear-gradient(-45deg, #ececec 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ececec 75%),
+    linear-gradient(-45deg, transparent 75%, #ececec 75%);
+  background-size: 12px 12px;
+  background-position:
+    0 0,
+    0 6px,
+    6px -6px,
+    -6px 0;
 }
 
 .compress-video__preview,
@@ -5000,7 +5074,8 @@ a {
     width: 100%;
   }
 
-  .compress-pdf__preview {
+  .compress-pdf__preview,
+  .pdf-watermark__preview {
     height: 220px;
   }
 
@@ -6184,6 +6259,111 @@ a {
 }
 
 .tiktok-video__caption {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--fg) 82%, var(--muted));
+  max-height: 7.5rem;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.facebook-video__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.facebook-video__example {
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.facebook-video__example:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  color: var(--fg);
+  background: color-mix(in oklab, var(--accent) 8%, var(--surface));
+}
+
+.facebook-video__example:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.facebook-video__stage {
+  min-height: 420px;
+}
+
+.facebook-video__stage.is-loading {
+  display: grid;
+  place-items: center;
+}
+
+.facebook-video__stage.is-ready {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.facebook-video__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.facebook-video__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.facebook-video__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.facebook-video__result-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.facebook-video__link {
+  width: fit-content;
+  font-size: 0.84rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.facebook-video__link:hover {
+  color: color-mix(in oklab, var(--accent) 80%, var(--fg));
+}
+
+.facebook-video__poster,
+.facebook-video__poster-fallback {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  background: color-mix(in oklab, var(--surface) 70%, #000 8%);
+}
+
+.facebook-video__poster-fallback {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.facebook-video__caption {
   margin: 0;
   font-size: 0.88rem;
   line-height: 1.55;

@@ -111,6 +111,12 @@ export default function TwitterVideoDownloaderLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/facebook-video-downloader">
+              Facebook Video Downloader
+            </Link>{" "}
+            — Save public Facebook watch videos and Reels the same way.
+          </li>
+          <li>
             <Link href="/tiktok-video-downloader">TikTok Video Downloader</Link>{" "}
             — Save public TikTok videos the same way.
           </li>

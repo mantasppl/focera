@@ -37,9 +37,9 @@ export const categoryLabels: Record<ToolCategory, string> = {
 
 export const categoryDescriptions: Record<ToolCategory, string> = {
   pdf: "Merge, split, compress, edit, and convert PDFs in your browser.",
-  image: "Compress, upscale, remove backgrounds, and convert images.",
-  video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, and export in your browser.",
-  ai: "Generate images and stories, plus smart cutouts, OCR, and speech-to-text.",
+  image: "Compress, upscale, colorize photos, remove backgrounds, and convert images.",
+  video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, and export in your browser.",
+  ai: "Generate images and stories, colorize photos, plus smart cutouts, OCR, and speech-to-text.",
   file: "Converters, generators, and everyday utilities for any file.",
 };
 
@@ -572,6 +572,60 @@ export const tools: Tool[] = [
         question: "Am I allowed to download any video?",
         answer:
           "Only download content you have the right to use — for example your own posts, or material you are permitted to save. Respect X’s terms and the creator’s rights.",
+      },
+    ],
+  },
+  {
+    slug: "facebook-video-downloader",
+    name: "Free Facebook Video Downloader",
+    shortName: "Facebook Video",
+    description:
+      "Download Facebook videos online — paste a public watch, Reel, or fb.watch link, preview the clip, and save an MP4. Free, no account required.",
+    categories: ["video"],
+    status: "ready",
+    href: "/facebook-video-downloader",
+    keywords: [
+      "facebook video downloader",
+      "download facebook video",
+      "facebook reel downloader",
+      "download facebook reels",
+      "facebook mp4 download",
+      "save facebook video",
+      "facebook video saver",
+      "fb watch download",
+      "download fb video",
+      "free facebook downloader",
+    ],
+    faq: [
+      {
+        question: "Is this Facebook video downloader free?",
+        answer:
+          "Yes. Paste a public Facebook link, preview the video, and download an MP4 with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Which Facebook links work?",
+        answer:
+          "Public facebook.com/watch, /reel, and /videos links work, plus many fb.watch short share URLs. Private, age-restricted, and deleted videos cannot be fetched.",
+      },
+      {
+        question: "Can I download Facebook Reels?",
+        answer:
+          "Yes. Paste a Reel URL and Focera resolves the highest-quality progressive MP4 Facebook hosts for that public Reel.",
+      },
+      {
+        question: "Do I need a Facebook account?",
+        answer:
+          "No. Open the page, paste a public URL, and download. Nothing to install and no signup required.",
+      },
+      {
+        question: "Can I download private Facebook videos?",
+        answer:
+          "No. Only public media is available. If a post is private, friends-only, or login-walled, the download will fail.",
+      },
+      {
+        question: "Am I allowed to download any video?",
+        answer:
+          "Only download content you have the right to use — for example your own posts, or material you are permitted to save. Respect Facebook’s terms and the creator’s rights.",
       },
     ],
   },
@@ -1352,6 +1406,70 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "pdf-watermark",
+    name: "Free PDF Watermark Tool",
+    shortName: "PDF Watermark",
+    description:
+      "Add a watermark to PDF online — stamp a logo or image on every page with position, size, opacity, and rotation. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/pdf-watermark",
+    keywords: [
+      "pdf watermark",
+      "add watermark to pdf",
+      "stamp image on pdf",
+      "pdf stamp",
+      "watermark pdf online",
+      "add logo to pdf",
+      "overlay image on pdf",
+      "free pdf watermark",
+      "pdf watermark tool",
+      "stamp pdf pages",
+    ],
+    faq: [
+      {
+        question: "Is this PDF watermark tool free?",
+        answer:
+          "Yes. Stamp unlimited PDFs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Watermarking runs entirely in your browser with pdf-lib. Your PDF and stamp image stay on your device.",
+      },
+      {
+        question: "What image formats can I use as a stamp?",
+        answer:
+          "JPG, PNG, and WebP up to 10 MB. Use PNG when you need a transparent logo or signature.",
+      },
+      {
+        question: "Can I choose where the watermark appears?",
+        answer:
+          "Yes. Place it in the center or any corner, or tile it across each page. Adjust size, opacity, and diagonal rotation.",
+      },
+      {
+        question: "Does watermarking keep text selectable?",
+        answer:
+          "Yes. The original PDF pages stay intact — only the stamp image is drawn on top, so text and layout remain.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per watermark.",
+      },
+      {
+        question: "Can I watermark password-protected PDFs?",
+        answer:
+          "Not yet. Remove the password from protected files first, then upload them to stamp.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF and stamp image, and download immediately.",
+      },
+    ],
+  },
+  {
     slug: "compress-pdf",
     name: "Free Compress PDF Tool",
     shortName: "Compress PDF",
@@ -1778,6 +1896,71 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "colorize-photo",
+    name: "Colorize Photo Online Free — Color Your Photo",
+    shortName: "Colorize Photo",
+    description:
+      "Colorize black and white photos online with AI — add natural color to old pictures in your browser. Free, private, and no account required.",
+    categories: ["image", "ai"],
+    status: "ready",
+    href: "/colorize-photo",
+    keywords: [
+      "colorize photo",
+      "colorize black and white photo",
+      "color your photo",
+      "photo colorizer",
+      "colourise photo",
+      "add color to black and white photo",
+      "ai photo colorizer",
+      "colorize old photos",
+      "restore old photos color",
+      "free photo colorizer",
+      "colorize image online",
+    ],
+    faq: [
+      {
+        question: "Is this photo colorizer free?",
+        answer:
+          "Yes. Upload, colorize, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. AI colorization runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which photos work best?",
+        answer:
+          "Black & white, grayscale, and sepia photos colorize most cleanly. Color photos are converted to grayscale first, then recolored.",
+      },
+      {
+        question: "What do Subtle, Natural, and Vivid mean?",
+        answer:
+          "They control color strength. Subtle keeps a soft tint, Natural aims for balanced everyday color, and Vivid boosts saturation for richer results.",
+      },
+      {
+        question: "Why does the first run take longer?",
+        answer:
+          "The AI model downloads once (about 60 MB) and is cached by your browser. Later colorizations are significantly faster.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a colorized PNG.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After colorizing, drag the preview slider to compare the original with the colorized photo.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use. Only colorize photos you own or have permission to edit.",
+      },
+    ],
+  },
+  {
     slug: "image-to-text",
     name: "Image to Text Online Free — OCR Converter",
     shortName: "Image to Text",
@@ -1971,6 +2154,65 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "pdf-to-text",
+    name: "Extract Text from PDF Online Free",
+    shortName: "PDF to Text",
+    description:
+      "Extract text from PDF online — pull selectable text into plain text you can copy or download as .txt. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/pdf-to-text",
+    keywords: [
+      "extract text from pdf",
+      "pdf to text",
+      "pdf text extractor",
+      "pdf to txt",
+      "copy text from pdf",
+      "pdf text extraction",
+      "convert pdf to text",
+      "free pdf to text",
+      "pdf to plain text",
+      "pull text from pdf",
+    ],
+    faq: [
+      {
+        question: "Is this PDF text extractor free?",
+        answer:
+          "Yes. Extract, copy, and download text from unlimited PDFs with no account, subscription, or watermark.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Text extraction runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "Does this work on scanned PDFs?",
+        answer:
+          "This tool reads selectable text already in the PDF. Scanned image-only pages usually need OCR — try Image to Text after converting pages with PDF to JPG.",
+      },
+      {
+        question: "Can I edit the extracted text?",
+        answer:
+          "Yes. After extraction finishes, edit the result in the text panel, then copy it or download a .txt file.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per extraction.",
+      },
+      {
+        question: "Can I extract text from password-protected PDFs?",
+        answer:
+          "Not yet. Remove the password from protected files first, then upload them to extract text.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and extract immediately.",
       },
     ],
   },
