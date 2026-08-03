@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans, Syne } from "next/font/google";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import Analytics from "@/components/Analytics";
 import JsonLd from "@/components/JsonLd";
 import {
@@ -48,6 +49,7 @@ export default function RootLayout({
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         {children}
         <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   );
