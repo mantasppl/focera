@@ -38,8 +38,8 @@ export const categoryLabels: Record<ToolCategory, string> = {
 export const categoryDescriptions: Record<ToolCategory, string> = {
   pdf: "Merge, split, compress, edit, and convert PDFs in your browser.",
   image: "Compress, upscale, colorize photos, remove backgrounds, and convert images.",
-  video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, and export in your browser.",
-  ai: "Generate images and stories, colorize photos, plus smart cutouts, OCR, and speech-to-text.",
+  video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, summarize YouTube videos, and export in your browser.",
+  ai: "Generate images and stories, colorize photos, summarize YouTube videos, plus smart cutouts, OCR, and speech-to-text.",
   file: "Converters, generators, and everyday utilities for any file.",
 };
 
@@ -697,6 +697,72 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "youtube-summarize",
+    name: "Free YouTube Video Summarizer — Summarize YouTube",
+    shortName: "YouTube Summarizer",
+    description:
+      "Summarize YouTube videos online — paste a link, pull captions or speech, then get a brief overview, detailed summary, or key points. Copy or download TXT. Free, no account required.",
+    categories: ["video", "ai"],
+    status: "ready",
+    href: "/youtube-summarize",
+    keywords: [
+      "youtube summarizer",
+      "summarize youtube video",
+      "youtube summary",
+      "youtube video summary",
+      "ai youtube summarizer",
+      "youtube key points",
+      "summarize youtube transcript",
+      "youtube tl;dr",
+      "free youtube summarizer",
+      "youtube video overview",
+      "youtube lecture summary",
+      "youtube notes generator",
+    ],
+    faq: [
+      {
+        question: "Is this YouTube video summarizer free?",
+        answer:
+          "Yes. Paste a link, get a summary, copy, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "How does YouTube summarization work?",
+        answer:
+          "Focera first reads captions YouTube already provides. If there is no caption track, it transcribes speech from the audio (videos up to about 10 minutes), then writes a summary in the style you choose.",
+      },
+      {
+        question: "What summary styles are available?",
+        answer:
+          "Brief (2–4 sentences), Detailed (multi-paragraph), or Key points (bullet list of takeaways).",
+      },
+      {
+        question: "Do I need the video to have captions?",
+        answer:
+          "No. Captions are preferred when present. Without captions, speech transcription runs from the video’s audio for clips up to 10 minutes before summarizing.",
+      },
+      {
+        question: "Which YouTube links are supported?",
+        answer:
+          "Watch URLs, youtu.be short links, Shorts, Live links, and 11-character video IDs are supported.",
+      },
+      {
+        question: "What can I download?",
+        answer:
+          "Copy the summary or download a .txt file for notes and briefs.",
+      },
+      {
+        question: "Are very long videos supported?",
+        answer:
+          "Yes when captions exist. Extremely long transcripts may be truncated so the summarizer can stay within length limits; the summary then covers the available portion.",
+      },
+      {
+        question: "Do I need an account?",
+        answer:
+          "No. Open the page, paste a YouTube URL, and summarize. Nothing to install and no signup required.",
+      },
+    ],
+  },
+  {
     slug: "audio-to-text",
     name: "Free Audio to Text Converter — Speech Transcription",
     shortName: "Audio to Text",
@@ -1225,6 +1291,65 @@ export const tools: Tool[] = [
         question: "Does it work on mobile?",
         answer:
           "Yes. The layout stacks on small screens so you can switch case styles and copy results comfortably on a phone.",
+      },
+    ],
+  },
+  {
+    slug: "word-counter",
+    name: "Free Word Counter",
+    shortName: "Word Counter",
+    description:
+      "Count words, characters, sentences, and paragraphs online — plus reading and speaking time. Free, private, and live in your browser.",
+    categories: ["file"],
+    status: "ready",
+    href: "/word-counter",
+    keywords: [
+      "word counter",
+      "word count",
+      "character counter",
+      "character count",
+      "sentence counter",
+      "paragraph counter",
+      "reading time calculator",
+      "online word counter",
+      "free word counter",
+      "count words in text",
+    ],
+    faq: [
+      {
+        question: "What does this word counter measure?",
+        answer:
+          "Words, characters (with and without spaces), sentences, paragraphs, lines, plus estimated reading and speaking time.",
+      },
+      {
+        question: "Does my text leave the browser?",
+        answer:
+          "No. All counting runs locally in your browser. Text you enter is never uploaded to Focera.",
+      },
+      {
+        question: "How is reading time calculated?",
+        answer:
+          "Reading time assumes about 200 words per minute (typical silent reading). Speaking time assumes about 130 words per minute.",
+      },
+      {
+        question: "How are words counted?",
+        answer:
+          "Words are split on whitespace after trimming. Empty input counts as zero words.",
+      },
+      {
+        question: "Can I copy my text?",
+        answer:
+          "Yes. Use Copy text to place the current draft on your clipboard, or Clear to reset the editor.",
+      },
+      {
+        question: "Is this word counter free?",
+        answer:
+          "Yes. Count unlimited text with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Does it work on mobile?",
+        answer:
+          "Yes. The layout stacks on small screens so you can paste text and read live counts comfortably on a phone.",
       },
     ],
   },

@@ -113,6 +113,10 @@ export default function YoutubeToTextLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/youtube-summarize">YouTube Summarizer</Link> — Get a
+            brief overview, detailed summary, or key points from the same link.
+          </li>
+          <li>
             <Link href="/video-to-text">Video to Text</Link> — Upload an MP4 or
             other local clip to transcribe speech without a YouTube link.
           </li>

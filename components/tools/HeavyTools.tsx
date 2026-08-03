@@ -136,6 +136,11 @@ export const YoutubeToTextLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const YoutubeSummarizeLazy = dynamic(
+  () => import("@/components/tools/YoutubeSummarize"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const AudioToTextLazy = dynamic(
   () => import("@/components/tools/AudioToText"),
   { ssr: false, loading: () => <ToolLoading /> },
