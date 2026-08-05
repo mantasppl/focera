@@ -140,8 +140,24 @@ export default function PdfToWordLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/word-to-pdf">Word to PDF</Link> — Convert .docx
+            documents into A4 or Letter PDFs.
+          </li>
+          <li>
+            <Link href="/pdf-to-excel">PDF to Excel</Link> — Convert PDF tables
+            and text into an .xlsx spreadsheet.
+          </li>
+          <li>
+            <Link href="/pdf-to-powerpoint">PDF to PowerPoint</Link> — Convert
+            PDF pages into editable or visual .pptx slides.
+          </li>
+          <li>
             <Link href="/pdf-to-text">PDF to Text</Link> — Extract plain text
             from a PDF to copy or download as .txt.
+          </li>
+          <li>
+            <Link href="/pdf-to-epub">PDF to EPUB</Link> — Convert PDFs into
+            reflowable .epub ebooks for e-readers.
           </li>
           <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert PDF pages to

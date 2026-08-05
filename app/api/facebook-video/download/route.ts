@@ -1,3 +1,4 @@
+import { brandedDownloadFilename } from "@/lib/image";
 import { streamFacebookVideo } from "@/lib/facebook-video-server";
 import { parseFacebookVideoId } from "@/lib/facebook-video";
 
@@ -23,7 +24,9 @@ export async function GET(request: Request) {
       videoId,
     });
 
-    const filename = filenameHint || `facebook-${videoId}.mp4`;
+    const filename = brandedDownloadFilename(
+      filenameHint || `facebook-${videoId}.mp4`,
+    );
 
     const headers = new Headers();
     headers.set("Content-Type", contentType);

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",
+    "@cantoo/pdf-lib": "^2.8.1",
     "@imgly/background-removal": "^1.7.0",
     "csso": "^5.0.5",
     "docx": "^9.7.1",
@@ -19,17 +20,20 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "jszip": "^3.10.1",
+    "mammoth": "^1.12.0",
     "marked": "^18.0.7",
     "next": "16.2.11",
     "onnxruntime-web": "^1.21.0-dev.20250206-d981b153d3",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.1.200",
+    "pptxgenjs": "^4.0.1",
     "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.18.1",
     "terser": "^5.49.0",
-    "tesseract.js": "^7.0.0"
+    "tesseract.js": "^7.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

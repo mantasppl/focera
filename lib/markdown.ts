@@ -3,7 +3,7 @@ import DOMPurify from "dompurify";
 import hljs from "highlight.js";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { downloadBlob } from "@/lib/image";
+import { brandedDownloadFilename, downloadBlob } from "@/lib/image";
 
 export const MARKDOWN_THEME_KEY = "markdown-editor-theme";
 export const MARKDOWN_DRAFT_KEY = "markdown-editor-draft";
@@ -244,7 +244,7 @@ export async function downloadMarkdownPdf(
       heightLeft -= usableHeight;
     }
 
-    pdf.save(filename);
+    pdf.save(brandedDownloadFilename(filename));
   } finally {
     host.remove();
   }

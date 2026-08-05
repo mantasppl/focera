@@ -1,3 +1,5 @@
+import { brandedDownloadFilename } from "@/lib/image";
+
 const STATUS_ID_RE = /^\d{5,25}$/;
 
 export type TwitterVideoItem = {
@@ -108,5 +110,7 @@ export function downloadFilename(
 ): string {
   const user = result.username?.replace(/[^\w.-]+/g, "") || "twitter";
   const suffix = total > 1 ? `-${index + 1}` : "";
-  return `twitter-${user}-${result.statusId}${suffix}.mp4`;
+  return brandedDownloadFilename(
+    `twitter-${user}-${result.statusId}${suffix}.mp4`,
+  );
 }

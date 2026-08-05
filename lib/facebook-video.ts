@@ -1,3 +1,5 @@
+import { brandedDownloadFilename } from "@/lib/image";
+
 const VIDEO_ID_RE = /^\d{5,30}$/;
 const SHORT_CODE_RE = /^[A-Za-z0-9_-]{4,40}$/;
 
@@ -136,5 +138,7 @@ export function downloadFilename(
   result: Pick<FacebookVideoResult, "videoId" | "username" | "quality">,
 ): string {
   const user = result.username?.replace(/[^\w.-]+/g, "") || "facebook";
-  return `facebook-${user}-${result.videoId}-${result.quality}.mp4`;
+  return brandedDownloadFilename(
+    `facebook-${user}-${result.videoId}-${result.quality}.mp4`,
+  );
 }

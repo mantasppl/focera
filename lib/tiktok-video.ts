@@ -1,3 +1,5 @@
+import { brandedDownloadFilename } from "@/lib/image";
+
 const VIDEO_ID_RE = /^\d{8,25}$/;
 const SHORT_CODE_RE = /^[A-Za-z0-9]{5,20}$/;
 
@@ -125,5 +127,5 @@ export function downloadFilename(
   result: Pick<TikTokVideoResult, "videoId" | "username">,
 ): string {
   const user = result.username?.replace(/[^\w.-]+/g, "") || "tiktok";
-  return `tiktok-${user}-${result.videoId}.mp4`;
+  return brandedDownloadFilename(`tiktok-${user}-${result.videoId}.mp4`);
 }

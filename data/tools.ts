@@ -36,8 +36,8 @@ export const categoryLabels: Record<ToolCategory, string> = {
 };
 
 export const categoryDescriptions: Record<ToolCategory, string> = {
-  pdf: "Merge, split, compress, edit, and convert PDFs in your browser.",
-  image: "Compress, upscale, colorize photos, remove backgrounds, and convert images.",
+  pdf: "Merge, split, compress, unlock, edit, and convert PDFs — including PNG to PDF, Word to PDF, EPUB to PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, and PDF to EPUB — in your browser.",
+  image: "Compress, upscale, colorize photos, remove backgrounds, convert PNG to PDF, and convert images.",
   video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, summarize YouTube videos, and export in your browser.",
   ai: "Generate images and stories, colorize photos, summarize YouTube videos, plus smart cutouts, OCR, and speech-to-text.",
   file: "Converters, generators, and everyday utilities for any file.",
@@ -1402,7 +1402,7 @@ export const tools: Tool[] = [
       {
         question: "Can I edit password-protected PDFs?",
         answer:
-          "Not yet. Remove the password from protected files first, then open them in the editor.",
+          "Not directly. Unlock the file first with Unlock PDF, then open the unlocked copy in the editor.",
       },
       {
         question: "Do I need to install software?",
@@ -1459,7 +1459,7 @@ export const tools: Tool[] = [
       {
         question: "Can I merge password-protected PDFs?",
         answer:
-          "Not yet. Remove the password from protected files first, then upload them to merge.",
+          "Not directly. Unlock each file first with Unlock PDF, then upload the unlocked copies to merge.",
       },
       {
         question: "Do I need to install software?",
@@ -1521,7 +1521,7 @@ export const tools: Tool[] = [
       {
         question: "Can I split password-protected PDFs?",
         answer:
-          "Not yet. Remove the password from protected files first, then upload them to split.",
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to split.",
       },
       {
         question: "Do I need to install software?",
@@ -1585,7 +1585,7 @@ export const tools: Tool[] = [
       {
         question: "Can I watermark password-protected PDFs?",
         answer:
-          "Not yet. Remove the password from protected files first, then upload them to stamp.",
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to stamp.",
       },
       {
         question: "Do I need to install software?",
@@ -1642,12 +1642,71 @@ export const tools: Tool[] = [
       {
         question: "Can I compress password-protected PDFs?",
         answer:
-          "Not yet. Remove the password from protected files first, then upload them to compress.",
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to compress.",
       },
       {
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your PDF, and compress immediately.",
+      },
+    ],
+  },
+  {
+    slug: "unlock-pdf",
+    name: "Unlock PDF Tool",
+    shortName: "Unlock PDF",
+    description:
+      "Unlock password-protected PDFs online — remove the open password and download an unprotected copy. Free, private, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/unlock-pdf",
+    keywords: [
+      "unlock pdf",
+      "remove pdf password",
+      "pdf password remover",
+      "decrypt pdf",
+      "unlock pdf online",
+      "remove password from pdf",
+      "unprotect pdf",
+      "free pdf unlocker",
+      "open password protected pdf",
+      "pdf unlock tool",
+    ],
+    faq: [
+      {
+        question: "Is this PDF unlocker free?",
+        answer:
+          "Yes. Unlock and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs or passwords uploaded to a server?",
+        answer:
+          "No. Unlocking runs entirely in your browser. Your file and password stay on your device.",
+      },
+      {
+        question: "Do I need to know the password?",
+        answer:
+          "Yes. Enter the password used to open the PDF. This tool does not crack or recover forgotten passwords.",
+      },
+      {
+        question: "Will text and layout stay the same?",
+        answer:
+          "Yes. Pages are decrypted and copied as real PDF pages — selectable text, vector graphics, and layout are preserved.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per unlock.",
+      },
+      {
+        question: "What if the PDF is not password-protected?",
+        answer:
+          "The tool will tell you no unlock is needed. Upload only encrypted PDFs when you want to remove protection.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, enter the password, and download immediately.",
       },
     ],
   },
@@ -2273,12 +2332,327 @@ export const tools: Tool[] = [
       {
         question: "Can I convert password-protected PDFs?",
         answer:
-          "Not yet. Remove the password from protected files first, then upload them to convert.",
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to convert.",
       },
       {
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "pdf-to-excel",
+    name: "PDF to Excel Converter",
+    shortName: "PDF to Excel",
+    description:
+      "Convert PDF to Excel (.xlsx) online — extract tables and text into a spreadsheet. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/pdf-to-excel",
+    keywords: [
+      "pdf to excel",
+      "pdf to xlsx",
+      "convert pdf to excel",
+      "pdf to excel converter",
+      "pdf to spreadsheet",
+      "pdf table to excel",
+      "free pdf to excel",
+      "pdf to excel online",
+      "extract table from pdf",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to Excel converter free?",
+        answer:
+          "Yes. Convert and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between Detect tables and One column?",
+        answer:
+          "Detect tables splits lines into spreadsheet columns using horizontal gaps — best for invoices and reports. One column puts each text line into a single cell, which is better for prose-heavy PDFs.",
+      },
+      {
+        question: "Will tables match the original PDF exactly?",
+        answer:
+          "Column detection works well on clear tabular layouts, but complex multi-level tables, merged cells, and scanned pages may need cleanup in Excel afterward.",
+      },
+      {
+        question: "What file do I download?",
+        answer:
+          "You get a .xlsx workbook compatible with Microsoft Excel, Google Sheets, Numbers, and LibreOffice Calc.",
+      },
+      {
+        question: "Does this work on scanned PDFs?",
+        answer:
+          "This tool reads selectable text already in the PDF. Image-only scans usually need OCR first — try PDF to JPG plus Image to Text, then paste into Excel.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "Can I convert password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to convert.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "pdf-to-powerpoint",
+    name: "PDF to PowerPoint Converter",
+    shortName: "PDF to PowerPoint",
+    description:
+      "Convert PDF to PowerPoint (.pptx) online — extract editable text or embed exact page images as slides. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/pdf-to-powerpoint",
+    keywords: [
+      "pdf to powerpoint",
+      "pdf to pptx",
+      "pdf to ppt",
+      "convert pdf to powerpoint",
+      "pdf to powerpoint converter",
+      "pdf to slides",
+      "pdf to presentation",
+      "free pdf to powerpoint",
+      "pdf to powerpoint online",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to PowerPoint converter free?",
+        answer:
+          "Yes. Convert and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between Editable text and Exact pages?",
+        answer:
+          "Editable text extracts selectable text onto slides you can edit. Exact pages embeds each PDF page as an image so the layout matches visually, but text inside images is not editable.",
+      },
+      {
+        question: "Will formatting match the original PDF?",
+        answer:
+          "Editable text rebuilds paragraphs on widescreen slides and may not preserve complex columns, tables, or precise positioning. Exact pages keeps a visual match by embedding page images.",
+      },
+      {
+        question: "What file do I download?",
+        answer:
+          "You get a .pptx file compatible with Microsoft PowerPoint, Google Slides, LibreOffice Impress, and most modern presentation apps.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "Can I convert password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to convert.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "word-to-pdf",
+    name: "Word to PDF Converter",
+    shortName: "Word to PDF",
+    description:
+      "Convert Word to PDF online — turn .docx documents into A4 or Letter PDFs. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/word-to-pdf",
+    keywords: [
+      "word to pdf",
+      "docx to pdf",
+      "convert word to pdf",
+      "word to pdf converter",
+      "microsoft word to pdf",
+      "doc to pdf",
+      "free word to pdf",
+      "word to pdf online",
+      "convert docx to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this Word to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited Word files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my Word files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your documents stay on your device.",
+      },
+      {
+        question: "Which Word formats are supported?",
+        answer:
+          "Upload .docx files (modern Word format). Legacy .doc files are not supported — open them in Word or LibreOffice and save as .docx first.",
+      },
+      {
+        question: "Will formatting match the original Word document?",
+        answer:
+          "Headings, paragraphs, lists, tables, links, and images are preserved when possible. Complex layouts, text boxes, columns, and some custom styles may look different after conversion.",
+      },
+      {
+        question: "Can I choose A4 or Letter?",
+        answer:
+          "Yes. Pick A4 or US Letter before converting so the PDF matches your printer or regional standard.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Upload Word files up to 25 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your .docx, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "pdf-to-epub",
+    name: "PDF to EPUB Converter",
+    shortName: "PDF to EPUB",
+    description:
+      "Convert PDF to EPUB online — extract reflowable text or embed exact page images into an .epub ebook. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/pdf-to-epub",
+    keywords: [
+      "pdf to epub",
+      "convert pdf to epub",
+      "pdf to epub converter",
+      "pdf to ebook",
+      "pdf to kindle",
+      "free pdf to epub",
+      "pdf to epub online",
+      "make epub from pdf",
+      "pdf ebook converter",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to EPUB converter free?",
+        answer:
+          "Yes. Convert and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between Reflowable text and Exact pages?",
+        answer:
+          "Reflowable text extracts selectable text into EPUB chapters you can resize and restyle on e-readers. Exact pages embeds each PDF page as an image so the layout matches visually, but text inside images is not selectable.",
+      },
+      {
+        question: "Which apps open the EPUB file?",
+        answer:
+          "You get a standard EPUB 3 file compatible with Apple Books, Calibre, Google Play Books, Kindle apps (after transfer), and most modern e-readers.",
+      },
+      {
+        question: "Will formatting match the original PDF?",
+        answer:
+          "Reflowable text rebuilds paragraphs and may not preserve complex columns, tables, or precise positioning. Exact pages keeps a visual match by embedding page images.",
+      },
+      {
+        question: "Does this work on scanned PDFs?",
+        answer:
+          "Use Exact pages for image-only scans. Reflowable text needs selectable text already in the PDF — for OCR, try PDF to JPG plus Image to Text first.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "Can I convert password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to convert.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "epub-to-pdf",
+    name: "EPUB to PDF Converter",
+    shortName: "EPUB to PDF",
+    description:
+      "Convert EPUB to PDF online — turn ebook .epub files into A4 or Letter PDFs. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/epub-to-pdf",
+    keywords: [
+      "epub to pdf",
+      "convert epub to pdf",
+      "epub to pdf converter",
+      "ebook to pdf",
+      "epub converter",
+      "free epub to pdf",
+      "epub to pdf online",
+      "turn epub into pdf",
+      "convert ebook to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this EPUB to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited EPUB files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my EPUB files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your ebooks stay on your device.",
+      },
+      {
+        question: "Which EPUB files are supported?",
+        answer:
+          "Upload DRM-free .epub files up to 25 MB. Reflowable books with standard XHTML chapters work best. DRM-protected store books cannot be opened in the browser.",
+      },
+      {
+        question: "Will formatting match the original ebook?",
+        answer:
+          "Chapters, headings, paragraphs, lists, links, and images are preserved when possible. Complex CSS, custom fonts, fixed-layout pages, and interactive features may look different after conversion.",
+      },
+      {
+        question: "Can I choose A4 or Letter?",
+        answer:
+          "Yes. Pick A4 or US Letter before converting so the PDF matches your printer or regional standard.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Upload EPUB files up to 25 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your .epub, and convert immediately.",
       },
     ],
   },
@@ -2332,7 +2706,7 @@ export const tools: Tool[] = [
       {
         question: "Can I extract text from password-protected PDFs?",
         answer:
-          "Not yet. Remove the password from protected files first, then upload them to extract text.",
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to extract text.",
       },
       {
         question: "Do I need to install software?",
@@ -2395,6 +2769,70 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "png-to-pdf",
+    name: "PNG to PDF Converter",
+    shortName: "PNG to PDF",
+    description:
+      "Convert PNG to PDF online — turn one image or a batch into a multi-page PDF with Fit, A4, or Letter. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/png-to-pdf",
+    keywords: [
+      "png to pdf",
+      "convert png to pdf",
+      "png to pdf converter",
+      "images to pdf",
+      "jpg to pdf",
+      "photo to pdf",
+      "png images to pdf",
+      "free png to pdf",
+      "png to pdf online",
+      "multiple png to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this PNG to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited image-to-PDF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "PNG is the primary format. JPG and WebP are also accepted. WebP is converted locally before embedding so the PDF stays widely compatible.",
+      },
+      {
+        question: "Can I convert multiple PNGs into one PDF?",
+        answer:
+          "Yes. Add up to 30 images, reorder them, and each image becomes a page in the downloaded PDF.",
+      },
+      {
+        question: "What page size options are available?",
+        answer:
+          "Choose Fit so each page matches the image dimensions, or place images on A4 or US Letter with optional margins.",
+      },
+      {
+        question: "Is PNG transparency preserved?",
+        answer:
+          "Yes. Transparent PNG areas stay transparent in the PDF. Some printers may still composite onto white paper.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each image can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your images, and convert immediately.",
       },
     ],
   },

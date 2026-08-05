@@ -119,6 +119,10 @@ export default function MergePdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/unlock-pdf">Unlock PDF</Link> — Remove a password from
+            protected PDFs before merging.
+          </li>
+          <li>
             <Link href="/split-pdf">Split PDF</Link> — Break a PDF into pages,
             ranges, or fixed-size chunks before or after merging.
           </li>

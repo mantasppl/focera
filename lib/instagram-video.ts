@@ -1,3 +1,5 @@
+import { brandedDownloadFilename } from "@/lib/image";
+
 const SHORTCODE_RE = /^[A-Za-z0-9_-]{5,20}$/;
 
 export type InstagramMediaKind = "video" | "image" | "carousel";
@@ -93,5 +95,7 @@ export function downloadFilename(
 ): string {
   const user = result.username?.replace(/[^\w.-]+/g, "") || "instagram";
   const suffix = total > 1 ? `-${index + 1}` : "";
-  return `instagram-${user}-${result.shortcode}${suffix}.mp4`;
+  return brandedDownloadFilename(
+    `instagram-${user}-${result.shortcode}${suffix}.mp4`,
+  );
 }

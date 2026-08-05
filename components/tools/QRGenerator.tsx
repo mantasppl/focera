@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import QRCode from "qrcode";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { brandedDownloadFilename } from "@/lib/image";
 import { copyText } from "@/lib/utils";
 
 const QR_OPTIONS = {
@@ -59,7 +60,7 @@ export default function QRGenerator() {
     if (!qr) return;
     const link = document.createElement("a");
     link.href = qr;
-    link.download = "qr-code.png";
+    link.download = brandedDownloadFilename("qr-code.png");
     link.click();
   }
 

@@ -210,7 +210,7 @@ export function countWords(text: string): number {
 
 export function downloadAiStoryTxt(
   text: string,
-  filename = "focera-ai-story.txt",
+  filename = "ai-story.txt",
 ): void {
   downloadBlob(new Blob([text], { type: "text/plain;charset=utf-8" }), filename);
 }

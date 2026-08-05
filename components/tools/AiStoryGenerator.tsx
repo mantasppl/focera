@@ -117,7 +117,7 @@ export default function AiStoryGenerator() {
 
   function handleDownload() {
     if (!story) return;
-    downloadAiStoryTxt(story, `focera-ai-story-${seed}.txt`);
+    downloadAiStoryTxt(story, `ai-story-${seed}.txt`);
   }
 
   function applyExample(example: string) {

@@ -1,0 +1,29 @@
+---
+description: Brand all tool download filenames with focera.co- prefix
+alwaysApply: true
+---
+
+# Download filename branding
+
+Every tool download must use the `focera.co-` prefix before the rest of the filename.
+
+## Required pattern
+
+- Use `downloadBlob` from `@/lib/image` for blob downloads — it applies branding automatically via `brandedDownloadFilename`.
+- If you cannot use `downloadBlob` (custom `link.download`, jsPDF `save`, API `Content-Disposition`, etc.), call `brandedDownloadFilename(filename)` from `@/lib/image` before setting the name.
+- Do not hardcode the prefix in call sites; do not skip branding for new tools.
+- The helper is idempotent — safe if the name already starts with `focera.co-`.
+
+## Examples
+
+```ts
+// ✅ GOOD — goes through downloadBlob
+downloadBlob(blob, `${fileBaseName(file)}-compressed.pdf`);
+// saved as: focera.co-photo-compressed.pdf
+
+// ✅ GOOD — custom download path
+link.download = brandedDownloadFilename(`${base}-edited.pdf`);
+
+// ❌ BAD — raw download name without branding
+link.download = `${base}-edited.pdf`;
+```

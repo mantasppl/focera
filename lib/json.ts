@@ -1,3 +1,5 @@
+import { brandedDownloadFilename } from "@/lib/image";
+
 export type JsonParseError = {
   message: string;
   position: number | null;
@@ -144,7 +146,7 @@ export function downloadJson(text: string, filename = "formatted.json"): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = filename;
+  link.download = brandedDownloadFilename(filename);
   link.click();
   URL.revokeObjectURL(url);
 }

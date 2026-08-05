@@ -126,6 +126,10 @@ export default function PdfToJpgLanding() {
             into an editable Word (.docx) document.
           </li>
           <li>
+            <Link href="/pdf-to-excel">PDF to Excel</Link> — Convert PDF tables
+            and text into an .xlsx spreadsheet.
+          </li>
+          <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, or
             extract pages before converting them to images.
           </li>
@@ -140,6 +144,10 @@ export default function PdfToJpgLanding() {
           <li>
             <Link href="/compress-pdf">Compress PDF</Link> — Shrink PDFs for
             email and uploads when you need a smaller document, not images.
+          </li>
+          <li>
+            <Link href="/png-to-pdf">PNG to PDF</Link> — Turn images into a
+            multi-page PDF (the reverse of PDF to JPG).
           </li>
           <li>
             <Link href="/background-remover">AI Background Remover</Link> —

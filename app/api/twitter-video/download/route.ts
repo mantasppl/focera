@@ -1,3 +1,4 @@
+import { brandedDownloadFilename } from "@/lib/image";
 import { streamTwitterVideo } from "@/lib/twitter-video-server";
 import { parseTwitterStatusId } from "@/lib/twitter-video";
 
@@ -31,9 +32,11 @@ export async function GET(request: Request) {
       videoId: videoId.trim(),
     });
 
-    const filename = username
-      ? `twitter-${username}-${statusId}.mp4`
-      : `twitter-${statusId}.mp4`;
+    const filename = brandedDownloadFilename(
+      username
+        ? `twitter-${username}-${statusId}.mp4`
+        : `twitter-${statusId}.mp4`,
+    );
 
     const headers = new Headers();
     headers.set("Content-Type", contentType);

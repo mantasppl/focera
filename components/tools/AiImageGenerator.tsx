@@ -101,7 +101,7 @@ export default function AiImageGenerator() {
   function handleDownload() {
     if (!imageBlob) return;
     const extension = imageBlob.type.includes("png") ? "png" : "jpg";
-    downloadBlob(imageBlob, `focera-ai-image-${seed}.${extension}`);
+    downloadBlob(imageBlob, `ai-image-${seed}.${extension}`);
   }
 
   function handleRegenerate() {

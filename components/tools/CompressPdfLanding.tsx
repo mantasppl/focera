@@ -119,6 +119,10 @@ export default function CompressPdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/unlock-pdf">Unlock PDF</Link> — Remove a password from
+            a protected PDF before compressing.
+          </li>
+          <li>
             <Link href="/merge-pdf">Merge PDF</Link> — Combine multiple PDFs
             into one file before or after compressing.
           </li>

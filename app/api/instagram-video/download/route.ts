@@ -1,3 +1,4 @@
+import { brandedDownloadFilename } from "@/lib/image";
 import { streamInstagramVideo } from "@/lib/instagram-video-server";
 import { parseInstagramShortcode } from "@/lib/instagram-video";
 
@@ -31,9 +32,11 @@ export async function GET(request: Request) {
       videoId: videoId.trim(),
     });
 
-    const filename = username
-      ? `instagram-${username}-${shortcode}.mp4`
-      : `instagram-${shortcode}.mp4`;
+    const filename = brandedDownloadFilename(
+      username
+        ? `instagram-${username}-${shortcode}.mp4`
+        : `instagram-${shortcode}.mp4`,
+    );
 
     const headers = new Headers();
     headers.set("Content-Type", contentType);

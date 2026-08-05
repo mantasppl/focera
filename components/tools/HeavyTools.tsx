@@ -41,13 +41,43 @@ export const PdfToJpgLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PngToPdfLazy = dynamic(
+  () => import("@/components/tools/PngToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PdfToWordLazy = dynamic(
   () => import("@/components/tools/PdfToWord"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const WordToPdfLazy = dynamic(
+  () => import("@/components/tools/WordToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const EpubToPdfLazy = dynamic(
+  () => import("@/components/tools/EpubToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PdfToTextLazy = dynamic(
   () => import("@/components/tools/PdfToText"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PdfToExcelLazy = dynamic(
+  () => import("@/components/tools/PdfToExcel"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PdfToPowerpointLazy = dynamic(
+  () => import("@/components/tools/PdfToPowerpoint"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PdfToEpubLazy = dynamic(
+  () => import("@/components/tools/PdfToEpub"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -58,6 +88,11 @@ export const MergePdfLazy = dynamic(
 
 export const CompressPdfLazy = dynamic(
   () => import("@/components/tools/CompressPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const UnlockPdfLazy = dynamic(
+  () => import("@/components/tools/UnlockPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

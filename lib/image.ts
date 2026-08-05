@@ -24,11 +24,20 @@ export function validateImageFile(file: File): string | null {
   return null;
 }
 
+export const DOWNLOAD_FILENAME_PREFIX = "focera.co-";
+
+/** Prefix download names with focera.co- (idempotent). */
+export function brandedDownloadFilename(filename: string): string {
+  const name = filename.trim() || "download";
+  if (name.startsWith(DOWNLOAD_FILENAME_PREFIX)) return name;
+  return `${DOWNLOAD_FILENAME_PREFIX}${name}`;
+}
+
 export function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = filename;
+  link.download = brandedDownloadFilename(filename);
   link.click();
   URL.revokeObjectURL(url);
 }

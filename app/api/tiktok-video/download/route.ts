@@ -1,3 +1,4 @@
+import { brandedDownloadFilename } from "@/lib/image";
 import { streamTikTokVideo } from "@/lib/tiktok-video-server";
 import { parseTikTokVideoId } from "@/lib/tiktok-video";
 
@@ -27,9 +28,9 @@ export async function GET(request: Request) {
       username: username || null,
     });
 
-    const filename = username
-      ? `tiktok-${username}-${videoId}.mp4`
-      : `tiktok-${videoId}.mp4`;
+    const filename = brandedDownloadFilename(
+      username ? `tiktok-${username}-${videoId}.mp4` : `tiktok-${videoId}.mp4`,
+    );
 
     const headers = new Headers();
     headers.set("Content-Type", contentType);
