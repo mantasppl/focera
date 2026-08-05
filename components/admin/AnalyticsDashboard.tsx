@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import AnalyticsCharts from "@/components/admin/AnalyticsCharts";
+import { useAdminPath } from "@/components/admin/AdminPathContext";
 import DateRangeFilter from "@/components/admin/DateRangeFilter";
 import StatCards from "@/components/admin/StatCards";
 import ToolsTable from "@/components/admin/ToolsTable";
 import Button from "@/components/Button";
+import { adminFetch } from "@/lib/admin/csrf-client";
 import type {
   DatePreset,
   NamedCount,
@@ -32,6 +34,7 @@ function todayIso(): string {
 }
 
 export default function AnalyticsDashboard() {
+  const { api } = useAdminPath();
   const [preset, setPreset] = useState<DatePreset>("last_30_days");
   const [start, setStart] = useState(todayIso());
   const [end, setEnd] = useState(todayIso());
@@ -59,9 +62,10 @@ export default function AnalyticsDashboard() {
       if (debouncedSearch) params.set("search", debouncedSearch);
 
       try {
-        const response = await fetch(`/api/admin/analytics/overview?${params}`, {
-          signal: controller.signal,
-        });
+        const response = await adminFetch(
+          `${api("/analytics/overview")}?${params}`,
+          { signal: controller.signal },
+        );
         if (!response.ok) {
           const body = (await response.json().catch(() => null)) as {
             error?: string;
@@ -79,12 +83,11 @@ export default function AnalyticsDashboard() {
     }
     void load();
     return () => controller.abort();
-  }, [preset, start, end, debouncedSearch]);
+  }, [preset, start, end, debouncedSearch, api]);
 
   async function downloadExport(format: "csv" | "xlsx") {
-    const response = await fetch("/api/admin/analytics/export", {
+    const response = await adminFetch(api("/analytics/export"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         format,
         preset,

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { AdminPathProvider } from "@/components/admin/AdminPathContext";
+import { getAdminPath } from "@/lib/admin/config";
 
 export const metadata: Metadata = {
   title: "Focera Admin",
@@ -11,5 +13,6 @@ export const metadata: Metadata = {
 };
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  return children;
+  const adminPath = getAdminPath();
+  return <AdminPathProvider adminPath={adminPath}>{children}</AdminPathProvider>;
 }

@@ -9,13 +9,15 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "admin:hash-password": "node scripts/hash-admin-password.mjs"
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",
     "@cantoo/pdf-lib": "^2.8.1",
     "@imgly/background-removal": "^1.7.0",
     "@libsql/client": "^0.17.4",
+    "bcryptjs": "^3.0.3",
     "csso": "^5.0.5",
     "docx": "^9.7.1",
     "dompurify": "^3.4.12",
@@ -45,6 +47,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
     "@types/csso": "^5.0.4",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^20",

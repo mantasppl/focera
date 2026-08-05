@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useAdminPath } from "@/components/admin/AdminPathContext";
 import type { ToolStatsRow } from "@/lib/analytics/types";
 
 export default function ToolsTable({
@@ -12,6 +13,7 @@ export default function ToolsTable({
   loading?: boolean;
   query: { preset: string; start?: string; end?: string };
 }) {
+  const { analyticsPath } = useAdminPath();
   const params = new URLSearchParams();
   params.set("preset", query.preset);
   if (query.start) params.set("start", query.start);
@@ -55,7 +57,7 @@ export default function ToolsTable({
                 <tr key={tool.toolId}>
                   <td>
                     <Link
-                      href={`/admin/analytics/${encodeURIComponent(tool.toolId)}?${qs}`}
+                      href={`${analyticsPath}/${encodeURIComponent(tool.toolId)}?${qs}`}
                       className="admin-table__link"
                     >
                       {tool.toolName}

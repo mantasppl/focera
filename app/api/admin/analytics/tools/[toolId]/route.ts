@@ -1,8 +1,7 @@
 import { getToolBySlug } from "@/data/tools";
-import { isAdminAuthenticated } from "@/lib/analytics/auth";
+import { requireAdminApi } from "@/lib/admin/guard";
 import { parsePreset, resolveDateRange } from "@/lib/analytics/dates";
 import { getToolDetail } from "@/lib/analytics/queries";
-import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 
@@ -11,16 +10,13 @@ type RouteContext = {
 };
 
 export async function GET(request: Request, context: RouteContext) {
-  const guarded = guardApiRequest(request, {
+  const denied = await requireAdminApi(request, {
     bucket: "admin-tool-detail",
     limit: 60,
     windowMs: 60_000,
+    requireCsrf: false,
   });
-  if (guarded) return guarded;
-
-  if (!(await isAdminAuthenticated())) {
-    return Response.json({ error: "Unauthorized." }, { status: 401 });
-  }
+  if (denied) return denied;
 
   const { toolId: rawId } = await context.params;
   const toolId = decodeURIComponent(rawId || "").trim();

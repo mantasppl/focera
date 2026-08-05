@@ -13,8 +13,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useAdminPath } from "@/components/admin/AdminPathContext";
 import DateRangeFilter from "@/components/admin/DateRangeFilter";
 import Button from "@/components/Button";
+import { adminFetch } from "@/lib/admin/csrf-client";
 import type { DatePreset, ToolDetailStats } from "@/lib/analytics/types";
 
 const ACCENT = "#0d9488";
@@ -25,6 +27,7 @@ function todayIso(): string {
 }
 
 export default function ToolDetailDashboard({ toolId }: { toolId: string }) {
+  const { api, analyticsPath } = useAdminPath();
   const [preset, setPreset] = useState<DatePreset>("last_30_days");
   const [start, setStart] = useState(todayIso());
   const [end, setEnd] = useState(todayIso());
@@ -43,8 +46,8 @@ export default function ToolDetailDashboard({ toolId }: { toolId: string }) {
         params.set("end", end);
       }
       try {
-        const response = await fetch(
-          `/api/admin/analytics/tools/${encodeURIComponent(toolId)}?${params}`,
+        const response = await adminFetch(
+          `${api(`/analytics/tools/${encodeURIComponent(toolId)}`)}?${params}`,
           { signal: controller.signal },
         );
         if (!response.ok) {
@@ -64,12 +67,11 @@ export default function ToolDetailDashboard({ toolId }: { toolId: string }) {
     }
     void load();
     return () => controller.abort();
-  }, [toolId, preset, start, end]);
+  }, [toolId, preset, start, end, api]);
 
   async function downloadExport(format: "csv" | "xlsx") {
-    const response = await fetch("/api/admin/analytics/export", {
+    const response = await adminFetch(api("/analytics/export"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         format,
         preset,
@@ -100,7 +102,7 @@ export default function ToolDetailDashboard({ toolId }: { toolId: string }) {
   return (
     <div className="admin-dashboard">
       <div className="admin-detail-head">
-        <Link href="/admin/analytics" className="admin-back">
+        <Link href={analyticsPath} className="admin-back">
           ← All tools
         </Link>
         <div className="admin-detail-head__titles">

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import Button from "@/components/Button";
+import { useAdminPath } from "@/components/admin/AdminPathContext";
+import { adminFetch } from "@/lib/admin/csrf-client";
 import { cn } from "@/lib/utils";
 
 type AdminChromeProps = {
@@ -14,6 +16,7 @@ type AdminChromeProps = {
 export default function AdminChrome({ children, title }: AdminChromeProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { analyticsPath, loginPath, api } = useAdminPath();
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -45,8 +48,8 @@ export default function AdminChrome({ children, title }: AdminChromeProps) {
   async function handleLogout() {
     setLoggingOut(true);
     try {
-      await fetch("/api/admin/auth/logout", { method: "POST" });
-      router.replace("/admin/login");
+      await adminFetch(api("/auth/logout"), { method: "POST" });
+      router.replace(loginPath);
       router.refresh();
     } finally {
       setLoggingOut(false);
@@ -58,7 +61,7 @@ export default function AdminChrome({ children, title }: AdminChromeProps) {
       <header className="admin-header">
         <div className="admin-header__inner">
           <div className="admin-header__brand">
-            <Link href="/admin/analytics" className="site-logo">
+            <Link href={analyticsPath} className="site-logo">
               <span className="site-logo__mark" aria-hidden />
               Focera
             </Link>
@@ -66,10 +69,10 @@ export default function AdminChrome({ children, title }: AdminChromeProps) {
           </div>
           <nav className="admin-nav" aria-label="Admin">
             <Link
-              href="/admin/analytics"
+              href={analyticsPath}
               className={cn(
                 "admin-nav__link",
-                pathname.startsWith("/admin/analytics") && "is-active",
+                pathname.includes("/analytics") && "is-active",
               )}
             >
               Dashboard

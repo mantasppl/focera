@@ -1,4 +1,4 @@
-import { isAdminAuthenticated } from "@/lib/analytics/auth";
+import { requireAdminApi } from "@/lib/admin/guard";
 import { parsePreset, resolveDateRange } from "@/lib/analytics/dates";
 import {
   getBrowserDistribution,
@@ -9,22 +9,17 @@ import {
   getPerToolStats,
   getTopTools,
 } from "@/lib/analytics/queries";
-import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
-  const guarded = guardApiRequest(request, {
+  const denied = await requireAdminApi(request, {
     bucket: "admin-overview",
     limit: 60,
     windowMs: 60_000,
-    // Cookie auth + SameSite=strict; avoid Origin/Referer false negatives on GET.
+    requireCsrf: false,
   });
-  if (guarded) return guarded;
-
-  if (!(await isAdminAuthenticated())) {
-    return Response.json({ error: "Unauthorized." }, { status: 401 });
-  }
+  if (denied) return denied;
 
   const { searchParams } = new URL(request.url);
   const preset = parsePreset(searchParams.get("preset"));

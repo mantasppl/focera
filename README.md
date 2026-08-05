@@ -25,23 +25,32 @@ Open [http://localhost:3000](http://localhost:3000).
 | `GROQ_API_KEY` | Required for Video Autocaption transcription (Groq Whisper) |
 | `RESEND_API_KEY` | Resend API key for the contact form (required for `/contact` submissions) |
 | `RESEND_FROM_EMAIL` | Optional From address (default `Focera Contact <onboarding@resend.dev>`) |
-| `ADMIN_PASSWORD` | Password for `/admin/analytics` (required for admin login) |
-| `ADMIN_SESSION_SECRET` | HMAC secret for admin cookies (required in production, ≥32 chars, must differ from password) |
+| `ADMIN_PATH` | Obscure admin base path (e.g. `/admin-9xk2q7v8m`) |
+| `ADMIN_USERNAME` | Admin login username |
+| `ADMIN_PASSWORD_HASH` | bcrypt hash of the admin password |
+| `ADMIN_SESSION_SECRET` | HMAC secret for admin cookies (≥32 chars in production) |
+| `ADMIN_ALLOWED_IPS` | Optional comma-separated IP allowlist |
 | `DATABASE_URL` | Analytics DB (`file:./data/analytics.db` locally, or Turso `libsql://…`) |
 | `DATABASE_AUTH_TOKEN` | Turso auth token (remote DB only) |
 | `ANALYTICS_IP_SALT` | Optional salt for hashing visitor IPs |
 
-## Internal analytics
+## Secure admin analytics
 
-1. Set `ADMIN_PASSWORD` in `.env.local`.
-2. Run `npm run dev` (the `tool_usage` table is created automatically).
-3. Open [http://localhost:3000/admin/analytics](http://localhost:3000/admin/analytics) and sign in.
+1. Generate credentials:
 
-Optional DB helpers:
+```bash
+node scripts/hash-admin-password.mjs --generate
+```
 
-- `npm run db:generate` — generate Drizzle migrations
-- `npm run db:push` — push schema to the configured database
-- `npm run db:studio` — open Drizzle Studio
+2. Paste the printed `ADMIN_*` values into `.env.local`.
+3. Run `npm run dev` and open `http://localhost:3000{ADMIN_PATH}/login`.
+
+Notes:
+
+- Public `/admin` is disabled (404).
+- Admin APIs are only reachable under `{ADMIN_PATH}/api/...`.
+- Sessions last 24 hours (`HttpOnly`, `Secure` in production, `SameSite=Strict`).
+- Login is limited to 5 attempts/minute/IP, then blocked for 10 minutes.
 
 ## Scripts
 
@@ -49,6 +58,7 @@ Optional DB helpers:
 - `npm run build` — production build
 - `npm run start` — serve production build
 - `npm run lint` — ESLint
+- `node scripts/hash-admin-password.mjs --generate` — generate admin path + password hash
 
 ## SEO
 

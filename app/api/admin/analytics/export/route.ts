@@ -1,10 +1,10 @@
 import * as XLSX from "xlsx";
 import { getToolBySlug } from "@/data/tools";
-import { isAdminAuthenticated } from "@/lib/analytics/auth";
+import { requireAdminApi } from "@/lib/admin/guard";
 import { parsePreset, resolveDateRange } from "@/lib/analytics/dates";
 import { getExportRows } from "@/lib/analytics/queries";
 import { safeSpreadsheetCell, toCsv } from "@/lib/security/export-safe";
-import { guardApiRequest, readJsonBody } from "@/lib/security/request";
+import { readJsonBody } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 
@@ -20,19 +20,14 @@ type ExportBody = {
   toolId?: unknown;
 };
 
-async function handleExport(request: Request) {
-  if (!(await isAdminAuthenticated())) {
-    return Response.json({ error: "Unauthorized." }, { status: 401 });
-  }
-
-  const guarded = guardApiRequest(request, {
+export async function POST(request: Request) {
+  const denied = await requireAdminApi(request, {
     bucket: "admin-export",
     limit: 20,
     windowMs: 60_000,
-    requireSameOrigin: true,
-    maxBodyBytes: 8_192,
+    requireCsrf: true,
   });
-  if (guarded) return guarded;
+  if (denied) return denied;
 
   const parsed = await readJsonBody<ExportBody>(request, 8_192);
   if (!parsed.ok) return parsed.response;
@@ -122,9 +117,4 @@ async function handleExport(request: Request) {
       "Cache-Control": "no-store",
     },
   });
-}
-
-/** POST-only export — avoids SameSite=Lax GET CSRF cookie attachment. */
-export async function POST(request: Request) {
-  return handleExport(request);
 }
