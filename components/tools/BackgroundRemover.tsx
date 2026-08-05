@@ -134,8 +134,9 @@ export default function BackgroundRemover() {
       setResultUrl(url);
       setProgressText("");
       trackSuccess();
-    } catch {
+    } catch (err) {
       trackFailure();
+      console.error("[background-remover]", err);
       setError(
         "Could not remove the background. Try a smaller image or a different browser.",
       );

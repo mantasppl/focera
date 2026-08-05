@@ -134,8 +134,9 @@ export default function ChangeBackground() {
       setCutoutBlob(blob);
       setProgressText("");
       trackSuccess();
-    } catch {
+    } catch (err) {
       trackFailure();
+      console.error("[change-background]", err);
       setError(
         "Could not change the background. Try a smaller image or a different browser.",
       );
