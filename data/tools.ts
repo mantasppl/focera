@@ -59,7 +59,7 @@ export const topToolSlugs: string[] = [
 export const tools: Tool[] = [
   {
     slug: "video-to-gif",
-    name: "Free Video to GIF Converter",
+    name: "Video to GIF Converter",
     shortName: "Video to GIF",
     description:
       "Convert video to GIF online — turn MP4, WebM, and MOV into animated GIFs with size, fps, and color controls. Free, private, and local in your browser.",
@@ -114,7 +114,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "compress-video",
-    name: "Free Compress Video Tool",
+    name: "Compress Video Tool",
     shortName: "Compress Video",
     description:
       "Compress video file size online — shrink MP4, WebM, and MOV with Extreme, Strong, Balanced, or Light presets. Free, private, and local in your browser.",
@@ -169,7 +169,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "trim-video",
-    name: "Free Trim Video Tool",
+    name: "Trim Video Tool",
     shortName: "Trim Video",
     description:
       "Trim video online — set a start and end time on MP4, WebM, or MOV, then download the cut clip. Free, private, and local in your browser.",
@@ -225,7 +225,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "extract-audio",
-    name: "Free Extract Audio from Video Tool",
+    name: "Extract Audio from Video Tool",
     shortName: "Extract Audio",
     description:
       "Extract audio from your video online — pull soundtrack from MP4, WebM, and MOV as high-quality MP3. Free, private, and local in your browser.",
@@ -280,7 +280,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "mp4-to-mp3",
-    name: "Free MP4 to MP3 Converter",
+    name: "MP4 to MP3 Converter",
     shortName: "MP4 to MP3",
     description:
       "Convert MP4 to MP3 online — turn MP4, WebM, and MOV into high-quality MP3. Free, private, and local in your browser.",
@@ -334,7 +334,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "video-autocaption",
-    name: "Free Video Autocaption Tool",
+    name: "Video Autocaption Tool",
     shortName: "Video Captions",
     description:
       "Auto-caption video from speech online — spoken words are transcribed with exact timing, then you edit, style font/size/location, and download. Free, no model download on your device.",
@@ -400,7 +400,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "tiktok-video-downloader",
-    name: "Free TikTok Video Downloader",
+    name: "TikTok Video Downloader",
     shortName: "TikTok Video",
     description:
       "Download TikTok videos online — paste a public TikTok link or short URL, preview the clip, and save an MP4. Free, no account required.",
@@ -454,7 +454,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "instagram-video-downloader",
-    name: "Free Instagram Video Downloader",
+    name: "Instagram Video Downloader",
     shortName: "Instagram Video",
     description:
       "Download Instagram videos and Reels online — paste a public post or Reel link, preview the clip, and save an MP4. Free, no account required.",
@@ -518,7 +518,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "twitter-video-downloader",
-    name: "Free Twitter/X Video Downloader",
+    name: "Twitter/X Video Downloader",
     shortName: "Twitter Video",
     description:
       "Download Twitter/X videos online — paste a public x.com or twitter.com post link, preview the clip, and save an MP4. Free, no account required.",
@@ -577,7 +577,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "facebook-video-downloader",
-    name: "Free Facebook Video Downloader",
+    name: "Facebook Video Downloader",
     shortName: "Facebook Video",
     description:
       "Download Facebook videos online — paste a public watch, Reel, or fb.watch link, preview the clip, and save an MP4. Free, no account required.",
@@ -631,7 +631,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "youtube-to-text",
-    name: "Free YouTube Video Transcriber — YouTube to Text",
+    name: "YouTube Video Transcriber — YouTube to Text",
     shortName: "YouTube to Text",
     description:
       "Transcribe YouTube videos to text online — paste a link, pull captions when available, or speech-transcribe audio up to 10 minutes, then copy, download TXT, or export SRT. Free, no account required.",
@@ -698,7 +698,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "youtube-summarize",
-    name: "Free YouTube Video Summarizer — Summarize YouTube",
+    name: "YouTube Video Summarizer — Summarize YouTube",
     shortName: "YouTube Summarizer",
     description:
       "Summarize YouTube videos online — paste a link, pull captions or speech, then get a brief overview, detailed summary, or key points. Copy or download TXT. Free, no account required.",
@@ -764,7 +764,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "audio-to-text",
-    name: "Free Audio to Text Converter — Speech Transcription",
+    name: "Audio to Text Converter — Speech Transcription",
     shortName: "Audio to Text",
     description:
       "Transcribe audio to text online — convert MP3, WAV, M4A, and more into editable transcripts. Copy, download TXT, or export SRT. Free, no account required.",
@@ -830,7 +830,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "video-to-text",
-    name: "Free Video to Text Converter — Transcribe Video",
+    name: "Video to Text Converter — Transcribe Video",
     shortName: "Video to Text",
     description:
       "Transcribe video to text online — upload MP4, WebM, or MOV, extract speech, and get an editable transcript. Copy, download TXT, or export SRT. Free, no account required.",
@@ -896,7 +896,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "color-palette-generator",
-    name: "Free Color Palette Generator",
+    name: "Color Palette Generator",
     shortName: "Palettes",
     description:
       "Generate random color palettes, lock favorites, check WCAG contrast, and export CSS, Tailwind, HEX, or RGB — free and local in your browser.",
@@ -954,7 +954,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "qr-generator",
-    name: "Free QR Code Generator",
+    name: "QR Code Generator",
     shortName: "QR Generator",
     description: "Generate QR codes instantly online for free.",
     categories: ["file"],
@@ -1013,7 +1013,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "lorem-ipsum-generator",
-    name: "Free Lorem Ipsum Generator",
+    name: "Lorem Ipsum Generator",
     shortName: "Lorem Ipsum",
     description:
       "Generate classic Lorem Ipsum placeholder text by words, sentences, or paragraphs. Copy instantly or download a TXT file — free, private, and local.",
@@ -1070,7 +1070,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "ai-story-generator",
-    name: "Free AI Story Generator",
+    name: "AI Story Generator",
     shortName: "AI Stories",
     description:
       "Generate AI short stories from a prompt — pick genre, length, and tone, then copy or download the text. Free, no account required.",
@@ -1180,7 +1180,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "unit-converter",
-    name: "Free Unit Converter",
+    name: "Unit Converter",
     shortName: "Units",
     description:
       "Convert length, weight, temperature, volume, area, speed, and data storage instantly in your browser.",
@@ -1237,7 +1237,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "text-case-converter",
-    name: "Free Text Case Converter",
+    name: "Text Case Converter",
     shortName: "Text Case",
     description:
       "Convert text to UPPERCASE, lowercase, Title Case, Sentence case, camelCase, PascalCase, snake_case, and kebab-case — instantly in your browser.",
@@ -1296,7 +1296,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "word-counter",
-    name: "Free Word Counter",
+    name: "Word Counter",
     shortName: "Word Counter",
     description:
       "Count words, characters, sentences, and paragraphs online — plus reading and speaking time. Free, private, and live in your browser.",
@@ -1355,7 +1355,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "pdf-editor",
-    name: "Free PDF Editor",
+    name: "PDF Editor",
     shortName: "PDF Editor",
     description:
       "Edit PDFs online for free — reorder, rotate, delete, duplicate, and extract pages with a visual workspace. Private, no watermark, and local in your browser.",
@@ -1413,7 +1413,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "merge-pdf",
-    name: "Free Merge PDF Tool",
+    name: "Merge PDF Tool",
     shortName: "Merge PDF",
     description:
       "Merge two or more PDFs into one file online — reorder pages, combine documents, and download instantly. Free, private, and local in your browser.",
@@ -1470,7 +1470,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "split-pdf",
-    name: "Free Split PDF Tool",
+    name: "Split PDF Tool",
     shortName: "Split PDF",
     description:
       "Split a PDF into separate files online — every page, custom ranges, or fixed-size chunks. Free, private, and local in your browser.",
@@ -1532,7 +1532,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "pdf-watermark",
-    name: "Free PDF Watermark Tool",
+    name: "PDF Watermark Tool",
     shortName: "PDF Watermark",
     description:
       "Add a watermark to PDF online — stamp a logo or image on every page with position, size, opacity, and rotation. Free, private, and local in your browser.",
@@ -1596,7 +1596,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "compress-pdf",
-    name: "Free Compress PDF Tool",
+    name: "Compress PDF Tool",
     shortName: "Compress PDF",
     description:
       "Compress PDF files online to reduce size — choose Extreme, Strong, Balanced, or Light compression and download instantly. Free, private, and local in your browser.",
@@ -1653,7 +1653,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "utm-builder",
-    name: "Free UTM Builder",
+    name: "UTM Builder",
     shortName: "UTM Builder",
     description:
       "Build campaign URLs with utm_source, utm_medium, and utm_campaign — copy clean tracking links instantly in your browser.",
@@ -1700,7 +1700,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "profit-calculator",
-    name: "Free Profit Calculator",
+    name: "Profit Calculator",
     shortName: "Profit Calc",
     description:
       "Calculate profit and margin from revenue and cost instantly — free, private, and local in your browser.",
@@ -1744,7 +1744,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "background-remover",
-    name: "AI Background Remover Online Free",
+    name: "AI Background Remover",
     shortName: "BG Remover",
     description: "Remove image backgrounds instantly for free.",
     categories: ["image", "ai"],
@@ -1793,7 +1793,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "change-background",
-    name: "Change Background of Image Online Free",
+    name: "Change Background of Image",
     shortName: "Change BG",
     description:
       "Replace any photo background with a solid color, custom image, or portrait blur — free AI cutout in your browser.",
@@ -1846,7 +1846,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "ai-image-generator",
-    name: "Free AI Image Generator",
+    name: "AI Image Generator",
     shortName: "AI Images",
     description:
       "Generate AI images from text prompts online — pick a style and size, preview instantly, and download a PNG. Free, no account required.",
@@ -1904,7 +1904,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "remove-watermark",
-    name: "Remove Watermark from Photo Online Free",
+    name: "Remove Watermark from Photo",
     shortName: "Remove Watermark",
     description:
       "Remove watermarks from photos online — brush over logos or text and restore the image. Free, private, and local in your browser.",
@@ -1963,7 +1963,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "upscale-image",
-    name: "Upscale Image Online Free — Increase Resolution",
+    name: "Upscale Image — Increase Resolution",
     shortName: "Upscale Image",
     description:
       "Increase image resolution online — upscale 2×, 3×, or 4× with detail enhancement. Free, private, and local in your browser.",
@@ -2022,7 +2022,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "colorize-photo",
-    name: "Colorize Photo Online Free — Color Your Photo",
+    name: "Colorize Photo — Color Your Photo",
     shortName: "Colorize Photo",
     description:
       "Colorize black and white photos online with AI — add natural color to old pictures in your browser. Free, private, and no account required.",
@@ -2087,7 +2087,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "image-to-text",
-    name: "Image to Text Online Free — OCR Converter",
+    name: "Image to Text — OCR Converter",
     shortName: "Image to Text",
     description:
       "Extract text from images online with OCR — convert photos, screenshots, and scans to editable text. Free, private, and local in your browser.",
@@ -2146,7 +2146,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "image-compressor",
-    name: "Compress Image Size Online Free",
+    name: "Compress Image Size",
     shortName: "Image Compressor",
     description:
       "Compress image file size online — shrink JPG, PNG, and WebP with Extreme, Strong, Balanced, or Light presets. Free, private, and local in your browser.",
@@ -2222,7 +2222,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "pdf-to-word",
-    name: "Free PDF to Word Converter",
+    name: "PDF to Word Converter",
     shortName: "PDF to Word",
     description:
       "Convert PDF to Word (.docx) online — extract editable text or embed exact page images. Free, private, and local in your browser.",
@@ -2284,7 +2284,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "pdf-to-text",
-    name: "Extract Text from PDF Online Free",
+    name: "Extract Text from PDF",
     shortName: "PDF to Text",
     description:
       "Extract text from PDF online — pull selectable text into plain text you can copy or download as .txt. Free, private, and local in your browser.",
@@ -2343,7 +2343,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "pdf-to-jpg",
-    name: "Free PDF to JPG Converter",
+    name: "PDF to JPG Converter",
     shortName: "PDF to JPG",
     description:
       "Convert PDF pages to JPG images online — preview each page, download singly or as a ZIP. Free, private, and local in your browser.",
@@ -2400,7 +2400,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "password-generator",
-    name: "Free Password Generator",
+    name: "Password Generator",
     shortName: "Passwords",
     description:
       "Generate strong, random passwords with length controls, symbols, numbers, uppercase, lowercase, strength meter, and entropy.",
@@ -2473,7 +2473,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "html-css-js-minifier",
-    name: "Free HTML CSS JS Minifier",
+    name: "HTML CSS JS Minifier",
     shortName: "Minifier",
     description:
       "Minify HTML, CSS, and JavaScript online — compress code in your browser, then copy or download. Free, private, and fast.",
@@ -2531,7 +2531,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "json-formatter",
-    name: "Free JSON Formatter & Validator",
+    name: "JSON Formatter & Validator",
     shortName: "JSON",
     description:
       "Format, validate, and minify JSON online with error highlighting, copy, download, and a dark editor mode.",
@@ -2587,7 +2587,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "markdown-editor",
-    name: "Free Markdown Editor with Live Preview",
+    name: "Markdown Editor with Live Preview",
     shortName: "Markdown",
     description:
       "Write Markdown with a live preview, syntax highlighting, dark mode, and export to Markdown, HTML, or PDF — all in your browser.",
