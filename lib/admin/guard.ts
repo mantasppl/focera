@@ -1,8 +1,8 @@
-import { cookies } from "next/headers";
 import {
   ADMIN_CSRF_COOKIE,
   ADMIN_SESSION_COOKIE,
   isAdminAuthConfigured,
+  readCookieFromRequest,
   verifyAdminSessionToken,
   verifyCsrfToken,
 } from "@/lib/admin/auth";
@@ -36,16 +36,20 @@ export async function requireAdminApi(
     return Response.json({ error: "Unauthorized." }, { status: 401 });
   }
 
-  const jar = await cookies();
-  const session = verifyAdminSessionToken(
-    jar.get(ADMIN_SESSION_COOKIE)?.value,
-  );
+  // Prefer the request Cookie header — path-scoped cookies can be missing from
+  // next/headers cookies() after the admin proxy rewrite.
+  const sessionToken = readCookieFromRequest(request, ADMIN_SESSION_COOKIE);
+  const session = verifyAdminSessionToken(sessionToken);
   if (!session.ok) {
     return Response.json({ error: "Unauthorized." }, { status: 401 });
   }
 
-  if (options.requireCsrf !== false && request.method !== "GET" && request.method !== "HEAD") {
-    const csrfCookie = jar.get(ADMIN_CSRF_COOKIE)?.value;
+  if (
+    options.requireCsrf !== false &&
+    request.method !== "GET" &&
+    request.method !== "HEAD"
+  ) {
+    const csrfCookie = readCookieFromRequest(request, ADMIN_CSRF_COOKIE);
     const csrfHeader = request.headers.get("x-csrf-token");
     if (!verifyCsrfToken(csrfCookie, csrfHeader)) {
       return Response.json({ error: "Invalid CSRF token." }, { status: 403 });

@@ -30,8 +30,8 @@ Open [http://localhost:3000](http://localhost:3000).
 | `ADMIN_PASSWORD_HASH` | bcrypt hash; in `.env.local` escape `$` as `\$` |
 | `ADMIN_SESSION_SECRET` | HMAC secret for admin cookies (≥32 chars in production) |
 | `ADMIN_ALLOWED_IPS` | Optional comma-separated IP allowlist |
-| `DATABASE_URL` | Analytics DB (`file:./data/analytics.db` locally, or Turso `libsql://…`) |
-| `DATABASE_AUTH_TOKEN` | Turso auth token (remote DB only) |
+| `DATABASE_URL` | Analytics DB (`file:./data/analytics.db` locally; **Turso `libsql://…` required on Vercel**) |
+| `DATABASE_AUTH_TOKEN` | Turso auth token (required with remote `DATABASE_URL`) |
 | `ANALYTICS_IP_SALT` | Optional salt for hashing visitor IPs |
 
 ## Secure admin analytics
@@ -48,10 +48,23 @@ node scripts/hash-admin-password.mjs --generate
 Notes:
 
 - In `.env.local`, escape bcrypt `$` as `\$` (the hash script does this). Unescaped `$2b$…` is expanded by Next.js and becomes empty, which breaks login. In the Vercel UI, paste the raw hash without backslashes.
+- On Vercel, a `file:` SQLite URL will not keep analytics. Create a free Turso DB and set `DATABASE_URL` + `DATABASE_AUTH_TOKEN`.
 - Public `/admin` is disabled (404).
 - Admin APIs are only reachable under `{ADMIN_PATH}/api/...`.
 - Sessions last 24 hours (`HttpOnly`, `Secure` in production, `SameSite=Strict`).
 - Login is limited to 5 attempts/minute/IP, then blocked for 10 minutes.
+
+### Production analytics database (Turso)
+
+```bash
+# https://docs.turso.tech/cli/installation
+turso auth login
+turso db create focera-analytics
+turso db show focera-analytics --url
+turso db tokens create focera-analytics
+```
+
+Set both values in Vercel → Project → Settings → Environment Variables, then redeploy.
 
 ## Scripts
 

@@ -1,13 +1,14 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import {
   adminCookieOptions,
   adminCsrfCookieOptions,
   ADMIN_CSRF_COOKIE,
   ADMIN_SESSION_COOKIE,
+  clearAdminAuthCookies,
   createAdminSessionToken,
   createCsrfToken,
   isAdminAuthConfigured,
+  readCookieFromRequest,
   verifyAdminCredentials,
   verifyCsrfToken,
 } from "@/lib/admin/auth";
@@ -79,9 +80,13 @@ export async function POST(request: Request) {
     return jsonError("Invalid credentials", 401, loginLimitHeaders(limit));
   }
 
-  const jar = await cookies();
   const csrfHeader = request.headers.get("x-csrf-token") || csrfFromBody;
-  if (!verifyCsrfToken(jar.get(ADMIN_CSRF_COOKIE)?.value, csrfHeader)) {
+  if (
+    !verifyCsrfToken(
+      readCookieFromRequest(request, ADMIN_CSRF_COOKIE),
+      csrfHeader,
+    )
+  ) {
     logAdminLogin({
       type: "admin_login_failure",
       usernameAttempt: username,
@@ -114,6 +119,8 @@ export async function POST(request: Request) {
   });
 
   const response = NextResponse.json({ ok: true });
+  // Drop any legacy Path=ADMIN_PATH cookies before setting Path=/ cookies.
+  clearAdminAuthCookies(response);
   response.cookies.set(ADMIN_SESSION_COOKIE, token, adminCookieOptions());
   response.cookies.set(
     ADMIN_CSRF_COOKIE,

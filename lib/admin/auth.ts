@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual, randomBytes } from "node:crypto";
 import { compare as bcryptCompare } from "bcryptjs";
 import { cookies } from "next/headers";
+import type { NextResponse } from "next/server";
 import { getAdminPath } from "@/lib/admin/config";
 
 export const ADMIN_SESSION_COOKIE = "focera_admin_session";
@@ -125,27 +126,72 @@ export async function isAdminAuthenticated(): Promise<boolean> {
   return verifyAdminSessionToken(jar.get(ADMIN_SESSION_COOKIE)?.value).ok;
 }
 
+/**
+ * Cookie path is `/` (not ADMIN_PATH) so session/CSRF cookies survive the
+ * proxy rewrite from `{ADMIN_PATH}/api/...` → `/api/admin/...`. Path-scoped
+ * cookies are easy for Next.js `cookies()` / some runtimes to drop after rewrite.
+ * HttpOnly + SameSite=Strict + secret URL still protect the session.
+ */
 export function adminCookieOptions(maxAgeSeconds = SESSION_TTL_MS / 1000) {
-  const adminPath = getAdminPath();
   return {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict" as const,
-    path: adminPath,
+    path: "/",
     maxAge: maxAgeSeconds,
   };
 }
 
 /** CSRF cookie must be readable by JS for double-submit. */
 export function adminCsrfCookieOptions(maxAgeSeconds = SESSION_TTL_MS / 1000) {
-  const adminPath = getAdminPath();
   return {
     httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict" as const,
-    path: adminPath,
+    path: "/",
     maxAge: maxAgeSeconds,
   };
+}
+
+/** Read a cookie from the raw Cookie header (reliable after rewrites). */
+export function readCookieFromRequest(
+  request: Request,
+  name: string,
+): string | undefined {
+  const header = request.headers.get("cookie");
+  if (!header) return undefined;
+  for (const part of header.split(";")) {
+    const trimmed = part.trim();
+    if (!trimmed.startsWith(`${name}=`)) continue;
+    const value = trimmed.slice(name.length + 1);
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+/** Clear session/CSRF on `/` and the legacy ADMIN_PATH cookie scope. */
+export function clearAdminAuthCookies(response: NextResponse) {
+  const legacyPath = getAdminPath();
+  for (const path of ["/", legacyPath]) {
+    response.cookies.set(ADMIN_SESSION_COOKIE, "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path,
+      maxAge: 0,
+    });
+    response.cookies.set(ADMIN_CSRF_COOKIE, "", {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path,
+      maxAge: 0,
+    });
+  }
 }
 
 export function createCsrfToken(): string {

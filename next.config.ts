@@ -28,7 +28,7 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
-  serverExternalPackages: ["puppeteer"],
+  serverExternalPackages: ["puppeteer", "@libsql/client"],
   images: {
     formats: ["image/avif", "image/webp"],
   },

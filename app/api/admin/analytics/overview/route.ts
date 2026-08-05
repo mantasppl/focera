@@ -1,5 +1,6 @@
 import { requireAdminApi } from "@/lib/admin/guard";
 import { parsePreset, resolveDateRange } from "@/lib/analytics/dates";
+import { getAnalyticsStorageMode } from "@/lib/analytics/db";
 import {
   getBrowserDistribution,
   getDailyUsage,
@@ -42,8 +43,15 @@ export async function GET(request: Request) {
         getBrowserDistribution(range),
       ]);
 
+    const storage = getAnalyticsStorageMode();
+
     return Response.json({
       ok: true,
+      storage,
+      warning:
+        storage === "ephemeral"
+          ? "Analytics storage is ephemeral on this host. Set DATABASE_URL to a Turso libsql:// URL and DATABASE_AUTH_TOKEN in Vercel for durable production data."
+          : undefined,
       range: {
         preset: range.preset,
         start: range.start.toISOString(),
@@ -61,9 +69,11 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error("[admin/analytics/overview]", error);
-    return Response.json(
-      { error: "Failed to load analytics." },
-      { status: 500 },
-    );
+    const storage = getAnalyticsStorageMode();
+    const message =
+      storage === "ephemeral"
+        ? "Analytics database unavailable. On Vercel, set DATABASE_URL (Turso libsql://…) and DATABASE_AUTH_TOKEN."
+        : "Failed to load analytics.";
+    return Response.json({ error: message, storage }, { status: 500 });
   }
 }

@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-  ADMIN_CSRF_COOKIE,
-  ADMIN_SESSION_COOKIE,
-  adminCookieOptions,
-  adminCsrfCookieOptions,
-  verifyCsrfToken,
-} from "@/lib/admin/auth";
+import { clearAdminAuthCookies } from "@/lib/admin/auth";
 import { requireAdminApi } from "@/lib/admin/guard";
-import { cookies } from "next/headers";
 
 export const runtime = "nodejs";
 
@@ -20,21 +13,7 @@ export async function POST(request: Request) {
   });
   if (denied) return denied;
 
-  // Extra CSRF check already in requireAdminApi; keep cookies cleanup.
-  const jar = await cookies();
-  void verifyCsrfToken(
-    jar.get(ADMIN_CSRF_COOKIE)?.value,
-    request.headers.get("x-csrf-token"),
-  );
-
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(ADMIN_SESSION_COOKIE, "", {
-    ...adminCookieOptions(0),
-    maxAge: 0,
-  });
-  response.cookies.set(ADMIN_CSRF_COOKIE, "", {
-    ...adminCsrfCookieOptions(0),
-    maxAge: 0,
-  });
+  clearAdminAuthCookies(response);
   return response;
 }

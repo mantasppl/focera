@@ -1,3 +1,5 @@
+import { mkdirSync } from "node:fs";
+import { dirname } from "node:path";
 import { createClient, type Client } from "@libsql/client";
 import { drizzle, type LibSQLDatabase } from "drizzle-orm/libsql";
 import * as schema from "@/lib/analytics/schema";
@@ -5,17 +7,81 @@ import * as schema from "@/lib/analytics/schema";
 let client: Client | null = null;
 let db: LibSQLDatabase<typeof schema> | null = null;
 let bootstrapped = false;
+let resolvedUrl: string | null = null;
+
+function isServerlessRuntime(): boolean {
+  return Boolean(
+    process.env.VERCEL ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME ||
+      process.env.NETLIFY,
+  );
+}
 
 function resolveDatabaseUrl(): string {
   const configured = process.env.DATABASE_URL?.trim();
-  if (configured) return configured;
-  // Local default — file is gitignored under /data
+
+  // Remote libSQL / Turso — preferred for production.
+  if (
+    configured &&
+    (configured.startsWith("libsql://") ||
+      configured.startsWith("https://") ||
+      configured.startsWith("http://"))
+  ) {
+    return configured;
+  }
+
+  // file: URLs are not durable (and often not writable) on Vercel/serverless.
+  if (isServerlessRuntime()) {
+    if (configured?.startsWith("file:")) {
+      console.warn(
+        "[analytics] file: DATABASE_URL cannot persist on serverless. Using /tmp fallback. Set a Turso libsql:// URL + DATABASE_AUTH_TOKEN for durable analytics.",
+      );
+    } else if (!configured) {
+      console.warn(
+        "[analytics] No DATABASE_URL set on serverless. Using /tmp fallback. Set a Turso libsql:// URL + DATABASE_AUTH_TOKEN for durable analytics.",
+      );
+    }
+    return "file:/tmp/focera-analytics.db";
+  }
+
+  if (configured?.startsWith("file:")) return configured;
   return "file:./data/analytics.db";
+}
+
+/** True when storage is local/tmp and will not survive deploys or cold starts. */
+export function isEphemeralAnalyticsStorage(): boolean {
+  const url = resolveDatabaseUrl();
+  return url.startsWith("file:/tmp") || url.includes("/tmp/");
+}
+
+export function getAnalyticsStorageMode(): "remote" | "local" | "ephemeral" {
+  const url = resolveDatabaseUrl();
+  if (
+    url.startsWith("libsql://") ||
+    url.startsWith("https://") ||
+    url.startsWith("http://")
+  ) {
+    return "remote";
+  }
+  if (isEphemeralAnalyticsStorage()) return "ephemeral";
+  return "local";
+}
+
+function ensureLocalFileParent(url: string) {
+  if (!url.startsWith("file:") || url.startsWith("file:/tmp")) return;
+  const filePath = url.replace(/^file:/, "");
+  try {
+    mkdirSync(dirname(filePath), { recursive: true });
+  } catch {
+    // Directory may already exist or be unwritable; createClient will surface errors.
+  }
 }
 
 export function getAnalyticsClient(): Client {
   if (!client) {
     const url = resolveDatabaseUrl();
+    resolvedUrl = url;
+    ensureLocalFileParent(url);
     const authToken = process.env.DATABASE_AUTH_TOKEN?.trim();
     client = createClient(authToken ? { url, authToken } : { url });
   }
@@ -63,10 +129,9 @@ CREATE INDEX IF NOT EXISTS tool_usage_success_time_idx ON tool_usage (success, t
 }
 
 export function isAnalyticsConfigured(): boolean {
-  // Always available with local file fallback; Turso remote needs URL + token.
-  const url = resolveDatabaseUrl();
+  const url = resolvedUrl ?? resolveDatabaseUrl();
   if (url.startsWith("libsql://") || url.startsWith("https://")) {
-    return Boolean(process.env.DATABASE_AUTH_TOKEN?.trim() || process.env.DATABASE_URL);
+    return Boolean(process.env.DATABASE_AUTH_TOKEN?.trim());
   }
   return true;
 }

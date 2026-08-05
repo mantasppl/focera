@@ -19,6 +19,8 @@ import type {
 
 type OverviewResponse = {
   ok: boolean;
+  storage?: "remote" | "local" | "ephemeral";
+  warning?: string;
   stats: OverviewStats;
   tools: ToolStatsRow[];
   charts: {
@@ -52,6 +54,7 @@ export default function AnalyticsDashboard() {
 
   useEffect(() => {
     const controller = new AbortController();
+    let active = true;
     async function load() {
       setLoading(true);
       setError("");
@@ -67,23 +70,32 @@ export default function AnalyticsDashboard() {
           `${api("/analytics/overview")}?${params}`,
           { signal: controller.signal },
         );
+        if (!active || controller.signal.aborted) return;
         if (!response.ok) {
           const body = (await response.json().catch(() => null)) as {
             error?: string;
           } | null;
-          throw new Error(body?.error || "Failed to load analytics.");
+          throw new Error(
+            body?.error ||
+              `Failed to load analytics (${response.status}).`,
+          );
         }
         const json = (await response.json()) as OverviewResponse;
+        if (!active || controller.signal.aborted) return;
         setData(json);
       } catch (err) {
-        if (err instanceof DOMException && err.name === "AbortError") return;
+        if (!active || controller.signal.aborted) return;
+        if (err instanceof Error && err.name === "AbortError") return;
         setError(err instanceof Error ? err.message : "Failed to load analytics.");
       } finally {
-        if (!controller.signal.aborted) setLoading(false);
+        if (active && !controller.signal.aborted) setLoading(false);
       }
     }
     void load();
-    return () => controller.abort();
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, [preset, start, end, debouncedSearch, api]);
 
   async function downloadExport(format: "csv" | "xlsx") {
@@ -147,6 +159,11 @@ export default function AnalyticsDashboard() {
       </div>
 
       {error ? <div className="admin-error">{error}</div> : null}
+      {!error && data?.warning ? (
+        <div className="admin-error" role="status">
+          {data.warning}
+        </div>
+      ) : null}
 
       <StatCards stats={data?.stats ?? null} loading={loading && !data} />
 
