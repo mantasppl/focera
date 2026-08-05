@@ -41,6 +41,11 @@ export const PdfToJpgLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PdfToPngLazy = dynamic(
+  () => import("@/components/tools/PdfToPng"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PngToPdfLazy = dynamic(
   () => import("@/components/tools/PngToPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -113,6 +118,11 @@ export const UnlockPdfLazy = dynamic(
 
 export const SplitPdfLazy = dynamic(
   () => import("@/components/tools/SplitPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const DeletePdfPagesLazy = dynamic(
+  () => import("@/components/tools/DeletePdfPages"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -218,5 +228,10 @@ export const TwitterVideoDownloaderLazy = dynamic(
 
 export const FacebookVideoDownloaderLazy = dynamic(
   () => import("@/components/tools/FacebookVideoDownloader"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const UrlToPdfLazy = dynamic(
+  () => import("@/components/tools/UrlToPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );

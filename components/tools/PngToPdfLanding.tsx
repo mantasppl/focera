@@ -137,6 +137,10 @@ export default function PngToPdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/pdf-to-png">PDF to PNG</Link> — Convert PDF pages back
+            into PNG images.
+          </li>
+          <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert PDF pages back
             into JPEG images.
           </li>

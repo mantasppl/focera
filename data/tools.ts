@@ -36,8 +36,8 @@ export const categoryLabels: Record<ToolCategory, string> = {
 };
 
 export const categoryDescriptions: Record<ToolCategory, string> = {
-  pdf: "Merge, split, crop, compress, unlock, edit, translate, and convert PDFs — including PNG to PDF, Word to PDF, PowerPoint to PDF, EPUB to PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, and PDF to EPUB — in your browser.",
-  image: "Compress, upscale, colorize photos, remove backgrounds, convert PNG to PDF, and convert images.",
+  pdf: "Merge, split, delete pages, crop, compress, unlock, edit, translate, and convert PDFs — including URL to PDF, PNG to PDF, PDF to PNG, PDF to JPG, Word to PDF, PowerPoint to PDF, EPUB to PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, and PDF to EPUB.",
+  image: "Compress, upscale, colorize photos, remove backgrounds, convert PNG to PDF or PDF to PNG, and convert images.",
   video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, summarize YouTube videos, and export in your browser.",
   ai: "Generate images and stories, colorize photos, summarize YouTube videos, translate PDFs, plus smart cutouts, OCR, and speech-to-text.",
   file: "Converters, generators, and everyday utilities for any file.",
@@ -1531,6 +1531,68 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "delete-pdf-pages",
+    name: "Delete PDF Pages Tool",
+    shortName: "Delete PDF Pages",
+    description:
+      "Delete PDF pages online for free — select pages visually or by range and download a clean file. Private, no watermark, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/delete-pdf-pages",
+    keywords: [
+      "delete pdf pages",
+      "remove pdf pages",
+      "pdf page deleter",
+      "delete pages from pdf",
+      "remove pages from pdf online",
+      "pdf page remover",
+      "free delete pdf pages",
+      "erase pdf pages",
+    ],
+    faq: [
+      {
+        question: "Is this PDF page deleter free?",
+        answer:
+          "Yes. Delete pages and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Page deletion runs entirely in your browser with pdf-lib and PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "How do I delete pages from a PDF?",
+        answer:
+          "Upload your PDF, click the page thumbnails you want to remove (or enter ranges like 2, 4-6), then choose Delete & download. The new file keeps only the pages you did not select.",
+      },
+      {
+        question: "Can I delete multiple pages at once?",
+        answer:
+          "Yes. Click pages to toggle them, hold Shift to select a range, use Select all / Invert, or apply page numbers in the range field.",
+      },
+      {
+        question: "Does deleting pages keep text and layout?",
+        answer:
+          "Yes. Remaining pages are copied as real PDF pages — text, vector graphics, and layout are preserved.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per deletion.",
+      },
+      {
+        question: "Can I delete pages from a password-protected PDF?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to delete pages.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, select pages, and download immediately.",
+      },
+    ],
+  },
+  {
     slug: "pdf-watermark",
     name: "PDF Watermark Tool",
     shortName: "PDF Watermark",
@@ -2596,6 +2658,66 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "url-to-pdf",
+    name: "URL to PDF Converter",
+    shortName: "URL to PDF",
+    description:
+      "Convert any webpage URL to PDF online — capture the full page length with backgrounds, preview, and download. Free and no account required.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/url-to-pdf",
+    keywords: [
+      "url to pdf",
+      "webpage to pdf",
+      "website to pdf",
+      "convert url to pdf",
+      "save webpage as pdf",
+      "html to pdf online",
+      "web page to pdf",
+      "print url to pdf",
+      "full page pdf",
+      "free url to pdf",
+      "convert website to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this URL to PDF converter free?",
+        answer:
+          "Yes. Convert public webpages to PDF with no account, subscription, watermark, or daily limit beyond fair-use rate limits.",
+      },
+      {
+        question: "Does it capture the full length of the page?",
+        answer:
+          "Yes. The converter loads the URL, scrolls the full page so lazy-loaded content appears, then exports a PDF of the entire document — not just the first screen.",
+      },
+      {
+        question: "What layout options are available?",
+        answer:
+          "Choose Full page for one tall continuous PDF, or A4 / US Letter for a classic multipage print layout with backgrounds.",
+      },
+      {
+        question: "Which URLs work?",
+        answer:
+          "Public HTTPS pages that load without a login. Sites that block bots, require sign-in, or sit on private networks cannot be converted.",
+      },
+      {
+        question: "Are my URLs stored?",
+        answer:
+          "The URL is sent to Focera only to render the PDF. Generated files are not kept as a permanent archive after the response is returned.",
+      },
+      {
+        question: "How long does conversion take?",
+        answer:
+          "Most pages finish within about a minute. Heavy, image-rich, or slow sites may take longer or time out.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the tool in a modern browser, paste a URL, and download the PDF.",
+      },
+    ],
+  },
+  {
     slug: "word-to-pdf",
     name: "Word to PDF Converter",
     shortName: "Word to PDF",
@@ -2951,6 +3073,63 @@ export const tools: Tool[] = [
         question: "Why do JPG pages have a white background?",
         answer:
           "JPEG does not support transparency. Transparent PDF areas are filled with white so pages look correct in viewers and editors.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "pdf-to-png",
+    name: "PDF to PNG Converter",
+    shortName: "PDF to PNG",
+    description:
+      "Convert PDF pages to PNG images online — preview each page, download singly or as a ZIP. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/pdf-to-png",
+    keywords: [
+      "pdf to png",
+      "convert pdf to png",
+      "pdf to png converter",
+      "pdf to image",
+      "pdf page to png",
+      "free pdf to png",
+      "pdf to png online",
+      "pdf pages to png",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to PNG converter free?",
+        answer:
+          "Yes. Convert, preview, and download unlimited PDFs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "Can I download all pages at once?",
+        answer:
+          "Yes. After conversion, download the current page as a PNG or use Download all (ZIP) to get every page in one archive.",
+      },
+      {
+        question: "What resolution options are available?",
+        answer:
+          "Choose 1×, 1.5×, or 2× render scale for sharper page images. PNG is lossless, so there is no separate quality slider.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "PDF to PNG or PDF to JPG — which should I use?",
+        answer:
+          "Use PNG for sharper, lossless page images (great for text and graphics). Use JPG when you want smaller files for sharing or web posts.",
       },
       {
         question: "Do I need to install software?",

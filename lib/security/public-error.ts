@@ -9,7 +9,7 @@ export function publicErrorMessage(
 
   // Never leak secrets, env names, or stack-like internals.
   if (
-    /api[_-]?key|secret|token|password|authorization|groq|pollinations|resend|stack|ECONN|ENOENT|sqlite|libsql/i.test(
+    /api[_-]?key|secret|token|password|authorization|groq|pollinations|resend|stack|ECONN|ENOENT|sqlite|libsql|puppeteer|chromium|chrome-headless/i.test(
       message,
     )
   ) {

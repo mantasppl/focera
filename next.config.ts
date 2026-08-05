@@ -17,12 +17,14 @@ const contentSecurityPolicy = [
   "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://image.pollinations.ai https://text.pollinations.ai https://api.groq.com https:",
   "worker-src 'self' blob:",
   "child-src 'self' blob:",
+  "frame-src 'self' blob:",
   ...(isProd ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
+  serverExternalPackages: ["puppeteer"],
   images: {
     formats: ["image/avif", "image/webp"],
   },

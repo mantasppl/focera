@@ -3,14 +3,14 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Page-by-page JPG export",
+    title: "Page-by-page PNG export",
     description:
-      "Every PDF page becomes a clear JPEG you can preview, download singly, or save together as a ZIP.",
+      "Every PDF page becomes a crisp PNG you can preview, download singly, or save together as a ZIP.",
   },
   {
-    title: "Quality and resolution controls",
+    title: "Resolution controls",
     description:
-      "Pick smaller, balanced, or high JPEG quality and 1×–2× rendering so files match web, email, or print needs.",
+      "Render at 1×, 1.5×, or 2× so page images match screen previews, docs, or print-ready sharpness.",
   },
   {
     title: "100% browser-based",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function PdfToJpgLanding() {
+export default function PdfToPngLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="pdf-to-jpg-features"
-        title="Everything you need in a free PDF to JPG converter"
+        id="pdf-to-png-features"
+        title="Everything you need in a free PDF to PNG converter"
         features={FEATURES}
       />
 
@@ -41,8 +41,8 @@ export default function PdfToJpgLanding() {
           How It Works
         </h2>
         <p>
-          Turning a PDF into JPG images should be quick and private. Focera
-          keeps the whole flow on one page — upload, choose quality, convert,
+          Turning a PDF into PNG images should be quick and private. Focera
+          keeps the whole flow on one page — upload, choose resolution, convert,
           preview, and download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
@@ -51,18 +51,18 @@ export default function PdfToJpgLanding() {
             (max 50 pages), or click the zone to browse from your device.
           </li>
           <li>
-            <strong>Set quality and resolution.</strong> Choose JPEG quality and
-            render scale, then click Convert to JPG. Each page is rendered
-            locally to a canvas and encoded as JPEG.
+            <strong>Set resolution.</strong> Choose 1×–2× render scale, then
+            click Convert to PNG. Each page is rendered locally to a canvas and
+            encoded as PNG.
           </li>
           <li>
             <strong>Preview and download.</strong> Browse page thumbnails,
-            download the active page, or grab a ZIP with every JPG.
+            download the active page, or grab a ZIP with every PNG.
           </li>
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#pdf-to-jpg-tool">PDF to JPG converter</a> anytime to process
+          <a href="#pdf-to-png-tool">PDF to PNG converter</a> anytime to process
           another file.
         </p>
       </section>
@@ -76,20 +76,20 @@ export default function PdfToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Share slides as images</strong> — Convert pitch decks or
-            handouts into JPGs for chat apps and social posts.
+            <strong>Sharp page screenshots</strong> — Export PDF sheets as PNG
+            for docs, tickets, and support replies without compression artifacts.
           </li>
           <li>
-            <strong>Extract page previews</strong> — Grab cover pages or
-            specific sheets for blogs, listings, and portfolios.
+            <strong>Design and mockups</strong> — Bring crisp page images into
+            Figma, Canva, or slide tools when PDF import is awkward.
+          </li>
+          <li>
+            <strong>Archive covers and previews</strong> — Grab cover pages or
+            key sheets for blogs, listings, and portfolios.
           </li>
           <li>
             <strong>Flatten forms and scans</strong> — Turn filled PDFs into
-            simple image files that open everywhere.
-          </li>
-          <li>
-            <strong>Prepare assets for design tools</strong> — Import page JPGs
-            into Canva, Figma, or slide software when PDF import is awkward.
+            simple PNG files that open everywhere.
           </li>
         </ul>
       </section>
@@ -118,16 +118,20 @@ export default function PdfToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert PDF pages to
+            JPEG when you need smaller image files.
+          </li>
+          <li>
+            <Link href="/png-to-pdf">PNG to PDF</Link> — Turn images into a
+            multi-page PDF (the reverse of PDF to PNG).
+          </li>
+          <li>
             <Link href="/pdf-to-text">PDF to Text</Link> — Extract selectable
             text from a PDF to copy or download as .txt.
           </li>
           <li>
             <Link href="/pdf-to-word">PDF to Word</Link> — Convert PDF pages
             into an editable Word (.docx) document.
-          </li>
-          <li>
-            <Link href="/pdf-to-excel">PDF to Excel</Link> — Convert PDF tables
-            and text into an .xlsx spreadsheet.
           </li>
           <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, or
@@ -144,14 +148,6 @@ export default function PdfToJpgLanding() {
           <li>
             <Link href="/compress-pdf">Compress PDF</Link> — Shrink PDFs for
             email and uploads when you need a smaller document, not images.
-          </li>
-          <li>
-            <Link href="/pdf-to-png">PDF to PNG</Link> — Convert PDF pages to
-            lossless PNG images instead of JPEG.
-          </li>
-          <li>
-            <Link href="/png-to-pdf">PNG to PDF</Link> — Turn images into a
-            multi-page PDF (the reverse of PDF to JPG).
           </li>
           <li>
             <Link href="/background-remover">AI Background Remover</Link> —
