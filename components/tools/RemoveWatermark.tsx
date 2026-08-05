@@ -11,11 +11,13 @@ import {
   removeWatermarkFromImage,
   type RemoveWatermarkResult,
 } from "@/lib/remove-watermark";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 type BrushMode = "paint" | "erase";
 
 export default function RemoveWatermark() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const brushId = useId();
   const modeId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -246,10 +248,12 @@ export default function RemoveWatermark() {
       setResultUrl(url);
       downloadCleanedImage(cleaned.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

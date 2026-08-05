@@ -139,6 +139,10 @@ export default function WordToPdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/powerpoint-to-pdf">PowerPoint to PDF</Link> — Convert
+            .pptx decks into landscape PDFs.
+          </li>
+          <li>
             <Link href="/pdf-to-word">PDF to Word</Link> — Convert PDFs into
             editable .docx files.
           </li>

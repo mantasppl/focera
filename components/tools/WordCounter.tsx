@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Button from "@/components/Button";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   READING_WPM,
   SPEAKING_WPM,
@@ -14,6 +15,7 @@ const PLACEHOLDER =
   "Paste or type your text here — word, character, sentence, and reading-time counts update instantly.";
 
 export default function WordCounter() {
+  const { trackSuccess } = useToolAnalytics();
   const inputId = useId();
 
   const [text, setText] = useState("");
@@ -29,6 +31,7 @@ export default function WordCounter() {
     }
     const ok = await copyText(text);
     if (ok) {
+      trackSuccess();
       setCopied(true);
       setError("");
       setTimeout(() => setCopied(false), 1600);

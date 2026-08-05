@@ -12,9 +12,11 @@ import {
   type ImageToTextResult,
   type OcrLanguageId,
 } from "@/lib/image-to-text";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn, copyText } from "@/lib/utils";
 
 export default function ImageToText() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const languageId = useId();
   const outputId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -93,6 +95,7 @@ export default function ImageToText() {
       setResult(extracted);
       setText(extracted.text);
       setProgressText("");
+      trackSuccess();
 
       if (!extracted.text) {
         setError(
@@ -103,6 +106,7 @@ export default function ImageToText() {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

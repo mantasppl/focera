@@ -11,9 +11,15 @@ import {
   type YoutubeTranscriptResult,
 } from "@/lib/youtube-to-text";
 import { fetchYoutubeTranscript } from "@/lib/youtube-transcript-server";
+import { trackToolUsageServer } from "@/lib/analytics/track";
+import { getToolBySlug } from "@/data/tools";
+import { publicErrorMessage } from "@/lib/security/public-error";
+import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+const TOOL_SLUG = "youtube-to-text";
 
 type RequestBody = {
   url?: unknown;
@@ -25,6 +31,16 @@ type RequestBody = {
 
 function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status });
+}
+
+function track(request: Request, success: boolean) {
+  const tool = getToolBySlug(TOOL_SLUG);
+  if (tool) {
+    trackToolUsageServer(
+      { toolId: tool.slug, toolName: tool.name, success },
+      request,
+    );
+  }
 }
 
 function isNoCaptionsError(message: string): boolean {
@@ -76,6 +92,15 @@ async function transcribeFromSpeech(
 }
 
 export async function POST(request: Request) {
+  const guarded = guardApiRequest(request, {
+    bucket: "youtube-to-text",
+    limit: 15,
+    windowMs: 60_000,
+    requireSameOrigin: true,
+    maxBodyBytes: 8_192,
+  });
+  if (guarded) return guarded;
+
   let body: RequestBody;
   try {
     body = (await request.json()) as RequestBody;
@@ -123,6 +148,8 @@ export async function POST(request: Request) {
 
     const text = formatTranscriptOutput(result, mode);
 
+    track(request, true);
+
     return Response.json({
       videoId: result.videoId,
       title: result.title,
@@ -136,13 +163,17 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     if (err instanceof GroqTranscribeError) {
-      return jsonError(err.message, err.status);
+      track(request, false);
+      return jsonError(
+        publicErrorMessage(err, "Could not process this request."),
+        err.status,
+      );
     }
 
-    const message =
-      err instanceof Error
-        ? err.message
-        : "Could not extract text from this YouTube video.";
+    const message = publicErrorMessage(
+      err,
+      "Could not extract text from this YouTube video.",
+    );
 
     const status =
       /valid YouTube|Paste a YouTube|up to \d+ minutes/i.test(message)
@@ -151,9 +182,13 @@ export async function POST(request: Request) {
               message,
             )
           ? 422
-          : /not configured|GROQ_API_KEY/i.test(message)
+          : /temporarily unavailable|not configured/i.test(message)
             ? 503
             : 502;
+
+    if (status !== 400) {
+      track(request, false);
+    }
 
     return jsonError(message, status);
   }

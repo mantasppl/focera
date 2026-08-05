@@ -301,7 +301,8 @@ export async function streamInstagramVideo(options: {
   const session = await bootstrapSession();
   const videoUrl = await resolveVideoUrl(shortcode, options.videoId, session);
 
-  const upstream = await fetch(videoUrl, {
+  const { fetchSafeMedia } = await import("@/lib/security/outbound");
+  const upstream = await fetchSafeMedia(videoUrl, {
     headers: {
       "User-Agent": BROWSER_UA,
       Referer: "https://www.instagram.com/",

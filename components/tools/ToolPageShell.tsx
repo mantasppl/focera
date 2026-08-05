@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import ToolLayout from "@/components/ToolLayout";
+import { ToolAnalyticsProvider } from "@/lib/analytics/client";
 import { getToolBySlug } from "@/data/tools";
 
 type ToolPageShellProps = {
@@ -23,14 +24,16 @@ export default function ToolPageShell({
   const tool = getToolBySlug(slug);
   if (!tool) notFound();
   return (
-    <ToolLayout
-      tool={tool}
-      content={content}
-      workspaceId={workspaceId}
-      ctaTitle={ctaTitle}
-      ctaDescription={ctaDescription}
-    >
-      {children}
-    </ToolLayout>
+    <ToolAnalyticsProvider toolId={tool.slug}>
+      <ToolLayout
+        tool={tool}
+        content={content}
+        workspaceId={workspaceId}
+        ctaTitle={ctaTitle}
+        ctaDescription={ctaDescription}
+      >
+        {children}
+      </ToolLayout>
+    </ToolAnalyticsProvider>
   );
 }

@@ -12,6 +12,7 @@ import {
   type PdfToPowerpointMode,
   type PdfToPowerpointResult,
 } from "@/lib/pdf-to-powerpoint";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 const MODE_OPTIONS: {
@@ -32,6 +33,7 @@ const MODE_OPTIONS: {
 ];
 
 export default function PdfToPowerpoint() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const modeId = useId();
   const abortRef = useRef<AbortController | null>(null);
   const resultRef = useRef<PdfToPowerpointResult | null>(null);
@@ -113,10 +115,12 @@ export default function PdfToPowerpoint() {
       setResult(converted);
       downloadPowerpointFile(converted.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

@@ -9,6 +9,7 @@ import {
   MAX_MERGE_FILES,
   mergePdfFiles,
 } from "@/lib/merge-pdf";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 type PdfEntry = {
@@ -24,6 +25,7 @@ function createEntries(files: File[]): PdfEntry[] {
 }
 
 export default function MergePdf() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const listId = useId();
   const abortRef = useRef<AbortController | null>(null);
 
@@ -114,10 +116,12 @@ export default function MergePdf() {
       setMergedSize(blob.size);
       setMergedReady(true);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

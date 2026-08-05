@@ -19,9 +19,11 @@ import {
   type WatermarkPosition,
   type WatermarkRotation,
 } from "@/lib/pdf-watermark";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 export default function PdfWatermark() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const positionId = useId();
   const rotationId = useId();
   const scaleId = useId();
@@ -144,10 +146,12 @@ export default function PdfWatermark() {
       setResult(stamped);
       downloadWatermarkedPdf(stamped.blob, pdfFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

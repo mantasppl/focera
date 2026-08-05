@@ -9,6 +9,7 @@ import {
   validateTikTokUrl,
   type TikTokVideoResult,
 } from "@/lib/tiktok-video";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 const EXAMPLE_URLS = [
@@ -19,6 +20,7 @@ const EXAMPLE_URLS = [
 ];
 
 export default function TikTokVideoDownloader() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const urlId = useId();
 
   const [url, setUrl] = useState("");
@@ -66,7 +68,9 @@ export default function TikTokVideoDownloader() {
       }
 
       setResult(data);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message
@@ -107,7 +111,9 @@ export default function TikTokVideoDownloader() {
       link.download = downloadFilename(result);
       link.click();
       URL.revokeObjectURL(objectUrl);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message

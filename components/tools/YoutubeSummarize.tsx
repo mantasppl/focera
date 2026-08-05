@@ -11,6 +11,7 @@ import {
   type YoutubeSummaryStyleId,
 } from "@/lib/youtube-summarize";
 import { youtubeWatchUrl } from "@/lib/youtube-to-text";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn, copyText } from "@/lib/utils";
 
 type ApiSuccess = {
@@ -45,6 +46,7 @@ const EXAMPLE_URLS = [
 ];
 
 export default function YoutubeSummarize() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const urlId = useId();
   const styleId = useId();
   const outputId = useId();
@@ -107,7 +109,9 @@ export default function YoutubeSummarize() {
       });
       setSummary(data.summary.trim());
       setStyle(nextStyle);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message

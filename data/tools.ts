@@ -36,10 +36,10 @@ export const categoryLabels: Record<ToolCategory, string> = {
 };
 
 export const categoryDescriptions: Record<ToolCategory, string> = {
-  pdf: "Merge, split, compress, unlock, edit, and convert PDFs — including PNG to PDF, Word to PDF, EPUB to PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, and PDF to EPUB — in your browser.",
+  pdf: "Merge, split, crop, compress, unlock, edit, translate, and convert PDFs — including PNG to PDF, Word to PDF, PowerPoint to PDF, EPUB to PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, and PDF to EPUB — in your browser.",
   image: "Compress, upscale, colorize photos, remove backgrounds, convert PNG to PDF, and convert images.",
   video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, summarize YouTube videos, and export in your browser.",
-  ai: "Generate images and stories, colorize photos, summarize YouTube videos, plus smart cutouts, OCR, and speech-to-text.",
+  ai: "Generate images and stories, colorize photos, summarize YouTube videos, translate PDFs, plus smart cutouts, OCR, and speech-to-text.",
   file: "Converters, generators, and everyday utilities for any file.",
 };
 
@@ -1595,6 +1595,70 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "crop-pdf",
+    name: "Crop PDF Tool",
+    shortName: "Crop PDF",
+    description:
+      "Crop PDF pages online — trim margins in inches, mm, points, or percent with uniform or custom sides. Free, private, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/crop-pdf",
+    keywords: [
+      "crop pdf",
+      "pdf crop",
+      "trim pdf margins",
+      "crop pdf pages",
+      "pdf margin trim",
+      "crop pdf online",
+      "free pdf cropper",
+      "remove pdf margins",
+      "trim pdf whitespace",
+      "pdf crop tool",
+    ],
+    faq: [
+      {
+        question: "Is this PDF crop tool free?",
+        answer:
+          "Yes. Crop and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Cropping runs entirely in your browser with pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "How does cropping work?",
+        answer:
+          "You set margins in inches, millimeters, points, or percent. Each page’s media and crop boxes are updated so viewers show only the trimmed area.",
+      },
+      {
+        question: "Will text stay selectable?",
+        answer:
+          "Yes. Pages are not flattened into images — text, vector graphics, and layout remain intact after cropping.",
+      },
+      {
+        question: "Can I set different margins per side?",
+        answer:
+          "Yes. Use Custom mode to set top, right, bottom, and left independently, or Uniform for the same trim on every side.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per crop.",
+      },
+      {
+        question: "Can I crop password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to crop.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, set margins, and crop immediately.",
+      },
+    ],
+  },
+  {
     slug: "compress-pdf",
     name: "Compress PDF Tool",
     shortName: "Compress PDF",
@@ -2473,6 +2537,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "powerpoint-to-pdf",
+    name: "PowerPoint to PDF Converter",
+    shortName: "PowerPoint to PDF",
+    description:
+      "Convert PowerPoint to PDF online — turn .pptx slides into landscape PDFs. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/powerpoint-to-pdf",
+    keywords: [
+      "powerpoint to pdf",
+      "pptx to pdf",
+      "ppt to pdf",
+      "convert powerpoint to pdf",
+      "powerpoint to pdf converter",
+      "slides to pdf",
+      "presentation to pdf",
+      "free powerpoint to pdf",
+      "powerpoint to pdf online",
+      "convert pptx to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this PowerPoint to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited PowerPoint files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PowerPoint files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your presentations stay on your device.",
+      },
+      {
+        question: "Which PowerPoint formats are supported?",
+        answer:
+          "Upload .pptx files (modern PowerPoint format). Legacy .ppt files are not supported — open them in PowerPoint or LibreOffice and save as .pptx first.",
+      },
+      {
+        question: "Will formatting match the original slides?",
+        answer:
+          "Text, basic shape fills, and common images are preserved when possible. Charts as images, SmartArt, animations, videos, and some theme fonts may look different after conversion.",
+      },
+      {
+        question: "Can I choose widescreen, A4, or Letter?",
+        answer:
+          "Yes. Pick widescreen (16:9), A4 landscape, or US Letter landscape before converting. Each slide becomes one PDF page.",
+      },
+      {
+        question: "Is there a file size or slide limit?",
+        answer:
+          "Yes. Upload PowerPoint files up to 25 MB with a maximum of 50 slides per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your .pptx, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "word-to-pdf",
     name: "Word to PDF Converter",
     shortName: "Word to PDF",
@@ -2712,6 +2835,70 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your PDF, and extract immediately.",
+      },
+    ],
+  },
+  {
+    slug: "pdf-translator",
+    name: "PDF Translator",
+    shortName: "PDF Translator",
+    description:
+      "Translate PDF text online — extract selectable text, translate into 15+ languages, then copy or download as .txt or PDF. Free, no account required.",
+    categories: ["pdf", "ai"],
+    status: "ready",
+    href: "/pdf-translator",
+    keywords: [
+      "pdf translator",
+      "translate pdf",
+      "pdf translation",
+      "translate pdf online",
+      "pdf translator free",
+      "translate pdf to english",
+      "pdf language translator",
+      "translate pdf document",
+      "multilingual pdf translator",
+      "pdf to translated text",
+    ],
+    faq: [
+      {
+        question: "Is this PDF translator free?",
+        answer:
+          "Yes. Translate PDF text and download results with no account, subscription, or watermark.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "The PDF itself stays in your browser while text is extracted locally. Only the extracted text is sent to the translation service — not the original file.",
+      },
+      {
+        question: "Which languages are supported?",
+        answer:
+          "You can translate between English, Spanish, French, German, Portuguese, Italian, Dutch, Polish, Russian, Chinese, Japanese, Korean, Arabic, Turkish, and Hindi. Source language can also be auto-detected.",
+      },
+      {
+        question: "Does this work on scanned PDFs?",
+        answer:
+          "This tool reads selectable text already in the PDF. Scanned image-only pages usually need OCR first — try PDF to JPG, then Image to Text.",
+      },
+      {
+        question: "Can I download the translation as a PDF?",
+        answer:
+          "Yes. After translation finishes, download a .txt file or a simple text PDF. Complex scripts may display more reliably as .txt depending on font support.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages. Very long extracts are limited to about 12,000 characters per translation for reliable results.",
+      },
+      {
+        question: "Can I translate password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to translate.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, choose languages, and translate immediately.",
       },
     ],
   },

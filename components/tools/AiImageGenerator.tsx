@@ -13,6 +13,7 @@ import {
   randomAiImageSeed,
   validateAiImagePrompt,
 } from "@/lib/ai-image";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { downloadBlob } from "@/lib/image";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ const EXAMPLE_PROMPTS = [
 ];
 
 export default function AiImageGenerator() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const promptId = useId();
   const sizeId = useId();
   const styleId = useId();
@@ -87,7 +89,9 @@ export default function AiImageGenerator() {
       setImageBlob(blob);
       setGeneratedPrompt(prompt.trim());
       setSeed(nextSeed);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message

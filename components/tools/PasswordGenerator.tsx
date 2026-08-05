@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import Button from "@/components/Button";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   DEFAULT_LENGTH,
   MAX_LENGTH,
@@ -33,6 +34,7 @@ const CHARSET_OPTIONS: Array<{ key: CharsetKey; label: string; sample: string }>
   ];
 
 export default function PasswordGenerator() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const lengthId = useId();
   const passwordId = useId();
   const [options, setOptions] = useState<PasswordOptions>(DEFAULT_OPTIONS);
@@ -56,7 +58,9 @@ export default function PasswordGenerator() {
     try {
       setPassword(generatePassword(next));
       setError("");
+      trackSuccess();
     } catch {
+      trackFailure();
       setError("Could not generate a password. Try again.");
       setPassword("");
     }

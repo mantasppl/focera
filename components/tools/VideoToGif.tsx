@@ -17,9 +17,11 @@ import {
   type VideoToGifResult,
   type VideoToGifSize,
 } from "@/lib/video-to-gif";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 export default function VideoToGif() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const sizeId = useId();
   const fpsId = useId();
   const qualityId = useId();
@@ -105,10 +107,12 @@ export default function VideoToGif() {
       setResultUrl(url);
       downloadGif(converted.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

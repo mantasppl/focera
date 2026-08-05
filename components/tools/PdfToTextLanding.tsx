@@ -110,7 +110,9 @@ export default function PdfToTextLanding() {
           </li>
           <li>
             <strong>Prep content for other tools</strong> — Extract text before
-            pasting into a translator, editor, or AI workflow.
+            pasting into an editor or AI workflow, or use{" "}
+            <Link href="/pdf-translator">PDF Translator</Link> for a full
+            translation pass.
           </li>
         </ul>
       </section>
@@ -137,6 +139,10 @@ export default function PdfToTextLanding() {
           Related Tools
         </h2>
         <ul className="tool-content__list">
+          <li>
+            <Link href="/pdf-translator">PDF Translator</Link> — Translate
+            extracted PDF text into another language.
+          </li>
           <li>
             <Link href="/pdf-to-epub">PDF to EPUB</Link> — Convert PDFs into
             reflowable .epub ebooks for e-readers.

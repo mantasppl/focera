@@ -4482,15 +4482,18 @@ a {
 /* -- PDF to JPG -- */
 .pdf-to-jpg__options,
 .compress-pdf__options,
+.crop-pdf__options,
 .unlock-pdf__options,
 .pdf-to-powerpoint__options,
 .pdf-to-word__options,
 .pdf-to-excel__options,
 .pdf-to-epub__options,
 .word-to-pdf__options,
+.powerpoint-to-pdf__options,
 .epub-to-pdf__options,
 .png-to-pdf__options,
 .pdf-to-text__options,
+.pdf-translator__options,
 .split-pdf__options,
 .pdf-watermark__options,
 .upscale-image__options,
@@ -4506,11 +4509,13 @@ a {
 
 .pdf-to-jpg__chips,
 .compress-pdf__chips,
+.crop-pdf__chips,
 .pdf-to-powerpoint__chips,
 .pdf-to-word__chips,
 .pdf-to-excel__chips,
 .pdf-to-epub__chips,
 .word-to-pdf__chips,
+.powerpoint-to-pdf__chips,
 .epub-to-pdf__chips,
 .png-to-pdf__chips,
 .pdf-to-text__chips,
@@ -4536,18 +4541,26 @@ a {
 }
 
 .compress-pdf__chips,
+.crop-pdf__chips--units,
+.crop-pdf__chips--presets,
 .image-compressor__chips--levels,
 .compress-video__chips--levels {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.crop-pdf__chips--mode {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .pdf-to-jpg__chip,
 .compress-pdf__chip,
+.crop-pdf__chip,
 .pdf-to-powerpoint__chip,
 .pdf-to-word__chip,
 .pdf-to-excel__chip,
 .pdf-to-epub__chip,
 .word-to-pdf__chip,
+.powerpoint-to-pdf__chip,
 .epub-to-pdf__chip,
 .png-to-pdf__chip,
 .pdf-to-text__chip,
@@ -4577,11 +4590,13 @@ a {
 
 .pdf-to-jpg__chip:hover:not(:disabled),
 .compress-pdf__chip:hover:not(:disabled),
+.crop-pdf__chip:hover:not(:disabled),
 .pdf-to-powerpoint__chip:hover:not(:disabled),
 .pdf-to-word__chip:hover:not(:disabled),
 .pdf-to-excel__chip:hover:not(:disabled),
 .pdf-to-epub__chip:hover:not(:disabled),
 .word-to-pdf__chip:hover:not(:disabled),
+.powerpoint-to-pdf__chip:hover:not(:disabled),
 .epub-to-pdf__chip:hover:not(:disabled),
 .png-to-pdf__chip:hover:not(:disabled),
 .pdf-to-text__chip:hover:not(:disabled),
@@ -4598,11 +4613,13 @@ a {
 
 .pdf-to-jpg__chip.is-active,
 .compress-pdf__chip.is-active,
+.crop-pdf__chip.is-active,
 .pdf-to-powerpoint__chip.is-active,
 .pdf-to-word__chip.is-active,
 .pdf-to-excel__chip.is-active,
 .pdf-to-epub__chip.is-active,
 .word-to-pdf__chip.is-active,
+.powerpoint-to-pdf__chip.is-active,
 .epub-to-pdf__chip.is-active,
 .png-to-pdf__chip.is-active,
 .pdf-to-text__chip.is-active,
@@ -4621,11 +4638,13 @@ a {
 
 .pdf-to-jpg__chip:disabled,
 .compress-pdf__chip:disabled,
+.crop-pdf__chip:disabled,
 .pdf-to-powerpoint__chip:disabled,
 .pdf-to-word__chip:disabled,
 .pdf-to-excel__chip:disabled,
 .pdf-to-epub__chip:disabled,
 .word-to-pdf__chip:disabled,
+.powerpoint-to-pdf__chip:disabled,
 .epub-to-pdf__chip:disabled,
 .png-to-pdf__chip:disabled,
 .pdf-to-text__chip:disabled,
@@ -4643,11 +4662,13 @@ a {
 
 .pdf-to-jpg__chip-label,
 .compress-pdf__chip-label,
+.crop-pdf__chip-label,
 .pdf-to-powerpoint__chip-label,
 .pdf-to-word__chip-label,
 .pdf-to-excel__chip-label,
 .pdf-to-epub__chip-label,
 .word-to-pdf__chip-label,
+.powerpoint-to-pdf__chip-label,
 .epub-to-pdf__chip-label,
 .png-to-pdf__chip-label,
 .pdf-to-text__chip-label,
@@ -4665,11 +4686,13 @@ a {
 
 .pdf-to-jpg__chip-hint,
 .compress-pdf__chip-hint,
+.crop-pdf__chip-hint,
 .pdf-to-powerpoint__chip-hint,
 .pdf-to-word__chip-hint,
 .pdf-to-excel__chip-hint,
 .pdf-to-epub__chip-hint,
 .word-to-pdf__chip-hint,
+.powerpoint-to-pdf__chip-hint,
 .epub-to-pdf__chip-hint,
 .png-to-pdf__chip-hint,
 .pdf-to-text__chip-hint,
@@ -4687,11 +4710,13 @@ a {
 
 .pdf-to-jpg__chip.is-active .pdf-to-jpg__chip-hint,
 .compress-pdf__chip.is-active .compress-pdf__chip-hint,
+.crop-pdf__chip.is-active .crop-pdf__chip-hint,
 .pdf-to-powerpoint__chip.is-active .pdf-to-powerpoint__chip-hint,
 .pdf-to-word__chip.is-active .pdf-to-word__chip-hint,
 .pdf-to-excel__chip.is-active .pdf-to-excel__chip-hint,
 .pdf-to-epub__chip.is-active .pdf-to-epub__chip-hint,
 .word-to-pdf__chip.is-active .word-to-pdf__chip-hint,
+.powerpoint-to-pdf__chip.is-active .powerpoint-to-pdf__chip-hint,
 .epub-to-pdf__chip.is-active .epub-to-pdf__chip-hint,
 .epub-to-pdf__chip-hint,
 .png-to-pdf__chip.is-active .png-to-pdf__chip-hint,
@@ -4765,11 +4790,16 @@ a {
 @media (max-width: 640px) {
   .pdf-to-jpg__chips,
   .compress-pdf__chips,
+  .crop-pdf__chips,
+  .crop-pdf__chips--units,
+  .crop-pdf__chips--presets,
+  .crop-pdf__chips--mode,
   .pdf-to-powerpoint__chips,
   .pdf-to-word__chips,
   .pdf-to-excel__chips,
   .pdf-to-epub__chips,
   .word-to-pdf__chips,
+  .powerpoint-to-pdf__chips,
   .epub-to-pdf__chips,
 .epub-to-pdf__chips,
   .png-to-pdf__chips,
@@ -5019,7 +5049,8 @@ a {
 }
 
 .image-to-text__result,
-.pdf-to-text__result {
+.pdf-to-text__result,
+.pdf-translator__result {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
@@ -5027,7 +5058,8 @@ a {
 }
 
 .image-to-text__result-meta,
-.pdf-to-text__result-meta {
+.pdf-to-text__result-meta,
+.pdf-translator__result-meta {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
@@ -5035,12 +5067,25 @@ a {
 }
 
 .image-to-text__textarea,
-.pdf-to-text__textarea {
+.pdf-to-text__textarea,
+.pdf-translator__textarea {
   min-height: 16rem;
   resize: vertical;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-size: 0.92rem;
   line-height: 1.55;
+}
+
+.pdf-translator__lang-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .pdf-translator__lang-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -5051,6 +5096,7 @@ a {
 
 /* -- Compress PDF / Image Compressor / Compress Video / MP4 to MP3 / Video to GIF -- */
 .compress-pdf__success,
+.crop-pdf__success,
 .unlock-pdf__success,
 .pdf-watermark__success,
 .image-compressor__success,
@@ -5067,6 +5113,7 @@ a {
 }
 
 .compress-pdf__success-title,
+.crop-pdf__success-title,
 .unlock-pdf__success-title,
 .pdf-watermark__success-title,
 .image-compressor__success-title,
@@ -5081,6 +5128,7 @@ a {
 }
 
 .compress-pdf__success-meta,
+.crop-pdf__success-meta,
 .unlock-pdf__success-meta,
 .pdf-watermark__success-meta,
 .image-compressor__success-meta,
@@ -5095,6 +5143,7 @@ a {
 }
 
 .compress-pdf__stats,
+.crop-pdf__stats,
 .unlock-pdf__stats,
 .image-compressor__stats,
 .compress-video__stats,
@@ -5111,6 +5160,7 @@ a {
 }
 
 .compress-pdf__stats li,
+.crop-pdf__stats li,
 .unlock-pdf__stats li,
 .image-compressor__stats li,
 .compress-video__stats li,
@@ -5126,6 +5176,7 @@ a {
 }
 
 .compress-pdf__stat-label,
+.crop-pdf__stat-label,
 .unlock-pdf__stat-label,
 .image-compressor__stat-label,
 .compress-video__stat-label,
@@ -5139,6 +5190,7 @@ a {
 }
 
 .compress-pdf__stat-value,
+.crop-pdf__stat-value,
 .unlock-pdf__stat-value,
 .image-compressor__stat-value,
 .compress-video__stat-value,
@@ -5163,6 +5215,7 @@ a {
 }
 
 .compress-pdf__preview,
+.crop-pdf__preview,
 .unlock-pdf__preview,
 .pdf-watermark__preview {
   width: min(100%, 420px);
@@ -5170,6 +5223,12 @@ a {
   margin-top: 0.35rem;
   border: 1px solid var(--line);
   background: #fff;
+}
+
+.crop-pdf__sides {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
 }
 
 .unlock-pdf__password-row {
@@ -5255,6 +5314,7 @@ a {
 
 @media (max-width: 640px) {
   .compress-pdf__stats,
+  .crop-pdf__stats,
   .unlock-pdf__stats,
   .image-compressor__stats,
   .compress-video__stats,
@@ -5266,9 +5326,14 @@ a {
   }
 
   .compress-pdf__preview,
+  .crop-pdf__preview,
   .unlock-pdf__preview,
   .pdf-watermark__preview {
     height: 220px;
+  }
+
+  .crop-pdf__sides {
+    grid-template-columns: 1fr;
   }
 
   .compress-video__preview,
@@ -5399,6 +5464,7 @@ a {
 .pdf-to-excel__success,
 .pdf-to-epub__success,
 .word-to-pdf__success,
+.powerpoint-to-pdf__success,
 .epub-to-pdf__success,
 .png-to-pdf__success {
   display: flex;
@@ -5414,6 +5480,7 @@ a {
 .pdf-to-excel__success-title,
 .pdf-to-epub__success-title,
 .word-to-pdf__success-title,
+.powerpoint-to-pdf__success-title,
 .epub-to-pdf__success-title,
 .png-to-pdf__success-title {
   margin: 0;
@@ -5427,6 +5494,7 @@ a {
 .pdf-to-excel__success-meta,
 .pdf-to-epub__success-meta,
 .word-to-pdf__success-meta,
+.powerpoint-to-pdf__success-meta,
 .epub-to-pdf__success-meta,
 .png-to-pdf__success-meta {
   margin: 0;
@@ -5440,6 +5508,7 @@ a {
 .pdf-to-excel__stats,
 .pdf-to-epub__stats,
 .word-to-pdf__stats,
+.powerpoint-to-pdf__stats,
 .epub-to-pdf__stats,
 .png-to-pdf__stats {
   display: grid;
@@ -5456,6 +5525,7 @@ a {
 .pdf-to-excel__stats li,
 .pdf-to-epub__stats li,
 .word-to-pdf__stats li,
+.powerpoint-to-pdf__stats li,
 .epub-to-pdf__stats li,
 .png-to-pdf__stats li {
   display: flex;
@@ -5471,6 +5541,7 @@ a {
 .pdf-to-excel__stat-label,
 .pdf-to-epub__stat-label,
 .word-to-pdf__stat-label,
+.powerpoint-to-pdf__stat-label,
 .epub-to-pdf__stat-label,
 .png-to-pdf__stat-label {
   font-size: 0.72rem;
@@ -5484,6 +5555,7 @@ a {
 .pdf-to-excel__stat-value,
 .pdf-to-epub__stat-value,
 .word-to-pdf__stat-value,
+.powerpoint-to-pdf__stat-value,
 .epub-to-pdf__stat-value,
 .png-to-pdf__stat-value {
   font-size: 0.95rem;
@@ -5503,6 +5575,7 @@ a {
 .pdf-to-word__preview,
 .pdf-to-epub__preview,
 .word-to-pdf__preview,
+.powerpoint-to-pdf__preview,
 .epub-to-pdf__preview {
   width: min(100%, 420px);
   max-height: 240px;
@@ -5562,6 +5635,7 @@ a {
   .pdf-to-excel__stats,
   .pdf-to-epub__stats,
   .word-to-pdf__stats,
+  .powerpoint-to-pdf__stats,
   .epub-to-pdf__stats,
 .epub-to-pdf__stats,
   .png-to-pdf__stats {
@@ -5573,6 +5647,7 @@ a {
   .pdf-to-word__preview,
   .pdf-to-epub__preview,
   .word-to-pdf__preview,
+  .powerpoint-to-pdf__preview,
   .epub-to-pdf__preview {
     max-height: 200px;
   }
@@ -7509,4 +7584,428 @@ a {
   min-height: 3.2rem;
   resize: vertical;
   font-size: 0.9rem;
+}
+
+/* ===== Admin analytics ===== */
+:root,
+html[data-admin-theme="light"] {
+  --admin-bg: #f4f6f9;
+  --admin-surface: #ffffff;
+  --admin-text: #0a0b0d;
+  --admin-muted: #5b6572;
+  --admin-line: rgba(15, 23, 42, 0.08);
+  --admin-grid: rgba(15, 23, 42, 0.08);
+  --admin-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+}
+
+html[data-admin-theme="dark"] {
+  --admin-bg: #0b1220;
+  --admin-surface: #121a2b;
+  --admin-text: #e8eef7;
+  --admin-muted: #94a3b8;
+  --admin-line: rgba(148, 163, 184, 0.16);
+  --admin-grid: rgba(148, 163, 184, 0.14);
+  --admin-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --surface: #121a2b;
+  --foreground: #e8eef7;
+  --muted: #94a3b8;
+  --line: rgba(148, 163, 184, 0.16);
+  --background: #0b1220;
+}
+
+.admin-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(80% 50% at 10% -10%, rgba(13, 148, 136, 0.16), transparent 55%),
+    radial-gradient(60% 40% at 90% 0%, rgba(100, 116, 139, 0.12), transparent 50%),
+    var(--admin-bg);
+  color: var(--admin-text);
+}
+
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--admin-line);
+  background: color-mix(in srgb, var(--admin-surface) 86%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.admin-header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem 1.25rem;
+}
+
+.admin-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-header__badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+}
+
+.admin-nav {
+  display: flex;
+  gap: 0.35rem;
+  margin-right: auto;
+}
+
+.admin-nav__link {
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--admin-muted);
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.55rem;
+}
+
+.admin-nav__link:hover,
+.admin-nav__link.is-active {
+  color: var(--admin-text);
+  background: var(--accent-soft);
+}
+
+.admin-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.admin-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+
+.admin-title {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 1rem;
+}
+
+.admin-subtitle {
+  margin: 0.15rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.92rem;
+}
+
+.admin-dashboard {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: end;
+  padding: 1rem;
+  border: 1px solid var(--admin-line);
+  border-radius: var(--radius-lg);
+  background: var(--admin-surface);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.admin-field {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--admin-muted);
+}
+
+.admin-field--grow {
+  flex: 1 1 220px;
+  min-width: 180px;
+}
+
+.admin-toolbar__export {
+  display: flex;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.admin-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.85rem;
+}
+
+.admin-stat-grid--compact {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.admin-stat-card,
+.admin-chart-card,
+.admin-table-card,
+.admin-login__card {
+  border: 1px solid var(--admin-line);
+  border-radius: var(--radius-lg);
+  background: var(--admin-surface);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-stat-card {
+  padding: 1rem 1.1rem;
+}
+
+.admin-stat-card__label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--admin-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.admin-stat-card__value {
+  margin: 0.45rem 0 0;
+  font-family: var(--display);
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.admin-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .admin-chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-chart-card {
+  padding: 1rem 1.1rem 0.75rem;
+  min-height: 320px;
+}
+
+.admin-chart-card__title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.admin-chart-card__body {
+  width: 100%;
+  min-height: 260px;
+}
+
+.admin-table-card__head {
+  padding: 1rem 1.1rem 0.5rem;
+}
+
+.admin-table-card__head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.admin-table-card__head p {
+  margin: 0.25rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.88rem;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.75rem 1.1rem;
+  border-top: 1px solid var(--admin-line);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.admin-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--admin-muted);
+}
+
+.admin-table .is-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-table__link {
+  display: grid;
+  gap: 0.15rem;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 600;
+}
+
+.admin-table__link:hover {
+  color: var(--accent-deep);
+}
+
+.admin-table__slug {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--admin-muted);
+}
+
+.admin-empty,
+.admin-error {
+  padding: 1rem;
+  border-radius: var(--radius);
+  font-size: 0.92rem;
+}
+
+.admin-empty {
+  color: var(--admin-muted);
+  text-align: center;
+}
+
+.admin-error {
+  background: rgba(180, 83, 9, 0.12);
+  color: #9a3412;
+  border: 1px solid rgba(180, 83, 9, 0.25);
+}
+
+html[data-admin-theme="dark"] .admin-error {
+  color: #fdba74;
+}
+
+.admin-skeleton {
+  display: inline-block;
+  width: 4.5rem;
+  height: 1.4rem;
+  border-radius: 0.4rem;
+  background: linear-gradient(90deg, var(--admin-line), transparent, var(--admin-line));
+  background-size: 200% 100%;
+  animation: admin-shimmer 1.2s ease infinite;
+}
+
+.admin-skeleton--chart,
+.admin-skeleton--row {
+  display: block;
+  width: 100%;
+  height: 240px;
+}
+
+.admin-skeleton--row {
+  height: 2.5rem;
+}
+
+@keyframes admin-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.admin-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(70% 50% at 20% 0%, rgba(13, 148, 136, 0.18), transparent 55%),
+    var(--admin-bg);
+}
+
+.admin-login__card {
+  width: min(100%, 400px);
+  padding: 1.5rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.admin-login__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-login__brand h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.admin-login__copy {
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 0.92rem;
+}
+
+.admin-detail-head {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.admin-back {
+  width: fit-content;
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--admin-muted);
+}
+
+.admin-back:hover {
+  color: var(--accent-deep);
+}
+
+.admin-breakdown {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0 0.75rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.admin-breakdown__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.admin-breakdown__bar {
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--admin-line);
+  overflow: hidden;
+}
+
+.admin-breakdown__bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-deep));
+  border-radius: inherit;
 }

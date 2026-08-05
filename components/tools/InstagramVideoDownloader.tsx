@@ -9,6 +9,7 @@ import {
   validateInstagramUrl,
   type InstagramVideoResult,
 } from "@/lib/instagram-video";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 const EXAMPLE_URLS = [
@@ -19,6 +20,7 @@ const EXAMPLE_URLS = [
 ];
 
 export default function InstagramVideoDownloader() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const urlId = useId();
 
   const [url, setUrl] = useState("");
@@ -69,7 +71,9 @@ export default function InstagramVideoDownloader() {
       }
 
       setResult(data);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message
@@ -115,7 +119,9 @@ export default function InstagramVideoDownloader() {
       );
       link.click();
       URL.revokeObjectURL(objectUrl);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message

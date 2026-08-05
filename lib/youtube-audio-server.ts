@@ -202,7 +202,8 @@ export async function downloadYoutubeAudio(
   }
 
   const audioUrl = format.url!;
-  const response = await fetch(audioUrl, {
+  const { fetchSafeMedia } = await import("@/lib/security/outbound");
+  const response = await fetchSafeMedia(audioUrl, {
     headers: {
       "User-Agent": client.userAgent,
       Accept: "*/*",

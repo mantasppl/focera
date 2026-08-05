@@ -11,6 +11,7 @@ import {
   type PdfToTextLayout,
   type PdfToTextResult,
 } from "@/lib/pdf-to-text";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn, copyText } from "@/lib/utils";
 
 const LAYOUT_OPTIONS: {
@@ -31,6 +32,7 @@ const LAYOUT_OPTIONS: {
 ];
 
 export default function PdfToText() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const layoutId = useId();
   const outputId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -105,6 +107,7 @@ export default function PdfToText() {
       setResult(extracted);
       setText(extracted.text);
       setProgressText("");
+      trackSuccess();
 
       if (!extracted.text) {
         setError(
@@ -115,6 +118,7 @@ export default function PdfToText() {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

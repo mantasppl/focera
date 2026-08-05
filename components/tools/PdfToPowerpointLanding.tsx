@@ -173,6 +173,10 @@ export default function PdfToPowerpointLanding() {
             screenshots into editable text.
           </li>
           <li>
+            <Link href="/powerpoint-to-pdf">PowerPoint to PDF</Link> — Convert
+            .pptx decks into landscape PDFs.
+          </li>
+          <li>
             <Link href="/word-to-pdf">Word to PDF</Link> — Convert .docx
             documents into A4 or Letter PDFs.
           </li>

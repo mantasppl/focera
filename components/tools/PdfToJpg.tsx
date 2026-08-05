@@ -13,6 +13,7 @@ import {
   type PdfQuality,
   type PdfScale,
 } from "@/lib/pdf-to-jpg";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 const QUALITY_OPTIONS: { value: PdfQuality; label: string; hint: string }[] = [
@@ -28,6 +29,7 @@ const SCALE_OPTIONS: { value: PdfScale; label: string; hint: string }[] = [
 ];
 
 export default function PdfToJpg() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const qualityId = useId();
   const scaleId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -118,10 +120,12 @@ export default function PdfToJpg() {
       setPages(converted);
       setSelectedPage(converted[0]?.pageNumber ?? 1);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

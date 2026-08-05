@@ -16,6 +16,7 @@ import {
   type YoutubeTranscriptResult,
   type YoutubeTranscriptSegment,
 } from "@/lib/youtube-to-text";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn, copyText } from "@/lib/utils";
 
 type ApiSuccess = {
@@ -43,6 +44,7 @@ const EXAMPLE_URLS = [
 ];
 
 export default function YoutubeToText() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const urlId = useId();
   const modeId = useId();
   const outputId = useId();
@@ -112,7 +114,9 @@ export default function YoutubeToText() {
       setResult(nextResult);
       setText(formatTranscriptOutput(nextResult, nextMode));
       setMode(nextMode);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message

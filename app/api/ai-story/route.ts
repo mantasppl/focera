@@ -6,9 +6,14 @@ import {
   isAiStoryToneId,
   validateAiStoryPrompt,
 } from "@/lib/ai-story";
+import { trackToolUsageServer } from "@/lib/analytics/track";
+import { getToolBySlug } from "@/data/tools";
+import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+const TOOL_SLUG = "ai-story-generator";
 
 type GenerateBody = {
   prompt?: unknown;
@@ -20,6 +25,16 @@ type GenerateBody = {
 
 function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status });
+}
+
+function track(request: Request, success: boolean) {
+  const tool = getToolBySlug(TOOL_SLUG);
+  if (tool) {
+    trackToolUsageServer(
+      { toolId: tool.slug, toolName: tool.name, success },
+      request,
+    );
+  }
 }
 
 function extractStoryText(payload: unknown): string | null {
@@ -59,6 +74,15 @@ function extractStoryText(payload: unknown): string | null {
 }
 
 export async function POST(request: Request) {
+  const guarded = guardApiRequest(request, {
+    bucket: "ai-story",
+    limit: 15,
+    windowMs: 60_000,
+    requireSameOrigin: true,
+    maxBodyBytes: 32_768,
+  });
+  if (guarded) return guarded;
+
   let body: GenerateBody;
 
   try {
@@ -128,6 +152,7 @@ export async function POST(request: Request) {
       signal: AbortSignal.timeout(55_000),
     });
   } catch {
+    track(request, false);
     return jsonError(
       "The story service timed out. Wait a moment and try again.",
       504,
@@ -135,6 +160,7 @@ export async function POST(request: Request) {
   }
 
   if (!upstream.ok) {
+    track(request, false);
     if (upstream.status === 429) {
       return jsonError(
         "Too many requests right now. Wait about 15 seconds and try again.",
@@ -144,7 +170,7 @@ export async function POST(request: Request) {
 
     if (upstream.status === 401 || upstream.status === 402) {
       return jsonError(
-        "Story generation is temporarily unavailable. Try again in a minute, or set POLLINATIONS_API_KEY for higher limits.",
+        "Story generation is temporarily unavailable. Try again in a minute.",
         503,
       );
     }
@@ -167,6 +193,7 @@ export async function POST(request: Request) {
   }
 
   if (!story) {
+    track(request, false);
     return jsonError(
       "The story service returned an empty result. Try again.",
       502,
@@ -177,6 +204,8 @@ export async function POST(request: Request) {
   const cleaned = story
     .replace(/^(here(?:'s| is) (?:a |your )?story[:\s-]*)/i, "")
     .trim();
+
+  track(request, true);
 
   return Response.json(
     {

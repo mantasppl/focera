@@ -304,10 +304,11 @@ async function fetchCaptionSegments(
     "Accept-Language": "en-US,en;q=0.9",
   };
 
+  const { fetchSafeMedia } = await import("@/lib/security/outbound");
   const jsonUrl = new URL(track.baseUrl);
   jsonUrl.searchParams.set("fmt", "json3");
 
-  const jsonResponse = await fetch(jsonUrl.toString(), {
+  const jsonResponse = await fetchSafeMedia(jsonUrl.toString(), {
     headers,
     cache: "no-store",
   });
@@ -325,7 +326,7 @@ async function fetchCaptionSegments(
     }
   }
 
-  const xmlResponse = await fetch(track.baseUrl, {
+  const xmlResponse = await fetchSafeMedia(track.baseUrl, {
     headers,
     cache: "no-store",
   });

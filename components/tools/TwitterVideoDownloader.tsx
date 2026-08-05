@@ -9,6 +9,7 @@ import {
   validateTwitterUrl,
   type TwitterVideoResult,
 } from "@/lib/twitter-video";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 const EXAMPLE_URLS = [
@@ -19,6 +20,7 @@ const EXAMPLE_URLS = [
 ];
 
 export default function TwitterVideoDownloader() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const urlId = useId();
 
   const [url, setUrl] = useState("");
@@ -71,7 +73,9 @@ export default function TwitterVideoDownloader() {
       }
 
       setResult(data);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message
@@ -119,7 +123,9 @@ export default function TwitterVideoDownloader() {
       );
       link.click();
       URL.revokeObjectURL(objectUrl);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message

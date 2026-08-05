@@ -13,9 +13,11 @@ import {
   type UpscaleFactor,
   type UpscaleImageResult,
 } from "@/lib/upscale-image";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 export default function UpscaleImage() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const scaleId = useId();
   const enhanceId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -98,10 +100,12 @@ export default function UpscaleImage() {
       setResultUrl(url);
       downloadUpscaledImage(upscaled.blob, sourceFile, upscaled.factor);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

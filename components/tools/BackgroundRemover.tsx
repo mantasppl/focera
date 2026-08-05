@@ -9,6 +9,7 @@ import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
 import { removeImageBackground } from "@/lib/background-removal";
 import { compositeOnColor, compositeOnImage, compositeWithBlur, BLUR_RADIUS } from "@/lib/composite-image";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   downloadBlob,
   fileBaseName,
@@ -27,6 +28,7 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 }
 
 export default function BackgroundRemover() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState("");
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
@@ -131,7 +133,9 @@ export default function BackgroundRemover() {
       setResultBlob(blob);
       setResultUrl(url);
       setProgressText("");
+      trackSuccess();
     } catch {
+      trackFailure();
       setError(
         "Could not remove the background. Try a smaller image or a different browser.",
       );
@@ -187,6 +191,7 @@ export default function BackgroundRemover() {
         });
       } catch {
         if (!cancelled) {
+          trackFailure();
           setError("Could not apply the selected background. Try another option.");
         }
       } finally {

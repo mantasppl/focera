@@ -66,6 +66,11 @@ export const PdfToTextLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PdfTranslatorLazy = dynamic(
+  () => import("@/components/tools/PdfTranslator"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PdfToExcelLazy = dynamic(
   () => import("@/components/tools/PdfToExcel"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -73,6 +78,11 @@ export const PdfToExcelLazy = dynamic(
 
 export const PdfToPowerpointLazy = dynamic(
   () => import("@/components/tools/PdfToPowerpoint"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PowerpointToPdfLazy = dynamic(
+  () => import("@/components/tools/PowerpointToPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -88,6 +98,11 @@ export const MergePdfLazy = dynamic(
 
 export const CompressPdfLazy = dynamic(
   () => import("@/components/tools/CompressPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const CropPdfLazy = dynamic(
+  () => import("@/components/tools/CropPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

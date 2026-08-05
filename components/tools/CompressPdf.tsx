@@ -12,9 +12,11 @@ import {
   type CompressLevel,
   type CompressPdfResult,
 } from "@/lib/compress-pdf";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 export default function CompressPdf() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const levelId = useId();
   const abortRef = useRef<AbortController | null>(null);
   const resultUrlRef = useRef<string | null>(null);
@@ -97,10 +99,12 @@ export default function CompressPdf() {
       setResult(compressed);
       downloadCompressedPdf(compressed.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

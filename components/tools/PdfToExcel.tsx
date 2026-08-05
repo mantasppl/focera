@@ -13,6 +13,7 @@ import {
   type PdfToExcelResult,
   type PdfToExcelSheets,
 } from "@/lib/pdf-to-excel";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 const LAYOUT_OPTIONS: {
@@ -50,6 +51,7 @@ const SHEET_OPTIONS: {
 ];
 
 export default function PdfToExcel() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const layoutId = useId();
   const sheetsId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -134,10 +136,12 @@ export default function PdfToExcel() {
       setResult(converted);
       downloadExcelFile(converted.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

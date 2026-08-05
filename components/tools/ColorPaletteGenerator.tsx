@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import Button from "@/components/Button";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   EXPORT_FORMATS,
   assessContrast,
@@ -19,6 +20,7 @@ import {
 import { cn, copyText } from "@/lib/utils";
 
 export default function ColorPaletteGenerator() {
+  const { trackSuccess } = useToolAnalytics();
   const fgId = useId();
   const bgId = useId();
   const exportId = useId();
@@ -56,6 +58,7 @@ export default function ColorPaletteGenerator() {
     if (ok) {
       setError("");
       flashCopied(key);
+      trackSuccess();
       return;
     }
     setError("Could not copy to clipboard. Try selecting the text manually.");
@@ -67,6 +70,7 @@ export default function ColorPaletteGenerator() {
     );
     setCopiedKey("");
     setError("");
+    trackSuccess();
   }
 
   function handleLock(id: string) {

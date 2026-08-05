@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Button from "@/components/Button";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   UNIT_CATEGORIES,
   convertValue,
@@ -16,6 +17,7 @@ const DEFAULT_CATEGORY: UnitCategoryId = "length";
 const DEFAULT_INPUT = "1";
 
 export default function UnitConverter() {
+  const { trackSuccess } = useToolAnalytics();
   const fromValueId = useId();
   const fromUnitId = useId();
   const toValueId = useId();
@@ -70,6 +72,7 @@ export default function UnitConverter() {
     }
     const ok = await copyText(output);
     if (ok) {
+      trackSuccess();
       setCopied(true);
       setError("");
       setTimeout(() => setCopied(false), 1600);

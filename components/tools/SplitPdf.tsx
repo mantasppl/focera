@@ -14,6 +14,7 @@ import {
   type SplitPdfResult,
   validateSplitOptions,
 } from "@/lib/split-pdf";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 function formatPartTitle(label: string): string {
@@ -25,6 +26,7 @@ function formatPartTitle(label: string): string {
 }
 
 export default function SplitPdf() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const modeId = useId();
   const rangesId = useId();
   const fixedId = useId();
@@ -142,10 +144,12 @@ export default function SplitPdf() {
       setResult(split);
       downloadSplitResult(split);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

@@ -127,6 +127,10 @@ export default function CompressPdfLanding() {
             into one file before or after compressing.
           </li>
           <li>
+            <Link href="/crop-pdf">Crop PDF</Link> — Trim page margins before
+            or after compressing.
+          </li>
+          <li>
             <Link href="/split-pdf">Split PDF</Link> — Break a PDF into pages,
             ranges, or fixed-size chunks before compressing.
           </li>

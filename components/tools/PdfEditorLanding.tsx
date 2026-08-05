@@ -124,6 +124,10 @@ export default function PdfEditorLanding() {
             ranges, or fixed-size chunks.
           </li>
           <li>
+            <Link href="/crop-pdf">Crop PDF</Link> — Trim page margins after
+            reordering or rotating pages.
+          </li>
+          <li>
             <Link href="/compress-pdf">Compress PDF</Link> — Shrink edited PDFs
             for email, uploads, and sharing.
           </li>

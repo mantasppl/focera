@@ -53,7 +53,7 @@ export async function transcribeAudioWithGroq(options: {
   const apiKey = process.env.GROQ_API_KEY?.trim();
   if (!apiKey) {
     throw new GroqTranscribeError(
-      "Transcription is not configured. Set GROQ_API_KEY on the server.",
+      "Transcription service is temporarily unavailable. Try again later.",
       503,
     );
   }

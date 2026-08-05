@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import PdfDropzone from "@/components/tools/PdfDropzone";
 import { formatFileSize } from "@/lib/image";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   downloadUnlockedPdf,
   unlockPdfFile,
@@ -11,6 +12,7 @@ import {
 } from "@/lib/unlock-pdf";
 
 export default function UnlockPdf() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const passwordId = useId();
   const abortRef = useRef<AbortController | null>(null);
   const resultUrlRef = useRef<string | null>(null);
@@ -94,10 +96,12 @@ export default function UnlockPdf() {
       setResult(unlocked);
       downloadUnlockedPdf(unlocked.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import InvoicePreview from "@/components/invoice/InvoicePreview";
 import LineItemRow from "@/components/invoice/LineItemRow";
 import PartyFields from "@/components/invoice/PartyFields";
@@ -20,6 +21,7 @@ import {
 } from "@/lib/invoice";
 
 export default function InvoiceGenerator() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const invoiceNumberId = useId();
   const issueDateId = useId();
   const dueDateId = useId();
@@ -72,7 +74,13 @@ export default function InvoiceGenerator() {
     }
 
     setError("");
-    downloadInvoicePdf(data);
+    try {
+      downloadInvoicePdf(data);
+      trackSuccess();
+    } catch {
+      trackFailure();
+      setError("Could not generate the PDF. Try again.");
+    }
   }
 
   function handleReset() {

@@ -15,9 +15,11 @@ import {
   type CompressLevel,
   type OutputFormat,
 } from "@/lib/image-compressor";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 export default function ImageCompressor() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const levelId = useId();
   const formatId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -104,10 +106,12 @@ export default function ImageCompressor() {
         compressed.extension,
       );
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

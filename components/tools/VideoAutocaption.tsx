@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import VideoDropzone from "@/components/tools/VideoDropzone";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { formatFileSize } from "@/lib/image";
 import { cn } from "@/lib/utils";
 import {
@@ -34,6 +35,7 @@ import {
 } from "@/lib/video-transcribe";
 
 export default function VideoAutocaption() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const languageFieldId = useId();
   const fontFieldId = useId();
   const sizeFieldId = useId();
@@ -174,8 +176,10 @@ export default function VideoAutocaption() {
       setProgressText(
         `Transcribed ${result.cues.length} caption${result.cues.length === 1 ? "" : "s"}. Edit any line if needed.`,
       );
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
+      trackFailure();
       setCues([]);
       setError(
         err instanceof Error
@@ -271,8 +275,10 @@ export default function VideoAutocaption() {
       const base = sourceFile ? videoFileBaseName(sourceFile) : "video";
       downloadBlob(blob, `${base}-captioned.webm`);
       setProgressText("Download started.");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message

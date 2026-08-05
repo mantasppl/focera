@@ -12,6 +12,7 @@ import {
   type WordPdfPageSize,
   type WordToPdfResult,
 } from "@/lib/word-to-pdf";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 const PAGE_OPTIONS: {
@@ -32,6 +33,7 @@ const PAGE_OPTIONS: {
 ];
 
 export default function WordToPdf() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const pageSizeId = useId();
   const abortRef = useRef<AbortController | null>(null);
   const resultRef = useRef<WordToPdfResult | null>(null);
@@ -113,10 +115,12 @@ export default function WordToPdf() {
       setResult(converted);
       downloadPdfFile(converted.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

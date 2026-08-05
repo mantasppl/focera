@@ -17,9 +17,15 @@ import {
   type YoutubeTranscriptResult,
 } from "@/lib/youtube-to-text";
 import { fetchYoutubeTranscript } from "@/lib/youtube-transcript-server";
+import { trackToolUsageServer } from "@/lib/analytics/track";
+import { getToolBySlug } from "@/data/tools";
+import { publicErrorMessage } from "@/lib/security/public-error";
+import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+const TOOL_SLUG = "youtube-summarize";
 
 type RequestBody = {
   url?: unknown;
@@ -29,6 +35,16 @@ type RequestBody = {
 
 function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status });
+}
+
+function track(request: Request, success: boolean) {
+  const tool = getToolBySlug(TOOL_SLUG);
+  if (tool) {
+    trackToolUsageServer(
+      { toolId: tool.slug, toolName: tool.name, success },
+      request,
+    );
+  }
 }
 
 function isNoCaptionsError(message: string): boolean {
@@ -191,7 +207,7 @@ async function summarizeTranscript(input: {
 
     if (upstream.status === 401 || upstream.status === 402) {
       throw new SummarizeError(
-        "Summarization is temporarily unavailable. Try again in a minute, or set POLLINATIONS_API_KEY for higher limits.",
+        "Summarization is temporarily unavailable. Try again in a minute.",
         503,
       );
     }
@@ -236,6 +252,15 @@ class SummarizeError extends Error {
 }
 
 export async function POST(request: Request) {
+  const guarded = guardApiRequest(request, {
+    bucket: "youtube-summarize",
+    limit: 10,
+    windowMs: 60_000,
+    requireSameOrigin: true,
+    maxBodyBytes: 8_192,
+  });
+  if (guarded) return guarded;
+
   let body: RequestBody;
   try {
     body = (await request.json()) as RequestBody;
@@ -261,6 +286,7 @@ export async function POST(request: Request) {
     const transcriptResult = await getTranscript(url, language);
     const plain = formatTranscriptOutput(transcriptResult, "plain");
     if (!plain.trim()) {
+      track(request, false);
       return jsonError("Could not extract text from this YouTube video.", 422);
     }
 
@@ -273,11 +299,14 @@ export async function POST(request: Request) {
     });
 
     if (!summary) {
+      track(request, false);
       return jsonError(
         "Could not summarize this video. Try again in a moment.",
         502,
       );
     }
+
+    track(request, true);
 
     return Response.json(
       {
@@ -298,17 +327,25 @@ export async function POST(request: Request) {
     );
   } catch (err) {
     if (err instanceof SummarizeError) {
-      return jsonError(err.message, err.status);
+      track(request, false);
+      return jsonError(
+        publicErrorMessage(err, "Could not process this request."),
+        err.status,
+      );
     }
 
     if (err instanceof GroqTranscribeError) {
-      return jsonError(err.message, err.status);
+      track(request, false);
+      return jsonError(
+        publicErrorMessage(err, "Could not process this request."),
+        err.status,
+      );
     }
 
-    const message =
-      err instanceof Error
-        ? err.message
-        : "Could not summarize this YouTube video.";
+    const message = publicErrorMessage(
+      err,
+      "Could not summarize this YouTube video.",
+    );
 
     const status =
       /valid YouTube|Paste a YouTube|up to \d+ minutes/i.test(message)
@@ -317,9 +354,13 @@ export async function POST(request: Request) {
               message,
             )
           ? 422
-          : /not configured|GROQ_API_KEY/i.test(message)
+          : /temporarily unavailable|not configured/i.test(message)
             ? 503
             : 502;
+
+    if (status !== 400) {
+      track(request, false);
+    }
 
     return jsonError(message, status);
   }

@@ -311,7 +311,8 @@ export async function streamTikTokVideo(options: {
   };
   if (media.cookie) headers.cookie = media.cookie;
 
-  const upstream = await fetch(media.videoUrl, {
+  const { fetchSafeMedia } = await import("@/lib/security/outbound");
+  const upstream = await fetchSafeMedia(media.videoUrl, {
     headers,
     redirect: "follow",
   });

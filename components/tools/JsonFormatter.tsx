@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   countJsonLines,
   downloadJson,
@@ -26,6 +27,7 @@ type Status =
   | { kind: "invalid"; error: JsonParseError };
 
 export default function JsonFormatter() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const editorId = useId();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const gutterRef = useRef<HTMLDivElement>(null);
@@ -69,11 +71,13 @@ export default function JsonFormatter() {
     setErrorMessage("");
 
     if (!result.ok) {
+      trackFailure();
       setStatus({ kind: "invalid", error: result.error });
       scrollToErrorLine(result.error.line);
       return;
     }
 
+    trackSuccess();
     setInput(result.value);
     setStatus({ kind: "valid", detail: successDetail });
   }

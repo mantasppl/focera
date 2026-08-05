@@ -331,7 +331,8 @@ export async function streamFacebookVideo(options: {
 
   const media = await resolveMedia(facebookPermalink(videoId));
 
-  const upstream = await fetch(media.videoUrl, {
+  const { fetchSafeMedia } = await import("@/lib/security/outbound");
+  const upstream = await fetchSafeMedia(media.videoUrl, {
     headers: {
       "User-Agent": DOWNLOAD_UA,
       Referer: "https://www.facebook.com/",

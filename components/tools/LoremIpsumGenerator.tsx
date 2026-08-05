@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import Button from "@/components/Button";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   DEFAULT_COUNT,
   LOREM_MODES,
@@ -24,6 +25,7 @@ const DEFAULT_OPTIONS: LoremOptions = {
 };
 
 export default function LoremIpsumGenerator() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const countId = useId();
   const outputId = useId();
   const startId = useId();
@@ -39,13 +41,15 @@ export default function LoremIpsumGenerator() {
   const paragraphCount = countParagraphs(output);
   const charCount = output.length;
 
-  function regenerate(next: LoremOptions = options) {
+  function regenerate(next: LoremOptions = options, shouldTrack = false) {
     try {
       const text = generateLorem(next);
       setOutput(text);
       setError("");
       setCopied(false);
+      if (shouldTrack) trackSuccess();
     } catch {
+      if (shouldTrack) trackFailure();
       setError("Could not generate text. Try again.");
       setOutput("");
     }
@@ -170,7 +174,7 @@ export default function LoremIpsumGenerator() {
         </label>
 
         <div className="tool-actions">
-          <Button onClick={() => regenerate()}>Generate</Button>
+          <Button onClick={() => regenerate(options, true)}>Generate</Button>
           <Button
             variant="ghost"
             onClick={() => void handleCopy()}

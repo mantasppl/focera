@@ -17,11 +17,13 @@ import {
   rotateEditorPage,
   type EditorPage,
 } from "@/lib/pdf-editor";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 type BusyMode = "idle" | "loading" | "exporting";
 
 export default function PdfEditor() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const gridId = useId();
   const abortRef = useRef<AbortController | null>(null);
   const sourceBytesRef = useRef<Uint8Array | null>(null);
@@ -114,6 +116,7 @@ export default function PdfEditor() {
       setProgressText("");
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message
@@ -286,8 +289,10 @@ export default function PdfEditor() {
       setDownloaded(true);
       setDirty(false);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

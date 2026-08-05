@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { CONTACT_EMAIL, validateContactPayload } from "@/lib/contact";
+import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 
@@ -14,6 +15,15 @@ function jsonError(message: string, status: number) {
 }
 
 export async function POST(request: Request) {
+  const guarded = guardApiRequest(request, {
+    bucket: "contact",
+    limit: 8,
+    windowMs: 900_000,
+    requireSameOrigin: true,
+    maxBodyBytes: 16_384,
+  });
+  if (guarded) return guarded;
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     return jsonError(

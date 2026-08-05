@@ -13,9 +13,11 @@ import {
   type CompressVideoLevel,
   type CompressVideoResult,
 } from "@/lib/video-compressor";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 export default function CompressVideo() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const levelId = useId();
   const abortRef = useRef<AbortController | null>(null);
 
@@ -99,10 +101,12 @@ export default function CompressVideo() {
         compressed.extension,
       );
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

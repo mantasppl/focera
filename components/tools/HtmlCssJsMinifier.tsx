@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Button from "@/components/Button";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   MINIFY_MODES,
   downloadMinified,
@@ -16,6 +17,7 @@ import { cn, copyText } from "@/lib/utils";
 const DEFAULT_MODE: MinifyMode = "html";
 
 export default function HtmlCssJsMinifier() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const inputId = useId();
   const outputId = useId();
 
@@ -47,12 +49,14 @@ export default function HtmlCssJsMinifier() {
     try {
       const result = await minifyCode(mode, input);
       if (!result.ok) {
+        trackFailure();
         setOutput("");
         setStats(null);
         setError(result.error);
         return;
       }
 
+      trackSuccess();
       setOutput(result.value);
       setStats({
         originalBytes: result.originalBytes,
@@ -60,6 +64,11 @@ export default function HtmlCssJsMinifier() {
         savedPercent: result.savedPercent,
       });
       setError("");
+    } catch {
+      trackFailure();
+      setOutput("");
+      setStats(null);
+      setError("Minification failed. Check your input and try again.");
     } finally {
       setBusy(false);
     }

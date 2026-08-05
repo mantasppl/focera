@@ -280,7 +280,8 @@ export async function streamTwitterVideo(options: {
     throw new Error("Could not find a downloadable video URL for this post.");
   }
 
-  const upstream = await fetch(match.videoUrl, {
+  const { fetchSafeMedia } = await import("@/lib/security/outbound");
+  const upstream = await fetchSafeMedia(match.videoUrl, {
     headers: {
       "User-Agent": BROWSER_UA,
       Referer: "https://x.com/",

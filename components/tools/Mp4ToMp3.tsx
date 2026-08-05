@@ -12,6 +12,7 @@ import {
   type Mp3Bitrate,
   type Mp4ToMp3Result,
 } from "@/lib/mp4-to-mp3";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 export type VideoToMp3Copy = {
@@ -41,6 +42,7 @@ type Mp4ToMp3Props = {
 };
 
 export default function Mp4ToMp3({ copy }: Mp4ToMp3Props) {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const labels = { ...DEFAULT_COPY, ...copy };
   const qualityId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -121,10 +123,12 @@ export default function Mp4ToMp3({ copy }: Mp4ToMp3Props) {
       setResultUrl(url);
       downloadMp3(converted.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

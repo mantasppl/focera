@@ -16,6 +16,7 @@ import {
   randomAiStorySeed,
   validateAiStoryPrompt,
 } from "@/lib/ai-story";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn, copyText } from "@/lib/utils";
 
 const EXAMPLE_PROMPTS = [
@@ -25,6 +26,7 @@ const EXAMPLE_PROMPTS = [
 ];
 
 export default function AiStoryGenerator() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const promptId = useId();
   const genreId = useId();
   const lengthId = useId();
@@ -86,7 +88,9 @@ export default function AiStoryGenerator() {
 
       setStory(data.story.trim());
       setSeed(typeof data.seed === "number" ? data.seed : nextSeed);
+      trackSuccess();
     } catch (err) {
+      trackFailure();
       setError(
         err instanceof Error
           ? err.message

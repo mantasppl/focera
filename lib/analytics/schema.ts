@@ -1,0 +1,54 @@
+import {
+  index,
+  integer,
+  sqliteTable,
+  text,
+} from "drizzle-orm/sqlite-core";
+
+/**
+ * Primary analytics fact table.
+ *
+ * `eventType` + `metadata` keep this future-proof for registered users,
+ * API usage, AI tokens, revenue, conversions, and feature analytics
+ * without a schema rewrite.
+ */
+export const toolUsage = sqliteTable(
+  "tool_usage",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    /** Client-generated UUID for idempotent inserts (dedupe). */
+    eventId: text("event_id").notNull().unique(),
+    /**
+     * Discriminator for future event kinds.
+     * Current: tool_usage
+     * Planned: api_usage | ai_token | revenue | conversion | feature
+     */
+    eventType: text("event_type").notNull().default("tool_usage"),
+    toolId: text("tool_id").notNull(),
+    toolName: text("tool_name").notNull(),
+    timestamp: integer("timestamp", { mode: "timestamp_ms" }).notNull(),
+    sessionId: text("session_id").notNull(),
+    /** Reserved for authenticated users later. */
+    userId: text("user_id"),
+    ipHash: text("ip_hash"),
+    country: text("country"),
+    browser: text("browser"),
+    os: text("os"),
+    device: text("device"),
+    referrer: text("referrer"),
+    success: integer("success", { mode: "boolean" }).notNull().default(true),
+    /** JSON blob for tokens, revenue cents, feature keys, etc. */
+    metadata: text("metadata"),
+  },
+  (table) => [
+    index("tool_usage_tool_id_idx").on(table.toolId),
+    index("tool_usage_timestamp_idx").on(table.timestamp),
+    index("tool_usage_session_id_idx").on(table.sessionId),
+    index("tool_usage_event_type_idx").on(table.eventType),
+    index("tool_usage_tool_time_idx").on(table.toolId, table.timestamp),
+    index("tool_usage_success_time_idx").on(table.success, table.timestamp),
+  ],
+);
+
+export type ToolUsageRow = typeof toolUsage.$inferSelect;
+export type NewToolUsageRow = typeof toolUsage.$inferInsert;

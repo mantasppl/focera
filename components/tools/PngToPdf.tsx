@@ -15,6 +15,7 @@ import {
   type PngPdfPageSize,
   type PngToPdfResult,
 } from "@/lib/png-to-pdf";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 type ImageEntry = {
@@ -62,6 +63,7 @@ function createEntries(files: File[]): ImageEntry[] {
 }
 
 export default function PngToPdf() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const listId = useId();
   const pageSizeId = useId();
   const marginId = useId();
@@ -170,10 +172,12 @@ export default function PngToPdf() {
       setResult(converted);
       downloadPngPdf(converted.blob, files);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

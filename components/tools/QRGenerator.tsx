@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import QRCode from "qrcode";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { brandedDownloadFilename } from "@/lib/image";
 import { copyText } from "@/lib/utils";
 
@@ -18,6 +19,7 @@ const QR_OPTIONS = {
 };
 
 export default function QRGenerator() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const inputId = useId();
   const [text, setText] = useState("https://");
   const [generatedText, setGeneratedText] = useState("");
@@ -49,7 +51,9 @@ export default function QRGenerator() {
       const dataUrl = await QRCode.toDataURL(value, QR_OPTIONS);
       setQr(dataUrl);
       setGeneratedText(value);
+      trackSuccess();
     } catch {
+      trackFailure();
       setError("Could not encode this text. Try a shorter value.");
     } finally {
       setLoading(false);

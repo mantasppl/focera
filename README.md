@@ -25,6 +25,23 @@ Open [http://localhost:3000](http://localhost:3000).
 | `GROQ_API_KEY` | Required for Video Autocaption transcription (Groq Whisper) |
 | `RESEND_API_KEY` | Resend API key for the contact form (required for `/contact` submissions) |
 | `RESEND_FROM_EMAIL` | Optional From address (default `Focera Contact <onboarding@resend.dev>`) |
+| `ADMIN_PASSWORD` | Password for `/admin/analytics` (required for admin login) |
+| `ADMIN_SESSION_SECRET` | HMAC secret for admin cookies (required in production, ≥32 chars, must differ from password) |
+| `DATABASE_URL` | Analytics DB (`file:./data/analytics.db` locally, or Turso `libsql://…`) |
+| `DATABASE_AUTH_TOKEN` | Turso auth token (remote DB only) |
+| `ANALYTICS_IP_SALT` | Optional salt for hashing visitor IPs |
+
+## Internal analytics
+
+1. Set `ADMIN_PASSWORD` in `.env.local`.
+2. Run `npm run dev` (the `tool_usage` table is created automatically).
+3. Open [http://localhost:3000/admin/analytics](http://localhost:3000/admin/analytics) and sign in.
+
+Optional DB helpers:
+
+- `npm run db:generate` — generate Drizzle migrations
+- `npm run db:push` — push schema to the configured database
+- `npm run db:studio` — open Drizzle Studio
 
 ## Scripts
 

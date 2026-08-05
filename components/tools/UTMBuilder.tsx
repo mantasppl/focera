@@ -3,9 +3,11 @@
 import { useId, useMemo, useState } from "react";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { copyText } from "@/lib/utils";
 
 export default function UTMBuilder() {
+  const { trackSuccess } = useToolAnalytics();
   const urlId = useId();
   const sourceId = useId();
   const mediumId = useId();
@@ -38,6 +40,7 @@ export default function UTMBuilder() {
     if (!result) return;
     const ok = await copyText(result);
     if (ok) {
+      trackSuccess();
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     }

@@ -14,6 +14,7 @@ import {
   compositeWithBlur,
   BLUR_RADIUS,
 } from "@/lib/composite-image";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   downloadBlob,
   fileBaseName,
@@ -32,6 +33,7 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 }
 
 export default function ChangeBackground() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState("");
   const [cutoutBlob, setCutoutBlob] = useState<Blob | null>(null);
@@ -131,7 +133,9 @@ export default function ChangeBackground() {
 
       setCutoutBlob(blob);
       setProgressText("");
+      trackSuccess();
     } catch {
+      trackFailure();
       setError(
         "Could not change the background. Try a smaller image or a different browser.",
       );
@@ -187,6 +191,7 @@ export default function ChangeBackground() {
         });
       } catch {
         if (!cancelled) {
+          trackFailure();
           setError("Could not apply the selected background. Try another option.");
         }
       } finally {

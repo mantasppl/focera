@@ -10,6 +10,7 @@ import {
 import Button from "@/components/Button";
 import VideoDropzone from "@/components/tools/VideoDropzone";
 import { formatVideoFileSize } from "@/lib/video-caption";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   clampTrimRange,
   describeTrimMeta,
@@ -22,6 +23,7 @@ import {
 } from "@/lib/trim-video";
 
 export default function TrimVideo() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const startId = useId();
   const endId = useId();
   const abortRef = useRef<AbortController | null>(null);
@@ -197,10 +199,12 @@ export default function TrimVideo() {
       setResultUrl(url);
       downloadTrimmedVideo(trimmed.blob, sourceFile, trimmed.extension);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import MarkdownPreview from "@/components/markdown/MarkdownPreview";
 import MarkdownSourceEditor from "@/components/markdown/MarkdownSourceEditor";
 import MarkdownStatusBar from "@/components/markdown/MarkdownStatusBar";
@@ -29,6 +30,7 @@ import { cn, copyText } from "@/lib/utils";
 type Theme = "light" | "dark";
 
 export default function MarkdownEditor() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const gutterRef = useRef<HTMLDivElement>(null);
   const [source, setSource] = useState("");
@@ -122,6 +124,7 @@ export default function MarkdownEditor() {
       return;
     }
     downloadMarkdownFile(source);
+    trackSuccess();
     setErrorMessage("");
     setStatusTone("ok");
     setStatusMessage("Downloaded document.md");
@@ -133,6 +136,7 @@ export default function MarkdownEditor() {
       return;
     }
     downloadHtmlFile(source);
+    trackSuccess();
     setErrorMessage("");
     setStatusTone("ok");
     setStatusMessage("Downloaded document.html");
@@ -148,9 +152,11 @@ export default function MarkdownEditor() {
     setErrorMessage("");
     try {
       await downloadMarkdownPdf(source);
+      trackSuccess();
       setStatusTone("ok");
       setStatusMessage("Downloaded document.pdf");
     } catch {
+      trackFailure();
       setStatusTone("error");
       setStatusMessage("PDF export failed.");
       setErrorMessage("Could not generate the PDF. Try again with shorter content.");

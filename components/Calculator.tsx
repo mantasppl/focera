@@ -1,14 +1,17 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import Input from "@/components/Input";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { toNumber } from "@/lib/utils";
 
 export default function Calculator() {
+  const { trackSuccess } = useToolAnalytics();
   const revenueId = useId();
   const costId = useId();
   const [revenue, setRevenue] = useState("1000");
   const [cost, setCost] = useState("650");
+  const trackedRef = useRef(false);
 
   const { profit, margin } = useMemo(() => {
     const r = toNumber(revenue);
@@ -17,6 +20,17 @@ export default function Calculator() {
     const m = r === 0 ? 0 : (p / r) * 100;
     return { profit: p, margin: m };
   }, [revenue, cost]);
+
+  useEffect(() => {
+    if (trackedRef.current) return;
+    if (revenue === "1000" && cost === "650") return;
+    const timer = window.setTimeout(() => {
+      if (trackedRef.current) return;
+      trackedRef.current = true;
+      trackSuccess();
+    }, 1200);
+    return () => window.clearTimeout(timer);
+  }, [revenue, cost, trackSuccess]);
 
   return (
     <div className="tool-grid">

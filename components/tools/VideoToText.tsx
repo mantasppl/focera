@@ -17,10 +17,12 @@ import {
   type VideoOutputMode,
   type VideoToTextResult,
 } from "@/lib/video-to-text";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { formatFileSize } from "@/lib/image";
 import { cn, copyText } from "@/lib/utils";
 
 export default function VideoToText() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const languageId = useId();
   const modeId = useId();
   const outputId = useId();
@@ -111,6 +113,7 @@ export default function VideoToText() {
       setResult(transcribed);
       setText(formatTranscriptOutput(transcribed, mode));
       setProgressText("");
+      trackSuccess();
 
       if (!transcribed.text.trim()) {
         setError(
@@ -121,6 +124,7 @@ export default function VideoToText() {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

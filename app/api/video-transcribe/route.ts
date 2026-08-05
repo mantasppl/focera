@@ -6,15 +6,39 @@ import {
   MAX_AUDIO_UPLOAD_BYTES,
   isTranscribeLanguageId,
 } from "@/lib/video-transcribe-shared";
+import { trackToolUsageServer } from "@/lib/analytics/track";
+import { getToolBySlug } from "@/data/tools";
+import { publicErrorMessage } from "@/lib/security/public-error";
+import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+const TOOL_SLUG = "video-to-text";
 
 function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status });
 }
 
+function track(request: Request, success: boolean) {
+  const tool = getToolBySlug(TOOL_SLUG);
+  if (tool) {
+    trackToolUsageServer(
+      { toolId: tool.slug, toolName: tool.name, success },
+      request,
+    );
+  }
+}
+
 export async function POST(request: Request) {
+  const guarded = guardApiRequest(request, {
+    bucket: "video-transcribe",
+    limit: 8,
+    windowMs: 60_000,
+    requireSameOrigin: true,
+  });
+  if (guarded) return guarded;
+
   let form: FormData;
   try {
     form = await request.formData();
@@ -53,6 +77,8 @@ export async function POST(request: Request) {
         : undefined,
     });
 
+    track(request, true);
+
     return Response.json({
       text: result.text,
       segments: result.segments,
@@ -61,12 +87,15 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     if (err instanceof GroqTranscribeError) {
-      return jsonError(err.message, err.status);
+      track(request, false);
+      return jsonError(
+        publicErrorMessage(err, "Could not process this request."),
+        err.status,
+      );
     }
+    track(request, false);
     return jsonError(
-      err instanceof Error
-        ? err.message
-        : "Transcription failed. Try again shortly.",
+      publicErrorMessage(err, "Transcription failed. Try again shortly."),
       502,
     );
   }

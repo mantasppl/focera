@@ -13,9 +13,11 @@ import {
   type ColorizePhotoResult,
   type ColorizeStrength,
 } from "@/lib/colorize-photo";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 export default function ColorizePhoto() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const strengthId = useId();
   const abortRef = useRef<AbortController | null>(null);
 
@@ -95,10 +97,12 @@ export default function ColorizePhoto() {
       setResultUrl(url);
       downloadColorizedImage(colorized.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

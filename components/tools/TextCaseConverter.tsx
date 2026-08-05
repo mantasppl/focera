@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Button from "@/components/Button";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   TEXT_CASES,
   convertTextCase,
@@ -16,6 +17,7 @@ const PLACEHOLDER =
   "Paste or type your text here — then pick a case style to convert it instantly.";
 
 export default function TextCaseConverter() {
+  const { trackSuccess } = useToolAnalytics();
   const inputId = useId();
   const outputId = useId();
 
@@ -33,6 +35,9 @@ export default function TextCaseConverter() {
     setCaseId(nextId);
     setCopied(false);
     setError("");
+    if (input.trim()) {
+      trackSuccess();
+    }
   }
 
   async function handleCopy() {
@@ -42,6 +47,7 @@ export default function TextCaseConverter() {
     }
     const ok = await copyText(output);
     if (ok) {
+      trackSuccess();
       setCopied(true);
       setError("");
       setTimeout(() => setCopied(false), 1600);

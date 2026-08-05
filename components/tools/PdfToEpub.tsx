@@ -12,6 +12,7 @@ import {
   type PdfToEpubMode,
   type PdfToEpubResult,
 } from "@/lib/pdf-to-epub";
+import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 const MODE_OPTIONS: {
@@ -32,6 +33,7 @@ const MODE_OPTIONS: {
 ];
 
 export default function PdfToEpub() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
   const modeId = useId();
   const abortRef = useRef<AbortController | null>(null);
   const resultRef = useRef<PdfToEpubResult | null>(null);
@@ -113,10 +115,12 @@ export default function PdfToEpub() {
       setResult(converted);
       downloadEpubFile(converted.blob, sourceFile);
       setProgressText("");
+      trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
       }
+      trackFailure();
       const message =
         err instanceof Error
           ? err.message

@@ -126,6 +126,10 @@ export default function SplitPdfLanding() {
             or extract pages with a visual workspace.
           </li>
           <li>
+            <Link href="/crop-pdf">Crop PDF</Link> — Trim page margins on split
+            files or the original PDF.
+          </li>
+          <li>
             <Link href="/compress-pdf">Compress PDF</Link> — Shrink split files
             for email, uploads, and sharing.
           </li>

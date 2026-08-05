@@ -4,6 +4,7 @@ import hljs from "highlight.js";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { brandedDownloadFilename, downloadBlob } from "@/lib/image";
+import { sanitizeHtmlBasic } from "@/lib/security/sanitize-html";
 
 export const MARKDOWN_THEME_KEY = "markdown-editor-theme";
 export const MARKDOWN_DRAFT_KEY = "markdown-editor-draft";
@@ -76,7 +77,8 @@ export function markdownToHtml(source: string): string {
   const dirty = marked.parse(source, { async: false }) as string;
 
   if (typeof window === "undefined") {
-    return dirty;
+    // Server path: DOMPurify needs a DOM. Use a strict string sanitizer instead.
+    return sanitizeHtmlBasic(dirty);
   }
 
   return DOMPurify.sanitize(dirty, {
