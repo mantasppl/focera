@@ -8,6 +8,7 @@ import StatCards from "@/components/admin/StatCards";
 import ToolsTable from "@/components/admin/ToolsTable";
 import Button from "@/components/Button";
 import { adminFetch } from "@/lib/admin/csrf-client";
+import { todayZonedIso } from "@/lib/analytics/timezone";
 import type {
   DatePreset,
   NamedCount,
@@ -30,7 +31,7 @@ type OverviewResponse = {
 };
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return todayZonedIso();
 }
 
 export default function AnalyticsDashboard() {

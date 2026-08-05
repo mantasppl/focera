@@ -17,13 +17,14 @@ import { useAdminPath } from "@/components/admin/AdminPathContext";
 import DateRangeFilter from "@/components/admin/DateRangeFilter";
 import Button from "@/components/Button";
 import { adminFetch } from "@/lib/admin/csrf-client";
+import { todayZonedIso } from "@/lib/analytics/timezone";
 import type { DatePreset, ToolDetailStats } from "@/lib/analytics/types";
 
 const ACCENT = "#0d9488";
 const MUTED = "#94a3b8";
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return todayZonedIso();
 }
 
 export default function ToolDetailDashboard({ toolId }: { toolId: string }) {

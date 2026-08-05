@@ -9,6 +9,12 @@ import {
 } from "@/lib/analytics/dates";
 import { ensureAnalyticsSchema, getDb } from "@/lib/analytics/db";
 import { toolUsage } from "@/lib/analytics/schema";
+import {
+  formatZonedDay,
+  formatZonedHour,
+  formatZonedMonth,
+  formatZonedWeek,
+} from "@/lib/analytics/timezone";
 import type {
   NamedCount,
   OverviewStats,
@@ -16,6 +22,10 @@ import type {
   ToolDetailStats,
   ToolStatsRow,
 } from "@/lib/analytics/types";
+
+function bump(map: Map<string | number, number>, key: string | number) {
+  map.set(key, (map.get(key) ?? 0) + 1);
+}
 
 function rangeFilter(range: DateRange) {
   return and(
@@ -148,15 +158,16 @@ export async function getDailyUsage(range: DateRange): Promise<TimeBucket[]> {
   const db = getDb();
 
   const rows = await db
-    .select({
-      day: sql<string>`strftime('%Y-%m-%d', ${toolUsage.timestamp} / 1000, 'unixepoch')`,
-      value: count(),
-    })
+    .select({ timestamp: toolUsage.timestamp })
     .from(toolUsage)
-    .where(rangeFilter(range))
-    .groupBy(sql`strftime('%Y-%m-%d', ${toolUsage.timestamp} / 1000, 'unixepoch')`);
+    .where(rangeFilter(range));
 
-  const map = new Map(rows.map((r) => [r.day, r.value]));
+  const map = new Map<string, number>();
+  for (const row of rows) {
+    if (!row.timestamp) continue;
+    bump(map, formatZonedDay(row.timestamp));
+  }
+
   return eachDay(range.start, range.end).map((day) => {
     const label = formatDayLabel(day);
     return { label, count: map.get(label) ?? 0 };
@@ -168,15 +179,16 @@ export async function getHourlyUsage(range: DateRange): Promise<TimeBucket[]> {
   const db = getDb();
 
   const rows = await db
-    .select({
-      hour: sql<number>`cast(strftime('%H', ${toolUsage.timestamp} / 1000, 'unixepoch') as integer)`,
-      value: count(),
-    })
+    .select({ timestamp: toolUsage.timestamp })
     .from(toolUsage)
-    .where(rangeFilter(range))
-    .groupBy(sql`strftime('%H', ${toolUsage.timestamp} / 1000, 'unixepoch')`);
+    .where(rangeFilter(range));
 
-  const map = new Map(rows.map((r) => [Number(r.hour), r.value]));
+  const map = new Map<number, number>();
+  for (const row of rows) {
+    if (!row.timestamp) continue;
+    bump(map, formatZonedHour(row.timestamp));
+  }
+
   return Array.from({ length: 24 }, (_, hour) => ({
     label: `${String(hour).padStart(2, "0")}:00`,
     count: map.get(hour) ?? 0,
@@ -270,40 +282,32 @@ export async function getToolDetail(
   const total = totalRow?.value ?? 0;
   const successUses = successRow?.value ?? 0;
 
-  const dailyRows = await db
-    .select({
-      day: sql<string>`strftime('%Y-%m-%d', ${toolUsage.timestamp} / 1000, 'unixepoch')`,
-      value: count(),
-    })
+  const stampRows = await db
+    .select({ timestamp: toolUsage.timestamp })
     .from(toolUsage)
-    .where(toolFilter)
-    .groupBy(sql`strftime('%Y-%m-%d', ${toolUsage.timestamp} / 1000, 'unixepoch')`);
+    .where(toolFilter);
 
-  const dailyMap = new Map(dailyRows.map((r) => [r.day, r.value]));
-  const daily = eachDay(range.start, range.end).map((day) => ({
-    label: formatDayLabel(day),
-    count: dailyMap.get(formatDayLabel(day)) ?? 0,
-  }));
+  const dailyMap = new Map<string, number>();
+  const weeklyMap = new Map<string, number>();
+  const monthlyMap = new Map<string, number>();
+  for (const row of stampRows) {
+    if (!row.timestamp) continue;
+    bump(dailyMap, formatZonedDay(row.timestamp));
+    bump(weeklyMap, formatZonedWeek(row.timestamp));
+    bump(monthlyMap, formatZonedMonth(row.timestamp));
+  }
 
-  const weeklyRows = await db
-    .select({
-      week: sql<string>`strftime('%Y-W%W', ${toolUsage.timestamp} / 1000, 'unixepoch')`,
-      value: count(),
-    })
-    .from(toolUsage)
-    .where(toolFilter)
-    .groupBy(sql`strftime('%Y-W%W', ${toolUsage.timestamp} / 1000, 'unixepoch')`)
-    .orderBy(sql`strftime('%Y-W%W', ${toolUsage.timestamp} / 1000, 'unixepoch')`);
+  const daily = eachDay(range.start, range.end).map((day) => {
+    const label = formatDayLabel(day);
+    return { label, count: dailyMap.get(label) ?? 0 };
+  });
 
-  const monthlyRows = await db
-    .select({
-      month: sql<string>`strftime('%Y-%m', ${toolUsage.timestamp} / 1000, 'unixepoch')`,
-      value: count(),
-    })
-    .from(toolUsage)
-    .where(toolFilter)
-    .groupBy(sql`strftime('%Y-%m', ${toolUsage.timestamp} / 1000, 'unixepoch')`)
-    .orderBy(sql`strftime('%Y-%m', ${toolUsage.timestamp} / 1000, 'unixepoch')`);
+  const weekly = [...weeklyMap.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([label, count]) => ({ label, count }));
+  const monthly = [...monthlyMap.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([label, count]) => ({ label, count }));
 
   const [countries, devices, browsers] = await Promise.all([
     getNamedBreakdown(range, "country", 10, toolId),
@@ -317,8 +321,8 @@ export async function getToolDetail(
     total,
     successRate: total === 0 ? 100 : Math.round((successUses / total) * 1000) / 10,
     daily,
-    weekly: weeklyRows.map((r) => ({ label: r.week, count: r.value })),
-    monthly: monthlyRows.map((r) => ({ label: r.month, count: r.value })),
+    weekly,
+    monthly,
     countries,
     devices,
     browsers,
