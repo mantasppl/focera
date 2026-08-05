@@ -27,7 +27,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `RESEND_FROM_EMAIL` | Optional From address (default `Focera Contact <onboarding@resend.dev>`) |
 | `ADMIN_PATH` | Obscure admin base path (e.g. `/admin-9xk2q7v8m`) |
 | `ADMIN_USERNAME` | Admin login username |
-| `ADMIN_PASSWORD_HASH` | bcrypt hash of the admin password |
+| `ADMIN_PASSWORD_HASH` | bcrypt hash; in `.env.local` escape `$` as `\$` |
 | `ADMIN_SESSION_SECRET` | HMAC secret for admin cookies (≥32 chars in production) |
 | `ADMIN_ALLOWED_IPS` | Optional comma-separated IP allowlist |
 | `DATABASE_URL` | Analytics DB (`file:./data/analytics.db` locally, or Turso `libsql://…`) |
@@ -47,6 +47,7 @@ node scripts/hash-admin-password.mjs --generate
 
 Notes:
 
+- In `.env.local`, escape bcrypt `$` as `\$` (the hash script does this). Unescaped `$2b$…` is expanded by Next.js and becomes empty, which breaks login. In the Vercel UI, paste the raw hash without backslashes.
 - Public `/admin` is disabled (404).
 - Admin APIs are only reachable under `{ADMIN_PATH}/api/...`.
 - Sessions last 24 hours (`HttpOnly`, `Secure` in production, `SameSite=Strict`).

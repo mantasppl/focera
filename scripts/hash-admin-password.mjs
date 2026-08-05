@@ -25,11 +25,16 @@ const pathToken = randomBytes(9)
   .replace(/[^a-zA-Z0-9]/g, "x");
 const sessionSecret = randomBytes(48).toString("base64url");
 
+const escapedHash = passwordHash.replace(/\$/g, "\\$");
+
 console.log("\n# Paste into .env.local (keep secret!)\n");
+console.log("# Escape $ in the bcrypt hash — Next.js expands unescaped $ in .env files.");
 console.log(`ADMIN_PATH=/admin-${pathToken}`);
 console.log(`ADMIN_USERNAME=admin`);
-console.log(`ADMIN_PASSWORD_HASH=${passwordHash}`);
+console.log(`ADMIN_PASSWORD_HASH=${escapedHash}`);
 console.log(`ADMIN_SESSION_SECRET=${sessionSecret}`);
+console.log("\n# For Vercel/hosting UI, paste the raw hash (no backslashes):");
+console.log(`# ${passwordHash}`);
 if (arg === "--generate") {
   console.log(`\n# Generated password (save now — not stored elsewhere):\n# ${password}\n`);
 }
