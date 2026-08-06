@@ -12,10 +12,11 @@ const contentSecurityPolicy = [
   "media-src 'self' blob: https:",
   "font-src 'self' data:",
   // Next.js / GA / inline styles used across tool UIs.
-  // React needs 'unsafe-eval' in development for callstack reconstruction; never used in production.
   // blob: — @imgly/background-removal loads onnxruntime WASM via blob: module URLs.
   // wasm-unsafe-eval — required to compile/instantiate WebAssembly under CSP.
-  `script-src 'self' 'unsafe-inline' blob: 'wasm-unsafe-eval'${isProd ? "" : " 'unsafe-eval'"} https://www.googletagmanager.com https://www.google-analytics.com`,
+  // unsafe-eval — required by onnxruntime-web / @imgly image decode (new Function).
+  //   Also needed in production for background-remover, change-background, colorize-photo.
+  "script-src 'self' 'unsafe-inline' blob: 'wasm-unsafe-eval' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
   "style-src 'self' 'unsafe-inline'",
   // blob: — onnxruntime fetches WASM/JS glue via blob: URLs created by @imgly/background-removal.
   "connect-src 'self' blob: https://www.google-analytics.com https://region1.google-analytics.com https://image.pollinations.ai https://text.pollinations.ai https://api.groq.com https:",
