@@ -2,19 +2,19 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
-import PngToPdfDropzone from "@/components/tools/PngToPdfDropzone";
+import TiffToPdfDropzone from "@/components/tools/TiffToPdfDropzone";
 import { formatFileSize } from "@/lib/image";
 import {
-  convertPngToPdf,
-  describePngPdfOutput,
-  downloadPngPdf,
-  MAX_PNG_FILES,
+  convertTiffToPdf,
+  describeTiffPdfOutput,
+  downloadTiffPdf,
+  MAX_TIFF_FILES,
   pageSizeLabel,
-  revokePngToPdfResult,
-  type PngPdfMargin,
-  type PngPdfPageSize,
-  type PngToPdfResult,
-} from "@/lib/png-to-pdf";
+  revokeTiffToPdfResult,
+  type TiffPdfMargin,
+  type TiffPdfPageSize,
+  type TiffToPdfResult,
+} from "@/lib/tiff-to-pdf";
 import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +24,7 @@ type ImageEntry = {
 };
 
 const PAGE_OPTIONS: {
-  value: PngPdfPageSize;
+  value: TiffPdfPageSize;
   label: string;
   hint: string;
 }[] = [
@@ -46,7 +46,7 @@ const PAGE_OPTIONS: {
 ];
 
 const MARGIN_OPTIONS: {
-  value: PngPdfMargin;
+  value: TiffPdfMargin;
   label: string;
   hint: string;
 }[] = [
@@ -62,21 +62,21 @@ function createEntries(files: File[]): ImageEntry[] {
   }));
 }
 
-export default function PngToPdf() {
+export default function TiffToPdf() {
   const { trackSuccess, trackFailure } = useToolAnalytics();
   const listId = useId();
   const pageSizeId = useId();
   const marginId = useId();
   const abortRef = useRef<AbortController | null>(null);
-  const resultRef = useRef<PngToPdfResult | null>(null);
+  const resultRef = useRef<TiffToPdfResult | null>(null);
 
   const [entries, setEntries] = useState<ImageEntry[]>([]);
-  const [pageSize, setPageSize] = useState<PngPdfPageSize>("fit");
-  const [margin, setMargin] = useState<PngPdfMargin>("small");
+  const [pageSize, setPageSize] = useState<TiffPdfPageSize>("fit");
+  const [margin, setMargin] = useState<TiffPdfMargin>("small");
   const [loading, setLoading] = useState(false);
   const [progressText, setProgressText] = useState("");
   const [error, setError] = useState("");
-  const [result, setResult] = useState<PngToPdfResult | null>(null);
+  const [result, setResult] = useState<TiffToPdfResult | null>(null);
 
   const files = entries.map((entry) => entry.file);
   const fileCount = entries.length;
@@ -92,13 +92,13 @@ export default function PngToPdf() {
   useEffect(() => {
     return () => {
       abortRef.current?.abort();
-      revokePngToPdfResult(resultRef.current);
+      revokeTiffToPdfResult(resultRef.current);
     };
   }, []);
 
   function clearResult() {
     setResult((current) => {
-      revokePngToPdfResult(current);
+      revokeTiffToPdfResult(current);
       return null;
     });
   }
@@ -141,7 +141,7 @@ export default function PngToPdf() {
 
   async function handleConvert() {
     if (fileCount === 0) {
-      setError("Upload at least one image (PNG, JPG, or WebP) to get started.");
+      setError("Upload at least one TIFF (.tif or .tiff) to get started.");
       return;
     }
 
@@ -151,26 +151,26 @@ export default function PngToPdf() {
 
     setLoading(true);
     setError("");
-    setProgressText("Preparing images…");
+    setProgressText("Decoding TIFF…");
     clearResult();
 
     try {
-      const converted = await convertPngToPdf(files, {
+      const converted = await convertTiffToPdf(files, {
         pageSize,
         margin,
         signal: controller.signal,
         onProgress: (current, total) => {
-          setProgressText(`Adding image ${current} of ${total}…`);
+          setProgressText(`Adding page ${current} of ${total}…`);
         },
       });
 
       if (controller.signal.aborted) {
-        revokePngToPdfResult(converted);
+        revokeTiffToPdfResult(converted);
         return;
       }
 
       setResult(converted);
-      downloadPngPdf(converted.blob, files);
+      downloadTiffPdf(converted.blob, files);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -181,7 +181,7 @@ export default function PngToPdf() {
       const message =
         err instanceof Error
           ? err.message
-          : "Could not convert these images. Try fewer or smaller files.";
+          : "Could not convert these TIFF files. Try fewer or smaller files.";
       setError(message);
       setProgressText("");
     } finally {
@@ -193,24 +193,24 @@ export default function PngToPdf() {
 
   function handleDownloadAgain() {
     if (!result || fileCount === 0) return;
-    downloadPngPdf(result.blob, files);
+    downloadTiffPdf(result.blob, files);
   }
 
   return (
     <div className="tool-grid png-to-pdf">
       <div className="tool-panel">
-        <PngToPdfDropzone
+        <TiffToPdfDropzone
           existingFiles={files}
           onFiles={handleAddFiles}
           onError={setError}
-          disabled={loading || fileCount >= MAX_PNG_FILES}
+          disabled={loading || fileCount >= MAX_TIFF_FILES}
         />
 
         {fileCount > 0 ? (
           <div className="png-to-pdf__list-wrap">
             <div className="png-to-pdf__list-header">
               <p className="png-to-pdf__list-title" id={listId}>
-                Page order ({fileCount})
+                File order ({fileCount})
               </p>
               <p className="png-to-pdf__list-meta">
                 {formatFileSize(totalBytes)} total
@@ -395,7 +395,8 @@ export default function PngToPdf() {
             <div className="png-to-pdf__success">
               <p className="png-to-pdf__success-title">PDF ready</p>
               <p className="png-to-pdf__success-meta">
-                {describePngPdfOutput(result)} · {pageSizeLabel(result.pageSize)}
+                {describeTiffPdfOutput(result)} ·{" "}
+                {pageSizeLabel(result.pageSize)}
               </p>
               {result.previewUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -407,7 +408,7 @@ export default function PngToPdf() {
               ) : null}
               <ul className="png-to-pdf__stats" aria-label="Conversion summary">
                 <li>
-                  <span className="png-to-pdf__stat-label">Images</span>
+                  <span className="png-to-pdf__stat-label">TIFF files</span>
                   <span className="png-to-pdf__stat-value">
                     {result.imageCount}
                   </span>
@@ -426,7 +427,7 @@ export default function PngToPdf() {
                 </li>
               </ul>
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Reorder images or
+                Your download should start automatically. Reorder files or
                 change page size and convert again anytime.
               </p>
             </div>
@@ -434,11 +435,11 @@ export default function PngToPdf() {
             <div className="png-to-pdf__empty">
               <p className="tool-placeholder">
                 {fileCount === 0
-                  ? "Upload images to turn them into a PDF"
-                  : `${fileCount} image${fileCount === 1 ? "" : "s"} queued · click Convert to PDF`}
+                  ? "Upload a TIFF to turn it into a PDF"
+                  : `${fileCount} TIFF file${fileCount === 1 ? "" : "s"} queued · click Convert to PDF`}
               </p>
               {fileCount > 0 ? (
-                <ul className="png-to-pdf__summary" aria-label="Queued images">
+                <ul className="png-to-pdf__summary" aria-label="Queued TIFF files">
                   {entries.map((entry, index) => (
                     <li key={entry.id}>
                       {index + 1}. {entry.file.name}
@@ -453,7 +454,7 @@ export default function PngToPdf() {
         <p className="tool-hint">
           {hasResult
             ? "Download again anytime · processed locally"
-            : "Image to PDF runs in your browser · files never upload to Focera"}
+            : "TIFF to PDF runs in your browser · files never upload to Focera"}
         </p>
       </div>
     </div>

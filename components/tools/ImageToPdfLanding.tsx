@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "PNG to PDF in seconds",
+    title: "Images to PDF in seconds",
     description:
-      "Turn one PNG — or a batch of images — into a shareable PDF without installing software or creating an account.",
+      "Turn one photo — or a batch of PNG, JPG, and WebP files — into a shareable PDF without installing software or creating an account.",
   },
   {
     title: "Multi-page from many images",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function PngToPdfLanding() {
+export default function ImageToPdfLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="png-to-pdf-features"
-        title="Everything you need in a free PNG to PDF converter"
+        id="image-to-pdf-features"
+        title="Everything you need in a free image to PDF converter"
         features={FEATURES}
       />
 
@@ -41,8 +41,8 @@ export default function PngToPdfLanding() {
           How It Works
         </h2>
         <p>
-          Converting PNG images to PDF should be quick and private. Focera keeps
-          the whole flow on one page — add images, set page size, convert, and
+          Converting images to PDF should be quick and private. Focera keeps the
+          whole flow on one page — add images, set page size, convert, and
           download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
@@ -63,26 +63,27 @@ export default function PngToPdfLanding() {
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#png-to-pdf-tool">PNG to PDF converter</a> anytime to
+          <a href="#image-to-pdf-tool">image to PDF converter</a> anytime to
           process another batch.
         </p>
       </section>
 
       <section
         className="tool-content__section"
-        aria-labelledby="transparency"
+        aria-labelledby="formats"
       >
-        <h2 id="transparency" className="tool-content__heading">
-          Does PNG Transparency Survive?
+        <h2 id="formats" className="tool-content__heading">
+          Supported Formats
         </h2>
         <p>
-          Yes. PNG transparency is preserved in the PDF when you convert PNG
-          files. Transparent areas stay see-through in viewers that support it;
-          some print workflows still composite onto white.
+          Upload PNG, JPG/JPEG, or WebP. PNG transparency is preserved in the
+          PDF. WebP is converted locally before embedding so the file stays
+          compatible across readers.
         </p>
         <p>
-          JPG and WebP are also accepted. WebP is converted locally before
-          embedding so the PDF stays compatible across readers.
+          Prefer a PNG-focused landing page? Use{" "}
+          <Link href="/png-to-pdf">PNG to PDF</Link> — same converter, different
+          SEO entry point.
         </p>
       </section>
 
@@ -99,11 +100,11 @@ export default function PngToPdfLanding() {
             PDF for bug reports or handoffs.
           </li>
           <li>
-            <strong>Receipts and scans</strong> — Turn phone photos or PNGs into
-            a single file for expense reports.
+            <strong>Receipts and scans</strong> — Turn phone photos into a
+            single file for expense reports.
           </li>
           <li>
-            <strong>Design reviews</strong> — Package mockups as a PDF clients
+            <strong>Photo albums</strong> — Package JPG photos as a PDF clients
             can open without image editors.
           </li>
           <li>
@@ -137,8 +138,8 @@ export default function PngToPdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <Link href="/image-to-pdf">Image to PDF</Link> — Convert PNG, JPG,
-            or WebP photos into a multi-page PDF.
+            <Link href="/png-to-pdf">PNG to PDF</Link> — Same converter focused
+            on PNG workflows and transparency.
           </li>
           <li>
             <Link href="/tiff-to-pdf">TIFF to PDF</Link> — Convert .tif / .tiff
@@ -153,6 +154,10 @@ export default function PngToPdfLanding() {
             into JPEG images.
           </li>
           <li>
+            <Link href="/add-images-to-pdf">Add Images to PDF</Link> — Insert
+            images into an existing PDF instead of creating a new one.
+          </li>
+          <li>
             <Link href="/merge-pdf">Merge PDF</Link> — Combine multiple PDFs
             into one file after converting.
           </li>
@@ -161,24 +166,12 @@ export default function PngToPdfLanding() {
             email and uploads when you need a smaller document.
           </li>
           <li>
-            <Link href="/pdf-watermark">PDF Watermark</Link> — Add a text or
-            image watermark before sharing.
-          </li>
-          <li>
-            <Link href="/image-compressor">Image Compressor</Link> — Shrink PNGs
-            and JPGs before building a PDF.
+            <Link href="/image-compressor">Image Compressor</Link> — Shrink
+            images before building a PDF.
           </li>
           <li>
             <Link href="/background-remover">AI Background Remover</Link> —
-            Cut subjects from photos, then convert the PNG to PDF.
-          </li>
-          <li>
-            <Link href="/word-to-pdf">Word to PDF</Link> — Convert .docx
-            documents into A4 or Letter PDFs.
-          </li>
-          <li>
-            <Link href="/split-pdf">Split PDF</Link> — Break a PDF into pages or
-            ranges after conversion.
+            Cut subjects from photos, then convert to PDF.
           </li>
         </ul>
       </section>

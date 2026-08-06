@@ -36,8 +36,8 @@ export const categoryLabels: Record<ToolCategory, string> = {
 };
 
 export const categoryDescriptions: Record<ToolCategory, string> = {
-  pdf: "Create, merge, split, rearrange, rotate, delete pages, crop, compress, unlock, eSign, edit, translate, extract images, and convert PDFs — including URL to PDF, PNG to PDF, PDF to PNG, PDF to JPG, Word to PDF, PowerPoint to PDF, EPUB to PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, and PDF to EPUB.",
-  image: "Compress, upscale, colorize photos, remove backgrounds, extract images from PDF, convert PNG to PDF or PDF to PNG, and convert images.",
+  pdf: "Create, merge, split, rearrange, rotate, delete pages, annotate, add text, add page numbers, add images, crop, compress, protect, unlock, eSign, edit, translate, extract images, and convert PDFs — including URL to PDF, Image to PDF, PNG to PDF, TIFF to PDF, PDF to PNG, PDF to JPG, PDF to TIFF, Word to PDF, PowerPoint to PDF, EPUB to PDF, MOBI to PDF, AZW3 to PDF, PDF to Word, PDF to Excel, PDF to CSV, PDF to PowerPoint, PDF to EPUB, and PDF to MOBI.",
+  image: "Compress, upscale, colorize photos, remove backgrounds, extract images from PDF, add images to PDF, convert images to PDF (or PNG to PDF / TIFF to PDF / PDF to PNG / PDF to TIFF), and convert images.",
   video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, summarize YouTube videos, and export in your browser.",
   ai: "Generate images and stories, colorize photos, summarize YouTube videos, translate PDFs, plus smart cutouts, OCR, and speech-to-text.",
   file: "Converters, generators, and everyday utilities for any file.",
@@ -1461,7 +1461,7 @@ export const tools: Tool[] = [
       {
         question: "Can I turn images into a PDF?",
         answer:
-          "Use PNG to PDF for images. This creator is for text documents and blank pages from scratch.",
+          "Use Image to PDF for images. This creator is for text documents and blank pages from scratch.",
       },
       {
         question: "Do I need to install software?",
@@ -1844,6 +1844,262 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "add-page-numbers-to-pdf",
+    name: "Add Page Numbers to PDF Tool",
+    shortName: "Add Page Numbers to PDF",
+    description:
+      "Add page numbers to PDF online — place numbers in the header or footer with format, start number, and font size controls. Free, private, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/add-page-numbers-to-pdf",
+    keywords: [
+      "add page numbers to pdf",
+      "pdf page numbers",
+      "number pdf pages",
+      "insert page numbers pdf",
+      "pdf pagination",
+      "page numbers pdf online",
+      "add page number to pdf",
+      "free pdf page numbering",
+      "pdf footer page numbers",
+      "page numbering tool",
+    ],
+    faq: [
+      {
+        question: "Is this PDF page number tool free?",
+        answer:
+          "Yes. Number unlimited PDFs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Page numbering runs entirely in your browser with pdf-lib. Your PDF stays on your device.",
+      },
+      {
+        question: "Where can I place the page numbers?",
+        answer:
+          "Choose bottom or top, then center, left, or right. Adjust font size so numbers fit your layout.",
+      },
+      {
+        question: "What formats are available?",
+        answer:
+          "Use a plain number, 1 / N, Page 1, or Page 1 of N. You can also set a custom start number.",
+      },
+      {
+        question: "Does numbering keep text selectable?",
+        answer:
+          "Yes. The original PDF pages stay intact — only the page number text is drawn on top.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per file.",
+      },
+      {
+        question: "Can I number password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to add page numbers.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and download immediately.",
+      },
+    ],
+  },
+  {
+    slug: "annotate-pdf",
+    name: "Annotate PDF Tool",
+    shortName: "Annotate PDF",
+    description:
+      "Annotate PDF online for free — highlight, draw, box, and add text notes on any page. Private, no watermark, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/annotate-pdf",
+    keywords: [
+      "annotate pdf",
+      "pdf annotator",
+      "highlight pdf",
+      "mark up pdf",
+      "draw on pdf",
+      "pdf highlighter",
+      "add notes to pdf",
+      "annotate pdf online",
+      "free pdf annotation",
+      "write on pdf pages",
+    ],
+    faq: [
+      {
+        question: "Is this annotate PDF tool free?",
+        answer:
+          "Yes. Annotate and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Annotation runs entirely in your browser with PDF.js and pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "What annotation tools are included?",
+        answer:
+          "Highlight regions, draw freehand with a pen, outline areas with boxes, and place text notes by clicking on the page.",
+      },
+      {
+        question: "Can I annotate multiple pages?",
+        answer:
+          "Yes. Switch pages with the thumbnail strip, add marks on each page, then download one annotated PDF.",
+      },
+      {
+        question: "Can I undo or clear marks?",
+        answer:
+          "Yes. Undo the last mark, clear the current page, or clear every annotation before you export.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per file.",
+      },
+      {
+        question: "Can I annotate password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to annotate.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, mark it up, and download immediately.",
+      },
+    ],
+  },
+  {
+    slug: "add-text-to-pdf",
+    name: "Add Text to PDF Tool",
+    shortName: "Add Text to PDF",
+    description:
+      "Add text to PDF online — place custom text with font, size, color, opacity, position, and page controls. Free, private, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/add-text-to-pdf",
+    keywords: [
+      "add text to pdf",
+      "insert text into pdf",
+      "write on pdf",
+      "pdf text overlay",
+      "stamp text on pdf",
+      "add text to pdf online",
+      "put text on pdf",
+      "free add text pdf",
+      "pdf text stamp",
+      "annotate pdf with text",
+    ],
+    faq: [
+      {
+        question: "Is this add text to PDF tool free?",
+        answer:
+          "Yes. Add text to unlimited PDFs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Text is drawn entirely in your browser with pdf-lib. Your PDF stays on your device.",
+      },
+      {
+        question: "Where can I place the text?",
+        answer:
+          "Choose center, header, or footer positions (left, center, or right). You can also rotate text diagonally.",
+      },
+      {
+        question: "Can I choose which pages get the text?",
+        answer:
+          "Yes. Apply text to every page, only the first page, or only the last page.",
+      },
+      {
+        question: "Which fonts are available?",
+        answer:
+          "Helvetica, Helvetica Bold, Times, Times Bold, and Courier — standard PDF fonts that work in every viewer.",
+      },
+      {
+        question: "Does adding text keep the original content selectable?",
+        answer:
+          "Yes. The original PDF pages stay intact — only your new text is drawn on top.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per file.",
+      },
+      {
+        question: "Can I add text to password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to add text.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, type your text, and download immediately.",
+      },
+    ],
+  },
+  {
+    slug: "add-images-to-pdf",
+    name: "Add Images to PDF Tool",
+    shortName: "Add Images to PDF",
+    description:
+      "Add images to PDF online — insert PNG, JPG, or WebP photos as new pages at the start, end, or after any page. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/add-images-to-pdf",
+    keywords: [
+      "add images to pdf",
+      "insert images into pdf",
+      "add photo to pdf",
+      "insert picture into pdf",
+      "add png to pdf",
+      "add jpg to existing pdf",
+      "append images to pdf",
+      "insert pages from images",
+      "free add images to pdf",
+      "pdf insert image online",
+    ],
+    faq: [
+      {
+        question: "Is this add images to PDF tool free?",
+        answer:
+          "Yes. Insert unlimited images into PDFs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my PDFs or images uploaded to a server?",
+        answer:
+          "No. Insertion runs entirely in your browser with pdf-lib. Your PDF and images stay on your device.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "PNG, JPG, and WebP up to 10 MB each (up to 30 images). WebP is converted locally before embedding.",
+      },
+      {
+        question: "Where can I insert the images?",
+        answer:
+          "Append at the end, place at the start, or insert after a specific page number. Reorder the image list before you save.",
+      },
+      {
+        question: "How is this different from Image to PDF?",
+        answer:
+          "Image to PDF creates a brand-new PDF from images. Add Images to PDF inserts image pages into an existing PDF while keeping the original pages.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB. Source pages plus new image pages must total 50 pages or fewer.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF and images, and download immediately.",
+      },
+    ],
+  },
+  {
     slug: "pdf-watermark",
     name: "PDF Watermark Tool",
     shortName: "PDF Watermark",
@@ -2084,6 +2340,65 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your PDF, enter the password, and download immediately.",
+      },
+    ],
+  },
+  {
+    slug: "protect-pdf",
+    name: "Protect PDF Tool",
+    shortName: "Protect PDF",
+    description:
+      "Password protect PDFs online — add an open password and download an encrypted copy. Free, private, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/protect-pdf",
+    keywords: [
+      "protect pdf",
+      "password protect pdf",
+      "encrypt pdf",
+      "add password to pdf",
+      "pdf password protector",
+      "lock pdf",
+      "secure pdf online",
+      "free pdf protector",
+      "pdf encryption tool",
+      "password protect pdf online",
+    ],
+    faq: [
+      {
+        question: "Is this PDF protector free?",
+        answer:
+          "Yes. Protect and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs or passwords uploaded to a server?",
+        answer:
+          "No. Encryption runs entirely in your browser. Your file and password stay on your device.",
+      },
+      {
+        question: "What kind of password is added?",
+        answer:
+          "An open password. Recipients must enter it before they can view the PDF. Store it safely — Focera cannot recover forgotten passwords.",
+      },
+      {
+        question: "Will text and layout stay the same?",
+        answer:
+          "Yes. Pages are encrypted as real PDF pages — selectable text, vector graphics, and layout are preserved.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per protect.",
+      },
+      {
+        question: "What if the PDF is already password-protected?",
+        answer:
+          "Unlock it first with Unlock PDF, then upload the unlocked copy to set a new password.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, set a password, and download immediately.",
       },
     ],
   },
@@ -2787,6 +3102,74 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "pdf-to-csv",
+    name: "PDF to CSV Converter",
+    shortName: "PDF to CSV",
+    description:
+      "Convert PDF to CSV online — extract tables from PDF into comma-separated files. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/pdf-to-csv",
+    keywords: [
+      "pdf to csv",
+      "convert pdf to csv",
+      "pdf to csv converter",
+      "extract table from pdf",
+      "pdf table to csv",
+      "pdf tables to csv",
+      "free pdf to csv",
+      "pdf to csv online",
+      "pdf data to csv",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to CSV converter free?",
+        answer:
+          "Yes. Convert and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between Detect tables and One column?",
+        answer:
+          "Detect tables splits lines into CSV columns using horizontal gaps — best for invoices and reports. One column puts each text line into a single field, which is better for prose-heavy PDFs.",
+      },
+      {
+        question: "Will tables match the original PDF exactly?",
+        answer:
+          "Column detection works well on clear tabular layouts, but complex multi-level tables, merged cells, and scanned pages may need cleanup afterward.",
+      },
+      {
+        question: "What file do I download?",
+        answer:
+          "By default you get a single .csv file. Choose CSV per page to download a ZIP containing one CSV for each PDF page.",
+      },
+      {
+        question: "Does this work on scanned PDFs?",
+        answer:
+          "This tool reads selectable text already in the PDF. Image-only scans usually need OCR first — try PDF to JPG plus Image to Text, then save as CSV.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "Can I convert password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to convert.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "pdf-to-powerpoint",
     name: "PDF to PowerPoint Converter",
     shortName: "PDF to PowerPoint",
@@ -3095,6 +3478,75 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "pdf-to-mobi",
+    name: "PDF to MOBI Converter",
+    shortName: "PDF to MOBI",
+    description:
+      "Convert PDF to MOBI online — extract reflowable text or embed exact page images into a Kindle .mobi ebook. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/pdf-to-mobi",
+    keywords: [
+      "pdf to mobi",
+      "convert pdf to mobi",
+      "pdf to mobi converter",
+      "pdf to kindle",
+      "pdf to azw",
+      "make mobi from pdf",
+      "free pdf to mobi",
+      "pdf to mobi online",
+      "pdf kindle converter",
+      "pdf ebook converter",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to MOBI converter free?",
+        answer:
+          "Yes. Convert and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between Reflowable text and Exact pages?",
+        answer:
+          "Reflowable text extracts selectable text into MOBI chapters you can resize and restyle on Kindle. Exact pages embeds each PDF page as an image so the layout matches visually, but text inside images is not selectable.",
+      },
+      {
+        question: "Which apps open the MOBI file?",
+        answer:
+          "You get a classic Mobipocket .mobi file compatible with Kindle devices (via sideload), Kindle apps, Calibre, and many e-readers that still accept MOBI.",
+      },
+      {
+        question: "Will formatting match the original PDF?",
+        answer:
+          "Reflowable text rebuilds paragraphs and may not preserve complex columns, tables, or precise positioning. Exact pages keeps a visual match by embedding page images.",
+      },
+      {
+        question: "Does this work on scanned PDFs?",
+        answer:
+          "Use Exact pages for image-only scans. Reflowable text needs selectable text already in the PDF — for OCR, try PDF to JPG plus Image to Text first.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "Can I convert password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to convert.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "epub-to-pdf",
     name: "EPUB to PDF Converter",
     shortName: "EPUB to PDF",
@@ -3149,6 +3601,120 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your .epub, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "mobi-to-pdf",
+    name: "MOBI to PDF Converter",
+    shortName: "MOBI to PDF",
+    description:
+      "Convert MOBI to PDF online — turn Kindle .mobi and .azw3 ebooks into A4 or Letter PDFs. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/mobi-to-pdf",
+    keywords: [
+      "mobi to pdf",
+      "convert mobi to pdf",
+      "mobi to pdf converter",
+      "kindle to pdf",
+      "azw to pdf",
+      "free mobi to pdf",
+      "mobi to pdf online",
+      "convert kindle to pdf",
+      "ebook to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this MOBI to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited MOBI and Kindle ebook files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my MOBI files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your ebooks stay on your device.",
+      },
+      {
+        question: "Which Kindle files are supported?",
+        answer:
+          "Upload DRM-free .mobi, .azw, .azw3, or .prc files up to 25 MB. Reflowable books work best. DRM-protected store books cannot be opened in the browser.",
+      },
+      {
+        question: "Will formatting match the original ebook?",
+        answer:
+          "Chapters, headings, paragraphs, lists, links, and images are preserved when possible. Complex CSS, custom fonts, fixed-layout pages, and interactive features may look different after conversion.",
+      },
+      {
+        question: "Can I choose A4 or Letter?",
+        answer:
+          "Yes. Pick A4 or US Letter before converting so the PDF matches your printer or regional standard.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer: "Yes. Upload ebook files up to 25 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your .mobi or .azw3, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "azw3-to-pdf",
+    name: "AZW3 to PDF Converter",
+    shortName: "AZW3 to PDF",
+    description:
+      "Convert AZW3 to PDF online — turn Kindle KF8 .azw3 ebooks into A4 or Letter PDFs. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/azw3-to-pdf",
+    keywords: [
+      "azw3 to pdf",
+      "convert azw3 to pdf",
+      "azw3 to pdf converter",
+      "kindle azw3 to pdf",
+      "kf8 to pdf",
+      "free azw3 to pdf",
+      "azw3 to pdf online",
+      "convert kindle azw3 to pdf",
+      "ebook to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this AZW3 to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited AZW3 files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my AZW3 files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your ebooks stay on your device.",
+      },
+      {
+        question: "Which AZW3 files are supported?",
+        answer:
+          "Upload DRM-free .azw3 (KF8) files up to 25 MB. Reflowable books work best. DRM-protected Kindle store books cannot be opened in the browser.",
+      },
+      {
+        question: "Will formatting match the original ebook?",
+        answer:
+          "Chapters, headings, paragraphs, lists, links, and images are preserved when possible. Complex CSS, custom fonts, fixed-layout pages, and interactive features may look different after conversion.",
+      },
+      {
+        question: "Can I choose A4 or Letter?",
+        answer:
+          "Yes. Pick A4 or US Letter before converting so the PDF matches your printer or regional standard.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer: "Yes. Upload AZW3 files up to 25 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your .azw3, and convert immediately.",
       },
     ],
   },
@@ -3459,6 +4025,130 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "pdf-to-tiff",
+    name: "PDF to TIFF Converter",
+    shortName: "PDF to TIFF",
+    description:
+      "Convert PDF pages to TIFF images online — preview each page, download singly, as a multipage TIFF, or as a ZIP. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/pdf-to-tiff",
+    keywords: [
+      "pdf to tiff",
+      "pdf to tif",
+      "convert pdf to tiff",
+      "pdf to tiff converter",
+      "pdf to multipage tiff",
+      "pdf to image",
+      "pdf page to tiff",
+      "free pdf to tiff",
+      "pdf to tiff online",
+      "pdf pages to tiff",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to TIFF converter free?",
+        answer:
+          "Yes. Convert, preview, and download unlimited PDFs with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js and UTIF. Your files stay on your device.",
+      },
+      {
+        question: "Can I download a multipage TIFF?",
+        answer:
+          "Yes. After conversion, download the current page, use Download multipage TIFF for one multi-page .tiff file, or Download all (ZIP) for one TIFF per page.",
+      },
+      {
+        question: "What resolution options are available?",
+        answer:
+          "Choose 1×, 1.5×, or 2× render scale for sharper page images. TIFF output is uncompressed RGBA.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "PDF to TIFF or PDF to PNG — which should I use?",
+        answer:
+          "Use TIFF for scanning, archival, and systems that expect .tif/.tiff (including multipage files). Use PNG for web, design tools, and everyday sharing.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "image-to-pdf",
+    name: "Image to PDF Converter",
+    shortName: "Image to PDF",
+    description:
+      "Convert images to PDF online — upload PNG, JPG, or WebP and download a multi-page PDF with Fit, A4, or Letter. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/image-to-pdf",
+    keywords: [
+      "image to pdf",
+      "convert image to pdf",
+      "images to pdf",
+      "jpg to pdf",
+      "jpeg to pdf",
+      "photo to pdf",
+      "webp to pdf",
+      "pictures to pdf",
+      "free image to pdf",
+      "image to pdf online",
+      "multiple images to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this image to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited image-to-PDF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "PNG, JPG, and WebP. WebP is converted locally before embedding so the PDF stays widely compatible.",
+      },
+      {
+        question: "Can I convert multiple images into one PDF?",
+        answer:
+          "Yes. Add up to 30 images, reorder them, and each image becomes a page in the downloaded PDF.",
+      },
+      {
+        question: "What page size options are available?",
+        answer:
+          "Choose Fit so each page matches the image dimensions, or place images on A4 or US Letter with optional margins.",
+      },
+      {
+        question: "Is PNG transparency preserved?",
+        answer:
+          "Yes. Transparent PNG areas stay transparent in the PDF. Some printers may still composite onto white paper.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each image can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your images, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "png-to-pdf",
     name: "PNG to PDF Converter",
     shortName: "PNG to PDF",
@@ -3471,9 +4161,6 @@ export const tools: Tool[] = [
       "png to pdf",
       "convert png to pdf",
       "png to pdf converter",
-      "images to pdf",
-      "jpg to pdf",
-      "photo to pdf",
       "png images to pdf",
       "free png to pdf",
       "png to pdf online",
@@ -3519,6 +4206,64 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "tiff-to-pdf",
+    name: "TIFF to PDF Converter",
+    shortName: "TIFF to PDF",
+    description:
+      "Convert TIFF to PDF online — upload .tif or .tiff scans, including multi-page files, and download a PDF with Fit, A4, or Letter. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/tiff-to-pdf",
+    keywords: [
+      "tiff to pdf",
+      "tif to pdf",
+      "convert tiff to pdf",
+      "tiff to pdf converter",
+      "multipage tiff to pdf",
+      "scan to pdf",
+      "free tiff to pdf",
+      "tiff to pdf online",
+      "convert tif to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this TIFF to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited TIFF-to-PDF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my TIFF files uploaded to a server?",
+        answer:
+          "No. Decoding and conversion run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          ".tif and .tiff files (image/tiff). Multi-page TIFFs are supported — each page becomes a PDF page.",
+      },
+      {
+        question: "Can I convert multiple TIFF files into one PDF?",
+        answer:
+          "Yes. Add up to 30 TIFF files, reorder them, and their pages are combined into one downloaded PDF (up to 100 pages total).",
+      },
+      {
+        question: "What page size options are available?",
+        answer:
+          "Choose Fit so each page matches the image dimensions, or place pages on A4 or US Letter with optional margins.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each TIFF can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your TIFF files, and convert immediately.",
       },
     ],
   },

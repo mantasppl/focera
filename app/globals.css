@@ -4482,22 +4482,29 @@ a {
 /* -- PDF to JPG / PNG -- */
 .pdf-to-jpg__options,
 .pdf-to-png__options,
+.pdf-to-tiff__options,
 .compress-pdf__options,
 .crop-pdf__options,
 .unlock-pdf__options,
+.protect-pdf__options,
 .pdf-to-powerpoint__options,
 .pdf-to-word__options,
 .pdf-to-excel__options,
+.pdf-to-csv__options,
 .pdf-to-epub__options,
+.pdf-to-mobi__options,
 .word-to-pdf__options,
 .powerpoint-to-pdf__options,
 .epub-to-pdf__options,
 .png-to-pdf__options,
+.add-images-to-pdf__options,
 .pdf-creator__options,
 .pdf-to-text__options,
 .pdf-translator__options,
 .split-pdf__options,
 .pdf-watermark__options,
+.add-page-numbers-to-pdf__options,
+.add-text-to-pdf__options,
 .upscale-image__options,
 .colorize-photo__options,
 .image-compressor__options,
@@ -4511,20 +4518,26 @@ a {
 
 .pdf-to-jpg__chips,
 .pdf-to-png__chips,
+.pdf-to-tiff__chips,
 .compress-pdf__chips,
 .crop-pdf__chips,
 .pdf-to-powerpoint__chips,
 .pdf-to-word__chips,
 .pdf-to-excel__chips,
+.pdf-to-csv__chips,
 .pdf-to-epub__chips,
+.pdf-to-mobi__chips,
 .word-to-pdf__chips,
 .powerpoint-to-pdf__chips,
 .epub-to-pdf__chips,
 .png-to-pdf__chips,
+.add-images-to-pdf__chips,
 .pdf-creator__chips,
 .pdf-to-text__chips,
 .split-pdf__chips,
 .pdf-watermark__chips,
+.add-page-numbers-to-pdf__chips,
+.add-text-to-pdf__chips,
 .upscale-image__chips,
 .colorize-photo__chips,
 .image-compressor__chips,
@@ -4536,12 +4549,22 @@ a {
   gap: 0.5rem;
 }
 
-.pdf-watermark__chips--positions {
+.pdf-watermark__chips--positions,
+.add-page-numbers-to-pdf__chips--positions,
+.add-text-to-pdf__chips--positions {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.pdf-watermark__chips--rotation {
+.pdf-watermark__chips--rotation,
+.add-text-to-pdf__chips--rotation,
+.add-text-to-pdf__chips--pages,
+.add-text-to-pdf__chips--colors {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.add-page-numbers-to-pdf__chips--formats,
+.add-text-to-pdf__chips--fonts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .compress-pdf__chips,
@@ -4562,20 +4585,26 @@ a {
 
 .pdf-to-jpg__chip,
 .pdf-to-png__chip,
+.pdf-to-tiff__chip,
 .compress-pdf__chip,
 .crop-pdf__chip,
 .pdf-to-powerpoint__chip,
 .pdf-to-word__chip,
 .pdf-to-excel__chip,
+.pdf-to-csv__chip,
 .pdf-to-epub__chip,
+.pdf-to-mobi__chip,
 .word-to-pdf__chip,
 .powerpoint-to-pdf__chip,
 .epub-to-pdf__chip,
 .png-to-pdf__chip,
+.add-images-to-pdf__chip,
 .pdf-creator__chip,
 .pdf-to-text__chip,
 .split-pdf__chip,
 .pdf-watermark__chip,
+.add-page-numbers-to-pdf__chip,
+.add-text-to-pdf__chip,
 .upscale-image__chip,
 .colorize-photo__chip,
 .image-compressor__chip,
@@ -4600,20 +4629,26 @@ a {
 
 .pdf-to-jpg__chip:hover:not(:disabled),
 .pdf-to-png__chip:hover:not(:disabled),
+.pdf-to-tiff__chip:hover:not(:disabled),
 .compress-pdf__chip:hover:not(:disabled),
 .crop-pdf__chip:hover:not(:disabled),
 .pdf-to-powerpoint__chip:hover:not(:disabled),
 .pdf-to-word__chip:hover:not(:disabled),
 .pdf-to-excel__chip:hover:not(:disabled),
+.pdf-to-csv__chip:hover:not(:disabled),
 .pdf-to-epub__chip:hover:not(:disabled),
+.pdf-to-mobi__chip:hover:not(:disabled),
 .word-to-pdf__chip:hover:not(:disabled),
 .powerpoint-to-pdf__chip:hover:not(:disabled),
 .epub-to-pdf__chip:hover:not(:disabled),
 .png-to-pdf__chip:hover:not(:disabled),
+.add-images-to-pdf__chip:hover:not(:disabled),
 .pdf-creator__chip:hover:not(:disabled),
 .pdf-to-text__chip:hover:not(:disabled),
 .split-pdf__chip:hover:not(:disabled),
 .pdf-watermark__chip:hover:not(:disabled),
+.add-page-numbers-to-pdf__chip:hover:not(:disabled),
+.add-text-to-pdf__chip:hover:not(:disabled),
 .upscale-image__chip:hover:not(:disabled),
 .colorize-photo__chip:hover:not(:disabled),
 .image-compressor__chip:hover:not(:disabled),
@@ -4625,20 +4660,26 @@ a {
 
 .pdf-to-jpg__chip.is-active,
 .pdf-to-png__chip.is-active,
+.pdf-to-tiff__chip.is-active,
 .compress-pdf__chip.is-active,
 .crop-pdf__chip.is-active,
 .pdf-to-powerpoint__chip.is-active,
 .pdf-to-word__chip.is-active,
 .pdf-to-excel__chip.is-active,
+.pdf-to-csv__chip.is-active,
 .pdf-to-epub__chip.is-active,
+.pdf-to-mobi__chip.is-active,
 .word-to-pdf__chip.is-active,
 .powerpoint-to-pdf__chip.is-active,
 .epub-to-pdf__chip.is-active,
 .png-to-pdf__chip.is-active,
+.add-images-to-pdf__chip.is-active,
 .pdf-creator__chip.is-active,
 .pdf-to-text__chip.is-active,
 .split-pdf__chip.is-active,
 .pdf-watermark__chip.is-active,
+.add-page-numbers-to-pdf__chip.is-active,
+.add-text-to-pdf__chip.is-active,
 .upscale-image__chip.is-active,
 .colorize-photo__chip.is-active,
 .image-compressor__chip.is-active,
@@ -4652,20 +4693,26 @@ a {
 
 .pdf-to-jpg__chip:disabled,
 .pdf-to-png__chip:disabled,
+.pdf-to-tiff__chip:disabled,
 .compress-pdf__chip:disabled,
 .crop-pdf__chip:disabled,
 .pdf-to-powerpoint__chip:disabled,
 .pdf-to-word__chip:disabled,
 .pdf-to-excel__chip:disabled,
+.pdf-to-csv__chip:disabled,
 .pdf-to-epub__chip:disabled,
+.pdf-to-mobi__chip:disabled,
 .word-to-pdf__chip:disabled,
 .powerpoint-to-pdf__chip:disabled,
 .epub-to-pdf__chip:disabled,
 .png-to-pdf__chip:disabled,
+.add-images-to-pdf__chip:disabled,
 .pdf-creator__chip:disabled,
 .pdf-to-text__chip:disabled,
 .split-pdf__chip:disabled,
 .pdf-watermark__chip:disabled,
+.add-page-numbers-to-pdf__chip:disabled,
+.add-text-to-pdf__chip:disabled,
 .upscale-image__chip:disabled,
 .colorize-photo__chip:disabled,
 .image-compressor__chip:disabled,
@@ -4678,20 +4725,26 @@ a {
 
 .pdf-to-jpg__chip-label,
 .pdf-to-png__chip-label,
+.pdf-to-tiff__chip-label,
 .compress-pdf__chip-label,
 .crop-pdf__chip-label,
 .pdf-to-powerpoint__chip-label,
 .pdf-to-word__chip-label,
 .pdf-to-excel__chip-label,
+.pdf-to-csv__chip-label,
 .pdf-to-epub__chip-label,
+.pdf-to-mobi__chip-label,
 .word-to-pdf__chip-label,
 .powerpoint-to-pdf__chip-label,
 .epub-to-pdf__chip-label,
 .png-to-pdf__chip-label,
+.add-images-to-pdf__chip-label,
 .pdf-creator__chip-label,
 .pdf-to-text__chip-label,
 .split-pdf__chip-label,
 .pdf-watermark__chip-label,
+.add-page-numbers-to-pdf__chip-label,
+.add-text-to-pdf__chip-label,
 .upscale-image__chip-label,
 .colorize-photo__chip-label,
 .image-compressor__chip-label,
@@ -4704,20 +4757,26 @@ a {
 
 .pdf-to-jpg__chip-hint,
 .pdf-to-png__chip-hint,
+.pdf-to-tiff__chip-hint,
 .compress-pdf__chip-hint,
 .crop-pdf__chip-hint,
 .pdf-to-powerpoint__chip-hint,
 .pdf-to-word__chip-hint,
 .pdf-to-excel__chip-hint,
+.pdf-to-csv__chip-hint,
 .pdf-to-epub__chip-hint,
+.pdf-to-mobi__chip-hint,
 .word-to-pdf__chip-hint,
 .powerpoint-to-pdf__chip-hint,
 .epub-to-pdf__chip-hint,
 .png-to-pdf__chip-hint,
+.add-images-to-pdf__chip-hint,
 .pdf-creator__chip-hint,
 .pdf-to-text__chip-hint,
 .split-pdf__chip-hint,
 .pdf-watermark__chip-hint,
+.add-page-numbers-to-pdf__chip-hint,
+.add-text-to-pdf__chip-hint,
 .upscale-image__chip-hint,
 .colorize-photo__chip-hint,
 .image-compressor__chip-hint,
@@ -4730,21 +4789,27 @@ a {
 
 .pdf-to-jpg__chip.is-active .pdf-to-jpg__chip-hint,
 .pdf-to-png__chip.is-active .pdf-to-png__chip-hint,
+.pdf-to-tiff__chip.is-active .pdf-to-tiff__chip-hint,
 .compress-pdf__chip.is-active .compress-pdf__chip-hint,
 .crop-pdf__chip.is-active .crop-pdf__chip-hint,
 .pdf-to-powerpoint__chip.is-active .pdf-to-powerpoint__chip-hint,
 .pdf-to-word__chip.is-active .pdf-to-word__chip-hint,
 .pdf-to-excel__chip.is-active .pdf-to-excel__chip-hint,
+.pdf-to-csv__chip.is-active .pdf-to-csv__chip-hint,
 .pdf-to-epub__chip.is-active .pdf-to-epub__chip-hint,
+.pdf-to-mobi__chip.is-active .pdf-to-mobi__chip-hint,
 .word-to-pdf__chip.is-active .word-to-pdf__chip-hint,
 .powerpoint-to-pdf__chip.is-active .powerpoint-to-pdf__chip-hint,
 .epub-to-pdf__chip.is-active .epub-to-pdf__chip-hint,
 .epub-to-pdf__chip-hint,
 .png-to-pdf__chip.is-active .png-to-pdf__chip-hint,
+.add-images-to-pdf__chip.is-active .add-images-to-pdf__chip-hint,
 .pdf-creator__chip.is-active .pdf-creator__chip-hint,
 .pdf-to-text__chip.is-active .pdf-to-text__chip-hint,
 .split-pdf__chip.is-active .split-pdf__chip-hint,
 .pdf-watermark__chip.is-active .pdf-watermark__chip-hint,
+.add-page-numbers-to-pdf__chip.is-active .add-page-numbers-to-pdf__chip-hint,
+.add-text-to-pdf__chip.is-active .add-text-to-pdf__chip-hint,
 .upscale-image__chip.is-active .upscale-image__chip-hint,
 .colorize-photo__chip.is-active .colorize-photo__chip-hint,
 .image-compressor__chip.is-active .image-compressor__chip-hint,
@@ -4756,6 +4821,7 @@ a {
 
 .pdf-to-jpg__preview-image,
 .pdf-to-png__preview-image,
+.pdf-to-tiff__preview-image,
 .extract-images-from-pdf__preview-image {
   max-width: min(100%, 420px);
   max-height: 360px;
@@ -4763,6 +4829,7 @@ a {
 
 .pdf-to-jpg__thumbs,
 .pdf-to-png__thumbs,
+.pdf-to-tiff__thumbs,
 .extract-images-from-pdf__thumbs {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
@@ -4775,6 +4842,7 @@ a {
 
 .pdf-to-jpg__thumb,
 .pdf-to-png__thumb,
+.pdf-to-tiff__thumb,
 .extract-images-from-pdf__thumb {
   display: flex;
   flex-direction: column;
@@ -4790,12 +4858,14 @@ a {
 
 .pdf-to-jpg__thumb:hover,
 .pdf-to-png__thumb:hover,
+.pdf-to-tiff__thumb:hover,
 .extract-images-from-pdf__thumb:hover {
   border-color: var(--accent);
 }
 
 .pdf-to-jpg__thumb.is-active,
 .pdf-to-png__thumb.is-active,
+.pdf-to-tiff__thumb.is-active,
 .extract-images-from-pdf__thumb.is-active {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.1);
@@ -4803,6 +4873,7 @@ a {
 
 .pdf-to-jpg__thumb-image,
 .pdf-to-png__thumb-image,
+.pdf-to-tiff__thumb-image,
 .extract-images-from-pdf__thumb-image {
   width: 100%;
   aspect-ratio: 3 / 4;
@@ -4812,6 +4883,7 @@ a {
 
 .pdf-to-jpg__thumb-label,
 .pdf-to-png__thumb-label,
+.pdf-to-tiff__thumb-label,
 .extract-images-from-pdf__thumb-label {
   font-size: 0.72rem;
   color: var(--muted);
@@ -4820,6 +4892,7 @@ a {
 
 .pdf-to-jpg__thumb.is-active .pdf-to-jpg__thumb-label,
 .pdf-to-png__thumb.is-active .pdf-to-png__thumb-label,
+.pdf-to-tiff__thumb.is-active .pdf-to-tiff__thumb-label,
 .extract-images-from-pdf__thumb.is-active
   .extract-images-from-pdf__thumb-label {
   color: var(--accent-deep);
@@ -4829,6 +4902,7 @@ a {
 @media (max-width: 640px) {
   .pdf-to-jpg__chips,
   .pdf-to-png__chips,
+  .pdf-to-tiff__chips,
   .compress-pdf__chips,
   .crop-pdf__chips,
   .crop-pdf__chips--units,
@@ -4837,18 +4911,29 @@ a {
   .pdf-to-powerpoint__chips,
   .pdf-to-word__chips,
   .pdf-to-excel__chips,
+  .pdf-to-csv__chips,
   .pdf-to-epub__chips,
+  .pdf-to-mobi__chips,
   .word-to-pdf__chips,
   .powerpoint-to-pdf__chips,
   .epub-to-pdf__chips,
-.epub-to-pdf__chips,
   .png-to-pdf__chips,
+  .add-images-to-pdf__chips,
   .pdf-creator__chips,
   .pdf-to-text__chips,
   .split-pdf__chips,
   .pdf-watermark__chips,
   .pdf-watermark__chips--positions,
   .pdf-watermark__chips--rotation,
+  .add-page-numbers-to-pdf__chips,
+  .add-page-numbers-to-pdf__chips--positions,
+  .add-page-numbers-to-pdf__chips--formats,
+  .add-text-to-pdf__chips,
+  .add-text-to-pdf__chips--positions,
+  .add-text-to-pdf__chips--fonts,
+  .add-text-to-pdf__chips--colors,
+  .add-text-to-pdf__chips--pages,
+  .add-text-to-pdf__chips--rotation,
   .upscale-image__chips,
   .colorize-photo__chips,
   .image-compressor__chips,
@@ -5139,7 +5224,11 @@ a {
 .compress-pdf__success,
 .crop-pdf__success,
 .unlock-pdf__success,
+.protect-pdf__success,
 .pdf-watermark__success,
+.add-images-to-pdf__success,
+.add-page-numbers-to-pdf__success,
+.add-text-to-pdf__success,
 .esign-pdf__success,
 .image-compressor__success,
 .compress-video__success,
@@ -5157,7 +5246,11 @@ a {
 .compress-pdf__success-title,
 .crop-pdf__success-title,
 .unlock-pdf__success-title,
+.protect-pdf__success-title,
 .pdf-watermark__success-title,
+.add-images-to-pdf__success-title,
+.add-page-numbers-to-pdf__success-title,
+.add-text-to-pdf__success-title,
 .esign-pdf__success-title,
 .image-compressor__success-title,
 .compress-video__success-title,
@@ -5173,7 +5266,11 @@ a {
 .compress-pdf__success-meta,
 .crop-pdf__success-meta,
 .unlock-pdf__success-meta,
+.protect-pdf__success-meta,
 .pdf-watermark__success-meta,
+.add-images-to-pdf__success-meta,
+.add-page-numbers-to-pdf__success-meta,
+.add-text-to-pdf__success-meta,
 .esign-pdf__success-meta,
 .image-compressor__success-meta,
 .compress-video__success-meta,
@@ -5189,6 +5286,7 @@ a {
 .compress-pdf__stats,
 .crop-pdf__stats,
 .unlock-pdf__stats,
+.protect-pdf__stats,
 .image-compressor__stats,
 .compress-video__stats,
 .trim-video__stats,
@@ -5206,6 +5304,7 @@ a {
 .compress-pdf__stats li,
 .crop-pdf__stats li,
 .unlock-pdf__stats li,
+.protect-pdf__stats li,
 .image-compressor__stats li,
 .compress-video__stats li,
 .trim-video__stats li,
@@ -5222,6 +5321,7 @@ a {
 .compress-pdf__stat-label,
 .crop-pdf__stat-label,
 .unlock-pdf__stat-label,
+.protect-pdf__stat-label,
 .image-compressor__stat-label,
 .compress-video__stat-label,
 .trim-video__stat-label,
@@ -5236,6 +5336,7 @@ a {
 .compress-pdf__stat-value,
 .crop-pdf__stat-value,
 .unlock-pdf__stat-value,
+.protect-pdf__stat-value,
 .image-compressor__stat-value,
 .compress-video__stat-value,
 .trim-video__stat-value,
@@ -5262,6 +5363,9 @@ a {
 .crop-pdf__preview,
 .unlock-pdf__preview,
 .pdf-watermark__preview,
+.add-page-numbers-to-pdf__preview,
+.add-text-to-pdf__preview,
+.add-images-to-pdf__preview,
 .esign-pdf__preview {
   width: min(100%, 420px);
   height: 280px;
@@ -5276,14 +5380,16 @@ a {
   gap: 0.75rem;
 }
 
-.unlock-pdf__password-row {
+.unlock-pdf__password-row,
+.protect-pdf__password-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.5rem;
   align-items: center;
 }
 
-.unlock-pdf__toggle {
+.unlock-pdf__toggle,
+.protect-pdf__toggle {
   height: 2.65rem;
   padding: 0 0.9rem;
   border: 1px solid var(--line);
@@ -5294,17 +5400,20 @@ a {
   cursor: pointer;
 }
 
-.unlock-pdf__toggle:hover:not(:disabled) {
+.unlock-pdf__toggle:hover:not(:disabled),
+.protect-pdf__toggle:hover:not(:disabled) {
   border-color: var(--ink-soft, var(--line));
   background: #fff;
 }
 
-.unlock-pdf__toggle:disabled {
+.unlock-pdf__toggle:disabled,
+.protect-pdf__toggle:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
 
-.unlock-pdf__hint {
+.unlock-pdf__hint,
+.protect-pdf__hint {
   margin: 0.35rem 0 0;
   font-size: 0.82rem;
   color: var(--muted);
@@ -5361,6 +5470,7 @@ a {
   .compress-pdf__stats,
   .crop-pdf__stats,
   .unlock-pdf__stats,
+  .protect-pdf__stats,
   .image-compressor__stats,
   .compress-video__stats,
   .trim-video__stats,
@@ -5373,7 +5483,10 @@ a {
   .compress-pdf__preview,
   .crop-pdf__preview,
   .unlock-pdf__preview,
-  .pdf-watermark__preview {
+  .pdf-watermark__preview,
+  .add-page-numbers-to-pdf__preview,
+  .add-text-to-pdf__preview,
+  .add-images-to-pdf__preview {
     height: 220px;
   }
 
@@ -5507,7 +5620,9 @@ a {
 .pdf-to-powerpoint__success,
 .pdf-to-word__success,
 .pdf-to-excel__success,
+.pdf-to-csv__success,
 .pdf-to-epub__success,
+.pdf-to-mobi__success,
 .word-to-pdf__success,
 .powerpoint-to-pdf__success,
 .epub-to-pdf__success,
@@ -5524,7 +5639,9 @@ a {
 .pdf-to-powerpoint__success-title,
 .pdf-to-word__success-title,
 .pdf-to-excel__success-title,
+.pdf-to-csv__success-title,
 .pdf-to-epub__success-title,
+.pdf-to-mobi__success-title,
 .word-to-pdf__success-title,
 .powerpoint-to-pdf__success-title,
 .epub-to-pdf__success-title,
@@ -5539,7 +5656,9 @@ a {
 .pdf-to-powerpoint__success-meta,
 .pdf-to-word__success-meta,
 .pdf-to-excel__success-meta,
+.pdf-to-csv__success-meta,
 .pdf-to-epub__success-meta,
+.pdf-to-mobi__success-meta,
 .word-to-pdf__success-meta,
 .powerpoint-to-pdf__success-meta,
 .epub-to-pdf__success-meta,
@@ -5554,7 +5673,9 @@ a {
 .pdf-to-powerpoint__stats,
 .pdf-to-word__stats,
 .pdf-to-excel__stats,
+.pdf-to-csv__stats,
 .pdf-to-epub__stats,
+.pdf-to-mobi__stats,
 .word-to-pdf__stats,
 .powerpoint-to-pdf__stats,
 .epub-to-pdf__stats,
@@ -5572,7 +5693,9 @@ a {
 .pdf-to-powerpoint__stats li,
 .pdf-to-word__stats li,
 .pdf-to-excel__stats li,
+.pdf-to-csv__stats li,
 .pdf-to-epub__stats li,
+.pdf-to-mobi__stats li,
 .word-to-pdf__stats li,
 .powerpoint-to-pdf__stats li,
 .epub-to-pdf__stats li,
@@ -5589,7 +5712,9 @@ a {
 .pdf-to-powerpoint__stat-label,
 .pdf-to-word__stat-label,
 .pdf-to-excel__stat-label,
+.pdf-to-csv__stat-label,
 .pdf-to-epub__stat-label,
+.pdf-to-mobi__stat-label,
 .word-to-pdf__stat-label,
 .powerpoint-to-pdf__stat-label,
 .epub-to-pdf__stat-label,
@@ -5604,7 +5729,9 @@ a {
 .pdf-to-powerpoint__stat-value,
 .pdf-to-word__stat-value,
 .pdf-to-excel__stat-value,
+.pdf-to-csv__stat-value,
 .pdf-to-epub__stat-value,
+.pdf-to-mobi__stat-value,
 .word-to-pdf__stat-value,
 .powerpoint-to-pdf__stat-value,
 .epub-to-pdf__stat-value,
@@ -5626,6 +5753,7 @@ a {
 .pdf-to-powerpoint__preview,
 .pdf-to-word__preview,
 .pdf-to-epub__preview,
+.pdf-to-mobi__preview,
 .word-to-pdf__preview,
 .powerpoint-to-pdf__preview,
 .epub-to-pdf__preview {
@@ -5645,7 +5773,8 @@ a {
   word-break: break-word;
 }
 
-.pdf-to-excel__preview-wrap {
+.pdf-to-excel__preview-wrap,
+.pdf-to-csv__preview-wrap {
   width: min(100%, 420px);
   max-height: 240px;
   margin: 0.35rem 0 0;
@@ -5655,14 +5784,16 @@ a {
   text-align: left;
 }
 
-.pdf-to-excel__preview {
+.pdf-to-excel__preview,
+.pdf-to-csv__preview {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.75rem;
   line-height: 1.35;
 }
 
-.pdf-to-excel__preview td {
+.pdf-to-excel__preview td,
+.pdf-to-csv__preview td {
   padding: 0.35rem 0.5rem;
   border-bottom: 1px solid var(--line);
   border-right: 1px solid var(--line);
@@ -5673,11 +5804,13 @@ a {
   text-overflow: ellipsis;
 }
 
-.pdf-to-excel__preview tr:last-child td {
+.pdf-to-excel__preview tr:last-child td,
+.pdf-to-csv__preview tr:last-child td {
   border-bottom: none;
 }
 
-.pdf-to-excel__preview td:last-child {
+.pdf-to-excel__preview td:last-child,
+.pdf-to-csv__preview td:last-child {
   border-right: none;
 }
 
@@ -5685,11 +5818,12 @@ a {
   .pdf-to-powerpoint__stats,
   .pdf-to-word__stats,
   .pdf-to-excel__stats,
+  .pdf-to-csv__stats,
   .pdf-to-epub__stats,
+  .pdf-to-mobi__stats,
   .word-to-pdf__stats,
   .powerpoint-to-pdf__stats,
   .epub-to-pdf__stats,
-.epub-to-pdf__stats,
   .png-to-pdf__stats,
   .pdf-creator__stats {
     grid-template-columns: 1fr;
@@ -5699,6 +5833,7 @@ a {
   .pdf-to-powerpoint__preview,
   .pdf-to-word__preview,
   .pdf-to-epub__preview,
+  .pdf-to-mobi__preview,
   .word-to-pdf__preview,
   .powerpoint-to-pdf__preview,
   .epub-to-pdf__preview {
@@ -7099,14 +7234,16 @@ a {
 
 /* -- Merge PDF / PNG to PDF lists -- */
 .merge-pdf__list-wrap,
-.png-to-pdf__list-wrap {
+.png-to-pdf__list-wrap,
+.add-images-to-pdf__list-wrap {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
 }
 
 .merge-pdf__list-header,
-.png-to-pdf__list-header {
+.png-to-pdf__list-header,
+.add-images-to-pdf__list-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -7114,7 +7251,8 @@ a {
 }
 
 .merge-pdf__list-title,
-.png-to-pdf__list-title {
+.png-to-pdf__list-title,
+.add-images-to-pdf__list-title {
   margin: 0;
   font-size: 0.88rem;
   font-weight: 600;
@@ -7122,14 +7260,16 @@ a {
 }
 
 .merge-pdf__list-meta,
-.png-to-pdf__list-meta {
+.png-to-pdf__list-meta,
+.add-images-to-pdf__list-meta {
   margin: 0;
   font-size: 0.78rem;
   color: var(--muted);
 }
 
 .merge-pdf__list,
-.png-to-pdf__list {
+.png-to-pdf__list,
+.add-images-to-pdf__list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -7141,7 +7281,8 @@ a {
 }
 
 .merge-pdf__item,
-.png-to-pdf__item {
+.png-to-pdf__item,
+.add-images-to-pdf__item {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -7153,7 +7294,8 @@ a {
 }
 
 .merge-pdf__index,
-.png-to-pdf__index {
+.png-to-pdf__index,
+.add-images-to-pdf__index {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -7167,12 +7309,14 @@ a {
 }
 
 .merge-pdf__file,
-.png-to-pdf__file {
+.png-to-pdf__file,
+.add-images-to-pdf__file {
   min-width: 0;
 }
 
 .merge-pdf__name,
-.png-to-pdf__name {
+.png-to-pdf__name,
+.add-images-to-pdf__name {
   margin: 0;
   font-size: 0.86rem;
   font-weight: 600;
@@ -7183,20 +7327,23 @@ a {
 }
 
 .merge-pdf__size,
-.png-to-pdf__size {
+.png-to-pdf__size,
+.add-images-to-pdf__size {
   margin: 0.1rem 0 0;
   font-size: 0.75rem;
   color: var(--muted);
 }
 
 .merge-pdf__item-actions,
-.png-to-pdf__item-actions {
+.png-to-pdf__item-actions,
+.add-images-to-pdf__item-actions {
   display: inline-flex;
   gap: 0.25rem;
 }
 
 .merge-pdf__icon-btn,
-.png-to-pdf__icon-btn {
+.png-to-pdf__icon-btn,
+.add-images-to-pdf__icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -7216,19 +7363,22 @@ a {
 }
 
 .merge-pdf__icon-btn:hover:not(:disabled),
-.png-to-pdf__icon-btn:hover:not(:disabled) {
+.png-to-pdf__icon-btn:hover:not(:disabled),
+.add-images-to-pdf__icon-btn:hover:not(:disabled) {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.06);
 }
 
 .merge-pdf__icon-btn:disabled,
-.png-to-pdf__icon-btn:disabled {
+.png-to-pdf__icon-btn:disabled,
+.add-images-to-pdf__icon-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
 .merge-pdf__icon-btn--danger:hover:not(:disabled),
-.png-to-pdf__icon-btn--danger:hover:not(:disabled) {
+.png-to-pdf__icon-btn--danger:hover:not(:disabled),
+.add-images-to-pdf__icon-btn--danger:hover:not(:disabled) {
   border-color: #c45c4a;
   color: #a43d2d;
   background: rgba(196, 92, 74, 0.08);
@@ -9334,4 +9484,390 @@ html[data-admin-theme="dark"] .admin-error {
   height: 100%;
   background: linear-gradient(90deg, var(--accent), var(--accent-deep));
   border-radius: inherit;
+}
+
+/* Annotate PDF */
+.annotate-pdf {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.annotate-pdf--empty {
+  gap: 1rem;
+}
+
+.annotate-pdf__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+.annotate-pdf__feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+  width: min(100%, 22rem);
+  text-align: left;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.annotate-pdf__feature-list li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.annotate-pdf__feature-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.annotate-pdf__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  align-items: flex-end;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(247, 251, 249, 0.92));
+}
+
+.annotate-pdf__tools,
+.annotate-pdf__colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.annotate-pdf__tools .ui-label,
+.annotate-pdf__colors .ui-label {
+  width: 100%;
+  margin: 0;
+}
+
+.annotate-pdf__chip {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  min-width: 5.5rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 2px);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.annotate-pdf__chip:hover:not(:disabled) {
+  border-color: rgba(13, 148, 136, 0.45);
+}
+
+.annotate-pdf__chip.is-active {
+  border-color: var(--accent);
+  background: rgba(13, 148, 136, 0.08);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.12);
+}
+
+.annotate-pdf__chip:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.annotate-pdf__chip-label {
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.annotate-pdf__chip-hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.annotate-pdf__swatch {
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px var(--line);
+  cursor: pointer;
+  padding: 0;
+}
+
+.annotate-pdf__swatch.is-active {
+  box-shadow:
+    0 0 0 2px rgba(13, 148, 136, 0.35),
+    0 0 0 1px var(--line);
+  transform: scale(1.08);
+}
+
+.annotate-pdf__toolbar-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.annotate-pdf__text-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(10rem, 14rem);
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.annotate-pdf__text-field {
+  margin: 0;
+}
+
+.annotate-pdf__slider {
+  margin: 0;
+}
+
+.annotate-pdf__slider--stroke {
+  max-width: 18rem;
+}
+
+.annotate-pdf__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+}
+
+.annotate-pdf__meta-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: min(100%, 36rem);
+}
+
+.annotate-pdf__meta-stats {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.annotate-pdf__workspace {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.annotate-pdf__thumbs {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.55);
+  max-height: 36rem;
+  overflow: auto;
+  padding: 0.45rem;
+}
+
+.annotate-pdf__thumb-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.annotate-pdf__thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 2px);
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+}
+
+.annotate-pdf__thumb.is-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.16);
+}
+
+.annotate-pdf__thumb-badge {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  z-index: 1;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding-inline: 0.25rem;
+  border-radius: 999px;
+  background: rgba(15, 122, 102, 0.92);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.annotate-pdf__thumb-marks {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  z-index: 1;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding-inline: 0.2rem;
+  border-radius: 999px;
+  background: rgba(232, 154, 60, 0.95);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.annotate-pdf__thumb-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+
+.annotate-pdf__stage-wrap {
+  min-width: 0;
+}
+
+.annotate-pdf__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(circle at top left, rgba(13, 148, 136, 0.05), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(244, 249, 247, 0.95));
+  overflow: auto;
+}
+
+.annotate-pdf__stage.is-loading {
+  min-height: 22rem;
+}
+
+.annotate-pdf__page {
+  position: relative;
+  box-shadow: 0 10px 28px rgba(15, 40, 35, 0.12);
+  background: #fff;
+}
+
+.annotate-pdf__page-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  pointer-events: none;
+}
+
+.annotate-pdf__overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.annotate-pdf__overlay--text {
+  cursor: text;
+}
+
+.annotate-pdf__overlay--highlight,
+.annotate-pdf__overlay--rect {
+  cursor: crosshair;
+}
+
+.annotate-pdf__overlay--pen {
+  cursor: crosshair;
+}
+
+.annotate-pdf__actions {
+  margin-top: 0.15rem;
+}
+
+.annotate-pdf__success {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.annotate-pdf__success-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.annotate-pdf__success-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.annotate-pdf__preview {
+  width: 100%;
+  min-height: 22rem;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 2px);
+  background: #fff;
+}
+
+@media (max-width: 800px) {
+  .annotate-pdf__workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .annotate-pdf__thumbs {
+    max-height: none;
+  }
+
+  .annotate-pdf__thumb-list {
+    grid-auto-flow: column;
+    grid-auto-columns: 4.5rem;
+    overflow-x: auto;
+  }
+
+  .annotate-pdf__text-row {
+    grid-template-columns: 1fr;
+  }
+
+  .annotate-pdf__toolbar-actions {
+    margin-left: 0;
+    width: 100%;
+  }
 }

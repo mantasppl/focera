@@ -1,48 +1,40 @@
 "use client";
 
 import { useId, useRef, useState, type DragEvent } from "react";
-import { formatFileSize } from "@/lib/image";
 import {
-  ACCEPTED_PNG_TYPES,
-  MAX_PNG_FILES,
-  MAX_PNG_SIZE_BYTES,
-  validatePngAddition,
-} from "@/lib/png-to-pdf";
+  ACCEPTED_AZW3_TYPES,
+  validateAzw3File,
+} from "@/lib/azw3-to-pdf";
 import { cn } from "@/lib/utils";
 
-type PngToPdfDropzoneProps = {
-  existingFiles: File[];
-  onFiles: (files: File[]) => void;
+type Azw3DropzoneProps = {
+  onFile: (file: File) => void;
   onError: (message: string) => void;
   disabled?: boolean;
   className?: string;
 };
 
-export default function PngToPdfDropzone({
-  existingFiles,
-  onFiles,
+export default function Azw3Dropzone({
+  onFile,
   onError,
   disabled = false,
   className,
-}: PngToPdfDropzoneProps) {
+}: Azw3DropzoneProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  function handleFiles(fileList: FileList | File[] | null | undefined) {
-    if (!fileList || disabled) return;
+  function handleFile(file: File | undefined) {
+    if (!file || disabled) return;
 
-    const incoming = Array.from(fileList);
-    if (incoming.length === 0) return;
-
-    const validationError = validatePngAddition(incoming, existingFiles);
+    const validationError = validateAzw3File(file);
     if (validationError) {
       onError(validationError);
       return;
     }
 
     onError("");
-    onFiles(incoming);
+    onFile(file);
   }
 
   function onDragOver(event: DragEvent<HTMLDivElement>) {
@@ -60,10 +52,8 @@ export default function PngToPdfDropzone({
     event.preventDefault();
     setIsDragging(false);
     if (disabled) return;
-    handleFiles(event.dataTransfer.files);
+    handleFile(event.dataTransfer.files[0]);
   }
-
-  const remaining = Math.max(0, MAX_PNG_FILES - existingFiles.length);
 
   return (
     <div className={cn("dropzone", className)}>
@@ -82,14 +72,11 @@ export default function PngToPdfDropzone({
           ref={inputRef}
           id={inputId}
           type="file"
-          accept={[...ACCEPTED_PNG_TYPES, ".png", ".jpg", ".jpeg", ".webp"].join(
-            ",",
-          )}
+          accept={[...ACCEPTED_AZW3_TYPES, ".azw3"].join(",")}
           className="dropzone__input"
-          disabled={disabled || remaining === 0}
-          multiple
+          disabled={disabled}
           onChange={(event) => {
-            handleFiles(event.target.files);
+            handleFile(event.target.files?.[0]);
             event.target.value = "";
           }}
         />
@@ -98,16 +85,10 @@ export default function PngToPdfDropzone({
             ↑
           </span>
           <span className="dropzone__title">
-            {isDragging
-              ? "Drop your images here"
-              : existingFiles.length > 0
-                ? "Add more images"
-                : "Drag & drop images"}
+            {isDragging ? "Drop your AZW3 here" : "Drag & drop an AZW3 file"}
           </span>
           <span className="dropzone__hint">
-            or click to browse · PNG, JPG, WebP · up to{" "}
-            {formatFileSize(MAX_PNG_SIZE_BYTES)} each · {remaining} of{" "}
-            {MAX_PNG_FILES} slots left
+            or click to browse · AZW3 / KF8 · up to 25 MB
           </span>
         </label>
       </div>

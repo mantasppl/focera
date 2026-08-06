@@ -3,14 +3,14 @@
 import { useId, useRef, useState, type DragEvent } from "react";
 import { formatFileSize } from "@/lib/image";
 import {
-  ACCEPTED_PNG_TYPES,
-  MAX_PNG_FILES,
-  MAX_PNG_SIZE_BYTES,
-  validatePngAddition,
-} from "@/lib/png-to-pdf";
+  ACCEPTED_TIFF_TYPES,
+  MAX_TIFF_FILES,
+  MAX_TIFF_SIZE_BYTES,
+  validateTiffAddition,
+} from "@/lib/tiff-to-pdf";
 import { cn } from "@/lib/utils";
 
-type PngToPdfDropzoneProps = {
+type TiffToPdfDropzoneProps = {
   existingFiles: File[];
   onFiles: (files: File[]) => void;
   onError: (message: string) => void;
@@ -18,13 +18,13 @@ type PngToPdfDropzoneProps = {
   className?: string;
 };
 
-export default function PngToPdfDropzone({
+export default function TiffToPdfDropzone({
   existingFiles,
   onFiles,
   onError,
   disabled = false,
   className,
-}: PngToPdfDropzoneProps) {
+}: TiffToPdfDropzoneProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -35,7 +35,7 @@ export default function PngToPdfDropzone({
     const incoming = Array.from(fileList);
     if (incoming.length === 0) return;
 
-    const validationError = validatePngAddition(incoming, existingFiles);
+    const validationError = validateTiffAddition(incoming, existingFiles);
     if (validationError) {
       onError(validationError);
       return;
@@ -63,7 +63,7 @@ export default function PngToPdfDropzone({
     handleFiles(event.dataTransfer.files);
   }
 
-  const remaining = Math.max(0, MAX_PNG_FILES - existingFiles.length);
+  const remaining = Math.max(0, MAX_TIFF_FILES - existingFiles.length);
 
   return (
     <div className={cn("dropzone", className)}>
@@ -82,9 +82,7 @@ export default function PngToPdfDropzone({
           ref={inputRef}
           id={inputId}
           type="file"
-          accept={[...ACCEPTED_PNG_TYPES, ".png", ".jpg", ".jpeg", ".webp"].join(
-            ",",
-          )}
+          accept={[...ACCEPTED_TIFF_TYPES, ".tif", ".tiff"].join(",")}
           className="dropzone__input"
           disabled={disabled || remaining === 0}
           multiple
@@ -99,15 +97,15 @@ export default function PngToPdfDropzone({
           </span>
           <span className="dropzone__title">
             {isDragging
-              ? "Drop your images here"
+              ? "Drop your TIFF files here"
               : existingFiles.length > 0
-                ? "Add more images"
-                : "Drag & drop images"}
+                ? "Add more TIFF files"
+                : "Drag & drop TIFF files"}
           </span>
           <span className="dropzone__hint">
-            or click to browse · PNG, JPG, WebP · up to{" "}
-            {formatFileSize(MAX_PNG_SIZE_BYTES)} each · {remaining} of{" "}
-            {MAX_PNG_FILES} slots left
+            or click to browse · TIFF (.tif, .tiff) · up to{" "}
+            {formatFileSize(MAX_TIFF_SIZE_BYTES)} each · {remaining} of{" "}
+            {MAX_TIFF_FILES} slots left
           </span>
         </label>
       </div>

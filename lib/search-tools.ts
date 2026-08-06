@@ -29,6 +29,8 @@ const TOKEN_ALIASES: Record<string, string[]> = {
   slides: ["powerpoint", "pptx", "presentation"],
   jpg: ["jpeg", "image"],
   png: ["image", "pdf"],
+  tif: ["tiff", "image", "pdf"],
+  tiff: ["tif", "image", "pdf"],
   txt: ["text"],
   md: ["markdown"],
   gen: ["generator", "generate"],

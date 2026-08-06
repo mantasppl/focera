@@ -46,6 +46,11 @@ export const PdfToPngLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PdfToTiffLazy = dynamic(
+  () => import("@/components/tools/PdfToTiff"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const ExtractImagesFromPdfLazy = dynamic(
   () => import("@/components/tools/ExtractImagesFromPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -53,6 +58,14 @@ export const ExtractImagesFromPdfLazy = dynamic(
 
 export const PngToPdfLazy = dynamic(
   () => import("@/components/tools/PngToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+/** Same converter as PNG to PDF — shared UI for the Image to PDF landing. */
+export const ImageToPdfLazy = PngToPdfLazy;
+
+export const TiffToPdfLazy = dynamic(
+  () => import("@/components/tools/TiffToPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -71,6 +84,16 @@ export const EpubToPdfLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const MobiToPdfLazy = dynamic(
+  () => import("@/components/tools/MobiToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const Azw3ToPdfLazy = dynamic(
+  () => import("@/components/tools/Azw3ToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PdfToTextLazy = dynamic(
   () => import("@/components/tools/PdfToText"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -86,6 +109,11 @@ export const PdfToExcelLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PdfToCsvLazy = dynamic(
+  () => import("@/components/tools/PdfToCsv"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PdfToPowerpointLazy = dynamic(
   () => import("@/components/tools/PdfToPowerpoint"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -98,6 +126,11 @@ export const PowerpointToPdfLazy = dynamic(
 
 export const PdfToEpubLazy = dynamic(
   () => import("@/components/tools/PdfToEpub"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PdfToMobiLazy = dynamic(
+  () => import("@/components/tools/PdfToMobi"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -123,6 +156,11 @@ export const CropPdfLazy = dynamic(
 
 export const UnlockPdfLazy = dynamic(
   () => import("@/components/tools/UnlockPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const ProtectPdfLazy = dynamic(
+  () => import("@/components/tools/ProtectPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -153,6 +191,26 @@ export const PdfEditorLazy = dynamic(
 
 export const PdfWatermarkLazy = dynamic(
   () => import("@/components/tools/PdfWatermark"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const AddPageNumbersToPdfLazy = dynamic(
+  () => import("@/components/tools/AddPageNumbersToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const AddTextToPdfLazy = dynamic(
+  () => import("@/components/tools/AddTextToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const AnnotatePdfLazy = dynamic(
+  () => import("@/components/tools/AnnotatePdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const AddImagesToPdfLazy = dynamic(
+  () => import("@/components/tools/AddImagesToPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

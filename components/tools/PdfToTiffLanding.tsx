@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Page-by-page PNG export",
+    title: "Page or multipage TIFF",
     description:
-      "Every PDF page becomes a crisp PNG you can preview, download singly, or save together as a ZIP.",
+      "Export each PDF page as a TIFF, grab a ZIP of every page, or download one multipage TIFF for scanning and archival workflows.",
   },
   {
     title: "Resolution controls",
@@ -15,7 +15,7 @@ const FEATURES = [
   {
     title: "100% browser-based",
     description:
-      "Conversion uses PDF.js in your browser. Your documents stay on your device — nothing is uploaded to Focera.",
+      "Conversion uses PDF.js and UTIF in your browser. Your documents stay on your device — nothing is uploaded to Focera.",
   },
   {
     title: "Drag & drop workflow",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function PdfToPngLanding() {
+export default function PdfToTiffLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="pdf-to-png-features"
-        title="Everything you need in a free PDF to PNG converter"
+        id="pdf-to-tiff-features"
+        title="Everything you need in a free PDF to TIFF converter"
         features={FEATURES}
       />
 
@@ -41,7 +41,7 @@ export default function PdfToPngLanding() {
           How It Works
         </h2>
         <p>
-          Turning a PDF into PNG images should be quick and private. Focera
+          Turning a PDF into TIFF images should be quick and private. Focera
           keeps the whole flow on one page — upload, choose resolution, convert,
           preview, and download without an account or desktop installer.
         </p>
@@ -52,18 +52,19 @@ export default function PdfToPngLanding() {
           </li>
           <li>
             <strong>Set resolution.</strong> Choose 1×–2× render scale, then
-            click Convert to PNG. Each page is rendered locally to a canvas and
-            encoded as PNG.
+            click Convert to TIFF. Each page is rendered locally to a canvas and
+            encoded as TIFF.
           </li>
           <li>
             <strong>Preview and download.</strong> Browse page thumbnails,
-            download the active page, or grab a ZIP with every PNG.
+            download the active page, save a multipage TIFF, or grab a ZIP with
+            every page.
           </li>
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#pdf-to-png-tool">PDF to PNG converter</a> anytime to process
-          another file.
+          <a href="#pdf-to-tiff-tool">PDF to TIFF converter</a> anytime to
+          process another file.
         </p>
       </section>
 
@@ -76,20 +77,20 @@ export default function PdfToPngLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Sharp page screenshots</strong> — Export PDF sheets as PNG
-            for docs, tickets, and support replies without compression artifacts.
+            <strong>Scan and archive workflows</strong> — Export PDF sheets as
+            TIFF for document management systems that prefer .tif/.tiff.
           </li>
           <li>
-            <strong>Design and mockups</strong> — Bring crisp page images into
-            Figma, Canva, or slide tools when PDF import is awkward.
+            <strong>Print and prepress</strong> — Produce high-resolution page
+            images at 2× for print proofs and layout checks.
           </li>
           <li>
-            <strong>Archive covers and previews</strong> — Grab cover pages or
-            key sheets for blogs, listings, and portfolios.
+            <strong>Multipage deliverables</strong> — Package every page into one
+            multipage TIFF when a single file is required.
           </li>
           <li>
             <strong>Flatten forms and scans</strong> — Turn filled PDFs into
-            simple PNG files that open everywhere.
+            simple TIFF files that open in imaging and OCR tools.
           </li>
         </ul>
       </section>
@@ -118,29 +119,25 @@ export default function PdfToPngLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <Link href="/extract-images-from-pdf">Extract Images from PDF</Link>{" "}
-            — Download embedded photos and graphics from a PDF (not full-page
-            screenshots).
+            <Link href="/tiff-to-pdf">TIFF to PDF</Link> — Convert TIFF scans
+            back into a multi-page PDF (the reverse of PDF to TIFF).
+          </li>
+          <li>
+            <Link href="/pdf-to-png">PDF to PNG</Link> — Convert PDF pages to
+            lossless PNG images for the web and design tools.
           </li>
           <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert PDF pages to
             JPEG when you need smaller image files.
           </li>
           <li>
-            <Link href="/pdf-to-tiff">PDF to TIFF</Link> — Convert PDF pages to
-            TIFF for scanning, archival, and multipage .tiff files.
+            <Link href="/extract-images-from-pdf">Extract Images from PDF</Link>{" "}
+            — Download embedded photos and graphics from a PDF (not full-page
+            screenshots).
           </li>
           <li>
-            <Link href="/png-to-pdf">PNG to PDF</Link> — Turn images into a
-            multi-page PDF (the reverse of PDF to PNG).
-          </li>
-          <li>
-            <Link href="/pdf-to-text">PDF to Text</Link> — Extract selectable
-            text from a PDF to copy or download as .txt.
-          </li>
-          <li>
-            <Link href="/pdf-to-word">PDF to Word</Link> — Convert PDF pages
-            into an editable Word (.docx) document.
+            <Link href="/image-to-pdf">Image to PDF</Link> — Turn images into a
+            multi-page PDF.
           </li>
           <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, or
@@ -148,7 +145,7 @@ export default function PdfToPngLanding() {
           </li>
           <li>
             <Link href="/merge-pdf">Merge PDF</Link> — Combine multiple PDFs
-            into one file before converting pages to images.
+            into one file before converting pages to TIFF.
           </li>
           <li>
             <Link href="/split-pdf">Split PDF</Link> — Break a PDF into pages or
@@ -157,18 +154,6 @@ export default function PdfToPngLanding() {
           <li>
             <Link href="/compress-pdf">Compress PDF</Link> — Shrink PDFs for
             email and uploads when you need a smaller document, not images.
-          </li>
-          <li>
-            <Link href="/background-remover">AI Background Remover</Link> —
-            Cut subjects from photos after you export page images.
-          </li>
-          <li>
-            <Link href="/invoice-generator">Invoice Generator</Link> — Create
-            professional invoices and download them as PDF.
-          </li>
-          <li>
-            <Link href="/markdown-editor">Markdown Editor</Link> — Write docs
-            with live preview and export to PDF.
           </li>
         </ul>
       </section>

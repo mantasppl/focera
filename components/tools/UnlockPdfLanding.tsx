@@ -123,6 +123,10 @@ export default function UnlockPdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/protect-pdf">Protect PDF</Link> — Add a password to a
+            PDF after unlocking or editing.
+          </li>
+          <li>
             <Link href="/merge-pdf">Merge PDF</Link> — Combine unlocked PDFs
             into one file.
           </li>
@@ -141,10 +145,6 @@ export default function UnlockPdfLanding() {
           <li>
             <Link href="/pdf-to-word">PDF to Word</Link> — Convert the unlocked
             PDF into an editable .docx.
-          </li>
-          <li>
-            <Link href="/pdf-to-excel">PDF to Excel</Link> — Convert the unlocked
-            PDF into an .xlsx spreadsheet.
           </li>
           <li>
             <Link href="/pdf-to-text">PDF to Text</Link> — Extract selectable

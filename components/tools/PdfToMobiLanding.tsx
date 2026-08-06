@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Reflowable EPUB output",
+    title: "Kindle-ready MOBI output",
     description:
-      "Extract text from PDFs into a real .epub you can open in Apple Books, Kindle apps, Calibre, and most e-readers.",
+      "Extract text from PDFs into a classic .mobi ebook you can sideload to Kindle devices, Kindle apps, and Calibre.",
   },
   {
     title: "Exact page mode",
@@ -15,7 +15,7 @@ const FEATURES = [
   {
     title: "100% browser-based",
     description:
-      "Conversion uses PDF.js and builds the EPUB package on your device. Your documents stay private — nothing uploads to Focera.",
+      "Conversion uses PDF.js and builds the MOBI package on your device. Your documents stay private — nothing uploads to Focera.",
   },
   {
     title: "Drag & drop workflow",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function PdfToEpubLanding() {
+export default function PdfToMobiLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="pdf-to-epub-features"
-        title="Everything you need in a free PDF to EPUB converter"
+        id="pdf-to-mobi-features"
+        title="Everything you need in a free PDF to MOBI converter"
         features={FEATURES}
       />
 
@@ -41,7 +41,7 @@ export default function PdfToEpubLanding() {
           How It Works
         </h2>
         <p>
-          Turning a PDF into an EPUB ebook should be quick and private. Focera
+          Turning a PDF into a MOBI ebook should be quick and private. Focera
           keeps the whole flow on one page — upload, choose a mode, convert, and
           download without an account or desktop installer.
         </p>
@@ -56,14 +56,14 @@ export default function PdfToEpubLanding() {
             visual match for scanned or design-heavy PDFs.
           </li>
           <li>
-            <strong>Convert and download.</strong> Click Convert to EPUB. An
-            .epub file is built locally and downloads automatically — preview
+            <strong>Convert and download.</strong> Click Convert to MOBI. A
+            .mobi file is built locally and downloads automatically — preview
             the extracted summary in the panel.
           </li>
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#pdf-to-epub-tool">PDF to EPUB converter</a> anytime to
+          <a href="#pdf-to-mobi-tool">PDF to MOBI converter</a> anytime to
           process another file.
         </p>
       </section>
@@ -74,14 +74,13 @@ export default function PdfToEpubLanding() {
         </h2>
         <p>
           <strong>Reflowable text</strong> reads text from the PDF and builds
-          one chapter per page. Readers can resize fonts, change themes, and
-          reflow lines on phones, tablets, and e-ink devices. Layout may differ
-          from the original — columns, tables, and graphics are flattened into
-          flowing paragraphs.
+          one chapter per page. Kindle and other readers can resize fonts,
+          change themes, and reflow lines. Layout may differ from the original —
+          columns, tables, and graphics are flattened into flowing paragraphs.
         </p>
         <p>
           <strong>Exact pages</strong> renders each PDF page as an image and
-          places it in the EPUB. The look stays faithful, but text inside images
+          places it in the MOBI. The look stays faithful, but text inside images
           is not selectable or reflowable. Use this for scans, certificates, and
           design-heavy pages.
         </p>
@@ -96,8 +95,8 @@ export default function PdfToEpubLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Read reports on an e-reader</strong> — Convert long PDFs
-            into EPUB so text reflows cleanly on Kindle apps and Apple Books.
+            <strong>Sideload reports to Kindle</strong> — Convert long PDFs into
+            MOBI for comfortable reading on e-ink Kindles and Kindle apps.
           </li>
           <li>
             <strong>Archive manuals as ebooks</strong> — Keep product guides in
@@ -108,8 +107,8 @@ export default function PdfToEpubLanding() {
             need a page-faithful ebook of scanned paperwork.
           </li>
           <li>
-            <strong>Share without desktop software</strong> — Send an .epub when
-            collaborators prefer ebook apps over PDF viewers.
+            <strong>Share without desktop software</strong> — Send a .mobi when
+            collaborators prefer Kindle apps over PDF viewers.
           </li>
         </ul>
       </section>
@@ -132,12 +131,8 @@ export default function PdfToEpubLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <Link href="/epub-to-pdf">EPUB to PDF</Link> — Convert .epub ebooks
-            back into A4 or Letter PDFs.
-          </li>
-          <li>
-            <Link href="/pdf-to-mobi">PDF to MOBI</Link> — Convert PDFs into
-            Kindle .mobi ebooks for sideloading.
+            <Link href="/pdf-to-epub">PDF to EPUB</Link> — Convert PDFs into
+            reflowable or image-based .epub ebooks.
           </li>
           <li>
             <Link href="/mobi-to-pdf">MOBI to PDF</Link> — Convert Kindle .mobi
@@ -148,6 +143,10 @@ export default function PdfToEpubLanding() {
             .azw3 ebooks into PDF.
           </li>
           <li>
+            <Link href="/epub-to-pdf">EPUB to PDF</Link> — Convert .epub ebooks
+            into A4 or Letter PDFs.
+          </li>
+          <li>
             <Link href="/pdf-to-word">PDF to Word</Link> — Convert PDFs into
             editable .docx documents.
           </li>
@@ -156,28 +155,12 @@ export default function PdfToEpubLanding() {
             from a PDF to copy or download as .txt.
           </li>
           <li>
-            <Link href="/pdf-to-excel">PDF to Excel</Link> — Convert PDF tables
-            and text into an .xlsx spreadsheet.
-          </li>
-          <li>
-            <Link href="/pdf-to-powerpoint">PDF to PowerPoint</Link> — Convert
-            PDF pages into editable or visual .pptx slides.
-          </li>
-          <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert PDF pages to
             JPEG images for sharing and design tools.
           </li>
           <li>
-            <Link href="/epub-to-pdf">EPUB to PDF</Link> — Convert ebook .epub
-            files into A4 or Letter PDFs.
-          </li>
-          <li>
-            <Link href="/word-to-pdf">Word to PDF</Link> — Convert .docx
-            documents into A4 or Letter PDFs.
-          </li>
-          <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, or
-            extract pages before converting to EPUB.
+            extract pages before converting to MOBI.
           </li>
           <li>
             <Link href="/merge-pdf">Merge PDF</Link> — Combine multiple PDFs
@@ -190,10 +173,6 @@ export default function PdfToEpubLanding() {
           <li>
             <Link href="/compress-pdf">Compress PDF</Link> — Shrink PDFs for
             email and uploads when you need a smaller document.
-          </li>
-          <li>
-            <Link href="/markdown-editor">Markdown Editor</Link> — Write docs
-            with live preview and export to PDF.
           </li>
         </ul>
       </section>

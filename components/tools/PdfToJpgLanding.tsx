@@ -155,6 +155,10 @@ export default function PdfToJpgLanding() {
             lossless PNG images instead of JPEG.
           </li>
           <li>
+            <Link href="/pdf-to-tiff">PDF to TIFF</Link> — Convert PDF pages to
+            TIFF for scanning, archival, and multipage .tiff files.
+          </li>
+          <li>
             <Link href="/png-to-pdf">PNG to PDF</Link> — Turn images into a
             multi-page PDF (the reverse of PDF to JPG).
           </li>
