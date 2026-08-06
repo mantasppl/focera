@@ -59,11 +59,11 @@ export default function ToolLayout({
         </section>
 
         <ToolFeedbackPrompt toolSlug={tool.slug} />
+        <RelatedTools currentSlug={tool.slug} />
 
         {content}
 
         <FAQ items={tool.faq} />
-        <RelatedTools currentSlug={tool.slug} />
         <CTA title={ctaTitle} description={ctaDescription} />
       </main>
 

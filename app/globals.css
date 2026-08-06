@@ -278,7 +278,7 @@ a {
 
 @media (min-width: 720px) {
   .related-tools__list {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
