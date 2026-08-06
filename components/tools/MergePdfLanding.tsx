@@ -127,6 +127,10 @@ export default function MergePdfLanding() {
             ranges, or fixed-size chunks before or after merging.
           </li>
           <li>
+            <Link href="/rearrange-pdf">Rearrange PDF</Link> — Drag pages into a
+            new order after merging files.
+          </li>
+          <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, delete,
             or extract pages before or after merging files.
           </li>

@@ -118,6 +118,11 @@ export default function PdfToPngLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/extract-images-from-pdf">Extract Images from PDF</Link>{" "}
+            — Download embedded photos and graphics from a PDF (not full-page
+            screenshots).
+          </li>
+          <li>
             <Link href="/pdf-to-jpg">PDF to JPG</Link> — Convert PDF pages to
             JPEG when you need smaller image files.
           </li>

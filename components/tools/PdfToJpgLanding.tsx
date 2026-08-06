@@ -118,6 +118,11 @@ export default function PdfToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/extract-images-from-pdf">Extract Images from PDF</Link>{" "}
+            — Download embedded photos and graphics from a PDF (not full-page
+            screenshots).
+          </li>
+          <li>
             <Link href="/pdf-to-text">PDF to Text</Link> — Extract selectable
             text from a PDF to copy or download as .txt.
           </li>

@@ -46,6 +46,11 @@ export const PdfToPngLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const ExtractImagesFromPdfLazy = dynamic(
+  () => import("@/components/tools/ExtractImagesFromPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PngToPdfLazy = dynamic(
   () => import("@/components/tools/PngToPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -96,6 +101,11 @@ export const PdfToEpubLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PdfCreatorLazy = dynamic(
+  () => import("@/components/tools/PdfCreator"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const MergePdfLazy = dynamic(
   () => import("@/components/tools/MergePdf"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -126,6 +136,16 @@ export const DeletePdfPagesLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const RearrangePdfLazy = dynamic(
+  () => import("@/components/tools/RearrangePdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const RotatePdfLazy = dynamic(
+  () => import("@/components/tools/RotatePdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PdfEditorLazy = dynamic(
   () => import("@/components/tools/PdfEditor"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -133,6 +153,11 @@ export const PdfEditorLazy = dynamic(
 
 export const PdfWatermarkLazy = dynamic(
   () => import("@/components/tools/PdfWatermark"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const EsignPdfLazy = dynamic(
+  () => import("@/components/tools/EsignPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

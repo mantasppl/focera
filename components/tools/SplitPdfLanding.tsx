@@ -122,6 +122,10 @@ export default function SplitPdfLanding() {
             other PDFs back into one document.
           </li>
           <li>
+            <Link href="/rearrange-pdf">Rearrange PDF</Link> — Drag pages into a
+            new order before splitting.
+          </li>
+          <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, delete,
             or extract pages with a visual workspace.
           </li>

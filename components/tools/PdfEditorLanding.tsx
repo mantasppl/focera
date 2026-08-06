@@ -116,6 +116,14 @@ export default function PdfEditorLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/rotate-pdf">Rotate PDF</Link> — Turn pages left, right,
+            or 180° in a focused rotate-only workspace.
+          </li>
+          <li>
+            <Link href="/rearrange-pdf">Rearrange PDF</Link> — Drag pages into a
+            new order with a focused reorder-only workspace.
+          </li>
+          <li>
             <Link href="/merge-pdf">Merge PDF</Link> — Combine multiple PDFs
             into one file before or after editing pages.
           </li>

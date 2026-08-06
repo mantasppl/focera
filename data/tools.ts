@@ -36,8 +36,8 @@ export const categoryLabels: Record<ToolCategory, string> = {
 };
 
 export const categoryDescriptions: Record<ToolCategory, string> = {
-  pdf: "Merge, split, delete pages, crop, compress, unlock, edit, translate, and convert PDFs — including URL to PDF, PNG to PDF, PDF to PNG, PDF to JPG, Word to PDF, PowerPoint to PDF, EPUB to PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, and PDF to EPUB.",
-  image: "Compress, upscale, colorize photos, remove backgrounds, convert PNG to PDF or PDF to PNG, and convert images.",
+  pdf: "Create, merge, split, rearrange, rotate, delete pages, crop, compress, unlock, eSign, edit, translate, extract images, and convert PDFs — including URL to PDF, PNG to PDF, PDF to PNG, PDF to JPG, Word to PDF, PowerPoint to PDF, EPUB to PDF, PDF to Word, PDF to Excel, PDF to PowerPoint, and PDF to EPUB.",
+  image: "Compress, upscale, colorize photos, remove backgrounds, extract images from PDF, convert PNG to PDF or PDF to PNG, and convert images.",
   video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, summarize YouTube videos, and export in your browser.",
   ai: "Generate images and stories, colorize photos, summarize YouTube videos, translate PDFs, plus smart cutouts, OCR, and speech-to-text.",
   file: "Converters, generators, and everyday utilities for any file.",
@@ -1412,6 +1412,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "pdf-creator",
+    name: "PDF Creator Tool",
+    shortName: "PDF Creator",
+    description:
+      "Create a PDF online for free — write a title and body text, or make blank pages in A4 or Letter. Private, no watermark, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/pdf-creator",
+    keywords: [
+      "pdf creator",
+      "create pdf",
+      "make pdf online",
+      "create pdf online",
+      "blank pdf",
+      "text to pdf",
+      "free pdf creator",
+      "pdf maker",
+      "create pdf from text",
+      "online pdf creator",
+    ],
+    faq: [
+      {
+        question: "Is this PDF creator free?",
+        answer:
+          "Yes. Create and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my documents uploaded to a server?",
+        answer:
+          "No. PDF creation runs entirely in your browser with jsPDF. Your text and files stay on your device.",
+      },
+      {
+        question: "Can I create a blank PDF?",
+        answer:
+          "Yes. Leave the title and body empty, set blank pages to 1 or more, choose A4 or Letter, then click Create PDF.",
+      },
+      {
+        question: "What page sizes are supported?",
+        answer:
+          "A4 and US Letter, in portrait or landscape. Text wraps automatically across pages as needed.",
+      },
+      {
+        question: "Is there a length or page limit?",
+        answer:
+          "Title up to 200 characters, body up to 50,000 characters, and at most 50 pages total per download.",
+      },
+      {
+        question: "Can I turn images into a PDF?",
+        answer:
+          "Use PNG to PDF for images. This creator is for text documents and blank pages from scratch.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, write your content, and download immediately.",
+      },
+    ],
+  },
+  {
     slug: "merge-pdf",
     name: "Merge PDF Tool",
     shortName: "Merge PDF",
@@ -1531,6 +1590,134 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "rotate-pdf",
+    name: "Rotate PDF Tool",
+    shortName: "Rotate PDF",
+    description:
+      "Rotate PDF pages online for free — turn pages left, right, or 180° and download. Private, no watermark, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/rotate-pdf",
+    keywords: [
+      "rotate pdf",
+      "rotate pdf pages",
+      "rotate pdf online",
+      "turn pdf pages",
+      "fix sideways pdf",
+      "rotate pdf 90 degrees",
+      "rotate pdf 180",
+      "free rotate pdf",
+      "pdf page rotator",
+      "change pdf orientation",
+    ],
+    faq: [
+      {
+        question: "Is this PDF rotator free?",
+        answer:
+          "Yes. Rotate pages and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Page rotation runs entirely in your browser with pdf-lib and PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "How do I rotate PDF pages?",
+        answer:
+          "Upload your PDF, select the pages to rotate (click thumbnails or hold Shift for a range), choose ↺ Left, ↻ Right, or 180°, then Download PDF.",
+      },
+      {
+        question: "Can I rotate multiple pages at once?",
+        answer:
+          "Yes. Select several pages, use Select all, then apply the same rotation to the whole selection.",
+      },
+      {
+        question: "Does rotating keep text and layout?",
+        answer:
+          "Yes. Pages keep their real PDF content — rotation updates page orientation metadata so text, vector graphics, and layout are preserved.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per rotate.",
+      },
+      {
+        question: "Can I rotate a password-protected PDF?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to rotate pages.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, rotate pages, and download immediately.",
+      },
+    ],
+  },
+  {
+    slug: "rearrange-pdf",
+    name: "Rearrange PDF Tool",
+    shortName: "Rearrange PDF",
+    description:
+      "Rearrange PDF pages online for free — drag thumbnails into a new order and download. Private, no watermark, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/rearrange-pdf",
+    keywords: [
+      "rearrange pdf",
+      "reorder pdf pages",
+      "rearrange pdf pages",
+      "change pdf page order",
+      "pdf page reorder",
+      "move pdf pages",
+      "sort pdf pages",
+      "reorganize pdf pages",
+      "free rearrange pdf",
+      "pdf page organizer",
+    ],
+    faq: [
+      {
+        question: "Is this PDF rearranger free?",
+        answer:
+          "Yes. Rearrange pages and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Page rearranging runs entirely in your browser with pdf-lib and PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "How do I rearrange PDF pages?",
+        answer:
+          "Upload your PDF, drag page thumbnails into the order you want (or select a page and use ↑ / ↓), then choose Download PDF. The new file uses your chosen sequence.",
+      },
+      {
+        question: "Can I undo my page order changes?",
+        answer:
+          "Yes. Choose Reset order to restore the original page sequence, or upload the file again.",
+      },
+      {
+        question: "Does rearranging keep text and layout?",
+        answer:
+          "Yes. Pages are copied as real PDF pages in the new order — text, vector graphics, and layout are preserved.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per rearrange.",
+      },
+      {
+        question: "Can I rearrange a password-protected PDF?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to rearrange pages.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, rearrange pages, and download immediately.",
+      },
+    ],
+  },
+  {
     slug: "delete-pdf-pages",
     name: "Delete PDF Pages Tool",
     shortName: "Delete PDF Pages",
@@ -1589,6 +1776,70 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your PDF, select pages, and download immediately.",
+      },
+    ],
+  },
+  {
+    slug: "esign-pdf",
+    name: "eSign PDF Tool",
+    shortName: "eSign PDF",
+    description:
+      "Sign a PDF online for free — type a cursive signature, draw your mark, or upload an image, then place it on the page. Private, no account, and local in your browser.",
+    categories: ["pdf"],
+    status: "ready",
+    href: "/esign-pdf",
+    keywords: [
+      "esign pdf",
+      "sign pdf",
+      "sign pdf online",
+      "electronic signature pdf",
+      "add signature to pdf",
+      "draw signature on pdf",
+      "typed signature pdf",
+      "free pdf signature",
+      "pdf esign tool",
+      "sign document online",
+    ],
+    faq: [
+      {
+        question: "Is this eSign PDF tool free?",
+        answer:
+          "Yes. Sign and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Signing runs entirely in your browser with pdf-lib. Your PDF and signature stay on your device.",
+      },
+      {
+        question: "Can I type or draw my signature?",
+        answer:
+          "Yes. Type your name in a script font, draw with your mouse or finger, or upload a PNG/JPG/WebP of your handwritten signature.",
+      },
+      {
+        question: "Is this a legally binding electronic signature?",
+        answer:
+          "This tool adds a visual signature image to your PDF. Whether that meets legal requirements depends on your jurisdiction and the document — it is not a certificate-based digital signature.",
+      },
+      {
+        question: "Can I choose which pages get signed?",
+        answer:
+          "Yes. Place the signature on the last page, first page, or every page, and pick a corner or center position.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per sign.",
+      },
+      {
+        question: "Can I sign password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to sign.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, create your signature, and download immediately.",
       },
     ],
   },
@@ -3078,6 +3329,75 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "extract-images-from-pdf",
+    name: "Extract Images from PDF Tool",
+    shortName: "Extract Images from PDF",
+    description:
+      "Extract images from a PDF online — download embedded photos and graphics as PNG, singly or as a ZIP. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/extract-images-from-pdf",
+    keywords: [
+      "extract images from pdf",
+      "download images from pdf",
+      "pdf extract images",
+      "pull images from pdf",
+      "save images from pdf",
+      "pdf image extractor",
+      "export images from pdf",
+      "free extract images from pdf",
+      "pdf to images download",
+      "extract pictures from pdf",
+    ],
+    faq: [
+      {
+        question: "Is this PDF image extractor free?",
+        answer:
+          "Yes. Extract, preview, and download unlimited images with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Extraction runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between Extract Images and PDF to PNG?",
+        answer:
+          "Extract Images pulls the embedded image objects stored inside the PDF. PDF to PNG rasterizes each full page into a screenshot-style image — useful when there are no separate embedded pictures.",
+      },
+      {
+        question: "Can I download all images at once?",
+        answer:
+          "Yes. After extraction, download the current image as a PNG or use Download all (ZIP) to get every image in one archive.",
+      },
+      {
+        question: "What format are downloaded images?",
+        answer:
+          "Images are saved as PNG so you keep a lossless preview suitable for reuse and editing.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per extraction. Up to 200 unique images are returned per file.",
+      },
+      {
+        question: "Why were no images found?",
+        answer:
+          "Some PDFs only contain vector drawings or text, or images may be flattened into page content. Try PDF to PNG if you need full-page images instead.",
+      },
+      {
+        question: "Can I extract images from a password-protected PDF?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to extract images.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and extract immediately.",
       },
     ],
   },
