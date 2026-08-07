@@ -5,7 +5,7 @@ const FEATURES = [
   {
     title: "Images to PDF in seconds",
     description:
-      "Turn one photo — or a batch of PNG, JPG, and WebP files — into a shareable PDF without installing software or creating an account.",
+      "Turn one photo — or a batch of PNG, JPG, WebP, and GIF files — into a shareable PDF without installing software or creating an account.",
   },
   {
     title: "Multi-page from many images",
@@ -47,7 +47,7 @@ export default function ImageToPdfLanding() {
         </p>
         <ol className="tool-content__steps">
           <li>
-            <strong>Upload your images.</strong> Drag and drop PNG, JPG, or WebP
+            <strong>Upload your images.</strong> Drag and drop PNG, JPG, WebP, or GIF
             files (up to 10 MB each), or click the zone to browse. Add up to 30
             images per PDF.
           </li>
@@ -81,9 +81,10 @@ export default function ImageToPdfLanding() {
           compatible across readers.
         </p>
         <p>
-          Prefer a PNG-focused landing page? Use{" "}
-          <Link href="/png-to-pdf">PNG to PDF</Link> — same converter, different
-          SEO entry point.
+          Prefer a format-focused landing page? Use{" "}
+          <Link href="/png-to-pdf">PNG to PDF</Link> or{" "}
+          <Link href="/webp-to-pdf">WebP to PDF</Link> — same converter,
+          different SEO entry points.
         </p>
       </section>
 
@@ -140,6 +141,10 @@ export default function ImageToPdfLanding() {
           <li>
             <Link href="/png-to-pdf">PNG to PDF</Link> — Same converter focused
             on PNG workflows and transparency.
+          </li>
+          <li>
+            <Link href="/webp-to-pdf">WebP to PDF</Link> — Same converter focused
+            on WebP downloads and web assets.
           </li>
           <li>
             <Link href="/tiff-to-pdf">TIFF to PDF</Link> — Convert .tif / .tiff

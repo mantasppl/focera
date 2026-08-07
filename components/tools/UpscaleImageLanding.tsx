@@ -120,6 +120,10 @@ export default function UpscaleImageLanding() {
             out logos or text overlays from photos you own.
           </li>
           <li>
+            <Link href="/resize-image">Resize Image Dimensions</Link> — Set
+            exact width and height in pixels when you need a specific size.
+          </li>
+          <li>
             <Link href="/image-compressor">Image Compressor</Link> — Shrink
             file size after exporting a larger PNG.
           </li>

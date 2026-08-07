@@ -56,11 +56,16 @@ function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("esign")) return "sign";
   if (slug.includes("annotate") || slug.includes("add-text")) return "annotate";
   if (slug.includes("page-numbers")) return "pages";
-  if (slug.includes("watermark") || slug.includes("remove-watermark"))
+  if (
+    slug.includes("remove-objects") ||
+    slug.includes("watermark") ||
+    slug.includes("remove-watermark")
+  )
     return slug.includes("remove") ? "eraser" : "watermark";
   if (slug.includes("translator") || slug.includes("translate"))
     return "translate";
-  if (slug.includes("upscale")) return "upscale";
+  if (slug.includes("upscale") || slug.includes("resize-image"))
+    return "upscale";
   if (slug.includes("colorize")) return "colorize";
   if (slug.includes("background") || slug.includes("bg")) return "eraser";
   if (slug.includes("image-to-text") || slug.includes("ocr")) return "ocr";
@@ -73,6 +78,7 @@ function iconKindForSlug(slug: string): IconKind {
     slug.includes("extract-images") ||
     slug.includes("image-to-pdf") ||
     slug.includes("png-to-pdf") ||
+    slug.includes("webp-to-pdf") ||
     slug.includes("tiff-to-pdf") ||
     slug.includes("add-images")
   )
@@ -115,6 +121,8 @@ function iconKindForSlug(slug: string): IconKind {
     slug.includes("to-powerpoint") ||
     slug.includes("powerpoint-to") ||
     slug.includes("word-to") ||
+    slug.includes("outlook-to") ||
+    slug.includes("eps-to") ||
     slug.includes("to-epub") ||
     slug.includes("to-mobi") ||
     slug.includes("epub-to") ||

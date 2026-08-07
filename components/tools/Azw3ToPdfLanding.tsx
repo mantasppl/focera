@@ -148,6 +148,10 @@ export default function Azw3ToPdfLanding() {
             into A4 or Letter PDFs the same way.
           </li>
           <li>
+            <Link href="/pdf-to-azw3">PDF to AZW3</Link> — Convert PDFs into
+            Kindle KF8 .azw3 ebooks.
+          </li>
+          <li>
             <Link href="/pdf-to-mobi">PDF to MOBI</Link> — Convert PDFs into
             Kindle .mobi ebooks for sideloading.
           </li>

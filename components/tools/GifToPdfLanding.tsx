@@ -3,14 +3,14 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "PNG to PDF in seconds",
+    title: "GIF to PDF in seconds",
     description:
-      "Turn one PNG — or a batch of images — into a shareable PDF without installing software or creating an account.",
+      "Turn one GIF — or a batch of images — into a shareable PDF without installing software or creating an account.",
   },
   {
     title: "Multi-page from many images",
     description:
-      "Each image becomes a page. Reorder the list before converting so screenshots, scans, and receipts land in the right sequence.",
+      "Each image becomes a page. Reorder the list before converting so memes, screenshots, and reaction GIFs land in the right sequence.",
   },
   {
     title: "Fit, A4, or Letter",
@@ -20,16 +20,16 @@ const FEATURES = [
   {
     title: "100% browser-based",
     description:
-      "Conversion embeds your images into a PDF on your device with pdf-lib. Nothing uploads to Focera.",
+      "GIF is converted locally and embedded into a PDF on your device with pdf-lib. Nothing uploads to Focera.",
   },
 ];
 
-export default function PngToPdfLanding() {
+export default function GifToPdfLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="png-to-pdf-features"
-        title="Everything you need in a free PNG to PDF converter"
+        id="gif-to-pdf-features"
+        title="Everything you need in a free GIF to PDF converter"
         features={FEATURES}
       />
 
@@ -41,15 +41,15 @@ export default function PngToPdfLanding() {
           How It Works
         </h2>
         <p>
-          Converting PNG images to PDF should be quick and private. Focera keeps
+          Converting GIF images to PDF should be quick and private. Focera keeps
           the whole flow on one page — add images, set page size, convert, and
           download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
           <li>
-            <strong>Upload your images.</strong> Drag and drop PNG, JPG, or WebP
-            files (up to 10 MB each), or click the zone to browse. Add up to 30
-            images per PDF.
+            <strong>Upload your images.</strong> Drag and drop GIF, PNG, JPG, or
+            WebP files (up to 10 MB each), or click the zone to browse. Add up to
+            30 images per PDF.
           </li>
           <li>
             <strong>Choose page size.</strong> Use Fit so each page matches the
@@ -63,26 +63,29 @@ export default function PngToPdfLanding() {
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#png-to-pdf-tool">PNG to PDF converter</a> anytime to
+          <a href="#gif-to-pdf-tool">GIF to PDF converter</a> anytime to
           process another batch.
         </p>
       </section>
 
       <section
         className="tool-content__section"
-        aria-labelledby="transparency"
+        aria-labelledby="formats"
       >
-        <h2 id="transparency" className="tool-content__heading">
-          Does PNG Transparency Survive?
+        <h2 id="formats" className="tool-content__heading">
+          Why Convert GIF to PDF?
         </h2>
         <p>
-          Yes. PNG transparency is preserved in the PDF when you convert PNG
-          files. Transparent areas stay see-through in viewers that support it;
-          some print workflows still composite onto white.
+          GIFs are common for memes, UI demos, and short loops, but many viewers,
+          printers, and email clients expect PDF. Focera converts each GIF
+          locally before embedding so the downloaded file opens reliably across
+          readers. Animated GIFs use the frame your browser displays when the
+          file is loaded (typically the first frame).
         </p>
         <p>
-          JPG and WebP are also accepted. WebP is converted locally before
-          embedding so the PDF stays compatible across readers.
+          PNG, JPG, and WebP are also accepted. Prefer a broader landing page?
+          Use <Link href="/image-to-pdf">Image to PDF</Link> — same converter,
+          different SEO entry point.
         </p>
       </section>
 
@@ -95,16 +98,16 @@ export default function PngToPdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Screenshot packets</strong> — Combine UI captures into one
-            PDF for bug reports or handoffs.
+            <strong>Share packs</strong> — Package GIF stickers or reaction
+            images into one PDF for teammates who cannot open GIF previews.
           </li>
           <li>
-            <strong>Receipts and scans</strong> — Turn phone photos or PNGs into
-            a single file for expense reports.
+            <strong>UI and product demos</strong> — Turn short GIF walkthroughs
+            into a printable or email-friendly document (first frame per file).
           </li>
           <li>
-            <strong>Design reviews</strong> — Package mockups as a PDF clients
-            can open without image editors.
+            <strong>Archive downloads</strong> — Convert browser-saved GIFs into
+            a standard PDF for long-term storage.
           </li>
           <li>
             <strong>Print-ready pages</strong> — Place images on A4 or Letter
@@ -138,15 +141,23 @@ export default function PngToPdfLanding() {
         <ul className="tool-content__list">
           <li>
             <Link href="/image-to-pdf">Image to PDF</Link> — Convert PNG, JPG,
-            or WebP photos into a multi-page PDF.
+            WebP, or GIF photos into a multi-page PDF.
           </li>
           <li>
-            <Link href="/webp-to-pdf">WebP to PDF</Link> — Same converter focused
-            on WebP downloads and web assets.
+            <Link href="/png-to-pdf">PNG to PDF</Link> — Same converter focused
+            on PNG workflows and transparency.
+          </li>
+          <li>
+            <Link href="/webp-to-pdf">WebP to PDF</Link> — Convert WebP images
+            into a multi-page PDF.
           </li>
           <li>
             <Link href="/tiff-to-pdf">TIFF to PDF</Link> — Convert .tif / .tiff
             scans, including multi-page files, into a PDF.
+          </li>
+          <li>
+            <Link href="/video-to-gif">Video to GIF</Link> — Create a GIF from a
+            video clip before converting to PDF.
           </li>
           <li>
             <Link href="/pdf-to-png">PDF to PNG</Link> — Convert PDF pages back
@@ -157,6 +168,10 @@ export default function PngToPdfLanding() {
             into JPEG images.
           </li>
           <li>
+            <Link href="/add-images-to-pdf">Add Images to PDF</Link> — Insert
+            images into an existing PDF instead of creating a new one.
+          </li>
+          <li>
             <Link href="/merge-pdf">Merge PDF</Link> — Combine multiple PDFs
             into one file after converting.
           </li>
@@ -165,24 +180,8 @@ export default function PngToPdfLanding() {
             email and uploads when you need a smaller document.
           </li>
           <li>
-            <Link href="/pdf-watermark">PDF Watermark</Link> — Add a text or
-            image watermark before sharing.
-          </li>
-          <li>
-            <Link href="/image-compressor">Image Compressor</Link> — Shrink PNGs
-            and JPGs before building a PDF.
-          </li>
-          <li>
-            <Link href="/background-remover">AI Background Remover</Link> —
-            Cut subjects from photos, then convert the PNG to PDF.
-          </li>
-          <li>
-            <Link href="/word-to-pdf">Word to PDF</Link> — Convert .docx
-            documents into A4 or Letter PDFs.
-          </li>
-          <li>
-            <Link href="/split-pdf">Split PDF</Link> — Break a PDF into pages or
-            ranges after conversion.
+            <Link href="/image-converter">Image Converter</Link> — Convert GIF
+            to PNG or JPG before other workflows.
           </li>
         </ul>
       </section>

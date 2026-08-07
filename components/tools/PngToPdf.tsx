@@ -141,7 +141,9 @@ export default function PngToPdf() {
 
   async function handleConvert() {
     if (fileCount === 0) {
-      setError("Upload at least one image (PNG, JPG, or WebP) to get started.");
+      setError(
+        "Upload at least one image (PNG, JPG, WebP, or GIF) to get started.",
+      );
       return;
     }
 

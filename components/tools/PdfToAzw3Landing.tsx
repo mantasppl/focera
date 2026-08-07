@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Kindle-ready MOBI output",
+    title: "Kindle KF8 / AZW3 output",
     description:
-      "Extract text from PDFs into a classic .mobi ebook you can sideload to Kindle devices, Kindle apps, and Calibre.",
+      "Extract text from PDFs into a modern .azw3 (KF8) ebook you can sideload to Kindle devices, Kindle apps, and Calibre.",
   },
   {
     title: "Exact page mode",
@@ -15,7 +15,7 @@ const FEATURES = [
   {
     title: "100% browser-based",
     description:
-      "Conversion uses PDF.js and builds the MOBI package on your device. Your documents stay private — nothing uploads to Focera.",
+      "Conversion uses PDF.js and builds the AZW3 package on your device. Your documents stay private — nothing uploads to Focera.",
   },
   {
     title: "Drag & drop workflow",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function PdfToMobiLanding() {
+export default function PdfToAzw3Landing() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="pdf-to-mobi-features"
-        title="Everything you need in a free PDF to MOBI converter"
+        id="pdf-to-azw3-features"
+        title="Everything you need in a free PDF to AZW3 converter"
         features={FEATURES}
       />
 
@@ -41,9 +41,9 @@ export default function PdfToMobiLanding() {
           How It Works
         </h2>
         <p>
-          Turning a PDF into a MOBI ebook should be quick and private. Focera
-          keeps the whole flow on one page — upload, choose a mode, convert, and
-          download without an account or desktop installer.
+          Turning a PDF into a Kindle AZW3 ebook should be quick and private.
+          Focera keeps the whole flow on one page — upload, choose a mode,
+          convert, and download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -56,14 +56,14 @@ export default function PdfToMobiLanding() {
             visual match for scanned or design-heavy PDFs.
           </li>
           <li>
-            <strong>Convert and download.</strong> Click Convert to MOBI. A
-            .mobi file is built locally and downloads automatically — preview
-            the extracted summary in the panel.
+            <strong>Convert and download.</strong> Click Convert to AZW3. A
+            .azw3 KF8 file is built locally and downloads automatically —
+            preview the extracted summary in the panel.
           </li>
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#pdf-to-mobi-tool">PDF to MOBI converter</a> anytime to
+          <a href="#pdf-to-azw3-tool">PDF to AZW3 converter</a> anytime to
           process another file.
         </p>
       </section>
@@ -80,7 +80,7 @@ export default function PdfToMobiLanding() {
         </p>
         <p>
           <strong>Exact pages</strong> renders each PDF page as an image and
-          places it in the MOBI. The look stays faithful, but text inside images
+          places it in the AZW3. The look stays faithful, but text inside images
           is not selectable or reflowable. Use this for scans, certificates, and
           design-heavy pages.
         </p>
@@ -96,18 +96,18 @@ export default function PdfToMobiLanding() {
         <ul className="tool-content__list">
           <li>
             <strong>Sideload reports to Kindle</strong> — Convert long PDFs into
-            MOBI for comfortable reading on e-ink Kindles and Kindle apps.
+            AZW3 for comfortable reading on e-ink Kindles and Kindle apps.
           </li>
           <li>
             <strong>Archive manuals as ebooks</strong> — Keep product guides in
-            a portable format that works offline on phones and tablets.
+            a portable KF8 format that works offline on phones and tablets.
           </li>
           <li>
             <strong>Preserve scans visually</strong> — Use Exact pages when you
             need a page-faithful ebook of scanned paperwork.
           </li>
           <li>
-            <strong>Share without desktop software</strong> — Send a .mobi when
+            <strong>Share without desktop software</strong> — Send a .azw3 when
             collaborators prefer Kindle apps over PDF viewers.
           </li>
         </ul>
@@ -131,20 +131,20 @@ export default function PdfToMobiLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <Link href="/pdf-to-azw3">PDF to AZW3</Link> — Convert PDFs into
-            modern Kindle KF8 .azw3 ebooks.
+            <Link href="/pdf-to-mobi">PDF to MOBI</Link> — Convert PDFs into
+            classic .mobi ebooks for older Kindle workflows.
           </li>
           <li>
             <Link href="/pdf-to-epub">PDF to EPUB</Link> — Convert PDFs into
             reflowable or image-based .epub ebooks.
           </li>
           <li>
-            <Link href="/mobi-to-pdf">MOBI to PDF</Link> — Convert Kindle .mobi
-            and .azw3 ebooks into PDF.
-          </li>
-          <li>
             <Link href="/azw3-to-pdf">AZW3 to PDF</Link> — Convert Kindle KF8
             .azw3 ebooks into PDF.
+          </li>
+          <li>
+            <Link href="/mobi-to-pdf">MOBI to PDF</Link> — Convert Kindle .mobi
+            and .azw3 ebooks into PDF.
           </li>
           <li>
             <Link href="/epub-to-pdf">EPUB to PDF</Link> — Convert .epub ebooks
@@ -164,7 +164,7 @@ export default function PdfToMobiLanding() {
           </li>
           <li>
             <Link href="/pdf-editor">PDF Editor</Link> — Reorder, rotate, or
-            extract pages before converting to MOBI.
+            extract pages before converting to AZW3.
           </li>
           <li>
             <Link href="/merge-pdf">Merge PDF</Link> — Combine multiple PDFs

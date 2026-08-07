@@ -64,8 +64,19 @@ export const PngToPdfLazy = dynamic(
 /** Same converter as PNG to PDF — shared UI for the Image to PDF landing. */
 export const ImageToPdfLazy = PngToPdfLazy;
 
+/** Same converter as PNG to PDF — shared UI for the WebP to PDF landing. */
+export const WebpToPdfLazy = PngToPdfLazy;
+
+/** Same converter as PNG to PDF — shared UI for the GIF to PDF landing. */
+export const GifToPdfLazy = PngToPdfLazy;
+
 export const TiffToPdfLazy = dynamic(
   () => import("@/components/tools/TiffToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const EpsToPdfLazy = dynamic(
+  () => import("@/components/tools/EpsToPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -76,6 +87,11 @@ export const PdfToWordLazy = dynamic(
 
 export const WordToPdfLazy = dynamic(
   () => import("@/components/tools/WordToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const OutlookToPdfLazy = dynamic(
+  () => import("@/components/tools/OutlookToPdf"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -131,6 +147,11 @@ export const PdfToEpubLazy = dynamic(
 
 export const PdfToMobiLazy = dynamic(
   () => import("@/components/tools/PdfToMobi"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PdfToAzw3Lazy = dynamic(
+  () => import("@/components/tools/PdfToAzw3"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -224,6 +245,11 @@ export const UpscaleImageLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const ResizeImageLazy = dynamic(
+  () => import("@/components/tools/ResizeImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const ColorizePhotoLazy = dynamic(
   () => import("@/components/tools/ColorizePhoto"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -236,6 +262,11 @@ export const ImageCompressorLazy = dynamic(
 
 export const RemoveWatermarkLazy = dynamic(
   () => import("@/components/tools/RemoveWatermark"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const RemoveObjectsLazy = dynamic(
+  () => import("@/components/tools/RemoveObjects"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

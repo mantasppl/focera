@@ -38,7 +38,7 @@ export const categoryLabels: Record<ToolCategory, string> = {
 export const categoryDescriptions: Record<ToolCategory, string> = {
   pdf: "PDF tools like Merge PDF, Compress PDF, PDF to Word, and much more.",
   image:
-    "Image tools like Background Remover, Image Compressor, Upscale Image, and much more.",
+    "Image tools like Background Remover, Image Compressor, Resize Image, Upscale Image, and much more.",
   video:
     "Video tools like Compress Video, Video to GIF, Trim Video, and much more.",
   ai: "AI tools like AI Image Generator, Background Remover, YouTube Summarizer, and much more.",
@@ -2656,6 +2656,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "remove-objects",
+    name: "Remove Objects from Photo",
+    shortName: "Remove Objects",
+    description:
+      "Remove objects from photos online — brush over people, clutter, or distractions and restore the background. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/remove-objects",
+    keywords: [
+      "remove objects from photo",
+      "object remover",
+      "remove object from image",
+      "erase object from photo",
+      "magic erase photo",
+      "remove person from photo",
+      "photo object remover",
+      "remove distraction from photo",
+      "free object remover",
+      "remove objects online",
+    ],
+    faq: [
+      {
+        question: "Is this object remover free?",
+        answer:
+          "Yes. Upload a photo, mark the object, restore the area, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Object removal runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How do I remove an object from a photo?",
+        answer:
+          "Upload your photo, paint over the person or object with the brush, then click Remove objects. The tool fills the marked area using nearby pixels.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a cleaned PNG.",
+      },
+      {
+        question: "What kinds of objects can I remove?",
+        answer:
+          "Brush over people, poles, trash, text, cables, or other distractions. Smaller, solid regions usually restore more cleanly than very large or complex areas.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After processing, drag the preview slider to compare the original photo with the cleaned result.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use. Only edit photos you own or have permission to change.",
+      },
+    ],
+  },
+  {
     slug: "remove-watermark",
     name: "Remove Watermark from Photo",
     shortName: "Remove Watermark",
@@ -2770,6 +2829,67 @@ export const tools: Tool[] = [
         question: "Can I use the results commercially?",
         answer:
           "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "resize-image",
+    name: "Resize Image Dimensions",
+    shortName: "Resize Image",
+    description:
+      "Resize image dimensions online — set exact width and height in pixels, lock aspect ratio, or use quick scale presets. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/resize-image",
+    keywords: [
+      "resize image",
+      "resize image dimensions",
+      "change image size",
+      "change image dimensions",
+      "image resizer",
+      "resize photo",
+      "scale image",
+      "set image width height",
+      "resize image online",
+      "free image resizer",
+      "resize jpg",
+      "resize png",
+    ],
+    faq: [
+      {
+        question: "Is this image resizer free?",
+        answer:
+          "Yes. Upload, set dimensions, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Resizing runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I set exact pixel dimensions?",
+        answer:
+          "Yes. Enter any width and height in pixels up to 8192 on each side. Use Lock aspect ratio to keep proportions, or unlock to stretch freely.",
+      },
+      {
+        question: "What do the quick scale presets do?",
+        answer:
+          "25%, 50%, 75%, 150%, and 200% set both dimensions relative to the original size while preserving aspect ratio.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a PNG at the new dimensions.",
+      },
+      {
+        question: "How is this different from Upscale Image?",
+        answer:
+          "Resize Image sets exact width and height (or a percentage). Upscale Image enlarges by 2×–4× with optional detail enhancement for sharper enlargements.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects.",
       },
     ],
   },
@@ -3412,6 +3532,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "outlook-to-pdf",
+    name: "Outlook to PDF Converter",
+    shortName: "Outlook to PDF",
+    description:
+      "Convert Outlook to PDF online — turn .msg and .eml emails into A4 or Letter PDFs. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/outlook-to-pdf",
+    keywords: [
+      "outlook to pdf",
+      "msg to pdf",
+      "eml to pdf",
+      "convert outlook to pdf",
+      "outlook email to pdf",
+      "msg converter",
+      "microsoft outlook to pdf",
+      "email to pdf",
+      "free outlook to pdf",
+      "outlook to pdf online",
+      "convert msg to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this Outlook to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited Outlook emails with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my Outlook emails uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your .msg and .eml files stay on your device.",
+      },
+      {
+        question: "Which Outlook formats are supported?",
+        answer:
+          "Upload Outlook Message (.msg) files and standard email (.eml) files exported from Microsoft Outlook or other mail clients.",
+      },
+      {
+        question: "What appears in the PDF?",
+        answer:
+          "From, To, Cc, Date, Subject, the email body (HTML or plain text), and a list of attachment names when present. Inline CID images are included when readable.",
+      },
+      {
+        question: "Can I choose A4 or Letter?",
+        answer:
+          "Yes. Pick A4 or US Letter before converting so the PDF matches your printer or regional standard.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer: "Yes. Upload Outlook email files up to 25 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your .msg or .eml, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "pdf-to-epub",
     name: "PDF to EPUB Converter",
     shortName: "PDF to EPUB",
@@ -3520,6 +3699,75 @@ export const tools: Tool[] = [
         question: "Which apps open the MOBI file?",
         answer:
           "You get a classic Mobipocket .mobi file compatible with Kindle devices (via sideload), Kindle apps, Calibre, and many e-readers that still accept MOBI.",
+      },
+      {
+        question: "Will formatting match the original PDF?",
+        answer:
+          "Reflowable text rebuilds paragraphs and may not preserve complex columns, tables, or precise positioning. Exact pages keeps a visual match by embedding page images.",
+      },
+      {
+        question: "Does this work on scanned PDFs?",
+        answer:
+          "Use Exact pages for image-only scans. Reflowable text needs selectable text already in the PDF — for OCR, try PDF to JPG plus Image to Text first.",
+      },
+      {
+        question: "Is there a file size or page limit?",
+        answer:
+          "Yes. Upload PDFs up to 25 MB with a maximum of 50 pages per conversion.",
+      },
+      {
+        question: "Can I convert password-protected PDFs?",
+        answer:
+          "Not directly. Unlock the file first with Unlock PDF, then upload the unlocked copy to convert.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PDF, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "pdf-to-azw3",
+    name: "PDF to AZW3 Converter",
+    shortName: "PDF to AZW3",
+    description:
+      "Convert PDF to AZW3 online — extract reflowable text or embed exact page images into a Kindle KF8 .azw3 ebook. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/pdf-to-azw3",
+    keywords: [
+      "pdf to azw3",
+      "convert pdf to azw3",
+      "pdf to azw3 converter",
+      "pdf to kindle",
+      "pdf to kf8",
+      "make azw3 from pdf",
+      "free pdf to azw3",
+      "pdf to azw3 online",
+      "pdf kindle converter",
+      "pdf ebook converter",
+    ],
+    faq: [
+      {
+        question: "Is this PDF to AZW3 converter free?",
+        answer:
+          "Yes. Convert and download unlimited PDFs with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PDFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with PDF.js. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between Reflowable text and Exact pages?",
+        answer:
+          "Reflowable text extracts selectable text into AZW3 chapters you can resize and restyle on Kindle. Exact pages embeds each PDF page as an image so the layout matches visually, but text inside images is not selectable.",
+      },
+      {
+        question: "Which apps open the AZW3 file?",
+        answer:
+          "You get a Kindle Format 8 (.azw3) file compatible with modern Kindle devices (via sideload), Kindle apps, and Calibre.",
       },
       {
         question: "Will formatting match the original PDF?",
@@ -4090,7 +4338,7 @@ export const tools: Tool[] = [
     name: "Image to PDF Converter",
     shortName: "Image to PDF",
     description:
-      "Convert images to PDF online — upload PNG, JPG, or WebP and download a multi-page PDF with Fit, A4, or Letter. Free, private, and local in your browser.",
+      "Convert images to PDF online — upload PNG, JPG, WebP, or GIF and download a multi-page PDF with Fit, A4, or Letter. Free, private, and local in your browser.",
     categories: ["pdf", "image"],
     status: "ready",
     href: "/image-to-pdf",
@@ -4101,11 +4349,11 @@ export const tools: Tool[] = [
       "jpg to pdf",
       "jpeg to pdf",
       "photo to pdf",
-      "webp to pdf",
       "pictures to pdf",
       "free image to pdf",
       "image to pdf online",
       "multiple images to pdf",
+      "gif to pdf",
     ],
     faq: [
       {
@@ -4121,7 +4369,7 @@ export const tools: Tool[] = [
       {
         question: "Which image formats are supported?",
         answer:
-          "PNG, JPG, and WebP. WebP is converted locally before embedding so the PDF stays widely compatible.",
+          "PNG, JPG, WebP, and GIF. WebP and GIF are converted locally before embedding so the PDF stays widely compatible.",
       },
       {
         question: "Can I convert multiple images into one PDF?",
@@ -4212,6 +4460,129 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "webp-to-pdf",
+    name: "WebP to PDF Converter",
+    shortName: "WebP to PDF",
+    description:
+      "Convert WebP to PDF online — turn one image or a batch into a multi-page PDF with Fit, A4, or Letter. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/webp-to-pdf",
+    keywords: [
+      "webp to pdf",
+      "convert webp to pdf",
+      "webp to pdf converter",
+      "webp images to pdf",
+      "free webp to pdf",
+      "webp to pdf online",
+      "multiple webp to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this WebP to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited WebP-to-PDF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "WebP is the primary format. PNG and JPG are also accepted. WebP is converted locally before embedding so the PDF stays widely compatible.",
+      },
+      {
+        question: "Can I convert multiple WebP images into one PDF?",
+        answer:
+          "Yes. Add up to 30 images, reorder them, and each image becomes a page in the downloaded PDF.",
+      },
+      {
+        question: "What page size options are available?",
+        answer:
+          "Choose Fit so each page matches the image dimensions, or place images on A4 or US Letter with optional margins.",
+      },
+      {
+        question: "Is WebP transparency preserved?",
+        answer:
+          "Yes. Transparent WebP areas are preserved when converted locally before embedding. Some printers may still composite onto white paper.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each image can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your WebP images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "gif-to-pdf",
+    name: "GIF to PDF Converter",
+    shortName: "GIF to PDF",
+    description:
+      "Convert GIF to PDF online — turn one image or a batch into a multi-page PDF with Fit, A4, or Letter. Free, private, and local in your browser.",
+    categories: ["pdf", "image"],
+    status: "ready",
+    href: "/gif-to-pdf",
+    keywords: [
+      "gif to pdf",
+      "convert gif to pdf",
+      "gif to pdf converter",
+      "gif images to pdf",
+      "free gif to pdf",
+      "gif to pdf online",
+      "multiple gif to pdf",
+      "animated gif to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this GIF to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited GIF-to-PDF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser with pdf-lib. Your files stay on your device.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "GIF is the primary format. PNG, JPG, and WebP are also accepted. GIF is converted locally before embedding so the PDF stays widely compatible.",
+      },
+      {
+        question: "What happens with animated GIFs?",
+        answer:
+          "PDF pages are static. Each animated GIF contributes the frame your browser displays when the file is loaded (typically the first frame).",
+      },
+      {
+        question: "Can I convert multiple GIFs into one PDF?",
+        answer:
+          "Yes. Add up to 30 images, reorder them, and each image becomes a page in the downloaded PDF.",
+      },
+      {
+        question: "What page size options are available?",
+        answer:
+          "Choose Fit so each page matches the image dimensions, or place images on A4 or US Letter with optional margins.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each image can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your GIF images, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "tiff-to-pdf",
     name: "TIFF to PDF Converter",
     shortName: "TIFF to PDF",
@@ -4266,6 +4637,64 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your TIFF files, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "eps-to-pdf",
+    name: "EPS to PDF Converter",
+    shortName: "EPS to PDF",
+    description:
+      "Convert EPS to PDF online — turn Encapsulated PostScript artwork into a PDF with Crop, A4, or Letter. Free, private, and local in your browser.",
+    categories: ["pdf", "file"],
+    status: "ready",
+    href: "/eps-to-pdf",
+    keywords: [
+      "eps to pdf",
+      "convert eps to pdf",
+      "eps to pdf converter",
+      "encapsulated postscript to pdf",
+      "postscript to pdf",
+      "epsf to pdf",
+      "free eps to pdf",
+      "eps to pdf online",
+      "illustrator eps to pdf",
+    ],
+    faq: [
+      {
+        question: "Is this EPS to PDF converter free?",
+        answer:
+          "Yes. Convert and download unlimited EPS-to-PDF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my EPS files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device. The first visit downloads a converter engine (~15 MB) to your browser; the EPS itself is never uploaded.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          ".eps and .epsf (Encapsulated PostScript). Plain .ps multi-page documents are not the focus of this tool.",
+      },
+      {
+        question: "What page size options are available?",
+        answer:
+          "Choose Crop so the PDF matches the EPS bounding box, or fit the artwork onto A4 or US Letter.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each EPS can be up to 25 MB.",
+      },
+      {
+        question: "Will fonts and vectors be preserved?",
+        answer:
+          "Ghostscript embeds and subsets fonts when possible and writes a vector PDF. Complex PostScript, missing fonts, or linked resources may still fail or look different.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your EPS file, and convert. No Ghostscript install is required on your computer.",
       },
     ],
   },
@@ -4550,9 +4979,69 @@ export function formatToolCategories(tool: Tool): string {
   return tool.categories.map((c) => categoryLabels[c]).join(" · ");
 }
 
-/** Compact SEO-style label for dense category lists (e.g. "word to pdf"). */
+/** File / format tokens shown in uppercase in compact category labels. */
+const SEO_TAG_UPPERCASE = new Set([
+  "pdf",
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "tiff",
+  "tif",
+  "svg",
+  "eps",
+  "webp",
+  "heic",
+  "bmp",
+  "mp4",
+  "mp3",
+  "mov",
+  "webm",
+  "wav",
+  "m4a",
+  "avi",
+  "csv",
+  "json",
+  "xml",
+  "html",
+  "css",
+  "js",
+  "txt",
+  "srt",
+  "vtt",
+  "doc",
+  "docx",
+  "xls",
+  "xlsx",
+  "ppt",
+  "pptx",
+  "epub",
+  "mobi",
+  "azw3",
+  "qr",
+  "utm",
+  "ai",
+  "ocr",
+  "bg",
+]);
+
+/** Compact SEO-style label for dense category lists (e.g. "Word to PDF"). */
 export function toolSeoTag(tool: Tool): string {
-  return tool.slug.replace(/-/g, " ");
+  const words = tool.slug.split("-").map((word) => {
+    const lower = word.toLowerCase();
+    if (SEO_TAG_UPPERCASE.has(lower)) return lower.toUpperCase();
+    return lower;
+  });
+
+  if (!words.length) return "";
+
+  const [first, ...rest] = words;
+  const titledFirst =
+    first === first.toUpperCase()
+      ? first
+      : `${first.charAt(0).toUpperCase()}${first.slice(1)}`;
+
+  return [titledFirst, ...rest].join(" ");
 }
 
 /** Short listing blurb — keeps full SEO meta copy off index/catalog cards. */

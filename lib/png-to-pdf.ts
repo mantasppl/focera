@@ -10,6 +10,7 @@ export const ACCEPTED_PNG_TYPES = [
   "image/png",
   "image/jpeg",
   "image/webp",
+  "image/gif",
 ] as const;
 
 export const MAX_PNG_FILES = 30;
@@ -62,7 +63,8 @@ function isAcceptedImage(file: File): boolean {
     name.endsWith(".png") ||
     name.endsWith(".jpg") ||
     name.endsWith(".jpeg") ||
-    name.endsWith(".webp")
+    name.endsWith(".webp") ||
+    name.endsWith(".gif")
   ) {
     return true;
   }
@@ -73,7 +75,7 @@ function isAcceptedImage(file: File): boolean {
 
 export function validatePngFile(file: File): string | null {
   if (!isAcceptedImage(file)) {
-    return "Please upload a PNG, JPG, or WebP image.";
+    return "Please upload a PNG, JPG, WebP, or GIF image.";
   }
 
   if (file.size > MAX_PNG_SIZE_BYTES) {
@@ -236,7 +238,7 @@ export async function convertPngToPdf(
         kind === "png" ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
     } catch {
       throw new Error(
-        `"${file.name}" could not be read. Try another PNG, JPG, or WebP.`,
+        `"${file.name}" could not be read. Try another PNG, JPG, WebP, or GIF.`,
       );
     }
 

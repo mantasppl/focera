@@ -13,9 +13,11 @@
     "admin:hash-password": "node scripts/hash-admin-password.mjs"
   },
   "dependencies": {
+    "@bentopdf/gs-wasm": "^0.1.1",
     "@breezystack/lamejs": "^1.2.7",
     "@cantoo/pdf-lib": "^2.8.1",
     "@imgly/background-removal": "^1.7.0",
+    "@kenjiuno/msgreader": "^1.28.0",
     "@libsql/client": "^0.17.4",
     "@lingo-reader/mobi-parser": "^0.4.6",
     "bcryptjs": "^3.0.3",
@@ -34,6 +36,7 @@
     "onnxruntime-web": "^1.21.0-dev.20250206-d981b153d3",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.1.200",
+    "postal-mime": "^2.7.6",
     "pptxgenjs": "^4.0.1",
     "puppeteer": "^25.5.0",
     "qrcode": "^1.5.4",

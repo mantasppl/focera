@@ -1,0 +1,43 @@
+import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import ToolPageShell from "@/components/tools/ToolPageShell";
+import ResizeImageLanding from "@/components/tools/ResizeImageLanding";
+import { ResizeImageLazy } from "@/components/tools/HeavyTools";
+import { getToolBySlug } from "@/data/tools";
+import {
+  breadcrumbSchema,
+  faqPageSchema,
+  toolLandingMetadata,
+  webApplicationSchema,
+} from "@/lib/seo";
+
+const tool = getToolBySlug("resize-image")!;
+
+export const metadata: Metadata = toolLandingMetadata(tool);
+
+export default function ResizeImagePage() {
+  const schema = [
+    webApplicationSchema(tool),
+    faqPageSchema(tool.faq),
+    breadcrumbSchema([
+      { name: "Home", href: "/" },
+      { name: "All tools", href: "/tools" },
+      { name: tool.name, href: tool.href },
+    ]),
+  ];
+
+  return (
+    <>
+      <JsonLd data={schema} />
+      <ToolPageShell
+        slug="resize-image"
+        workspaceId="resize-image-tool"
+        content={<ResizeImageLanding />}
+        ctaTitle="Need more image utilities?"
+        ctaDescription="Upscale resolution, compress files, or remove backgrounds — Focera keeps everyday image tools fast, private, and free."
+      >
+        <ResizeImageLazy />
+      </ToolPageShell>
+    </>
+  );
+}

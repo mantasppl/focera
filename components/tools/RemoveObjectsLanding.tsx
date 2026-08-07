@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Brush over watermarks",
+    title: "Brush over unwanted objects",
     description:
-      "Paint precisely over logos, stamps, or text overlays. Adjust brush size and erase mistakes before restoring the photo.",
+      "Paint precisely over people, poles, trash, text, or other distractions. Adjust brush size and erase mistakes before restoring the photo.",
   },
   {
     title: "Smart local restoration",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function RemoveWatermarkLanding() {
+export default function RemoveObjectsLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="remove-watermark-features"
-        title="Everything you need in a free watermark remover"
+        id="remove-objects-features"
+        title="Everything you need in a free object remover"
         features={FEATURES}
       />
 
@@ -41,9 +41,9 @@ export default function RemoveWatermarkLanding() {
           How It Works
         </h2>
         <p>
-          Removing a watermark should be fast and private. Focera keeps the
-          whole flow on one page — upload, mark, restore, compare, and download
-          without an account or desktop installer.
+          Removing an object from a photo should be fast and private. Focera
+          keeps the whole flow on one page — upload, mark, restore, compare, and
+          download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -51,20 +51,20 @@ export default function RemoveWatermarkLanding() {
             WebP file up to 10 MB, or click the zone to browse from your device.
           </li>
           <li>
-            <strong>Paint over the watermark.</strong> Use the brush to cover
-            logos or text. Switch to Erase to trim the mask, and adjust brush
-            size for small details.
+            <strong>Paint over the object.</strong> Use the brush to cover
+            whatever you want gone. Switch to Erase to trim the mask, and adjust
+            brush size for small details.
           </li>
           <li>
-            <strong>Remove and download.</strong> Click Remove watermark.
+            <strong>Remove and download.</strong> Click Remove objects.
             Processing runs in your browser. Compare with the before/after
             slider, then download a cleaned PNG.
           </li>
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#remove-watermark-tool">watermark remover</a> anytime to
-          clean another photo.
+          <a href="#remove-objects-tool">object remover</a> anytime to clean
+          another photo.
         </p>
       </section>
 
@@ -77,24 +77,24 @@ export default function RemoveWatermarkLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Your own stock exports</strong> — Clean preview watermarks
-            from images you purchased or created once you have usage rights.
+            <strong>Travel and vacation photos</strong> — Clear strangers,
+            signs, or clutter from the background of shots you took.
           </li>
           <li>
-            <strong>Screenshots and mockups</strong> — Remove accidental UI
-            stamps or overlay text before sharing a design review.
+            <strong>Product and listing images</strong> — Erase props, cables, or
+            labels before uploading to a store or marketplace.
           </li>
           <li>
-            <strong>Personal photo cleanup</strong> — Erase date stamps, camera
-            logos, or app overlays from family photos you own.
+            <strong>Personal photo cleanup</strong> — Remove photobombers, date
+            stamps, or small distractions from family pictures.
           </li>
           <li>
-            <strong>Marketing assets</strong> — Tidy graphics you control before
-            placing them into ads, decks, or listings.
+            <strong>Design and mockups</strong> — Brush out UI chrome or
+            temporary objects before sharing a review.
           </li>
         </ul>
         <p>
-          Only remove watermarks from images you own or have permission to edit.
+          Only edit photos you own or have permission to change.
         </p>
       </section>
 
@@ -111,16 +111,16 @@ export default function RemoveWatermarkLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
-            <Link href="/remove-objects">Remove Objects from Photo</Link> —
-            Brush out people, clutter, or other distractions.
+            <Link href="/remove-watermark">Remove Watermark</Link> — Brush out
+            logos and text overlays specifically.
           </li>
           <li>
             <Link href="/background-remover">AI Background Remover</Link> —
-            Cut out subjects after cleaning overlays.
+            Cut out subjects after cleaning distractions.
           </li>
           <li>
             <Link href="/upscale-image">Upscale Image</Link> — Increase
-            resolution before or after watermark removal.
+            resolution before or after object removal.
           </li>
           <li>
             <Link href="/image-compressor">Image Compressor</Link> — Shrink

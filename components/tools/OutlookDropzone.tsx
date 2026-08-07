@@ -1,48 +1,41 @@
 "use client";
 
 import { useId, useRef, useState, type DragEvent } from "react";
-import { formatFileSize } from "@/lib/image";
 import {
-  ACCEPTED_PNG_TYPES,
-  MAX_PNG_FILES,
-  MAX_PNG_SIZE_BYTES,
-  validatePngAddition,
-} from "@/lib/png-to-pdf";
+  ACCEPTED_OUTLOOK_EXTENSIONS,
+  ACCEPTED_OUTLOOK_TYPES,
+  validateOutlookFile,
+} from "@/lib/outlook-to-pdf";
 import { cn } from "@/lib/utils";
 
-type PngToPdfDropzoneProps = {
-  existingFiles: File[];
-  onFiles: (files: File[]) => void;
+type OutlookDropzoneProps = {
+  onFile: (file: File) => void;
   onError: (message: string) => void;
   disabled?: boolean;
   className?: string;
 };
 
-export default function PngToPdfDropzone({
-  existingFiles,
-  onFiles,
+export default function OutlookDropzone({
+  onFile,
   onError,
   disabled = false,
   className,
-}: PngToPdfDropzoneProps) {
+}: OutlookDropzoneProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  function handleFiles(fileList: FileList | File[] | null | undefined) {
-    if (!fileList || disabled) return;
+  function handleFile(file: File | undefined) {
+    if (!file || disabled) return;
 
-    const incoming = Array.from(fileList);
-    if (incoming.length === 0) return;
-
-    const validationError = validatePngAddition(incoming, existingFiles);
+    const validationError = validateOutlookFile(file);
     if (validationError) {
       onError(validationError);
       return;
     }
 
     onError("");
-    onFiles(incoming);
+    onFile(file);
   }
 
   function onDragOver(event: DragEvent<HTMLDivElement>) {
@@ -60,10 +53,8 @@ export default function PngToPdfDropzone({
     event.preventDefault();
     setIsDragging(false);
     if (disabled) return;
-    handleFiles(event.dataTransfer.files);
+    handleFile(event.dataTransfer.files[0]);
   }
-
-  const remaining = Math.max(0, MAX_PNG_FILES - existingFiles.length);
 
   return (
     <div className={cn("dropzone", className)}>
@@ -82,19 +73,13 @@ export default function PngToPdfDropzone({
           ref={inputRef}
           id={inputId}
           type="file"
-          accept={[
-            ...ACCEPTED_PNG_TYPES,
-            ".png",
-            ".jpg",
-            ".jpeg",
-            ".webp",
-            ".gif",
-          ].join(",")}
+          accept={[...ACCEPTED_OUTLOOK_TYPES, ...ACCEPTED_OUTLOOK_EXTENSIONS].join(
+            ",",
+          )}
           className="dropzone__input"
-          disabled={disabled || remaining === 0}
-          multiple
+          disabled={disabled}
           onChange={(event) => {
-            handleFiles(event.target.files);
+            handleFile(event.target.files?.[0]);
             event.target.value = "";
           }}
         />
@@ -104,15 +89,11 @@ export default function PngToPdfDropzone({
           </span>
           <span className="dropzone__title">
             {isDragging
-              ? "Drop your images here"
-              : existingFiles.length > 0
-                ? "Add more images"
-                : "Drag & drop images"}
+              ? "Drop your Outlook email here"
+              : "Drag & drop an Outlook email"}
           </span>
           <span className="dropzone__hint">
-            or click to browse · PNG, JPG, WebP, GIF · up to{" "}
-            {formatFileSize(MAX_PNG_SIZE_BYTES)} each · {remaining} of{" "}
-            {MAX_PNG_FILES} slots left
+            or click to browse · MSG or EML · up to 25 MB
           </span>
         </label>
       </div>
