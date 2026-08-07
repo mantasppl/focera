@@ -4550,6 +4550,11 @@ export function formatToolCategories(tool: Tool): string {
   return tool.categories.map((c) => categoryLabels[c]).join(" · ");
 }
 
+/** Compact SEO-style label for dense category lists (e.g. "word to pdf"). */
+export function toolSeoTag(tool: Tool): string {
+  return tool.slug.replace(/-/g, " ");
+}
+
 /** Short listing blurb — keeps full SEO meta copy off index/catalog cards. */
 export function toolCardDescription(tool: Tool, maxLength = 96): string {
   const raw = tool.description.trim();

@@ -2,13 +2,14 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import ToolCard from "@/components/ToolCard";
+import ToolChip from "@/components/ToolChip";
 import ToolSearch from "@/components/ToolSearch";
 import {
   categoryDescriptions,
   categoryLabels,
   categoryOrder,
   getToolsByCategory,
+  type Tool,
   type ToolCategory,
 } from "@/data/tools";
 import { searchTools } from "@/lib/search-tools";
@@ -18,9 +19,8 @@ type ToolsCatalogProps = {
   category?: ToolCategory;
 };
 
-function CategoryToolGrid({ category }: { category: ToolCategory }) {
-  const items = getToolsByCategory(category);
-  if (!items.length) {
+function ToolChipGrid({ tools }: { tools: Tool[] }) {
+  if (!tools.length) {
     return (
       <p className="category-empty">
         No tools in this category yet — coming soon.
@@ -28,12 +28,16 @@ function CategoryToolGrid({ category }: { category: ToolCategory }) {
     );
   }
   return (
-    <div className="tool-card-grid">
-      {items.map((tool) => (
-        <ToolCard key={tool.slug} tool={tool} />
+    <div className="tool-chip-grid">
+      {tools.map((tool) => (
+        <ToolChip key={tool.slug} tool={tool} />
       ))}
     </div>
   );
+}
+
+function CategoryToolGrid({ category }: { category: ToolCategory }) {
+  return <ToolChipGrid tools={getToolsByCategory(category)} />;
 }
 
 function ToolsCatalogInner({ category }: ToolsCatalogProps) {
@@ -109,11 +113,7 @@ function ToolsCatalogInner({ category }: ToolsCatalogProps) {
             Search results
           </h2>
           {hits.length ? (
-            <div className="tool-card-grid">
-              {hits.map(({ tool }) => (
-                <ToolCard key={tool.slug} tool={tool} />
-              ))}
-            </div>
+            <ToolChipGrid tools={hits.map(({ tool }) => tool)} />
           ) : (
             <p className="category-empty">
               Try a shorter word
