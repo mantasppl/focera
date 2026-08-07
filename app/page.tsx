@@ -133,7 +133,7 @@ export default function HomePage() {
               return (
                 <Link
                   key={category}
-                  href={`/tools#cat-${category}`}
+                  href={`/tools/${category}`}
                   className={[
                     "category-card",
                     `category-card--${category}`,

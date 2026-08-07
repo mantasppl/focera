@@ -32,11 +32,11 @@ export default function Footer({ className }: FooterProps) {
           </div>
           <div className="site-footer__col">
             <p className="site-footer__col-title">Categories</p>
-            <Link href="/tools#cat-pdf">PDF Tools</Link>
-            <Link href="/tools#cat-image">Image Tools</Link>
-            <Link href="/tools#cat-video">Video Tools</Link>
-            <Link href="/tools#cat-ai">AI Tools</Link>
-            <Link href="/tools#cat-file">File Tools</Link>
+            <Link href="/tools/pdf">PDF Tools</Link>
+            <Link href="/tools/image">Image Tools</Link>
+            <Link href="/tools/video">Video Tools</Link>
+            <Link href="/tools/ai">AI Tools</Link>
+            <Link href="/tools/file">File Tools</Link>
           </div>
           <div className="site-footer__col">
             <p className="site-footer__col-title">Legal</p>

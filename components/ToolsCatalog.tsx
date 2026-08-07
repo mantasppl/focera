@@ -9,10 +9,34 @@ import {
   categoryLabels,
   categoryOrder,
   getToolsByCategory,
+  type ToolCategory,
 } from "@/data/tools";
 import { searchTools } from "@/lib/search-tools";
 
-function ToolsCatalogInner() {
+type ToolsCatalogProps = {
+  /** When set, show only this category’s tools (and search within it). */
+  category?: ToolCategory;
+};
+
+function CategoryToolGrid({ category }: { category: ToolCategory }) {
+  const items = getToolsByCategory(category);
+  if (!items.length) {
+    return (
+      <p className="category-empty">
+        No tools in this category yet — coming soon.
+      </p>
+    );
+  }
+  return (
+    <div className="tool-card-grid">
+      {items.map((tool) => (
+        <ToolCard key={tool.slug} tool={tool} />
+      ))}
+    </div>
+  );
+}
+
+function ToolsCatalogInner({ category }: ToolsCatalogProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -44,7 +68,11 @@ function ToolsCatalogInner() {
   }, [query, syncUrl, urlQuery]);
 
   const trimmed = query.trim();
-  const hits = trimmed ? searchTools(trimmed) : [];
+  const hits = trimmed
+    ? searchTools(trimmed).filter(({ tool }) =>
+        category ? tool.categories.includes(category) : true,
+      )
+    : [];
 
   return (
     <>
@@ -57,7 +85,11 @@ function ToolsCatalogInner() {
             syncUrl(q);
           }}
           autoFocus={Boolean(urlQuery)}
-          placeholder="Search"
+          placeholder={
+            category
+              ? `Search ${categoryLabels[category].toLowerCase()}`
+              : "Search"
+          }
         />
         {trimmed ? (
           <p className="tool-search-status" role="status" aria-live="polite">
@@ -84,45 +116,41 @@ function ToolsCatalogInner() {
             </div>
           ) : (
             <p className="category-empty">
-              Try a shorter word, a category (pdf, image, ai), or a keyword like
-              “watermark” or “invoice”.
+              Try a shorter word
+              {category
+                ? " or a keyword from this category."
+                : ', a category (pdf, image, ai), or a keyword like “watermark” or “invoice”.'}
             </p>
           )}
         </section>
+      ) : category ? (
+        <section
+          className="page-section"
+          aria-label={categoryLabels[category]}
+        >
+          <CategoryToolGrid category={category} />
+        </section>
       ) : (
-        categoryOrder.map((category) => {
-          const items = getToolsByCategory(category);
-          return (
-            <section
-              key={category}
-              className="page-section"
-              aria-labelledby={`cat-${category}-heading`}
-              id={`cat-${category}`}
-            >
-              <h2 id={`cat-${category}-heading`} className="section-heading">
-                {categoryLabels[category]}
-              </h2>
-              <p className="section-lede">{categoryDescriptions[category]}</p>
-              {items.length ? (
-                <div className="tool-card-grid">
-                  {items.map((tool) => (
-                    <ToolCard key={tool.slug} tool={tool} />
-                  ))}
-                </div>
-              ) : (
-                <p className="category-empty">
-                  No tools in this category yet — coming soon.
-                </p>
-              )}
-            </section>
-          );
-        })
+        categoryOrder.map((cat) => (
+          <section
+            key={cat}
+            className="page-section"
+            aria-labelledby={`cat-${cat}-heading`}
+            id={`cat-${cat}`}
+          >
+            <h2 id={`cat-${cat}-heading`} className="section-heading">
+              {categoryLabels[cat]}
+            </h2>
+            <p className="section-lede">{categoryDescriptions[cat]}</p>
+            <CategoryToolGrid category={cat} />
+          </section>
+        ))
       )}
     </>
   );
 }
 
-export default function ToolsCatalog() {
+export default function ToolsCatalog({ category }: ToolsCatalogProps) {
   return (
     <Suspense
       fallback={
@@ -133,7 +161,7 @@ export default function ToolsCatalog() {
         </div>
       }
     >
-      <ToolsCatalogInner />
+      <ToolsCatalogInner category={category} />
     </Suspense>
   );
 }

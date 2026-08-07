@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { tools } from "@/data/tools";
+import { categoryOrder, tools } from "@/data/tools";
 import { SITE_URL } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -44,6 +44,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
+  const categoryRoutes: MetadataRoute.Sitemap = categoryOrder.map(
+    (category) => ({
+      url: `${SITE_URL}/tools/${category}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.85,
+    }),
+  );
+
   const toolRoutes: MetadataRoute.Sitemap = tools
     .filter((tool) => tool.status === "ready")
     .map((tool) => ({
@@ -53,5 +62,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     }));
 
-  return [...staticRoutes, ...toolRoutes];
+  return [...staticRoutes, ...categoryRoutes, ...toolRoutes];
 }

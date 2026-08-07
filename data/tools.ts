@@ -4522,6 +4522,10 @@ export function getReadyTools(): Tool[] {
   return tools.filter((tool) => tool.status === "ready");
 }
 
+export function isToolCategory(value: string): value is ToolCategory {
+  return (categoryOrder as string[]).includes(value);
+}
+
 export function getToolsByCategory(category: ToolCategory): Tool[] {
   return tools.filter((tool) => tool.categories.includes(category));
 }

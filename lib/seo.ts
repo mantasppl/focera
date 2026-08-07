@@ -232,6 +232,41 @@ export function breadcrumbSchema(
   };
 }
 
+export function collectionPageSchema({
+  name,
+  description,
+  path,
+  tools,
+}: {
+  name: string;
+  description: string;
+  path: string;
+  tools: Tool[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name,
+    description,
+    url: absoluteUrl(path),
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: tools.length,
+      itemListElement: tools.map((tool, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: tool.name,
+        url: absoluteUrl(tool.href),
+      })),
+    },
+  };
+}
+
 export {
   SITE_NAME,
   SITE_TAGLINE,
