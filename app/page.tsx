@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import CategoryIcon from "@/components/CategoryIcon";
 import CTA from "@/components/CTA";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
@@ -15,8 +16,10 @@ import {
   getTopTools,
 } from "@/data/tools";
 import {
+  DEFAULT_OG_IMAGE,
   faqPageSchema,
   pageMetadata,
+  SITE_DESCRIPTION,
   SITE_NAME,
   SITE_TAGLINE,
 } from "@/lib/seo";
@@ -24,11 +27,31 @@ import {
 export const metadata: Metadata = {
   ...pageMetadata({
     title: SITE_TAGLINE,
-    description:
-      "Focera – Free Online Tools & AI Utilities. PDF, image, video, AI, and file tools that run in your browser — no sign-up, privacy-first.",
+    description: SITE_DESCRIPTION,
     path: "/",
   }),
   title: { absolute: SITE_TAGLINE },
+  openGraph: {
+    title: SITE_TAGLINE,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    siteName: SITE_NAME,
+    type: "website",
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: SITE_TAGLINE,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TAGLINE,
+    description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 const homeFaq = [
@@ -68,8 +91,9 @@ export default function HomePage() {
             Free online tools &amp; AI utilities
           </h1>
           <p className="page-hero__lede">
-            PDF, image, AI, and file tools that run in your browser. No
-            sign-up. No upload spam. Search a feature or open a top tool.
+            Free online tools for PDF, image, video, AI, and files. Fast,
+            private, and secure in your browser — no sign-up required. Search
+            a feature or open a top tool.
           </p>
           <div className="page-hero__search">
             <ToolSearch liveSuggestions />
@@ -110,19 +134,49 @@ export default function HomePage() {
                 <Link
                   key={category}
                   href={`/tools#cat-${category}`}
-                  className={
-                    empty ? "category-card category-card--soon" : "category-card"
-                  }
+                  className={[
+                    "category-card",
+                    `category-card--${category}`,
+                    empty ? "category-card--soon" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 >
-                  <div className="category-card__meta">
+                  <div className="category-card__top">
+                    <span className="category-card__icon" aria-hidden="true">
+                      <CategoryIcon category={category} />
+                    </span>
+                    <span className="category-card__count">
+                      {count} {count === 1 ? "tool" : "tools"}
+                    </span>
+                  </div>
+                  <div className="category-card__body">
                     <span className="category-card__label">
                       {categoryLabels[category]}
                     </span>
-                    <span className="category-card__count">{count}</span>
+                    <p className="category-card__desc">
+                      {categoryDescriptions[category]}
+                    </p>
                   </div>
-                  <p className="category-card__desc">
-                    {categoryDescriptions[category]}
-                  </p>
+                  <span className="category-card__cta">
+                    Explore
+                    <svg
+                      className="category-card__cta-arrow"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M5 12h12.5M13 6.5 18.5 12 13 17.5"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
                 </Link>
               );
             })}

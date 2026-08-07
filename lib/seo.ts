@@ -5,7 +5,7 @@ const SITE_NAME = "Focera";
 const SITE_TAGLINE = "Focera – Free Online Tools & AI Utilities";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://focera.co";
 const SITE_DESCRIPTION =
-  "Focera – Free Online Tools & AI Utilities. PDF, image, video, AI, and file tools that run in your browser — no sign-up required.";
+  "Free online tools for PDF, image, video, AI, and files. Fast, private, and secure in your browser — no sign-up required.";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 type PageMetaOptions = {
@@ -35,8 +35,12 @@ export function siteMetadata(overrides: Metadata = {}): Metadata {
     publisher: SITE_NAME,
     keywords: [
       "free online tools",
+      "online utilities",
       "AI utilities",
       "Focera",
+      "PDF tools",
+      "image tools",
+      "video tools",
       "QR code generator",
       "password generator",
       "JSON formatter",

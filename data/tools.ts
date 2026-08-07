@@ -36,11 +36,13 @@ export const categoryLabels: Record<ToolCategory, string> = {
 };
 
 export const categoryDescriptions: Record<ToolCategory, string> = {
-  pdf: "Create, merge, split, rearrange, rotate, delete pages, annotate, add text, add page numbers, add images, crop, compress, protect, unlock, eSign, edit, translate, extract images, and convert PDFs — including URL to PDF, Image to PDF, PNG to PDF, TIFF to PDF, PDF to PNG, PDF to JPG, PDF to TIFF, Word to PDF, PowerPoint to PDF, EPUB to PDF, MOBI to PDF, AZW3 to PDF, PDF to Word, PDF to Excel, PDF to CSV, PDF to PowerPoint, PDF to EPUB, and PDF to MOBI.",
-  image: "Compress, upscale, colorize photos, remove backgrounds, extract images from PDF, add images to PDF, convert images to PDF (or PNG to PDF / TIFF to PDF / PDF to PNG / PDF to TIFF), and convert images.",
-  video: "Trim clips, auto-caption, convert video to GIF, convert MP4 to MP3, compress video, download Facebook, TikTok, Instagram, and Twitter/X videos, pull YouTube transcripts, summarize YouTube videos, and export in your browser.",
-  ai: "Generate images and stories, colorize photos, summarize YouTube videos, translate PDFs, plus smart cutouts, OCR, and speech-to-text.",
-  file: "Converters, generators, and everyday utilities for any file.",
+  pdf: "PDF tools like Merge PDF, Compress PDF, PDF to Word, and much more.",
+  image:
+    "Image tools like Background Remover, Image Compressor, Upscale Image, and much more.",
+  video:
+    "Video tools like Compress Video, Video to GIF, Trim Video, and much more.",
+  ai: "AI tools like AI Image Generator, Background Remover, YouTube Summarizer, and much more.",
+  file: "File tools like QR Generator, Password Generator, JSON Formatter, and much more.",
 };
 
 /** Curated homepage picks — popular ready tools across categories. */
@@ -4542,4 +4544,21 @@ export function getTopTools(limit = 8): Tool[] {
 
 export function formatToolCategories(tool: Tool): string {
   return tool.categories.map((c) => categoryLabels[c]).join(" · ");
+}
+
+/** Short listing blurb — keeps full SEO meta copy off index/catalog cards. */
+export function toolCardDescription(tool: Tool, maxLength = 96): string {
+  const raw = tool.description.trim();
+  const primary =
+    raw.split(/\s+[—–]\s+/)[0]?.trim() ||
+    raw.split(/(?<=\.)\s+/)[0]?.trim() ||
+    raw;
+
+  if (primary.length <= maxLength) {
+    return /[.!?]$/.test(primary) ? primary : `${primary}.`;
+  }
+
+  const slice = primary.slice(0, maxLength - 1);
+  const atWord = slice.replace(/\s+\S*$/, "").trim();
+  return `${atWord || slice}…`;
 }

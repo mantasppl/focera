@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Tool } from "@/data/tools";
-import { formatToolCategories } from "@/data/tools";
+import { formatToolCategories, toolCardDescription } from "@/data/tools";
 import { cn } from "@/lib/utils";
 
 type ToolCardProps = {
@@ -23,7 +23,7 @@ export default function ToolCard({ tool, className }: ToolCardProps) {
         ) : null}
       </div>
       <h3 className="tool-card__title">{tool.name}</h3>
-      <p className="tool-card__desc">{tool.description}</p>
+      <p className="tool-card__desc">{toolCardDescription(tool)}</p>
     </Link>
   );
 }
