@@ -40,6 +40,7 @@ type IconKind =
   | "file"
   | "eraser"
   | "upscale"
+  | "unblur"
   | "colorize"
   | "ocr";
 
@@ -48,7 +49,12 @@ function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("split") || slug.includes("delete-pdf")) return "split";
   if (slug.includes("compress")) return "compress";
   if (slug.includes("rotate") || slug.includes("rearrange")) return "rotate";
-  if (slug.includes("crop") || slug.includes("trim")) return "crop";
+  if (
+    slug.includes("crop") ||
+    slug.includes("trim") ||
+    slug.includes("profile-photo")
+  )
+    return "crop";
   if (slug.includes("unlock")) return "unlock";
   if (slug.includes("protect") || slug.includes("password-checker"))
     return "lock";
@@ -58,18 +64,26 @@ function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("page-numbers")) return "pages";
   if (
     slug.includes("remove-objects") ||
+    slug.includes("remove-person") ||
     slug.includes("watermark") ||
     slug.includes("remove-watermark")
   )
     return slug.includes("remove") ? "eraser" : "watermark";
   if (slug.includes("translator") || slug.includes("translate"))
     return "translate";
+  if (slug.includes("unblur") || slug.includes("sharpen") || slug.includes("deblur"))
+    return "unblur";
   if (slug.includes("upscale") || slug.includes("resize-image"))
     return "upscale";
   if (slug.includes("colorize")) return "colorize";
   if (slug.includes("background") || slug.includes("bg")) return "eraser";
   if (slug.includes("image-to-text") || slug.includes("ocr")) return "ocr";
-  if (slug.includes("image-compressor") || slug.includes("image-converter"))
+  if (
+    slug.includes("image-compressor") ||
+    slug.includes("image-converter") ||
+    slug.includes("heic-to-jpg") ||
+    slug.includes("heic")
+  )
     return "image";
   if (
     slug.includes("pdf-to-jpg") ||
@@ -410,6 +424,14 @@ export default function ToolIcon({
           <path d="M4 14V6a2 2 0 0 1 2-2h8" {...stroke} />
           <path d="M10 20h8a2 2 0 0 0 2-2v-8" {...stroke} />
           <path d="M14 4h6v6M20 4l-7 7" {...stroke} />
+        </svg>
+      );
+    case "unblur":
+      return (
+        <svg {...common}>
+          <circle cx="11" cy="11" r="6.5" {...stroke} />
+          <path d="M16.5 16.5 21 21" {...stroke} />
+          <path d="M8.5 11h5M11 8.5v5" {...stroke} />
         </svg>
       );
     case "colorize":

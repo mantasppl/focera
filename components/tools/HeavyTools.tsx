@@ -21,6 +21,11 @@ export const ChangeBackgroundLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const BlurBackgroundLazy = dynamic(
+  () => import("@/components/tools/BlurBackground"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const MarkdownEditorLazy = dynamic(
   () => import("@/components/tools/MarkdownEditor"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -245,8 +250,18 @@ export const UpscaleImageLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const UnblurImageLazy = dynamic(
+  () => import("@/components/tools/UnblurImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const ResizeImageLazy = dynamic(
   () => import("@/components/tools/ResizeImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const ProfilePhotoMakerLazy = dynamic(
+  () => import("@/components/tools/ProfilePhotoMaker"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -260,6 +275,11 @@ export const ImageCompressorLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const HeicToJpgLazy = dynamic(
+  () => import("@/components/tools/HeicToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const RemoveWatermarkLazy = dynamic(
   () => import("@/components/tools/RemoveWatermark"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -267,6 +287,11 @@ export const RemoveWatermarkLazy = dynamic(
 
 export const RemoveObjectsLazy = dynamic(
   () => import("@/components/tools/RemoveObjects"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const RemovePersonLazy = dynamic(
+  () => import("@/components/tools/RemovePerson"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

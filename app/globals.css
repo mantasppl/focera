@@ -4845,9 +4845,12 @@ a {
 .add-page-numbers-to-pdf__options,
 .add-text-to-pdf__options,
 .upscale-image__options,
+.unblur-image__options,
 .resize-image__options,
+.profile-photo-maker__options,
 .colorize-photo__options,
 .image-compressor__options,
+.heic-to-jpg__options,
 .compress-video__options,
 .trim-video__options,
 .mp4-to-mp3__options,
@@ -4881,9 +4884,12 @@ a {
 .add-page-numbers-to-pdf__chips,
 .add-text-to-pdf__chips,
 .upscale-image__chips,
+.unblur-image__chips,
 .resize-image__chips,
+.profile-photo-maker__chips,
 .colorize-photo__chips,
 .image-compressor__chips,
+.heic-to-jpg__chips,
 .compress-video__chips,
 .mp4-to-mp3__chips,
 .video-to-gif__chips {
@@ -4922,6 +4928,14 @@ a {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
+.profile-photo-maker__chips {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.profile-photo-maker__chips--shape {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .crop-pdf__chips--mode {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -4955,9 +4969,12 @@ a {
 .add-page-numbers-to-pdf__chip,
 .add-text-to-pdf__chip,
 .upscale-image__chip,
+.unblur-image__chip,
 .resize-image__chip,
+.profile-photo-maker__chip,
 .colorize-photo__chip,
 .image-compressor__chip,
+.heic-to-jpg__chip,
 .compress-video__chip,
 .mp4-to-mp3__chip,
 .video-to-gif__chip {
@@ -5002,9 +5019,12 @@ a {
 .add-page-numbers-to-pdf__chip:hover:not(:disabled),
 .add-text-to-pdf__chip:hover:not(:disabled),
 .upscale-image__chip:hover:not(:disabled),
+.unblur-image__chip:hover:not(:disabled),
 .resize-image__chip:hover:not(:disabled),
+.profile-photo-maker__chip:hover:not(:disabled),
 .colorize-photo__chip:hover:not(:disabled),
 .image-compressor__chip:hover:not(:disabled),
+.heic-to-jpg__chip:hover:not(:disabled),
 .compress-video__chip:hover:not(:disabled),
 .mp4-to-mp3__chip:hover:not(:disabled),
 .video-to-gif__chip:hover:not(:disabled) {
@@ -5036,9 +5056,12 @@ a {
 .add-page-numbers-to-pdf__chip.is-active,
 .add-text-to-pdf__chip.is-active,
 .upscale-image__chip.is-active,
+.unblur-image__chip.is-active,
 .resize-image__chip.is-active,
+.profile-photo-maker__chip.is-active,
 .colorize-photo__chip.is-active,
 .image-compressor__chip.is-active,
+.heic-to-jpg__chip.is-active,
 .compress-video__chip.is-active,
 .mp4-to-mp3__chip.is-active,
 .video-to-gif__chip.is-active {
@@ -5072,9 +5095,12 @@ a {
 .add-page-numbers-to-pdf__chip:disabled,
 .add-text-to-pdf__chip:disabled,
 .upscale-image__chip:disabled,
+.unblur-image__chip:disabled,
 .resize-image__chip:disabled,
+.profile-photo-maker__chip:disabled,
 .colorize-photo__chip:disabled,
 .image-compressor__chip:disabled,
+.heic-to-jpg__chip:disabled,
 .compress-video__chip:disabled,
 .mp4-to-mp3__chip:disabled,
 .video-to-gif__chip:disabled {
@@ -5107,9 +5133,12 @@ a {
 .add-page-numbers-to-pdf__chip-label,
 .add-text-to-pdf__chip-label,
 .upscale-image__chip-label,
+.unblur-image__chip-label,
 .resize-image__chip-label,
+.profile-photo-maker__chip-label,
 .colorize-photo__chip-label,
 .image-compressor__chip-label,
+.heic-to-jpg__chip-label,
 .compress-video__chip-label,
 .mp4-to-mp3__chip-label,
 .video-to-gif__chip-label {
@@ -5142,9 +5171,12 @@ a {
 .add-page-numbers-to-pdf__chip-hint,
 .add-text-to-pdf__chip-hint,
 .upscale-image__chip-hint,
+.unblur-image__chip-hint,
 .resize-image__chip-hint,
+.profile-photo-maker__chip-hint,
 .colorize-photo__chip-hint,
 .image-compressor__chip-hint,
+.heic-to-jpg__chip-hint,
 .compress-video__chip-hint,
 .mp4-to-mp3__chip-hint,
 .video-to-gif__chip-hint {
@@ -5178,9 +5210,12 @@ a {
 .add-page-numbers-to-pdf__chip.is-active .add-page-numbers-to-pdf__chip-hint,
 .add-text-to-pdf__chip.is-active .add-text-to-pdf__chip-hint,
 .upscale-image__chip.is-active .upscale-image__chip-hint,
+.unblur-image__chip.is-active .unblur-image__chip-hint,
 .resize-image__chip.is-active .resize-image__chip-hint,
+.profile-photo-maker__chip.is-active .profile-photo-maker__chip-hint,
 .colorize-photo__chip.is-active .colorize-photo__chip-hint,
 .image-compressor__chip.is-active .image-compressor__chip-hint,
+.heic-to-jpg__chip.is-active .heic-to-jpg__chip-hint,
 .compress-video__chip.is-active .compress-video__chip-hint,
 .mp4-to-mp3__chip.is-active .mp4-to-mp3__chip-hint,
 .video-to-gif__chip.is-active .video-to-gif__chip-hint {
@@ -5305,10 +5340,14 @@ a {
   .add-text-to-pdf__chips--pages,
   .add-text-to-pdf__chips--rotation,
   .upscale-image__chips,
+  .unblur-image__chips,
   .resize-image__chips,
+  .profile-photo-maker__chips,
+  .profile-photo-maker__chips--shape,
   .colorize-photo__chips,
   .image-compressor__chips,
   .image-compressor__chips--levels,
+  .heic-to-jpg__chips,
   .compress-video__chips,
   .compress-video__chips--levels,
   .mp4-to-mp3__chips,
@@ -5348,7 +5387,9 @@ a {
 }
 
 .upscale-image__result,
+.unblur-image__result,
 .resize-image__result,
+.profile-photo-maker__result,
 .colorize-photo__result {
   display: flex;
   flex-direction: column;
@@ -5357,12 +5398,99 @@ a {
 }
 
 .upscale-image__result-meta,
+.unblur-image__result-meta,
 .resize-image__result-meta,
+.profile-photo-maker__result-meta,
 .colorize-photo__result-meta {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
   text-align: center;
+}
+
+/* -- Profile Photo Maker -- */
+.profile-photo-maker__editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.profile-photo-maker__frame {
+  position: relative;
+  width: min(100%, 320px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(45deg, #e8e8e8 25%, transparent 25%),
+    linear-gradient(-45deg, #e8e8e8 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e8e8e8 75%),
+    linear-gradient(-45deg, transparent 75%, #e8e8e8 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-color: #f5f5f5;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.profile-photo-maker__frame:active {
+  cursor: grabbing;
+}
+
+.profile-photo-maker__frame.is-circle {
+  border-radius: 50%;
+}
+
+.profile-photo-maker__frame-image {
+  position: absolute;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+.profile-photo-maker__zoom {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.profile-photo-maker__result-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 280px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(45deg, #e8e8e8 25%, transparent 25%),
+    linear-gradient(-45deg, #e8e8e8 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e8e8e8 75%),
+    linear-gradient(-45deg, transparent 75%, #e8e8e8 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-color: #f5f5f5;
+}
+
+.profile-photo-maker__result-frame.is-circle {
+  border-radius: 50%;
+}
+
+.profile-photo-maker__result-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* -- Resize Image -- */

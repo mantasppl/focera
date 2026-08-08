@@ -26,6 +26,7 @@
     "dompurify": "^3.4.12",
     "drizzle-orm": "^0.45.2",
     "gifenc": "^1.0.3",
+    "heic2any": "^0.0.4",
     "highlight.js": "^11.11.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",

@@ -24,13 +24,18 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   ],
   "background-remover": [
     "change-background",
-    "upscale-image",
-    "remove-objects",
+    "blur-background",
+    "profile-photo-maker",
+  ],
+  "blur-background": [
+    "change-background",
+    "background-remover",
+    "profile-photo-maker",
   ],
   "change-background": [
     "background-remover",
-    "upscale-image",
-    "image-compressor",
+    "blur-background",
+    "profile-photo-maker",
   ],
   "color-palette-generator": [
     "background-remover",
@@ -39,7 +44,7 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   ],
   "colorize-photo": [
     "upscale-image",
-    "remove-objects",
+    "unblur-image",
     "background-remover",
   ],
   "compress-pdf": ["unlock-pdf", "merge-pdf", "crop-pdf"],
@@ -71,15 +76,25 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "resize-image",
     "upscale-image",
   ],
+  "profile-photo-maker": [
+    "background-remover",
+    "resize-image",
+    "change-background",
+  ],
   "resize-image": [
     "upscale-image",
+    "unblur-image",
     "image-compressor",
-    "background-remover",
   ],
   "image-converter": [
+    "heic-to-jpg",
     "image-compressor",
     "image-to-pdf",
-    "background-remover",
+  ],
+  "heic-to-jpg": [
+    "image-compressor",
+    "resize-image",
+    "profile-photo-maker",
   ],
   "image-to-pdf": ["png-to-pdf", "webp-to-pdf", "gif-to-pdf"],
   "gif-to-pdf": ["image-to-pdf", "png-to-pdf", "video-to-gif"],
@@ -135,14 +150,19 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   "qr-generator": ["utm-builder", "password-generator", "json-formatter"],
   "rearrange-pdf": ["rotate-pdf", "pdf-editor", "delete-pdf-pages"],
   "remove-objects": [
+    "remove-person",
     "remove-watermark",
     "background-remover",
-    "upscale-image",
+  ],
+  "remove-person": [
+    "remove-objects",
+    "remove-watermark",
+    "background-remover",
   ],
   "remove-watermark": [
+    "remove-person",
     "remove-objects",
     "background-remover",
-    "upscale-image",
   ],
   "rotate-pdf": ["pdf-editor", "rearrange-pdf", "delete-pdf-pages"],
   "split-pdf": ["merge-pdf", "rearrange-pdf", "pdf-editor"],
@@ -168,9 +188,14 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "json-formatter",
   ],
   "unlock-pdf": ["protect-pdf", "merge-pdf", "compress-pdf"],
-  "upscale-image": [
+  "unblur-image": [
+    "upscale-image",
     "resize-image",
-    "background-remover",
+    "image-compressor",
+  ],
+  "upscale-image": [
+    "unblur-image",
+    "resize-image",
     "image-compressor",
   ],
   "url-to-pdf": ["merge-pdf", "compress-pdf", "pdf-to-jpg"],

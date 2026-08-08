@@ -111,6 +111,10 @@ export default function RemoveObjectsLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/remove-person">Remove Person</Link> — Brush out people
+            or photobombers from photos.
+          </li>
+          <li>
             <Link href="/remove-watermark">Remove Watermark</Link> — Brush out
             logos and text overlays specifically.
           </li>
@@ -121,10 +125,6 @@ export default function RemoveObjectsLanding() {
           <li>
             <Link href="/upscale-image">Upscale Image</Link> — Increase
             resolution before or after object removal.
-          </li>
-          <li>
-            <Link href="/image-compressor">Image Compressor</Link> — Shrink
-            file size after exporting a cleaned PNG.
           </li>
           <li>
             <Link href="/tools">All tools</Link> — Browse every free utility

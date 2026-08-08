@@ -121,6 +121,10 @@ export default function BackgroundRemoverLanding() {
               blur after cutout.
             </li>
             <li>
+              <Link href="/blur-background">Blur Background</Link> — Soften
+              the original scene with adjustable portrait-style depth blur.
+            </li>
+            <li>
               <Link href="/upscale-image">Upscale Image</Link> — Increase
               resolution before or after exporting transparent PNGs.
             </li>

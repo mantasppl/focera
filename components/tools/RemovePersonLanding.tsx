@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Brush over watermarks",
+    title: "Brush over people to remove",
     description:
-      "Paint precisely over logos, stamps, or text overlays. Adjust brush size and erase mistakes before restoring the photo.",
+      "Paint precisely over a person, photobomber, or crowd member. Adjust brush size and erase mistakes before restoring the photo.",
   },
   {
     title: "Smart local restoration",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function RemoveWatermarkLanding() {
+export default function RemovePersonLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="remove-watermark-features"
-        title="Everything you need in a free watermark remover"
+        id="remove-person-features"
+        title="Everything you need to remove a person from a photo"
         features={FEATURES}
       />
 
@@ -41,9 +41,9 @@ export default function RemoveWatermarkLanding() {
           How It Works
         </h2>
         <p>
-          Removing a watermark should be fast and private. Focera keeps the
-          whole flow on one page — upload, mark, restore, compare, and download
-          without an account or desktop installer.
+          Removing a person from a photo should be fast and private. Focera
+          keeps the whole flow on one page — upload, mark, restore, compare, and
+          download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -51,20 +51,20 @@ export default function RemoveWatermarkLanding() {
             WebP file up to 10 MB, or click the zone to browse from your device.
           </li>
           <li>
-            <strong>Paint over the watermark.</strong> Use the brush to cover
-            logos or text. Switch to Erase to trim the mask, and adjust brush
-            size for small details.
+            <strong>Paint over the person.</strong> Use the brush to cover
+            whoever you want gone. Switch to Erase to trim the mask, and adjust
+            brush size for edges and small details.
           </li>
           <li>
-            <strong>Remove and download.</strong> Click Remove watermark.
+            <strong>Remove and download.</strong> Click Remove person.
             Processing runs in your browser. Compare with the before/after
             slider, then download a cleaned PNG.
           </li>
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#remove-watermark-tool">watermark remover</a> anytime to
-          clean another photo.
+          <a href="#remove-person-tool">person remover</a> anytime to clean
+          another photo.
         </p>
       </section>
 
@@ -77,24 +77,24 @@ export default function RemoveWatermarkLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Your own stock exports</strong> — Clean preview watermarks
-            from images you purchased or created once you have usage rights.
+            <strong>Travel and vacation photos</strong> — Clear strangers or
+            photobombers from landmarks and scenic shots.
           </li>
           <li>
-            <strong>Screenshots and mockups</strong> — Remove accidental UI
-            stamps or overlay text before sharing a design review.
+            <strong>Group and event photos</strong> — Remove someone who walked
+            into the frame or no longer belongs in the shot.
           </li>
           <li>
-            <strong>Personal photo cleanup</strong> — Erase date stamps, camera
-            logos, or app overlays from family photos you own.
+            <strong>Personal photo cleanup</strong> — Erase people from family
+            pictures, portraits, or candid moments before sharing.
           </li>
           <li>
-            <strong>Marketing assets</strong> — Tidy graphics you control before
-            placing them into ads, decks, or listings.
+            <strong>Real estate and listings</strong> — Remove people from
+            property photos before publishing.
           </li>
         </ul>
         <p>
-          Only remove watermarks from images you own or have permission to edit.
+          Only edit photos you own or have permission to change.
         </p>
       </section>
 
@@ -107,28 +107,24 @@ export default function RemoveWatermarkLanding() {
         </h2>
         <p>
           Focera groups fast, privacy-friendly utilities in one hub. After you
-          clean a photo, these tools often fit the same workflow:
+          remove a person, these tools often fit the same workflow:
         </p>
         <ul className="tool-content__list">
           <li>
-            <Link href="/remove-person">Remove Person from Photo</Link> —
-            Brush out people or photobombers from photos.
+            <Link href="/remove-objects">Remove Objects</Link> — Brush out
+            clutter, poles, trash, or other distractions.
           </li>
           <li>
-            <Link href="/remove-objects">Remove Objects from Photo</Link> —
-            Brush out clutter or other distractions.
+            <Link href="/remove-watermark">Remove Watermark</Link> — Brush out
+            logos and text overlays specifically.
           </li>
           <li>
             <Link href="/background-remover">AI Background Remover</Link> —
-            Cut out subjects after cleaning overlays.
+            Cut out subjects after cleaning the frame.
           </li>
           <li>
             <Link href="/upscale-image">Upscale Image</Link> — Increase
-            resolution before or after watermark removal.
-          </li>
-          <li>
-            <Link href="/image-compressor">Image Compressor</Link> — Shrink
-            file size after exporting a cleaned PNG.
+            resolution before or after person removal.
           </li>
           <li>
             <Link href="/tools">All tools</Link> — Browse every free utility

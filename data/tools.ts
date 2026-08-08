@@ -2598,6 +2598,59 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "blur-background",
+    name: "Blur Background",
+    shortName: "Blur BG",
+    description:
+      "Blur photo backgrounds online for free — keep your subject sharp with AI portrait-style depth blur in your browser.",
+    categories: ["image", "ai"],
+    status: "ready",
+    href: "/blur-background",
+    keywords: [
+      "blur background",
+      "blur photo background",
+      "background blur online",
+      "portrait blur",
+      "blur image background",
+      "ai background blur",
+      "bokeh background",
+      "soft background blur",
+      "free background blur",
+    ],
+    faq: [
+      {
+        question: "Is this background blur tool free?",
+        answer:
+          "Yes. Upload a photo, apply portrait-style background blur, preview the result, and download a PNG with no account or payment.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. AI cutout and blur compositing run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I control how strong the blur is?",
+        answer:
+          "Yes. After processing, use the blur intensity slider to fine-tune softness from a light haze to a strong portrait bokeh look.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. Exports are PNG.",
+      },
+      {
+        question: "Why does the first run take longer?",
+        answer:
+          "The AI model downloads once and is cached by your browser. Later blurs are significantly faster.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in headshots, marketing, social posts, and personal projects.",
+      },
+    ],
+  },
+  {
     slug: "ai-image-generator",
     name: "AI Image Generator",
     shortName: "AI Images",
@@ -2670,7 +2723,6 @@ export const tools: Tool[] = [
       "remove object from image",
       "erase object from photo",
       "magic erase photo",
-      "remove person from photo",
       "photo object remover",
       "remove distraction from photo",
       "free object remover",
@@ -2701,6 +2753,65 @@ export const tools: Tool[] = [
         question: "What kinds of objects can I remove?",
         answer:
           "Brush over people, poles, trash, text, cables, or other distractions. Smaller, solid regions usually restore more cleanly than very large or complex areas.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After processing, drag the preview slider to compare the original photo with the cleaned result.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use. Only edit photos you own or have permission to change.",
+      },
+    ],
+  },
+  {
+    slug: "remove-person",
+    name: "Remove Person from Photo",
+    shortName: "Remove Person",
+    description:
+      "Remove a person from a photo online — brush over people or photobombers and restore the background. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/remove-person",
+    keywords: [
+      "remove person from photo",
+      "remove people from photo",
+      "erase person from image",
+      "photobomber remover",
+      "remove someone from photo",
+      "delete person from photo",
+      "remove stranger from photo",
+      "free person remover",
+      "remove person online",
+      "erase people from picture",
+    ],
+    faq: [
+      {
+        question: "Is this person remover free?",
+        answer:
+          "Yes. Upload a photo, mark the person, restore the area, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Person removal runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How do I remove a person from a photo?",
+        answer:
+          "Upload your photo, paint over the person with the brush, then click Remove person. The tool fills the marked area using nearby pixels.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a cleaned PNG.",
+      },
+      {
+        question: "Can I remove more than one person?",
+        answer:
+          "Yes. Paint over each person you want gone before clicking Remove person, or edit the mask and run again. Smaller, solid regions usually restore more cleanly than very large or complex areas.",
       },
       {
         question: "Can I compare before and after?",
@@ -2833,6 +2944,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "unblur-image",
+    name: "Unblur Image — Sharpen Blurry Photos",
+    shortName: "Unblur Image",
+    description:
+      "Unblur images online — sharpen soft or blurry photos with light, medium, or strong clarity recovery. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/unblur-image",
+    keywords: [
+      "unblur image",
+      "unblur photo",
+      "sharpen image",
+      "deblur image",
+      "fix blurry photo",
+      "make image sharper",
+      "unblur picture online",
+      "free image unblur",
+      "sharpen blurry photo",
+      "reduce image blur",
+    ],
+    faq: [
+      {
+        question: "Is this image unblur tool free?",
+        answer:
+          "Yes. Upload, unblur, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Unblurring runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Compare with the before/after slider and retry if needed.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After unblurring, drag the preview slider to compare the original with the sharpened image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
     slug: "resize-image",
     name: "Resize Image Dimensions",
     shortName: "Resize Image",
@@ -2890,6 +3060,67 @@ export const tools: Tool[] = [
         question: "Can I use the results commercially?",
         answer:
           "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "profile-photo-maker",
+    name: "Profile Photo Maker — Create Profile Photo from Image",
+    shortName: "Profile Photo Maker",
+    description:
+      "Create a profile photo from an image — crop to square or circle, match LinkedIn, Instagram, and Discord sizes, then download a PNG. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/profile-photo-maker",
+    keywords: [
+      "profile photo maker",
+      "create profile photo",
+      "profile photo from image",
+      "make profile picture",
+      "avatar maker",
+      "circle crop photo",
+      "square profile picture",
+      "linkedin profile photo",
+      "instagram profile picture",
+      "crop profile photo online",
+      "free profile photo maker",
+      "round profile picture",
+    ],
+    faq: [
+      {
+        question: "Is this profile photo maker free?",
+        answer:
+          "Yes. Upload, crop, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Cropping and export run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I make a circular profile photo?",
+        answer:
+          "Yes. Choose Circle to export a round PNG with a transparent background outside the circle — ideal for sites that show round avatars.",
+      },
+      {
+        question: "Which platform sizes are included?",
+        answer:
+          "Presets cover common LinkedIn, Instagram, X/Twitter, Facebook, and Discord sizes, plus HD and retina options. You can also enter any custom square size from 32 to 2048 px.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a PNG profile photo.",
+      },
+      {
+        question: "How do I reframe the crop?",
+        answer:
+          "Drag the preview to pan and use the zoom slider to tighten the frame around a face or subject before you create the photo.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects — subject to rights in your original photo.",
       },
     ],
   },
@@ -3090,6 +3321,65 @@ export const tools: Tool[] = [
       {
         question: "Which formats will be supported?",
         answer: "PNG, JPG, and WebP are planned for the first release.",
+      },
+    ],
+  },
+  {
+    slug: "heic-to-jpg",
+    name: "HEIC to JPG Converter",
+    shortName: "HEIC to JPG",
+    description:
+      "Convert HEIC to JPG online — turn iPhone .heic and .heif photos into standard JPEG files. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/heic-to-jpg",
+    keywords: [
+      "heic to jpg",
+      "heic to jpeg",
+      "convert heic to jpg",
+      "heic to jpg converter",
+      "heif to jpg",
+      "iphone heic to jpg",
+      "heic converter",
+      "free heic to jpg",
+      "heic to jpg online",
+      "convert heif to jpeg",
+    ],
+    faq: [
+      {
+        question: "Is this HEIC to JPG converter free?",
+        answer:
+          "Yes. Convert and download unlimited HEIC-to-JPG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Decoding and conversion run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          ".heic and .heif (including image/heic and image/heif). Live Photo containers may only export the still image frame.",
+      },
+      {
+        question: "Can I convert multiple HEIC files at once?",
+        answer:
+          "Yes. Add up to 20 HEIC photos. One file downloads as a .jpg; multiple files download together as a ZIP.",
+      },
+      {
+        question: "What quality options are available?",
+        answer:
+          "Choose Smaller, Balanced, or High JPEG quality to trade file size for detail before downloading.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each HEIC can be up to 20 MB, with a combined limit of 100 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your HEIC photos, and convert immediately.",
       },
     ],
   },

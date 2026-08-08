@@ -5,31 +5,31 @@ const FEATURES = [
   {
     title: "AI subject cutout",
     description:
-      "Advanced segmentation isolates people, products, and objects so you can drop them onto a new background in seconds.",
+      "Advanced segmentation isolates people, products, and objects so the background can soft-blur while your subject stays crisp.",
   },
   {
-    title: "Color, photo, or blur",
+    title: "Adjustable portrait blur",
     description:
-      "Replace the scene with a solid color, upload a custom backdrop, or apply a portrait-style blur to the original background.",
+      "Dial blur intensity from a light haze to a strong bokeh look — perfect for headshots, product shots, and social photos.",
   },
   {
     title: "100% browser-based",
     description:
-      "Your photos never leave your device. Cutout and compositing run locally with ONNX models for private, free edits.",
+      "Your photos never leave your device. Cutout and blur compositing run locally with ONNX models for private, free edits.",
   },
   {
     title: "Before & after preview",
     description:
-      "Compare the original photo with your new background using a slider, then download a ready-to-use PNG.",
+      "Compare the original photo with the blurred background using a slider, then download a ready-to-use PNG.",
   },
 ];
 
-export default function ChangeBackgroundLanding() {
+export default function BlurBackgroundLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="change-background-features"
-        title="Everything you need to change an image background"
+        id="blur-background-features"
+        title="Everything you need for portrait-style background blur"
         features={FEATURES}
       />
 
@@ -41,9 +41,9 @@ export default function ChangeBackgroundLanding() {
           How It Works
         </h2>
         <p>
-          Changing a photo background should be fast, private, and free. Focera
-          keeps the whole workflow on one page — upload, cut out the subject,
-          pick a new backdrop, and download without an account.
+          Softening a busy photo background should be fast, private, and free.
+          Focera keeps the whole workflow on one page — upload, blur the
+          background, fine-tune intensity, and download without an account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -52,9 +52,9 @@ export default function ChangeBackgroundLanding() {
             original preview appears immediately on the right.
           </li>
           <li>
-            <strong>Change the background.</strong> Click Change background to
-            run AI cutout in your browser, then choose a solid color, custom
-            image, or portrait blur.
+            <strong>Blur the background.</strong> Click Blur background to run
+            AI cutout in your browser, then drag the intensity slider until the
+            scene looks right.
           </li>
           <li>
             <strong>Compare and download.</strong> Use the before/after slider
@@ -63,8 +63,8 @@ export default function ChangeBackgroundLanding() {
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#change-background-tool">change background tool</a> anytime
-          to process another file.
+          <a href="#blur-background-tool">blur background tool</a> anytime to
+          process another file.
         </p>
       </section>
 
@@ -77,20 +77,20 @@ export default function ChangeBackgroundLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Product photography</strong> — Place items on clean white,
-            brand-colored, or lifestyle backdrops for store listings.
+            <strong>Headshots and profiles</strong> — Soften cluttered rooms
+            for LinkedIn, team pages, and ID-style photos.
           </li>
           <li>
-            <strong>Headshots and profiles</strong> — Soften busy rooms with
-            blur or swap in a studio-style color for LinkedIn and team pages.
+            <strong>Product photography</strong> — Keep the item sharp while
+            dialing down distracting shelves or table clutter.
           </li>
           <li>
-            <strong>Marketing creatives</strong> — Drop subjects onto campaign
-            scenes, textures, or seasonal backgrounds without a design suite.
+            <strong>Social posts and stories</strong> — Add instant portrait
+            depth to selfies and lifestyle shots without a DSLR lens.
           </li>
           <li>
-            <strong>Social posts and thumbnails</strong> — Refresh old photos
-            with new scenes for stories, covers, and YouTube stills.
+            <strong>Video call stills</strong> — Clean up desk backgrounds for
+            thumbnails, bios, and presentation slides.
           </li>
         </ul>
       </section>
@@ -104,28 +104,24 @@ export default function ChangeBackgroundLanding() {
         </h2>
         <p>
           Focera groups fast, privacy-friendly utilities in one hub. After you
-          change a background, these tools often fit the same workflow:
+          blur a background, these tools often fit the same workflow:
         </p>
         <ul className="tool-content__list">
           <li>
-            <Link href="/background-remover">Background Remover</Link> —
-            Export a transparent PNG cutout without compositing a new scene.
+            <Link href="/change-background">Change Background</Link> — Swap in
+            a solid color or custom photo instead of blur.
           </li>
           <li>
-            <Link href="/blur-background">Blur Background</Link> — Soften the
-            original scene with portrait-style depth blur only.
+            <Link href="/background-remover">Background Remover</Link> —
+            Export a transparent PNG cutout without compositing.
           </li>
           <li>
             <Link href="/upscale-image">Upscale Image</Link> — Increase
-            resolution before or after swapping backgrounds.
+            resolution before or after blurring backgrounds.
           </li>
           <li>
             <Link href="/image-compressor">Image Compressor</Link> — Shrink
             file size for web uploads and messaging apps.
-          </li>
-          <li>
-            <Link href="/remove-watermark">Remove Watermark</Link> — Brush out
-            logos or text overlays from photos you own.
           </li>
           <li>
             <Link href="/tools">All tools</Link> — Browse every free utility in
