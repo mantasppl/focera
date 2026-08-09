@@ -619,9 +619,7 @@ function QRGeneratorInner() {
             />
           ) : (
             <p className="tool-placeholder">
-              {mode === "batch"
-                ? "Batch ready — open Save to download a ZIP"
-                : "Add content below to see your QR"}
+              {mode === "batch" ? "Open Save for ZIP" : "Add content below"}
             </p>
           )}
         </div>
@@ -630,7 +628,7 @@ function QRGeneratorInner() {
           {mode === "single" ? (
             <>
               <Button onClick={downloadPng} disabled={!hasQr || loading}>
-                Download
+                PNG
               </Button>
               <Button
                 variant="ghost"
@@ -648,13 +646,10 @@ function QRGeneratorInner() {
             </>
           ) : (
             <Button onClick={() => void downloadBatchZip()} disabled={batchBusy}>
-              {batchBusy ? "Building…" : "Download ZIP"}
+              {batchBusy ? "…" : "ZIP"}
             </Button>
           )}
         </div>
-        <p className="qr-tool__live-hint">
-          Live preview — changes update instantly
-        </p>
       </section>
 
       <section className="tool-panel qr-tool__controls">
