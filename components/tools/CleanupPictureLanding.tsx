@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Brush over unwanted objects",
+    title: "Brush over what to clean",
     description:
-      "Paint precisely over people, poles, trash, text, or other distractions. Adjust brush size and erase mistakes before restoring the photo.",
+      "Paint precisely over clutter, people, stamps, logos, or other distractions. Adjust brush size and erase mistakes before restoring the photo.",
   },
   {
     title: "Smart local restoration",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function RemoveObjectsLanding() {
+export default function CleanupPictureLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="remove-objects-features"
-        title="Everything you need in a free object remover"
+        id="cleanup-picture-features"
+        title="Everything you need in a free picture cleanup tool"
         features={FEATURES}
       />
 
@@ -41,9 +41,9 @@ export default function RemoveObjectsLanding() {
           How It Works
         </h2>
         <p>
-          Removing an object from a photo should be fast and private. Focera
-          keeps the whole flow on one page — upload, mark, restore, compare, and
-          download without an account or desktop installer.
+          Cleaning up a picture should be fast and private. Focera keeps the
+          whole flow on one page — upload, mark, restore, compare, and download
+          without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -51,20 +51,20 @@ export default function RemoveObjectsLanding() {
             WebP file up to 10 MB, or click the zone to browse from your device.
           </li>
           <li>
-            <strong>Paint over the object.</strong> Use the brush to cover
-            whatever you want gone. Switch to Erase to trim the mask, and adjust
-            brush size for small details.
+            <strong>Paint over the area.</strong> Use the brush to cover
+            whatever you want cleaned. Switch to Erase to trim the mask, and
+            adjust brush size for small details.
           </li>
           <li>
-            <strong>Remove and download.</strong> Click Remove objects.
+            <strong>Cleanup and download.</strong> Click Cleanup picture.
             Processing runs in your browser. Compare with the before/after
             slider, then download a cleaned PNG.
           </li>
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#remove-objects-tool">object remover</a> anytime to clean
-          another photo.
+          <a href="#cleanup-picture-tool">picture cleanup tool</a> anytime to
+          clean another photo.
         </p>
       </section>
 
@@ -111,8 +111,8 @@ export default function RemoveObjectsLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
-            <Link href="/cleanup-picture">Cleanup Picture</Link> — Clean clutter,
-            stamps, or distractions from photos.
+            <Link href="/remove-objects">Remove Objects</Link> — Brush out
+            poles, trash, or other distractions from photos.
           </li>
           <li>
             <Link href="/remove-person">Remove Person</Link> — Brush out people

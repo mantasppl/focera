@@ -63,12 +63,15 @@ function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("annotate") || slug.includes("add-text")) return "annotate";
   if (slug.includes("page-numbers")) return "pages";
   if (
+    slug.includes("cleanup-picture") ||
     slug.includes("remove-objects") ||
     slug.includes("remove-person") ||
     slug.includes("watermark") ||
     slug.includes("remove-watermark")
   )
-    return slug.includes("remove") ? "eraser" : "watermark";
+    return slug.includes("remove") || slug.includes("cleanup")
+      ? "eraser"
+      : "watermark";
   if (slug.includes("translator") || slug.includes("translate"))
     return "translate";
   if (slug.includes("unblur") || slug.includes("sharpen") || slug.includes("deblur"))

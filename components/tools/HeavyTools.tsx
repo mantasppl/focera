@@ -285,6 +285,11 @@ export const RemoveWatermarkLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const CleanupPictureLazy = dynamic(
+  () => import("@/components/tools/CleanupPicture"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const RemoveObjectsLazy = dynamic(
   () => import("@/components/tools/RemoveObjects"),
   { ssr: false, loading: () => <ToolLoading /> },

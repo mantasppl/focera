@@ -42,6 +42,11 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "qr-generator",
     "ai-image-generator",
   ],
+  "cleanup-picture": [
+    "remove-objects",
+    "remove-person",
+    "remove-watermark",
+  ],
   "colorize-photo": [
     "upscale-image",
     "unblur-image",
@@ -150,19 +155,19 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   "qr-generator": ["utm-builder", "password-generator", "json-formatter"],
   "rearrange-pdf": ["rotate-pdf", "pdf-editor", "delete-pdf-pages"],
   "remove-objects": [
+    "cleanup-picture",
     "remove-person",
     "remove-watermark",
-    "background-remover",
   ],
   "remove-person": [
+    "cleanup-picture",
     "remove-objects",
     "remove-watermark",
-    "background-remover",
   ],
   "remove-watermark": [
+    "cleanup-picture",
     "remove-person",
     "remove-objects",
-    "background-remover",
   ],
   "rotate-pdf": ["pdf-editor", "rearrange-pdf", "delete-pdf-pages"],
   "split-pdf": ["merge-pdf", "rearrange-pdf", "pdf-editor"],

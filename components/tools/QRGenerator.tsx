@@ -64,19 +64,26 @@ import { dataUrlToBlob, renderQr } from "@/lib/qr-render";
 import { cn, copyText } from "@/lib/utils";
 
 type WorkspaceMode = "single" | "batch";
+type OptionsTab = "content" | "style" | "export";
+
+const OPTIONS_TABS: Array<{ id: OptionsTab; label: string; hint: string }> = [
+  { id: "content", label: "Content", hint: "What it opens" },
+  { id: "style", label: "Style", hint: "Look & logo" },
+  { id: "export", label: "Save", hint: "Download & more" },
+];
 
 export default function QRGenerator() {
   return (
     <Suspense
       fallback={
-        <div className="tool-grid">
-          <div className="tool-panel">
-            <p className="tool-hint">Loading QR generator…</p>
-          </div>
-          <div className="tool-panel tool-panel--preview">
+        <div className="qr-tool">
+          <div className="qr-tool__preview-dock tool-panel">
             <div className="tool-stage">
               <p className="tool-placeholder">Your QR code will appear here</p>
             </div>
+          </div>
+          <div className="tool-panel">
+            <p className="tool-hint">Loading QR generator…</p>
           </div>
         </div>
       }
@@ -133,6 +140,7 @@ function QRGeneratorInner() {
   };
 
   const [mode, setMode] = useState<WorkspaceMode>("single");
+  const [optionsTab, setOptionsTab] = useState<OptionsTab>("content");
   const [content, setContent] = useState<QrContentState>(DEFAULT_QR_CONTENT);
   const [design, setDesign] = useState<QrDesignSettings>(DEFAULT_QR_DESIGN);
   const [logoDataUrl, setLogoDataUrl] = useState<string | null>(null);
@@ -585,567 +593,11 @@ function QRGeneratorInner() {
       : "/utm-builder";
 
   return (
-    <div className="tool-grid qr-tool">
-      <div className="tool-panel">
-        <div className="qr-tool__mode" role="tablist" aria-label="QR mode">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={mode === "single"}
-            className={cn("qr-tool__mode-btn", mode === "single" && "is-active")}
-            onClick={() => setMode("single")}
-          >
-            Single
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={mode === "batch"}
-            className={cn("qr-tool__mode-btn", mode === "batch" && "is-active")}
-            onClick={() => setMode("batch")}
-          >
-            Batch
-          </button>
-        </div>
-
-        <div className="qr-tool__section">
-          <p className="ui-label">Templates</p>
-          <div className="qr-tool__templates">
-            {QR_DESIGN_TEMPLATES.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className="qr-tool__template"
-                onClick={() => applyTemplate(item.id)}
-              >
-                <span className="qr-tool__template-label">{item.label}</span>
-                <span className="qr-tool__template-desc">{item.description}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {mode === "single" ? (
-          <>
-            <div>
-              <p className="ui-label">Content type</p>
-              <div
-                className="qr-tool__chips"
-                role="tablist"
-                aria-label="Content type"
-              >
-                {QR_CONTENT_TYPES.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={content.type === item.id}
-                    className={cn(
-                      "qr-tool__chip",
-                      content.type === item.id && "is-active",
-                    )}
-                    onClick={() => setContentType(item.id)}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <ContentFields
-              ids={ids}
-              content={content}
-              setContent={setContent}
-              utmHref={utmHref}
-            />
-
-            <div className="qr-tool__section">
-              <p className="ui-label">Import / scan check</p>
-              <input
-                ref={importInputRef}
-                id={ids.import}
-                type="file"
-                accept="image/*"
-                className="qr-tool__file"
-                onChange={(e) =>
-                  void importQrImage(e.target.files?.[0] ?? null)
-                }
-              />
-              <div className="tool-actions">
-                <Button
-                  variant="ghost"
-                  onClick={() => importInputRef.current?.click()}
-                >
-                  Decode QR image
-                </Button>
-                {scanning ? (
-                  <Button variant="ghost" onClick={stopScanner}>
-                    Stop camera
-                  </Button>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    onClick={() => void startScanner()}
-                    disabled={!payload}
-                  >
-                    Scan to verify
-                  </Button>
-                )}
-              </div>
-              {scanMessage ? <p className="tool-hint">{scanMessage}</p> : null}
-              {scanning ? (
-                <video
-                  ref={videoRef}
-                  className="qr-tool__camera"
-                  muted
-                  playsInline
-                />
-              ) : null}
-            </div>
-          </>
-        ) : (
-          <Input
-            id={ids.batch}
-            as="textarea"
-            label="Batch values"
-            value={batchText}
-            onChange={(e) => setBatchText(e.target.value)}
-            placeholder={
-              "https://example.com/a\nhttps://example.com/b\nWi‑Fi guest note"
-            }
-            hint="One URL or text value per line. Exports a ZIP of PNGs using your current design."
-          />
-        )}
-
-        <div className="qr-tool__section">
-          <p className="ui-label">Colors</p>
-          <div className="qr-tool__colors qr-tool__colors--3">
-            <label className="qr-tool__color" htmlFor={ids.dark}>
-              <span>Modules</span>
-              <input
-                id={ids.dark}
-                type="color"
-                value={design.darkColor}
-                onChange={(e) => updateDesign("darkColor", e.target.value)}
-              />
-              <span className="qr-tool__hex">{design.darkColor}</span>
-            </label>
-            <label className="qr-tool__color" htmlFor={ids.eye}>
-              <span>Eyes</span>
-              <input
-                id={ids.eye}
-                type="color"
-                value={design.eyeColor}
-                onChange={(e) => updateDesign("eyeColor", e.target.value)}
-              />
-              <span className="qr-tool__hex">{design.eyeColor}</span>
-            </label>
-            <label className="qr-tool__color" htmlFor={ids.light}>
-              <span>Background</span>
-              <input
-                id={ids.light}
-                type="color"
-                value={design.lightColor}
-                disabled={design.transparentBackground}
-                onChange={(e) => updateDesign("lightColor", e.target.value)}
-              />
-              <span className="qr-tool__hex">{design.lightColor}</span>
-            </label>
-          </div>
-          <label className="qr-tool__check">
-            <input
-              type="checkbox"
-              checked={design.transparentBackground}
-              onChange={(e) =>
-                updateDesign("transparentBackground", e.target.checked)
-              }
-            />
-            <span>Transparent background</span>
-          </label>
-          <label className="qr-tool__check">
-            <input
-              type="checkbox"
-              checked={design.gradientEnabled}
-              onChange={(e) =>
-                updateDesign("gradientEnabled", e.target.checked)
-              }
-            />
-            <span>Foreground gradient</span>
-          </label>
-          {design.gradientEnabled ? (
-            <label className="qr-tool__color" htmlFor={ids.gradient}>
-              <span>Gradient end</span>
-              <input
-                id={ids.gradient}
-                type="color"
-                value={design.gradientColor}
-                onChange={(e) => updateDesign("gradientColor", e.target.value)}
-              />
-              <span className="qr-tool__hex">{design.gradientColor}</span>
-            </label>
-          ) : null}
-          {contrast ? (
-            <p
-              className={cn(
-                "qr-tool__contrast",
-                !contrast.passesAaLarge && "is-warn",
-              )}
-            >
-              Contrast {contrast.ratio.toFixed(1)}:1 · {contrast.label}
-              {!contrast.passesAaLarge
-                ? " — may be hard to scan. Pick a darker/lighter pair."
-                : ""}
-            </p>
-          ) : (
-            <p className="qr-tool__contrast">
-              Transparent background — test scan before printing on colored paper.
-            </p>
-          )}
-        </div>
-
-        <div className="qr-tool__section">
-          <div className="qr-tool__row-head">
-            <label className="ui-label" htmlFor={ids.size}>
-              Size
-            </label>
-            <span className="qr-tool__value">{design.size}px</span>
-          </div>
-          <div className="qr-tool__chips qr-tool__chips--sizes">
-            {QR_SIZE_PRESETS.map((size) => (
-              <button
-                key={size}
-                type="button"
-                className={cn(
-                  "qr-tool__chip",
-                  design.size === size && "is-active",
-                )}
-                onClick={() => updateDesign("size", size)}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
-          <input
-            id={ids.size}
-            className="pw-range"
-            type="range"
-            min={128}
-            max={2048}
-            step={16}
-            value={design.size}
-            onChange={(e) => updateDesign("size", Number(e.target.value))}
-          />
-          <p className="tool-hint">{printSizeHint(design.size)}</p>
-        </div>
-
-        <div className="qr-tool__section">
-          <div className="qr-tool__row-head">
-            <label className="ui-label" htmlFor={ids.margin}>
-              Quiet zone
-            </label>
-            <span className="qr-tool__value">{design.margin} modules</span>
-          </div>
-          <input
-            id={ids.margin}
-            className="pw-range"
-            type="range"
-            min={0}
-            max={8}
-            step={1}
-            value={design.margin}
-            onChange={(e) => updateDesign("margin", Number(e.target.value))}
-          />
-        </div>
-
-        <div className="qr-tool__section">
-          <p className="ui-label">Error correction</p>
-          <div className="qr-tool__chips qr-tool__chips--ecc">
-            {QR_ECC_LEVELS.map((level) => (
-              <button
-                key={level}
-                type="button"
-                className={cn(
-                  "qr-tool__chip",
-                  design.ecc === level && "is-active",
-                )}
-                onClick={() => updateDesign("ecc", level as QrEccLevel)}
-                disabled={Boolean(logoDataUrl) && level !== "H"}
-              >
-                {level}
-              </button>
-            ))}
-          </div>
-          <p className="tool-hint">
-            Using {eccInUse}
-            {logoDataUrl ? " (H required with logo)" : ""}. Higher levels survive
-            damage and logos better.
-          </p>
-        </div>
-
-        <div className="qr-tool__section">
-          <p className="ui-label">Module style</p>
-          <div className="qr-tool__chips">
-            {QR_MODULE_STYLES.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={cn(
-                  "qr-tool__chip",
-                  design.moduleStyle === item.id && "is-active",
-                )}
-                onClick={() =>
-                  updateDesign("moduleStyle", item.id as QrModuleStyle)
-                }
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="qr-tool__section">
-          <p className="ui-label">Eye style</p>
-          <div className="qr-tool__chips">
-            {QR_EYE_STYLES.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={cn(
-                  "qr-tool__chip",
-                  design.eyeStyle === item.id && "is-active",
-                )}
-                onClick={() => updateDesign("eyeStyle", item.id as QrEyeStyle)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="qr-tool__section">
-          <p className="ui-label">Frame</p>
-          <div className="qr-tool__chips">
-            {QR_FRAME_STYLES.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={cn(
-                  "qr-tool__chip",
-                  design.frameStyle === item.id && "is-active",
-                )}
-                onClick={() =>
-                  updateDesign("frameStyle", item.id as QrFrameStyle)
-                }
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-          {design.frameStyle !== "none" ? (
-            <Input
-              id={ids.frameLabel}
-              label="Frame label"
-              value={design.frameLabel}
-              onChange={(e) =>
-                updateDesign("frameLabel", e.target.value.slice(0, 32))
-              }
-              placeholder="Scan me"
-            />
-          ) : null}
-        </div>
-
-        <div className="qr-tool__section">
-          <p className="ui-label">Logo</p>
-          <input
-            ref={logoInputRef}
-            id={ids.logo}
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/svg+xml"
-            className="qr-tool__file"
-            onChange={(e) => handleLogoFile(e.target.files?.[0] ?? null)}
-          />
-          <div className="tool-actions">
-            <Button
-              variant="ghost"
-              onClick={() => logoInputRef.current?.click()}
-            >
-              {logoDataUrl ? "Replace logo" : "Upload logo"}
-            </Button>
-            {logoDataUrl ? (
-              <Button variant="ghost" onClick={clearLogo}>
-                Remove logo
-              </Button>
-            ) : null}
-          </div>
-          {logoName ? <p className="tool-hint">{logoName}</p> : null}
-          {logoDataUrl ? (
-            <>
-              <div className="qr-tool__chips">
-                {QR_LOGO_SHAPES.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className={cn(
-                      "qr-tool__chip",
-                      design.logoShape === item.id && "is-active",
-                    )}
-                    onClick={() =>
-                      updateDesign("logoShape", item.id as QrLogoShape)
-                    }
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-              <div className="qr-tool__row-head">
-                <label className="ui-label" htmlFor={ids.logoSize}>
-                  Logo size
-                </label>
-                <span className="qr-tool__value">
-                  {design.logoSizePercent}%
-                </span>
-              </div>
-              <input
-                id={ids.logoSize}
-                className="pw-range"
-                type="range"
-                min={12}
-                max={30}
-                step={1}
-                value={design.logoSizePercent}
-                onChange={(e) =>
-                  updateDesign("logoSizePercent", Number(e.target.value))
-                }
-              />
-              <label className="qr-tool__check">
-                <input
-                  type="checkbox"
-                  checked={design.logoPad}
-                  onChange={(e) => updateDesign("logoPad", e.target.checked)}
-                />
-                <span>Padded logo backing</span>
-              </label>
-            </>
-          ) : null}
-        </div>
-
-        <div className="tool-actions">
-          {mode === "single" ? (
-            <>
-              <Button onClick={downloadPng} disabled={!hasQr || loading}>
-                Download PNG
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={downloadSvg}
-                disabled={!hasQr || loading}
-              >
-                Download SVG
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => void downloadPdf()}
-                disabled={!hasQr || loading}
-              >
-                Download PDF
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => void copyImage()}
-                disabled={!hasQr || loading}
-              >
-                {copied === "image" ? "Image copied" : "Copy image"}
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => void copyPayload()}
-                disabled={!payload || loading}
-              >
-                {copied === "payload" ? "Copied" : "Copy payload"}
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => void shareQr()}
-                disabled={!hasQr || loading}
-              >
-                Share
-              </Button>
-            </>
-          ) : (
-            <Button onClick={() => void downloadBatchZip()} disabled={batchBusy}>
-              {batchBusy ? "Building ZIP…" : "Download ZIP"}
-            </Button>
-          )}
-          <Button variant="ghost" onClick={handleSavePreset}>
-            {presetSaved ? "Preset saved" : "Save design"}
-          </Button>
-          <Button variant="ghost" onClick={handleLoadPreset}>
-            Load design
-          </Button>
-        </div>
-
-        {history.length > 0 && mode === "single" ? (
-          <div className="qr-tool__section">
-            <div className="qr-tool__row-head">
-              <p className="ui-label">Recent</p>
-              <button
-                type="button"
-                className="qr-tool__text-btn"
-                onClick={() => {
-                  clearQrHistory();
-                  setHistory([]);
-                }}
-              >
-                Clear
-              </button>
-            </div>
-            <ul className="qr-tool__history">
-              {history.map((item) => (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    className="qr-tool__history-item"
-                    onClick={() => restoreHistory(item)}
-                  >
-                    <span className="qr-tool__history-type">{item.type}</span>
-                    <span className="qr-tool__history-label">{item.label}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-
-        {status ? <p className="tool-hint">{status}</p> : null}
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div className="qr-tool__section">
-          <p className="ui-label">Preview background</p>
-          <div className="qr-tool__chips">
-            {QR_PREVIEW_BACKGROUNDS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={cn(
-                  "qr-tool__chip",
-                  previewBg === item.id && "is-active",
-                )}
-                onClick={() => setPreviewBg(item.id)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
+    <div className="qr-tool">
+      <section className="qr-tool__preview-dock" aria-label="QR preview">
         <div
           className={cn(
-            "tool-stage",
+            "tool-stage qr-tool__stage",
             `qr-tool__stage--${previewBg}`,
             hasQr && "is-ready",
             (loading || batchBusy) && "is-loading",
@@ -1155,7 +607,7 @@ function QRGeneratorInner() {
             <div className="tool-loading" role="status" aria-live="polite">
               <span className="tool-loading__spinner" aria-hidden="true" />
               <span className="tool-loading__text">
-                {batchBusy ? "Building batch ZIP…" : "Updating QR code…"}
+                {batchBusy ? "Building batch ZIP…" : "Updating…"}
               </span>
             </div>
           ) : hasQr && mode === "single" ? (
@@ -1168,16 +620,657 @@ function QRGeneratorInner() {
           ) : (
             <p className="tool-placeholder">
               {mode === "batch"
-                ? "Batch mode uses your design settings · download a ZIP when ready"
-                : "Your QR code will appear here"}
+                ? "Batch ready — open Save to download a ZIP"
+                : "Add content below to see your QR"}
             </p>
           )}
         </div>
-        <p className="tool-hint">
-          Live preview · PNG / SVG / PDF · generated in your browser
-          {logoDataUrl ? " · logo centered with high error correction" : ""}
+
+        <div className="qr-tool__quick-actions">
+          {mode === "single" ? (
+            <>
+              <Button onClick={downloadPng} disabled={!hasQr || loading}>
+                Download
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => void shareQr()}
+                disabled={!hasQr || loading}
+              >
+                Share
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setOptionsTab("style")}
+              >
+                Style
+              </Button>
+            </>
+          ) : (
+            <Button onClick={() => void downloadBatchZip()} disabled={batchBusy}>
+              {batchBusy ? "Building…" : "Download ZIP"}
+            </Button>
+          )}
+        </div>
+        <p className="qr-tool__live-hint">
+          Live preview — changes update instantly
         </p>
-      </div>
+      </section>
+
+      <section className="tool-panel qr-tool__controls">
+        <div
+          className="qr-tool__tabs"
+          role="tablist"
+          aria-label="QR options"
+        >
+          {OPTIONS_TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={optionsTab === tab.id}
+              className={cn(
+                "qr-tool__tab",
+                optionsTab === tab.id && "is-active",
+              )}
+              onClick={() => setOptionsTab(tab.id)}
+            >
+              <span className="qr-tool__tab-label">{tab.label}</span>
+              <span className="qr-tool__tab-hint">{tab.hint}</span>
+            </button>
+          ))}
+        </div>
+
+        {optionsTab === "content" ? (
+          <div className="qr-tool__pane" role="tabpanel">
+            <div className="qr-tool__mode" role="tablist" aria-label="QR mode">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "single"}
+                className={cn(
+                  "qr-tool__mode-btn",
+                  mode === "single" && "is-active",
+                )}
+                onClick={() => setMode("single")}
+              >
+                One code
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === "batch"}
+                className={cn(
+                  "qr-tool__mode-btn",
+                  mode === "batch" && "is-active",
+                )}
+                onClick={() => setMode("batch")}
+              >
+                Batch
+              </button>
+            </div>
+
+            {mode === "single" ? (
+              <>
+                <div className="qr-tool__section">
+                  <p className="ui-label">Type</p>
+                  <div
+                    className="qr-tool__chips qr-tool__chips--scroll"
+                    role="tablist"
+                    aria-label="Content type"
+                  >
+                    {QR_CONTENT_TYPES.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={content.type === item.id}
+                        className={cn(
+                          "qr-tool__chip qr-tool__chip--compact",
+                          content.type === item.id && "is-active",
+                        )}
+                        onClick={() => setContentType(item.id)}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <ContentFields
+                  ids={ids}
+                  content={content}
+                  setContent={setContent}
+                  utmHref={utmHref}
+                />
+              </>
+            ) : (
+              <Input
+                id={ids.batch}
+                as="textarea"
+                label="Batch values"
+                value={batchText}
+                onChange={(e) => setBatchText(e.target.value)}
+                placeholder={
+                  "https://example.com/a\nhttps://example.com/b"
+                }
+                hint="One value per line. Uses your current Style settings."
+              />
+            )}
+          </div>
+        ) : null}
+
+        {optionsTab === "style" ? (
+          <div className="qr-tool__pane" role="tabpanel">
+            <div className="qr-tool__section">
+              <p className="ui-label">Quick templates</p>
+              <div className="qr-tool__chips qr-tool__chips--scroll">
+                {QR_DESIGN_TEMPLATES.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className="qr-tool__chip qr-tool__chip--compact"
+                    onClick={() => applyTemplate(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="qr-tool__section">
+              <p className="ui-label">Colors</p>
+              <div className="qr-tool__colors qr-tool__colors--3">
+                <label className="qr-tool__color" htmlFor={ids.dark}>
+                  <span>Dots</span>
+                  <input
+                    id={ids.dark}
+                    type="color"
+                    value={design.darkColor}
+                    onChange={(e) => updateDesign("darkColor", e.target.value)}
+                  />
+                </label>
+                <label className="qr-tool__color" htmlFor={ids.eye}>
+                  <span>Corners</span>
+                  <input
+                    id={ids.eye}
+                    type="color"
+                    value={design.eyeColor}
+                    onChange={(e) => updateDesign("eyeColor", e.target.value)}
+                  />
+                </label>
+                <label className="qr-tool__color" htmlFor={ids.light}>
+                  <span>Background</span>
+                  <input
+                    id={ids.light}
+                    type="color"
+                    value={design.lightColor}
+                    disabled={design.transparentBackground}
+                    onChange={(e) => updateDesign("lightColor", e.target.value)}
+                  />
+                </label>
+              </div>
+              <div className="qr-tool__toggle-row">
+                <label className="qr-tool__check">
+                  <input
+                    type="checkbox"
+                    checked={design.transparentBackground}
+                    onChange={(e) =>
+                      updateDesign("transparentBackground", e.target.checked)
+                    }
+                  />
+                  <span>Transparent</span>
+                </label>
+                <label className="qr-tool__check">
+                  <input
+                    type="checkbox"
+                    checked={design.gradientEnabled}
+                    onChange={(e) =>
+                      updateDesign("gradientEnabled", e.target.checked)
+                    }
+                  />
+                  <span>Gradient</span>
+                </label>
+              </div>
+              {design.gradientEnabled ? (
+                <label className="qr-tool__color" htmlFor={ids.gradient}>
+                  <span>Gradient end</span>
+                  <input
+                    id={ids.gradient}
+                    type="color"
+                    value={design.gradientColor}
+                    onChange={(e) =>
+                      updateDesign("gradientColor", e.target.value)
+                    }
+                  />
+                </label>
+              ) : null}
+              {contrast ? (
+                <p
+                  className={cn(
+                    "qr-tool__contrast",
+                    !contrast.passesAaLarge && "is-warn",
+                  )}
+                >
+                  Contrast {contrast.ratio.toFixed(1)}:1 · {contrast.label}
+                  {!contrast.passesAaLarge ? " — may be hard to scan." : ""}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="qr-tool__section">
+              <div className="qr-tool__row-head">
+                <label className="ui-label" htmlFor={ids.size}>
+                  Size
+                </label>
+                <span className="qr-tool__value">{design.size}px</span>
+              </div>
+              <div className="qr-tool__chips qr-tool__chips--sizes">
+                {QR_SIZE_PRESETS.map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    className={cn(
+                      "qr-tool__chip",
+                      design.size === size && "is-active",
+                    )}
+                    onClick={() => updateDesign("size", size)}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+              <input
+                id={ids.size}
+                className="pw-range"
+                type="range"
+                min={128}
+                max={2048}
+                step={16}
+                value={design.size}
+                onChange={(e) => updateDesign("size", Number(e.target.value))}
+              />
+              <p className="tool-hint">{printSizeHint(design.size)}</p>
+            </div>
+
+            <div className="qr-tool__section">
+              <div className="qr-tool__row-head">
+                <label className="ui-label" htmlFor={ids.margin}>
+                  Margin
+                </label>
+                <span className="qr-tool__value">{design.margin}</span>
+              </div>
+              <input
+                id={ids.margin}
+                className="pw-range"
+                type="range"
+                min={0}
+                max={8}
+                step={1}
+                value={design.margin}
+                onChange={(e) => updateDesign("margin", Number(e.target.value))}
+              />
+            </div>
+
+            <div className="qr-tool__section">
+              <p className="ui-label">Durability</p>
+              <div className="qr-tool__chips qr-tool__chips--ecc">
+                {QR_ECC_LEVELS.map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    className={cn(
+                      "qr-tool__chip",
+                      design.ecc === level && "is-active",
+                    )}
+                    onClick={() => updateDesign("ecc", level as QrEccLevel)}
+                    disabled={Boolean(logoDataUrl) && level !== "H"}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+              <p className="tool-hint">
+                Using {eccInUse}
+                {logoDataUrl ? " (H with logo)" : ""}.
+              </p>
+            </div>
+
+            <div className="qr-tool__section">
+              <p className="ui-label">Dot shape</p>
+              <div className="qr-tool__chips">
+                {QR_MODULE_STYLES.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={cn(
+                      "qr-tool__chip",
+                      design.moduleStyle === item.id && "is-active",
+                    )}
+                    onClick={() =>
+                      updateDesign("moduleStyle", item.id as QrModuleStyle)
+                    }
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="qr-tool__section">
+              <p className="ui-label">Corner style</p>
+              <div className="qr-tool__chips">
+                {QR_EYE_STYLES.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={cn(
+                      "qr-tool__chip",
+                      design.eyeStyle === item.id && "is-active",
+                    )}
+                    onClick={() =>
+                      updateDesign("eyeStyle", item.id as QrEyeStyle)
+                    }
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="qr-tool__section">
+              <p className="ui-label">Frame</p>
+              <div className="qr-tool__chips">
+                {QR_FRAME_STYLES.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={cn(
+                      "qr-tool__chip",
+                      design.frameStyle === item.id && "is-active",
+                    )}
+                    onClick={() =>
+                      updateDesign("frameStyle", item.id as QrFrameStyle)
+                    }
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+              {design.frameStyle !== "none" ? (
+                <Input
+                  id={ids.frameLabel}
+                  label="Label"
+                  value={design.frameLabel}
+                  onChange={(e) =>
+                    updateDesign("frameLabel", e.target.value.slice(0, 32))
+                  }
+                  placeholder="Scan me"
+                />
+              ) : null}
+            </div>
+
+            <div className="qr-tool__section">
+              <p className="ui-label">Logo</p>
+              <input
+                ref={logoInputRef}
+                id={ids.logo}
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                className="qr-tool__file"
+                onChange={(e) => handleLogoFile(e.target.files?.[0] ?? null)}
+              />
+              <div className="tool-actions">
+                <Button
+                  variant="ghost"
+                  onClick={() => logoInputRef.current?.click()}
+                >
+                  {logoDataUrl ? "Replace" : "Add logo"}
+                </Button>
+                {logoDataUrl ? (
+                  <Button variant="ghost" onClick={clearLogo}>
+                    Remove
+                  </Button>
+                ) : null}
+              </div>
+              {logoName ? <p className="tool-hint">{logoName}</p> : null}
+              {logoDataUrl ? (
+                <>
+                  <div className="qr-tool__chips">
+                    {QR_LOGO_SHAPES.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className={cn(
+                          "qr-tool__chip",
+                          design.logoShape === item.id && "is-active",
+                        )}
+                        onClick={() =>
+                          updateDesign("logoShape", item.id as QrLogoShape)
+                        }
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="qr-tool__row-head">
+                    <label className="ui-label" htmlFor={ids.logoSize}>
+                      Logo size
+                    </label>
+                    <span className="qr-tool__value">
+                      {design.logoSizePercent}%
+                    </span>
+                  </div>
+                  <input
+                    id={ids.logoSize}
+                    className="pw-range"
+                    type="range"
+                    min={12}
+                    max={30}
+                    step={1}
+                    value={design.logoSizePercent}
+                    onChange={(e) =>
+                      updateDesign("logoSizePercent", Number(e.target.value))
+                    }
+                  />
+                  <label className="qr-tool__check">
+                    <input
+                      type="checkbox"
+                      checked={design.logoPad}
+                      onChange={(e) =>
+                        updateDesign("logoPad", e.target.checked)
+                      }
+                    />
+                    <span>White pad behind logo</span>
+                  </label>
+                </>
+              ) : null}
+            </div>
+
+            <div className="qr-tool__section">
+              <p className="ui-label">Test background</p>
+              <div className="qr-tool__chips qr-tool__chips--scroll">
+                {QR_PREVIEW_BACKGROUNDS.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={cn(
+                      "qr-tool__chip qr-tool__chip--compact",
+                      previewBg === item.id && "is-active",
+                    )}
+                    onClick={() => setPreviewBg(item.id)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {optionsTab === "export" ? (
+          <div className="qr-tool__pane" role="tabpanel">
+            <div className="qr-tool__section">
+              <p className="ui-label">Download</p>
+              <div className="qr-tool__action-grid">
+                {mode === "single" ? (
+                  <>
+                    <Button onClick={downloadPng} disabled={!hasQr || loading}>
+                      PNG
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={downloadSvg}
+                      disabled={!hasQr || loading}
+                    >
+                      SVG
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => void downloadPdf()}
+                      disabled={!hasQr || loading}
+                    >
+                      PDF
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => void copyImage()}
+                      disabled={!hasQr || loading}
+                    >
+                      {copied === "image" ? "Copied" : "Copy image"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => void copyPayload()}
+                      disabled={!payload || loading}
+                    >
+                      {copied === "payload" ? "Copied" : "Copy text"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => void shareQr()}
+                      disabled={!hasQr || loading}
+                    >
+                      Share
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => void downloadBatchZip()}
+                    disabled={batchBusy}
+                  >
+                    {batchBusy ? "Building…" : "ZIP"}
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <div className="qr-tool__section">
+              <p className="ui-label">Design preset</p>
+              <div className="tool-actions">
+                <Button variant="ghost" onClick={handleSavePreset}>
+                  {presetSaved ? "Saved" : "Save style"}
+                </Button>
+                <Button variant="ghost" onClick={handleLoadPreset}>
+                  Load style
+                </Button>
+              </div>
+            </div>
+
+            {mode === "single" ? (
+              <div className="qr-tool__section">
+                <p className="ui-label">Check / import</p>
+                <input
+                  ref={importInputRef}
+                  id={ids.import}
+                  type="file"
+                  accept="image/*"
+                  className="qr-tool__file"
+                  onChange={(e) =>
+                    void importQrImage(e.target.files?.[0] ?? null)
+                  }
+                />
+                <div className="tool-actions">
+                  <Button
+                    variant="ghost"
+                    onClick={() => importInputRef.current?.click()}
+                  >
+                    Decode image
+                  </Button>
+                  {scanning ? (
+                    <Button variant="ghost" onClick={stopScanner}>
+                      Stop camera
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      onClick={() => void startScanner()}
+                      disabled={!payload}
+                    >
+                      Scan check
+                    </Button>
+                  )}
+                </div>
+                {scanMessage ? <p className="tool-hint">{scanMessage}</p> : null}
+                {scanning ? (
+                  <video
+                    ref={videoRef}
+                    className="qr-tool__camera"
+                    muted
+                    playsInline
+                  />
+                ) : null}
+              </div>
+            ) : null}
+
+            {history.length > 0 && mode === "single" ? (
+              <div className="qr-tool__section">
+                <div className="qr-tool__row-head">
+                  <p className="ui-label">Recent</p>
+                  <button
+                    type="button"
+                    className="qr-tool__text-btn"
+                    onClick={() => {
+                      clearQrHistory();
+                      setHistory([]);
+                    }}
+                  >
+                    Clear
+                  </button>
+                </div>
+                <ul className="qr-tool__history">
+                  {history.map((item) => (
+                    <li key={item.id}>
+                      <button
+                        type="button"
+                        className="qr-tool__history-item"
+                        onClick={() => {
+                          restoreHistory(item);
+                          setOptionsTab("content");
+                        }}
+                      >
+                        <span className="qr-tool__history-type">
+                          {item.type}
+                        </span>
+                        <span className="qr-tool__history-label">
+                          {item.label}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {status ? <p className="tool-hint">{status}</p> : null}
+        {error ? (
+          <p className="tool-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+      </section>
     </div>
   );
 }
@@ -1212,9 +1305,7 @@ function ContentFields({
             hint="Paste a full link. Add campaign tags with the UTM builder."
           />
           <p className="tool-hint">
-            <Link href={utmHref}>Open UTM builder</Link>
-            {" · "}
-            tracked links come back here via the “Use in QR” button.
+            <Link href={utmHref}>Add UTM tracking</Link>
           </p>
         </>
       );

@@ -92,7 +92,7 @@ export const categorySeo: Record<ToolCategory, CategorySeoContent> = {
     ],
     toolsHeading: "What image tools you’ll find here",
     tools: [
-      "Background & AI — Background Remover, Change Background, AI Image Generator, Colorize Photo, and Remove Watermark for cleanup and creative edits.",
+      "Background & AI — Background Remover, Change Background, AI Image Generator, Colorize Photo, Cleanup Picture, and Remove Watermark for cleanup and creative edits.",
       "Quality & size — Image Compressor for lighter uploads, Upscale Image for clearer enlargements, and Color Palette Generator for brand-ready swatches.",
       "Text & conversion — Image to Text (OCR), Image / PNG / TIFF to PDF, PDF to JPG / PNG / TIFF, Extract Images from PDF, Add Images to PDF, and PDF Watermark when your workflow spans documents.",
     ],

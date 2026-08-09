@@ -2720,6 +2720,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "cleanup-picture",
+    name: "Cleanup Picture — Clean Up Photos Online",
+    shortName: "Cleanup Picture",
+    description:
+      "Cleanup pictures online — brush over clutter, people, stamps, or distractions and restore the photo. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/cleanup-picture",
+    keywords: [
+      "cleanup picture",
+      "clean up photo",
+      "photo cleanup",
+      "clean up picture online",
+      "picture cleanup tool",
+      "clean photo online",
+      "erase from photo",
+      "photo cleanup online",
+      "free picture cleanup",
+      "clean up image",
+    ],
+    faq: [
+      {
+        question: "Is this picture cleanup tool free?",
+        answer:
+          "Yes. Upload a photo, mark the area, restore it, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Picture cleanup runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How do I cleanup a picture?",
+        answer:
+          "Upload your photo, paint over the clutter, person, stamp, or distraction with the brush, then click Cleanup picture. The tool fills the marked area using nearby pixels.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a cleaned PNG.",
+      },
+      {
+        question: "What can I clean from a picture?",
+        answer:
+          "Brush over people, poles, trash, text, stamps, cables, or other distractions. Smaller, solid regions usually restore more cleanly than very large or complex areas.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After processing, drag the preview slider to compare the original photo with the cleaned result.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use. Only edit photos you own or have permission to change.",
+      },
+    ],
+  },
+  {
     slug: "remove-objects",
     name: "Remove Objects from Photo",
     shortName: "Remove Objects",
