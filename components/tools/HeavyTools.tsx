@@ -280,6 +280,11 @@ export const HeicToJpgLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const WebpToJpgLazy = dynamic(
+  () => import("@/components/tools/WebpToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const RemoveWatermarkLazy = dynamic(
   () => import("@/components/tools/RemoveWatermark"),
   { ssr: false, loading: () => <ToolLoading /> },

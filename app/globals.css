@@ -1145,7 +1145,7 @@ a {
 /* -- Tool page shell -- */
 .tool-shell__glow {
   position: absolute;
-  inset: auto -15% -25% 35%;
+  inset: auto -15% 0 35%;
   height: 55%;
   background: radial-gradient(
     closest-side,

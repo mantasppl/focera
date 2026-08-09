@@ -4820,6 +4820,70 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "webp-to-jpg",
+    name: "WebP to JPG Converter",
+    shortName: "WebP to JPG",
+    description:
+      "Convert WebP to JPG online — extract every frame from animated WebP or convert a still WebP to JPEG. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/webp-to-jpg",
+    keywords: [
+      "webp to jpg",
+      "webp to jpeg",
+      "convert webp to jpg",
+      "webp to jpg converter",
+      "animated webp to jpg",
+      "webp frames to jpg",
+      "extract webp frames",
+      "webp video to jpg",
+      "free webp to jpg",
+      "webp to jpg online",
+    ],
+    faq: [
+      {
+        question: "Is this WebP to JPG converter free?",
+        answer:
+          "Yes. Convert and download unlimited WebP-to-JPG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my files uploaded to a server?",
+        answer:
+          "No. Decoding and conversion run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Does it support animated WebP?",
+        answer:
+          "Yes. Upload an animated WebP and every frame is exported as a separate JPG. Download one frame or a ZIP of all frames.",
+      },
+      {
+        question: "What about still WebP images?",
+        answer:
+          "Still (single-frame) WebP files convert to one JPG with the same quality controls.",
+      },
+      {
+        question: "What quality options are available?",
+        answer:
+          "Choose Smaller, Balanced, or High JPEG quality to trade file size for detail before downloading.",
+      },
+      {
+        question: "Is there a file size or frame limit?",
+        answer:
+          "Yes. Upload WebP files up to 25 MB with a maximum of 300 frames per conversion.",
+      },
+      {
+        question: "Why do JPG frames have a white background?",
+        answer:
+          "JPEG does not support transparency. Transparent WebP areas are filled with white so frames look correct in viewers and editors.",
+      },
+      {
+        question: "Which browsers work best?",
+        answer:
+          "Chrome, Edge, and Safari support full animated-frame extraction via WebCodecs. Other browsers may convert the first frame only.",
+      },
+    ],
+  },
+  {
     slug: "webp-to-pdf",
     name: "WebP to PDF Converter",
     shortName: "WebP to PDF",
