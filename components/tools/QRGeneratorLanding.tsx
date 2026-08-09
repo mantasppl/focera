@@ -92,15 +92,14 @@ export default function QRGeneratorLanding() {
             you provide.
           </li>
           <li>
-            <strong>Click Generate QR.</strong> The tool renders a high-contrast PNG
-            with medium error correction, optimized for both digital sharing and
-            print. A loading indicator appears while the image is prepared locally
-            on your device.
+            <strong>Customize and preview.</strong> Pick a content type, tune
+            colors, size, logo, and style, then watch a live preview update in your
+            browser — no upload required.
           </li>
           <li>
-            <strong>Download or copy.</strong> Save the PNG for slides, packaging,
-            or social posts. Use Copy URL to grab the original link again for
-            captions, alt text, or accessibility notes alongside the visual code.
+            <strong>Download or copy.</strong> Save PNG or SVG for slides,
+            packaging, or social posts. Copy the image or encoded payload, or use
+            batch mode to export a ZIP of codes.
           </li>
         </ol>
         <p>
@@ -195,9 +194,9 @@ export default function QRGeneratorLanding() {
           </li>
         </ul>
         <p>
-          Focera outputs PNG files with a neutral palette suited to most layouts.
-          If your brand guidelines require custom colors, adjust in your design tool
-          after download — but always re-test scannability after stylistic changes.
+          Focera lets you set brand colors, module styles, frames, and a center logo
+          before download. Always re-test scannability after stylistic changes —
+          especially with low-contrast colors or large logos.
         </p>
       </section>
 

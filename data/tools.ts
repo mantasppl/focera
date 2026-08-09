@@ -958,7 +958,8 @@ export const tools: Tool[] = [
     slug: "qr-generator",
     name: "QR Code Generator",
     shortName: "QR Generator",
-    description: "Generate QR codes instantly online for free.",
+    description:
+      "Create branded QR codes for URLs, Wi‑Fi, vCards, events, geo, apps, and more. Customize colors, logo, styles, verify with camera, and download PNG, SVG, or PDF — free in your browser.",
     categories: ["file"],
     status: "ready",
     href: "/qr-generator",
@@ -967,6 +968,11 @@ export const tools: Tool[] = [
       "qr code generator",
       "qr code maker",
       "create qr code online",
+      "wifi qr code",
+      "vcard qr code",
+      "qr code svg",
+      "qr code pdf",
+      "event qr code",
       "qr",
       "barcode",
     ],
@@ -984,12 +990,17 @@ export const tools: Tool[] = [
       {
         question: "What format can I download?",
         answer:
-          "You get a high-contrast PNG file ready to print, embed in slides, or share on social media.",
+          "Download PNG, SVG, or a print-ready PDF. Transparent backgrounds and batch ZIP exports are also available.",
       },
       {
-        question: "Can I encode URLs, text, email, and phone numbers?",
+        question: "What content types can I encode?",
         answer:
-          "Yes. Paste any string — a full https URL, plain text, phone number, or email address — and the tool encodes it into a scannable QR code.",
+          "URL, text, Wi‑Fi, vCard, email, phone, SMS, calendar events, geo locations, and app store links — each with guided fields.",
+      },
+      {
+        question: "Can I verify a QR code before printing?",
+        answer:
+          "Yes. Use Scan to verify with your camera, or decode an existing QR image to import its payload.",
       },
       {
         question: "Do I need to sign up to use the generator?",

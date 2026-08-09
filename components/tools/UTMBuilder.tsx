@@ -1,13 +1,38 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import Link from "next/link";
+import {
+  Suspense,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from "react";
+import { useSearchParams } from "next/navigation";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { useToolAnalytics } from "@/lib/analytics/client";
 import { copyText } from "@/lib/utils";
 
 export default function UTMBuilder() {
+  return (
+    <Suspense
+      fallback={
+        <div className="tool-grid">
+          <div className="tool-panel">
+            <p className="tool-hint">Loading UTM builder…</p>
+          </div>
+        </div>
+      }
+    >
+      <UTMBuilderInner />
+    </Suspense>
+  );
+}
+
+function UTMBuilderInner() {
   const { trackSuccess } = useToolAnalytics();
+  const searchParams = useSearchParams();
   const urlId = useId();
   const sourceId = useId();
   const mediumId = useId();
@@ -18,6 +43,11 @@ export default function UTMBuilder() {
   const [medium, setMedium] = useState("");
   const [campaign, setCampaign] = useState("");
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const fromQuery = searchParams.get("url")?.trim();
+    if (fromQuery) setUrl(fromQuery);
+  }, [searchParams]);
 
   const result = useMemo(() => {
     const base = url.trim();
@@ -45,6 +75,10 @@ export default function UTMBuilder() {
       setTimeout(() => setCopied(false), 1600);
     }
   }
+
+  const qrHref = result
+    ? `/qr-generator?url=${encodeURIComponent(result)}`
+    : "/qr-generator";
 
   return (
     <div className="tool-grid">
@@ -86,9 +120,14 @@ export default function UTMBuilder() {
         <p className="tool-result__text">
           {result || "Enter a valid URL to generate a tracked link."}
         </p>
-        <Button onClick={copyResult} disabled={!result}>
-          {copied ? "Copied" : "Copy URL"}
-        </Button>
+        <div className="tool-actions">
+          <Button onClick={copyResult} disabled={!result}>
+            {copied ? "Copied" : "Copy URL"}
+          </Button>
+          <Link href={qrHref} className="ui-btn ui-btn--ghost">
+            Use in QR
+          </Link>
+        </div>
       </div>
     </div>
   );

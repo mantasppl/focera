@@ -1,9 +1,12 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import type { Tool } from "@/data/tools";
+import ToolIcon from "@/components/ToolIcon";
+import type { Tool, ToolCategory } from "@/data/tools";
 import {
   getPrimaryCategory,
   getReadyTools,
   getToolBySlug,
+  toolCardDescription,
 } from "@/data/tools";
 import { relatedToolSlugs } from "@/data/related-tools";
 import { cn } from "@/lib/utils";
@@ -13,6 +16,14 @@ type RelatedToolsProps = {
   limit?: number;
   title?: string;
   className?: string;
+};
+
+const categoryHint: Record<ToolCategory, string> = {
+  pdf: "PDF",
+  image: "Image",
+  video: "Video",
+  ai: "AI",
+  file: "Utility",
 };
 
 function tokenize(value: string): string[] {
@@ -99,7 +110,7 @@ export function getRelatedTools(currentSlug: string, limit = 3): Tool[] {
 export default function RelatedTools({
   currentSlug,
   limit = 3,
-  title = "Use next",
+  title = "Keep the momentum",
   className,
 }: RelatedToolsProps) {
   const related = getRelatedTools(currentSlug, limit);
@@ -110,23 +121,55 @@ export default function RelatedTools({
       className={cn("related-tools", className)}
       aria-labelledby="related-tools-heading"
     >
-      <h2 id="related-tools-heading" className="related-tools__title">
-        {title}
-      </h2>
-      <p className="related-tools__lede">
-        Three related tools that fit this workflow — every one runs locally in
-        your browser.
-      </p>
+      <div className="related-tools__intro">
+        <p className="related-tools__eyebrow">Up next</p>
+        <h2 id="related-tools-heading" className="related-tools__title">
+          {title}
+        </h2>
+        <p className="related-tools__lede">
+          Three tools that pair with this workflow — free, private, and ready
+          instantly in your browser.
+        </p>
+      </div>
+
       <ul className="related-tools__list">
-        {related.map((tool) => (
-          <li key={tool.slug}>
-            <Link href={tool.href} className="related-tools__link">
-              <span className="related-tools__name">{tool.shortName}</span>
-              <span className="related-tools__desc">{tool.description}</span>
-            </Link>
-          </li>
-        ))}
+        {related.map((tool, index) => {
+          const category = categoryHint[getPrimaryCategory(tool)];
+          const desc = toolCardDescription(tool, 78);
+
+          return (
+            <li
+              key={tool.slug}
+              className="related-tools__item"
+              style={{ "--rt-i": index } as CSSProperties}
+            >
+              <Link href={tool.href} className="related-tools__link">
+                <span className="related-tools__top">
+                  <span className="related-tools__icon" aria-hidden="true">
+                    <ToolIcon slug={tool.slug} className="related-tools__svg" />
+                  </span>
+                  <span className="related-tools__category">{category}</span>
+                </span>
+                <span className="related-tools__name">{tool.shortName}</span>
+                <span className="related-tools__desc">{desc}</span>
+                <span className="related-tools__cta">
+                  Open tool
+                  <span className="related-tools__arrow" aria-hidden="true">
+                    →
+                  </span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
+
+      <p className="related-tools__more">
+        <Link href="/tools" className="related-tools__more-link">
+          Explore every tool
+          <span aria-hidden="true"> →</span>
+        </Link>
+      </p>
     </section>
   );
 }
