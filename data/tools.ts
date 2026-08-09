@@ -2662,6 +2662,58 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "make-background-transparent",
+    name: "Make Background Transparent",
+    shortName: "Transparent BG",
+    description:
+      "Make any photo background transparent online for free — AI cutout to a clean PNG with alpha in your browser.",
+    categories: ["image", "ai"],
+    status: "ready",
+    href: "/make-background-transparent",
+    keywords: [
+      "make background transparent",
+      "transparent background",
+      "make image background transparent",
+      "transparent png online",
+      "clear background from photo",
+      "alpha transparent image",
+      "make photo background transparent",
+      "free transparent background",
+    ],
+    faq: [
+      {
+        question: "Is this transparent background tool free?",
+        answer:
+          "Yes. Upload a photo, make the background transparent, preview the cutout, and download a PNG with no account or payment.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. AI cutout runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "What file do I get after processing?",
+        answer:
+          "A PNG with alpha transparency — ready for e-commerce, design tools, slides, and social graphics.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a transparent PNG.",
+      },
+      {
+        question: "Why does the first run take longer?",
+        answer:
+          "The AI model downloads once and is cached by your browser. Later transparent cutouts are significantly faster.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. Transparent PNGs you download are yours to use in marketing, e-commerce, client work, and personal projects.",
+      },
+    ],
+  },
+  {
     slug: "ai-image-generator",
     name: "AI Image Generator",
     shortName: "AI Images",
@@ -3130,6 +3182,72 @@ export const tools: Tool[] = [
         question: "Can I use the results commercially?",
         answer:
           "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "combine-photo",
+    name: "Combine Photos — Photo Collage Maker",
+    shortName: "Combine Photos",
+    description:
+      "Combine photos online into one collage — side by side, stacked, or grid. Reorder images, add gaps, and download a PNG. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/combine-photo",
+    keywords: [
+      "combine photos",
+      "combine photo",
+      "photo collage maker",
+      "merge photos",
+      "join photos",
+      "side by side photos",
+      "photo grid maker",
+      "stitch photos together",
+      "combine images online",
+      "free photo combiner",
+      "collage photos online",
+      "put photos together",
+    ],
+    faq: [
+      {
+        question: "Is this photo combiner free?",
+        answer:
+          "Yes. Upload, arrange, combine, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Combining runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How many photos can I combine?",
+        answer:
+          "You can combine 2 to 9 JPG, PNG, or WebP photos in one collage. Each file can be up to 10 MB.",
+      },
+      {
+        question: "What layouts are available?",
+        answer:
+          "Side by side (one row), stacked (one column), or grid (auto columns for three or more photos). Reorder the list to control left-to-right and top-to-bottom placement.",
+      },
+      {
+        question: "Can I add space between photos?",
+        answer:
+          "Yes. Choose None, Small, or Medium gap, and pick a white, black, or transparent background for the spacing and letterboxing.",
+      },
+      {
+        question: "What is Fill vs Fit?",
+        answer:
+          "Fill crops each photo to cover its cell. Fit shows the full photo inside the cell and fills leftover space with the background color.",
+      },
+      {
+        question: "Which format do I download?",
+        answer:
+          "The tool exports a PNG collage. Use Image Compressor afterward if you need a smaller file for email or social uploads.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects — subject to rights in your original photos.",
       },
     ],
   },

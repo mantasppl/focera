@@ -106,7 +106,13 @@ export default function BlurBackgroundLanding() {
           Focera groups fast, privacy-friendly utilities in one hub. After you
           blur a background, these tools often fit the same workflow:
         </p>
-        <ul className="tool-content__list">
+          <ul className="tool-content__list">
+          <li>
+            <Link href="/make-background-transparent">
+              Make Background Transparent
+            </Link>{" "}
+            — Export a clean PNG with alpha instead of blur.
+          </li>
           <li>
             <Link href="/change-background">Change Background</Link> — Swap in
             a solid color or custom photo instead of blur.

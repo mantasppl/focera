@@ -108,6 +108,12 @@ export default function ChangeBackgroundLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/make-background-transparent">
+              Make Background Transparent
+            </Link>{" "}
+            — Clear the background to a transparent PNG cutout.
+          </li>
+          <li>
             <Link href="/background-remover">Background Remover</Link> —
             Export a transparent PNG cutout without compositing a new scene.
           </li>

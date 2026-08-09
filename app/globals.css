@@ -5025,6 +5025,7 @@ a {
 .upscale-image__options,
 .unblur-image__options,
 .resize-image__options,
+.combine-photo__options,
 .profile-photo-maker__options,
 .colorize-photo__options,
 .image-compressor__options,
@@ -5064,6 +5065,7 @@ a {
 .upscale-image__chips,
 .unblur-image__chips,
 .resize-image__chips,
+.combine-photo__chips,
 .profile-photo-maker__chips,
 .colorize-photo__chips,
 .image-compressor__chips,
@@ -5149,6 +5151,7 @@ a {
 .upscale-image__chip,
 .unblur-image__chip,
 .resize-image__chip,
+.combine-photo__chip,
 .profile-photo-maker__chip,
 .colorize-photo__chip,
 .image-compressor__chip,
@@ -5199,6 +5202,7 @@ a {
 .upscale-image__chip:hover:not(:disabled),
 .unblur-image__chip:hover:not(:disabled),
 .resize-image__chip:hover:not(:disabled),
+.combine-photo__chip:hover:not(:disabled),
 .profile-photo-maker__chip:hover:not(:disabled),
 .colorize-photo__chip:hover:not(:disabled),
 .image-compressor__chip:hover:not(:disabled),
@@ -5236,6 +5240,7 @@ a {
 .upscale-image__chip.is-active,
 .unblur-image__chip.is-active,
 .resize-image__chip.is-active,
+.combine-photo__chip.is-active,
 .profile-photo-maker__chip.is-active,
 .colorize-photo__chip.is-active,
 .image-compressor__chip.is-active,
@@ -5275,6 +5280,7 @@ a {
 .upscale-image__chip:disabled,
 .unblur-image__chip:disabled,
 .resize-image__chip:disabled,
+.combine-photo__chip:disabled,
 .profile-photo-maker__chip:disabled,
 .colorize-photo__chip:disabled,
 .image-compressor__chip:disabled,
@@ -5313,6 +5319,7 @@ a {
 .upscale-image__chip-label,
 .unblur-image__chip-label,
 .resize-image__chip-label,
+.combine-photo__chip-label,
 .profile-photo-maker__chip-label,
 .colorize-photo__chip-label,
 .image-compressor__chip-label,
@@ -5351,6 +5358,7 @@ a {
 .upscale-image__chip-hint,
 .unblur-image__chip-hint,
 .resize-image__chip-hint,
+.combine-photo__chip-hint,
 .profile-photo-maker__chip-hint,
 .colorize-photo__chip-hint,
 .image-compressor__chip-hint,
@@ -5390,6 +5398,7 @@ a {
 .upscale-image__chip.is-active .upscale-image__chip-hint,
 .unblur-image__chip.is-active .unblur-image__chip-hint,
 .resize-image__chip.is-active .resize-image__chip-hint,
+.combine-photo__chip.is-active .combine-photo__chip-hint,
 .profile-photo-maker__chip.is-active .profile-photo-maker__chip-hint,
 .colorize-photo__chip.is-active .colorize-photo__chip-hint,
 .image-compressor__chip.is-active .image-compressor__chip-hint,
@@ -5520,6 +5529,7 @@ a {
   .upscale-image__chips,
   .unblur-image__chips,
   .resize-image__chips,
+  .combine-photo__chips,
   .profile-photo-maker__chips,
   .profile-photo-maker__chips--shape,
   .colorize-photo__chips,
@@ -7989,10 +7999,11 @@ a {
   white-space: pre-wrap;
 }
 
-/* -- Merge PDF / PNG to PDF lists -- */
+/* -- Merge PDF / PNG to PDF / Combine Photo lists -- */
 .merge-pdf__list-wrap,
 .png-to-pdf__list-wrap,
-.add-images-to-pdf__list-wrap {
+.add-images-to-pdf__list-wrap,
+.combine-photo__list-wrap {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -8000,7 +8011,8 @@ a {
 
 .merge-pdf__list-header,
 .png-to-pdf__list-header,
-.add-images-to-pdf__list-header {
+.add-images-to-pdf__list-header,
+.combine-photo__list-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -8009,7 +8021,8 @@ a {
 
 .merge-pdf__list-title,
 .png-to-pdf__list-title,
-.add-images-to-pdf__list-title {
+.add-images-to-pdf__list-title,
+.combine-photo__list-title {
   margin: 0;
   font-size: 0.88rem;
   font-weight: 600;
@@ -8018,7 +8031,8 @@ a {
 
 .merge-pdf__list-meta,
 .png-to-pdf__list-meta,
-.add-images-to-pdf__list-meta {
+.add-images-to-pdf__list-meta,
+.combine-photo__list-meta {
   margin: 0;
   font-size: 0.78rem;
   color: var(--muted);
@@ -8026,7 +8040,8 @@ a {
 
 .merge-pdf__list,
 .png-to-pdf__list,
-.add-images-to-pdf__list {
+.add-images-to-pdf__list,
+.combine-photo__list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -8039,7 +8054,8 @@ a {
 
 .merge-pdf__item,
 .png-to-pdf__item,
-.add-images-to-pdf__item {
+.add-images-to-pdf__item,
+.combine-photo__item {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -8052,7 +8068,8 @@ a {
 
 .merge-pdf__index,
 .png-to-pdf__index,
-.add-images-to-pdf__index {
+.add-images-to-pdf__index,
+.combine-photo__index {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -8067,13 +8084,15 @@ a {
 
 .merge-pdf__file,
 .png-to-pdf__file,
-.add-images-to-pdf__file {
+.add-images-to-pdf__file,
+.combine-photo__file {
   min-width: 0;
 }
 
 .merge-pdf__name,
 .png-to-pdf__name,
-.add-images-to-pdf__name {
+.add-images-to-pdf__name,
+.combine-photo__name {
   margin: 0;
   font-size: 0.86rem;
   font-weight: 600;
@@ -8085,7 +8104,8 @@ a {
 
 .merge-pdf__size,
 .png-to-pdf__size,
-.add-images-to-pdf__size {
+.add-images-to-pdf__size,
+.combine-photo__size {
   margin: 0.1rem 0 0;
   font-size: 0.75rem;
   color: var(--muted);
@@ -8093,14 +8113,16 @@ a {
 
 .merge-pdf__item-actions,
 .png-to-pdf__item-actions,
-.add-images-to-pdf__item-actions {
+.add-images-to-pdf__item-actions,
+.combine-photo__item-actions {
   display: inline-flex;
   gap: 0.25rem;
 }
 
 .merge-pdf__icon-btn,
 .png-to-pdf__icon-btn,
-.add-images-to-pdf__icon-btn {
+.add-images-to-pdf__icon-btn,
+.combine-photo__icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -8121,21 +8143,24 @@ a {
 
 .merge-pdf__icon-btn:hover:not(:disabled),
 .png-to-pdf__icon-btn:hover:not(:disabled),
-.add-images-to-pdf__icon-btn:hover:not(:disabled) {
+.add-images-to-pdf__icon-btn:hover:not(:disabled),
+.combine-photo__icon-btn:hover:not(:disabled) {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.06);
 }
 
 .merge-pdf__icon-btn:disabled,
 .png-to-pdf__icon-btn:disabled,
-.add-images-to-pdf__icon-btn:disabled {
+.add-images-to-pdf__icon-btn:disabled,
+.combine-photo__icon-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
 .merge-pdf__icon-btn--danger:hover:not(:disabled),
 .png-to-pdf__icon-btn--danger:hover:not(:disabled),
-.add-images-to-pdf__icon-btn--danger:hover:not(:disabled) {
+.add-images-to-pdf__icon-btn--danger:hover:not(:disabled),
+.combine-photo__icon-btn--danger:hover:not(:disabled) {
   border-color: #c45c4a;
   color: #a43d2d;
   background: rgba(196, 92, 74, 0.08);
@@ -8144,7 +8169,9 @@ a {
 .merge-pdf__empty,
 .merge-pdf__success,
 .png-to-pdf__empty,
-.pdf-creator__empty {
+.pdf-creator__empty,
+.combine-photo__empty,
+.combine-photo__success {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8154,14 +8181,16 @@ a {
   text-align: center;
 }
 
-.merge-pdf__success-title {
+.merge-pdf__success-title,
+.combine-photo__success-title {
   margin: 0;
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--accent-deep);
 }
 
-.merge-pdf__success-meta {
+.merge-pdf__success-meta,
+.combine-photo__success-meta {
   margin: 0;
   font-size: 0.9rem;
   color: var(--ink);
@@ -8169,7 +8198,8 @@ a {
 
 .merge-pdf__summary,
 .png-to-pdf__summary,
-.pdf-creator__summary {
+.pdf-creator__summary,
+.combine-photo__summary {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -8184,10 +8214,29 @@ a {
 
 .merge-pdf__summary li,
 .png-to-pdf__summary li,
-.pdf-creator__summary li {
+.pdf-creator__summary li,
+.combine-photo__summary li {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.combine-photo__preview {
+  max-width: min(100%, 420px);
+  max-height: 320px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(45deg, #ececec 25%, transparent 25%),
+    linear-gradient(-45deg, #ececec 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ececec 75%),
+    linear-gradient(-45deg, transparent 75%, #ececec 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
 }
 
 /* -- PDF Editor -- */

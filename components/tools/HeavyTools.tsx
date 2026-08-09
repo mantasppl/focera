@@ -26,6 +26,11 @@ export const BlurBackgroundLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const MakeBackgroundTransparentLazy = dynamic(
+  () => import("@/components/tools/MakeBackgroundTransparent"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const MarkdownEditorLazy = dynamic(
   () => import("@/components/tools/MarkdownEditor"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -257,6 +262,11 @@ export const UnblurImageLazy = dynamic(
 
 export const ResizeImageLazy = dynamic(
   () => import("@/components/tools/ResizeImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const CombinePhotoLazy = dynamic(
+  () => import("@/components/tools/CombinePhoto"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

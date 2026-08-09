@@ -45,7 +45,7 @@ type IconKind =
   | "ocr";
 
 function iconKindForSlug(slug: string): IconKind {
-  if (slug.includes("merge")) return "merge";
+  if (slug.includes("merge") || slug.includes("combine-photo")) return "merge";
   if (slug.includes("split") || slug.includes("delete-pdf")) return "split";
   if (slug.includes("compress")) return "compress";
   if (slug.includes("rotate") || slug.includes("rearrange")) return "rotate";

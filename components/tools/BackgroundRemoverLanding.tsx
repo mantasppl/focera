@@ -116,6 +116,12 @@ export default function BackgroundRemoverLanding() {
           </p>
           <ul className="tool-content__list">
             <li>
+              <Link href="/make-background-transparent">
+                Make Background Transparent
+              </Link>{" "}
+              — Focused transparent PNG cutout without extra export modes.
+            </li>
+            <li>
               <Link href="/change-background">Change Background</Link> —
               Replace the scene with a solid color, custom photo, or portrait
               blur after cutout.

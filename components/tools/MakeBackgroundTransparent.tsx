@@ -1,0 +1,218 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Button from "@/components/Button";
+import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
+import ImageDropzone from "@/components/tools/ImageDropzone";
+import { removeImageBackground } from "@/lib/background-removal";
+import { useToolAnalytics } from "@/lib/analytics/client";
+import {
+  downloadBlob,
+  fileBaseName,
+  formatFileSize,
+} from "@/lib/image";
+
+export default function MakeBackgroundTransparent() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
+  const [sourceFile, setSourceFile] = useState<File | null>(null);
+  const [originalUrl, setOriginalUrl] = useState("");
+  const [resultBlob, setResultBlob] = useState<Blob | null>(null);
+  const [resultUrl, setResultUrl] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [progressText, setProgressText] = useState("");
+
+  const resultUrlRef = useRef("");
+
+  const hasSource = Boolean(sourceFile && originalUrl);
+  const hasResult = Boolean(resultBlob && resultUrl);
+  const canProcess = hasSource && !loading;
+
+  useEffect(() => {
+    resultUrlRef.current = resultUrl;
+  }, [resultUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (originalUrl) URL.revokeObjectURL(originalUrl);
+      if (resultUrlRef.current) URL.revokeObjectURL(resultUrlRef.current);
+    };
+  }, [originalUrl]);
+
+  function resetResult() {
+    setResultBlob(null);
+    setResultUrl((previous) => {
+      if (previous) URL.revokeObjectURL(previous);
+      return "";
+    });
+  }
+
+  function handleFile(file: File) {
+    if (originalUrl) URL.revokeObjectURL(originalUrl);
+    resetResult();
+    setError("");
+    setSourceFile(file);
+    setOriginalUrl(URL.createObjectURL(file));
+  }
+
+  async function makeTransparent() {
+    if (!sourceFile) {
+      setError("Upload an image to get started.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setProgressText("Preparing AI model…");
+    resetResult();
+
+    try {
+      const blob = await removeImageBackground(sourceFile, {
+        onProgress: ({ key, current, total }) => {
+          if (total > 0) {
+            const percent = Math.round((current / total) * 100);
+            setProgressText(`Loading ${key}… ${percent}%`);
+            return;
+          }
+          setProgressText(`Processing ${key}…`);
+        },
+      });
+
+      const url = URL.createObjectURL(blob);
+      setResultBlob(blob);
+      setResultUrl(url);
+      setProgressText("");
+      trackSuccess();
+    } catch (err) {
+      trackFailure();
+      console.error("[make-background-transparent]", err);
+      setError(
+        "Could not make the background transparent. Try a smaller image or a different browser.",
+      );
+      setProgressText("");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleDownload() {
+    if (!sourceFile || !resultBlob) return;
+    downloadBlob(resultBlob, `${fileBaseName(sourceFile)}-transparent.png`);
+  }
+
+  function handleReset() {
+    if (originalUrl) URL.revokeObjectURL(originalUrl);
+    resetResult();
+    setSourceFile(null);
+    setOriginalUrl("");
+    setError("");
+    setProgressText("");
+  }
+
+  return (
+    <div className="tool-grid">
+      <div className="tool-panel">
+        <ImageDropzone
+          onFile={handleFile}
+          onError={setError}
+          disabled={loading}
+        />
+
+        {hasSource ? (
+          <div className="upload-meta">
+            <p className="upload-meta__name">{sourceFile?.name}</p>
+            <p className="upload-meta__size">
+              {sourceFile ? formatFileSize(sourceFile.size) : ""}
+            </p>
+          </div>
+        ) : null}
+
+        <div className="tool-actions">
+          <Button onClick={() => void makeTransparent()} disabled={!canProcess}>
+            {loading ? "Processing…" : "Make background transparent"}
+          </Button>
+          <Button
+            variant="ghost"
+            onClick={handleReset}
+            disabled={(!hasSource && !hasResult) || loading}
+          >
+            Start over
+          </Button>
+        </div>
+
+        {hasResult ? (
+          <section
+            className="export-options"
+            aria-labelledby="transparent-bg-options-heading"
+          >
+            <h2
+              id="transparent-bg-options-heading"
+              className="export-options__heading"
+            >
+              Transparent PNG ready
+            </h2>
+            <p className="export-options__lede">
+              Your subject is cut out with alpha transparency — download and
+              drop it into any design or storefront layout.
+            </p>
+            <div className="export-options__actions">
+              <Button onClick={handleDownload} disabled={loading}>
+                Download transparent PNG
+              </Button>
+            </div>
+          </section>
+        ) : null}
+
+        {error ? (
+          <p className="tool-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+      </div>
+
+      <div className="tool-panel tool-panel--preview">
+        <div
+          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
+        >
+          {loading ? (
+            <div className="tool-loading" role="status" aria-live="polite">
+              <span className="tool-loading__spinner" aria-hidden="true" />
+              <span className="tool-loading__text">
+                {progressText || "Making background transparent…"}
+              </span>
+              <span className="tool-loading__subtext">
+                First run downloads the AI model — this may take a moment.
+              </span>
+            </div>
+          ) : hasResult && originalUrl ? (
+            <BeforeAfterPreview
+              beforeSrc={originalUrl}
+              afterSrc={resultUrl}
+              hint="Drag the slider to compare the original and transparent PNG."
+            />
+          ) : hasSource && originalUrl ? (
+            <div className="preview-single">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={originalUrl}
+                alt="Uploaded preview"
+                className="preview-single__image"
+              />
+              <p className="tool-placeholder preview-single__hint">
+                Click Make background transparent to process this image.
+              </p>
+            </div>
+          ) : (
+            <p className="tool-placeholder">
+              Upload an image to preview and make its background transparent
+            </p>
+          )}
+        </div>
+        <p className="tool-hint">
+          Transparent PNG output · processed locally in your browser · no upload
+          to our servers
+        </p>
+      </div>
+    </div>
+  );
+}

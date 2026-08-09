@@ -23,19 +23,24 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "text-case-converter",
   ],
   "background-remover": [
+    "make-background-transparent",
     "change-background",
     "blur-background",
-    "profile-photo-maker",
   ],
   "blur-background": [
+    "make-background-transparent",
     "change-background",
     "background-remover",
-    "profile-photo-maker",
   ],
   "change-background": [
+    "make-background-transparent",
     "background-remover",
     "blur-background",
-    "profile-photo-maker",
+  ],
+  "make-background-transparent": [
+    "background-remover",
+    "change-background",
+    "blur-background",
   ],
   "color-palette-generator": [
     "background-remover",
@@ -90,6 +95,11 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "upscale-image",
     "unblur-image",
     "image-compressor",
+  ],
+  "combine-photo": [
+    "resize-image",
+    "image-compressor",
+    "image-to-pdf",
   ],
   "image-converter": [
     "heic-to-jpg",
