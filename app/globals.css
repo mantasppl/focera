@@ -5022,11 +5022,14 @@ a {
 .pdf-watermark__options,
 .add-page-numbers-to-pdf__options,
 .add-text-to-pdf__options,
+.add-text-on-image__options,
 .upscale-image__options,
 .unblur-image__options,
 .resize-image__options,
+.crop-image__options,
 .combine-photo__options,
 .profile-photo-maker__options,
+.round-image__options,
 .colorize-photo__options,
 .image-compressor__options,
 .heic-to-jpg__options,
@@ -5062,11 +5065,14 @@ a {
 .pdf-watermark__chips,
 .add-page-numbers-to-pdf__chips,
 .add-text-to-pdf__chips,
+.add-text-on-image__chips,
 .upscale-image__chips,
 .unblur-image__chips,
 .resize-image__chips,
+.crop-image__chips,
 .combine-photo__chips,
 .profile-photo-maker__chips,
+.round-image__chips,
 .colorize-photo__chips,
 .image-compressor__chips,
 .heic-to-jpg__chips,
@@ -5080,19 +5086,23 @@ a {
 
 .pdf-watermark__chips--positions,
 .add-page-numbers-to-pdf__chips--positions,
-.add-text-to-pdf__chips--positions {
+.add-text-to-pdf__chips--positions,
+.add-text-on-image__chips--positions {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .pdf-watermark__chips--rotation,
 .add-text-to-pdf__chips--rotation,
 .add-text-to-pdf__chips--pages,
-.add-text-to-pdf__chips--colors {
+.add-text-to-pdf__chips--colors,
+.add-text-on-image__chips--rotation,
+.add-text-on-image__chips--colors {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .add-page-numbers-to-pdf__chips--formats,
-.add-text-to-pdf__chips--fonts {
+.add-text-to-pdf__chips--fonts,
+.add-text-on-image__chips--fonts {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -5108,7 +5118,12 @@ a {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
-.profile-photo-maker__chips {
+.crop-image__chips {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.profile-photo-maker__chips,
+.round-image__chips {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -5148,11 +5163,14 @@ a {
 .pdf-watermark__chip,
 .add-page-numbers-to-pdf__chip,
 .add-text-to-pdf__chip,
+.add-text-on-image__chip,
 .upscale-image__chip,
 .unblur-image__chip,
 .resize-image__chip,
+.crop-image__chip,
 .combine-photo__chip,
 .profile-photo-maker__chip,
+.round-image__chip,
 .colorize-photo__chip,
 .image-compressor__chip,
 .heic-to-jpg__chip,
@@ -5199,11 +5217,14 @@ a {
 .pdf-watermark__chip:hover:not(:disabled),
 .add-page-numbers-to-pdf__chip:hover:not(:disabled),
 .add-text-to-pdf__chip:hover:not(:disabled),
+.add-text-on-image__chip:hover:not(:disabled),
 .upscale-image__chip:hover:not(:disabled),
 .unblur-image__chip:hover:not(:disabled),
 .resize-image__chip:hover:not(:disabled),
+.crop-image__chip:hover:not(:disabled),
 .combine-photo__chip:hover:not(:disabled),
 .profile-photo-maker__chip:hover:not(:disabled),
+.round-image__chip:hover:not(:disabled),
 .colorize-photo__chip:hover:not(:disabled),
 .image-compressor__chip:hover:not(:disabled),
 .heic-to-jpg__chip:hover:not(:disabled),
@@ -5237,11 +5258,14 @@ a {
 .pdf-watermark__chip.is-active,
 .add-page-numbers-to-pdf__chip.is-active,
 .add-text-to-pdf__chip.is-active,
+.add-text-on-image__chip.is-active,
 .upscale-image__chip.is-active,
 .unblur-image__chip.is-active,
 .resize-image__chip.is-active,
+.crop-image__chip.is-active,
 .combine-photo__chip.is-active,
 .profile-photo-maker__chip.is-active,
+.round-image__chip.is-active,
 .colorize-photo__chip.is-active,
 .image-compressor__chip.is-active,
 .heic-to-jpg__chip.is-active,
@@ -5277,11 +5301,14 @@ a {
 .pdf-watermark__chip:disabled,
 .add-page-numbers-to-pdf__chip:disabled,
 .add-text-to-pdf__chip:disabled,
+.add-text-on-image__chip:disabled,
 .upscale-image__chip:disabled,
 .unblur-image__chip:disabled,
 .resize-image__chip:disabled,
+.crop-image__chip:disabled,
 .combine-photo__chip:disabled,
 .profile-photo-maker__chip:disabled,
+.round-image__chip:disabled,
 .colorize-photo__chip:disabled,
 .image-compressor__chip:disabled,
 .heic-to-jpg__chip:disabled,
@@ -5316,11 +5343,14 @@ a {
 .pdf-watermark__chip-label,
 .add-page-numbers-to-pdf__chip-label,
 .add-text-to-pdf__chip-label,
+.add-text-on-image__chip-label,
 .upscale-image__chip-label,
 .unblur-image__chip-label,
 .resize-image__chip-label,
+.crop-image__chip-label,
 .combine-photo__chip-label,
 .profile-photo-maker__chip-label,
+.round-image__chip-label,
 .colorize-photo__chip-label,
 .image-compressor__chip-label,
 .heic-to-jpg__chip-label,
@@ -5355,11 +5385,14 @@ a {
 .pdf-watermark__chip-hint,
 .add-page-numbers-to-pdf__chip-hint,
 .add-text-to-pdf__chip-hint,
+.add-text-on-image__chip-hint,
 .upscale-image__chip-hint,
 .unblur-image__chip-hint,
 .resize-image__chip-hint,
+.crop-image__chip-hint,
 .combine-photo__chip-hint,
 .profile-photo-maker__chip-hint,
+.round-image__chip-hint,
 .colorize-photo__chip-hint,
 .image-compressor__chip-hint,
 .heic-to-jpg__chip-hint,
@@ -5395,11 +5428,14 @@ a {
 .pdf-watermark__chip.is-active .pdf-watermark__chip-hint,
 .add-page-numbers-to-pdf__chip.is-active .add-page-numbers-to-pdf__chip-hint,
 .add-text-to-pdf__chip.is-active .add-text-to-pdf__chip-hint,
+.add-text-on-image__chip.is-active .add-text-on-image__chip-hint,
 .upscale-image__chip.is-active .upscale-image__chip-hint,
 .unblur-image__chip.is-active .unblur-image__chip-hint,
 .resize-image__chip.is-active .resize-image__chip-hint,
+.crop-image__chip.is-active .crop-image__chip-hint,
 .combine-photo__chip.is-active .combine-photo__chip-hint,
 .profile-photo-maker__chip.is-active .profile-photo-maker__chip-hint,
+.round-image__chip.is-active .round-image__chip-hint,
 .colorize-photo__chip.is-active .colorize-photo__chip-hint,
 .image-compressor__chip.is-active .image-compressor__chip-hint,
 .heic-to-jpg__chip.is-active .heic-to-jpg__chip-hint,
@@ -5526,12 +5562,19 @@ a {
   .add-text-to-pdf__chips--colors,
   .add-text-to-pdf__chips--pages,
   .add-text-to-pdf__chips--rotation,
+  .add-text-on-image__chips,
+  .add-text-on-image__chips--positions,
+  .add-text-on-image__chips--fonts,
+  .add-text-on-image__chips--colors,
+  .add-text-on-image__chips--rotation,
   .upscale-image__chips,
   .unblur-image__chips,
   .resize-image__chips,
+  .crop-image__chips,
   .combine-photo__chips,
   .profile-photo-maker__chips,
   .profile-photo-maker__chips--shape,
+  .round-image__chips,
   .colorize-photo__chips,
   .image-compressor__chips,
   .image-compressor__chips--levels,
@@ -5574,10 +5617,50 @@ a {
   color: var(--muted);
 }
 
+.add-text-on-image__outline {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+}
+
+.add-text-on-image__outline input {
+  margin-top: 0.2rem;
+  accent-color: var(--accent);
+}
+
+.add-text-on-image__outline-title {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.add-text-on-image__outline-hint {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.add-text-on-image__canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
 .upscale-image__result,
 .unblur-image__result,
 .resize-image__result,
+.crop-image__result,
+.add-text-on-image__result,
+.add-text-on-image__preview,
 .profile-photo-maker__result,
+.round-image__result,
 .colorize-photo__result {
   display: flex;
   flex-direction: column;
@@ -5588,7 +5671,10 @@ a {
 .upscale-image__result-meta,
 .unblur-image__result-meta,
 .resize-image__result-meta,
+.crop-image__result-meta,
+.add-text-on-image__result-meta,
 .profile-photo-maker__result-meta,
+.round-image__result-meta,
 .colorize-photo__result-meta {
   margin: 0;
   font-size: 0.85rem;
@@ -5596,8 +5682,9 @@ a {
   text-align: center;
 }
 
-/* -- Profile Photo Maker -- */
-.profile-photo-maker__editor {
+/* -- Profile Photo Maker / Round Image -- */
+.profile-photo-maker__editor,
+.round-image__editor {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -5605,7 +5692,8 @@ a {
   width: 100%;
 }
 
-.profile-photo-maker__frame {
+.profile-photo-maker__frame,
+.round-image__frame {
   position: relative;
   width: min(100%, 320px);
   aspect-ratio: 1;
@@ -5628,27 +5716,32 @@ a {
   user-select: none;
 }
 
-.profile-photo-maker__frame:active {
+.profile-photo-maker__frame:active,
+.round-image__frame:active {
   cursor: grabbing;
 }
 
-.profile-photo-maker__frame.is-circle {
+.profile-photo-maker__frame.is-circle,
+.round-image__frame.is-circle {
   border-radius: 50%;
 }
 
-.profile-photo-maker__frame-image {
+.profile-photo-maker__frame-image,
+.round-image__frame-image {
   position: absolute;
   max-width: none;
   pointer-events: none;
   user-select: none;
 }
 
-.profile-photo-maker__zoom {
+.profile-photo-maker__zoom,
+.round-image__zoom {
   width: 100%;
   accent-color: var(--accent);
 }
 
-.profile-photo-maker__result-frame {
+.profile-photo-maker__result-frame,
+.round-image__result-frame {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5671,14 +5764,163 @@ a {
   background-color: #f5f5f5;
 }
 
-.profile-photo-maker__result-frame.is-circle {
+.profile-photo-maker__result-frame.is-circle,
+.round-image__result-frame.is-circle {
   border-radius: 50%;
 }
 
-.profile-photo-maker__result-image {
+.profile-photo-maker__result-image,
+.round-image__result-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+/* -- Crop Image -- */
+.crop-image__dims-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.crop-image__editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.crop-image__stage {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  height: min(52vh, 420px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.04);
+  touch-action: none;
+  user-select: none;
+}
+
+.crop-image__image {
+  position: absolute;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+.crop-image__shade {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.crop-image__selection {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  cursor: move;
+  touch-action: none;
+}
+
+.crop-image__selection::before,
+.crop-image__selection::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.crop-image__selection::before {
+  background: linear-gradient(
+      to right,
+      transparent 33.33%,
+      rgba(255, 255, 255, 0.45) 33.33%,
+      rgba(255, 255, 255, 0.45) calc(33.33% + 1px),
+      transparent calc(33.33% + 1px),
+      transparent 66.66%,
+      rgba(255, 255, 255, 0.45) 66.66%,
+      rgba(255, 255, 255, 0.45) calc(66.66% + 1px),
+      transparent calc(66.66% + 1px)
+    );
+}
+
+.crop-image__selection::after {
+  background: linear-gradient(
+      to bottom,
+      transparent 33.33%,
+      rgba(255, 255, 255, 0.45) 33.33%,
+      rgba(255, 255, 255, 0.45) calc(33.33% + 1px),
+      transparent calc(33.33% + 1px),
+      transparent 66.66%,
+      rgba(255, 255, 255, 0.45) 66.66%,
+      rgba(255, 255, 255, 0.45) calc(66.66% + 1px),
+      transparent calc(66.66% + 1px)
+    );
+}
+
+.crop-image__handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.crop-image__handle--n {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.crop-image__handle--s {
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: ns-resize;
+}
+
+.crop-image__handle--e {
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.crop-image__handle--w {
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: ew-resize;
+}
+
+.crop-image__handle--ne {
+  top: -6px;
+  right: -6px;
+  cursor: nesw-resize;
+}
+
+.crop-image__handle--nw {
+  top: -6px;
+  left: -6px;
+  cursor: nwse-resize;
+}
+
+.crop-image__handle--se {
+  bottom: -6px;
+  right: -6px;
+  cursor: nwse-resize;
+}
+
+.crop-image__handle--sw {
+  bottom: -6px;
+  left: -6px;
+  cursor: nesw-resize;
 }
 
 /* -- Resize Image -- */

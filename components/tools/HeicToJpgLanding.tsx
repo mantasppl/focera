@@ -135,6 +135,10 @@ export default function HeicToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/png-to-jpg">PNG to JPG</Link> — Convert PNG images to
+            JPEG with the same quality controls.
+          </li>
+          <li>
             <Link href="/image-compressor">Compress Image Size</Link> — Shrink
             JPG file size after converting for email and uploads.
           </li>

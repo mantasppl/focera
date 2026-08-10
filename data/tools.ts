@@ -2054,6 +2054,71 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "add-text-on-image",
+    name: "Add Text on Image Tool",
+    shortName: "Add Text on Image",
+    description:
+      "Add text on image online — overlay captions, labels, or stamps with font, size, color, opacity, position, and live preview. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/add-text-on-image",
+    keywords: [
+      "add text on image",
+      "add text to image",
+      "text overlay on photo",
+      "write on image",
+      "caption image online",
+      "stamp text on photo",
+      "add text to picture",
+      "put text on image",
+      "free add text image",
+      "image text overlay",
+      "add caption to photo",
+    ],
+    faq: [
+      {
+        question: "Is this add text on image tool free?",
+        answer:
+          "Yes. Overlay text on unlimited images with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Text is drawn entirely in your browser. Your photos stay on your device.",
+      },
+      {
+        question: "Where can I place the text?",
+        answer:
+          "Choose center, header, or footer positions (left, center, or right). You can also rotate text diagonally.",
+      },
+      {
+        question: "Can I preview before downloading?",
+        answer:
+          "Yes. The preview updates live as you type and change options. Download a full-resolution PNG when you are ready.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a PNG with the text baked in.",
+      },
+      {
+        question: "What does Text outline do?",
+        answer:
+          "It adds a soft dark stroke around letters so white or light text stays readable on busy backgrounds.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, social, client work, and personal projects.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your image, type your text, and download immediately.",
+      },
+    ],
+  },
+  {
     slug: "add-images-to-pdf",
     name: "Add Images to PDF Tool",
     shortName: "Add Images to PDF",
@@ -3186,6 +3251,67 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "crop-image",
+    name: "Crop Image Online",
+    shortName: "Crop Image",
+    description:
+      "Crop an image online — drag to reframe, lock aspect ratios like 1:1 or 16:9, then download a PNG. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/crop-image",
+    keywords: [
+      "crop image",
+      "crop photo",
+      "image cropper",
+      "crop picture online",
+      "trim image",
+      "crop jpg",
+      "crop png",
+      "aspect ratio crop",
+      "free image cropper",
+      "crop photo online",
+      "cut image",
+      "photo crop tool",
+    ],
+    faq: [
+      {
+        question: "Is this image cropper free?",
+        answer:
+          "Yes. Upload, crop, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Cropping runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I lock an aspect ratio?",
+        answer:
+          "Yes. Choose Free for any shape, or lock 1:1, 4:3, 3:2, 16:9, or 9:16 while you drag the handles.",
+      },
+      {
+        question: "How do I adjust the crop area?",
+        answer:
+          "Drag inside the selection to move it. Use the corner and edge handles to resize. The live pixel size updates as you adjust.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a PNG at the cropped dimensions.",
+      },
+      {
+        question: "How is this different from Profile Photo Maker?",
+        answer:
+          "Crop Image is a general rectangular cropper with freeform and common ratios. Profile Photo Maker focuses on square or circle avatars sized for social platforms.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects.",
+      },
+    ],
+  },
+  {
     slug: "combine-photo",
     name: "Combine Photos — Photo Collage Maker",
     shortName: "Combine Photos",
@@ -3309,6 +3435,67 @@ export const tools: Tool[] = [
         question: "Can I use the results commercially?",
         answer:
           "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects — subject to rights in your original photo.",
+      },
+    ],
+  },
+  {
+    slug: "round-image",
+    name: "Round Image — Make Image Circular Online",
+    shortName: "Round Image",
+    description:
+      "Make an image round online — crop to a circle with a transparent edge, choose the diameter, then download a PNG. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/round-image",
+    keywords: [
+      "round image",
+      "make image round",
+      "circular image",
+      "circle crop image",
+      "round photo",
+      "make photo circular",
+      "round png",
+      "circle crop online",
+      "round image maker",
+      "circular photo crop",
+      "free round image tool",
+      "crop image to circle",
+    ],
+    faq: [
+      {
+        question: "Is this round image tool free?",
+        answer:
+          "Yes. Upload, frame the circle, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Circle cropping runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Does the round image have a transparent background?",
+        answer:
+          "Yes. Outside the circle is transparent, so the PNG drops cleanly onto any background or UI frame.",
+      },
+      {
+        question: "Can I choose the output size?",
+        answer:
+          "Yes. Use presets from 128 to 2048 px, or enter any custom diameter between 32 and 2048 px.",
+      },
+      {
+        question: "How do I reframe the circle?",
+        answer:
+          "Drag the preview to pan and use the zoom slider to tighten the frame around a face or subject before you export.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a circular PNG.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects — subject to rights in your original image.",
       },
     ],
   },
@@ -4938,6 +5125,358 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "png-to-jpg",
+    name: "PNG to JPG Converter",
+    shortName: "PNG to JPG",
+    description:
+      "Convert PNG to JPG online — turn PNG images into standard JPEG files with quality control. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/png-to-jpg",
+    keywords: [
+      "png to jpg",
+      "png to jpeg",
+      "convert png to jpg",
+      "png to jpg converter",
+      "png to jpeg converter",
+      "change png to jpg",
+      "png jpg converter",
+      "free png to jpg",
+      "png to jpg online",
+      "convert png to jpeg",
+    ],
+    faq: [
+      {
+        question: "Is this PNG to JPG converter free?",
+        answer:
+          "Yes. Convert and download unlimited PNG-to-JPG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple PNG files at once?",
+        answer:
+          "Yes. Add up to 20 PNG images. One file downloads as a .jpg; multiple files download together as a ZIP.",
+      },
+      {
+        question: "What quality options are available?",
+        answer:
+          "Choose Smaller, Balanced, or High JPEG quality to trade file size for detail before downloading.",
+      },
+      {
+        question: "What happens to transparent PNG areas?",
+        answer:
+          "JPEG does not support transparency. Transparent pixels are filled with white so the JPG looks correct in viewers and editors.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each PNG can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PNG images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "png-to-webp",
+    name: "PNG to WebP Converter",
+    shortName: "PNG to WebP",
+    description:
+      "Convert PNG to WebP online — turn PNG images into smaller WebP files with quality control and transparency preserved. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/png-to-webp",
+    keywords: [
+      "png to webp",
+      "convert png to webp",
+      "png to webp converter",
+      "change png to webp",
+      "png webp converter",
+      "free png to webp",
+      "png to webp online",
+      "convert png into webp",
+      "png to webp tool",
+      "transparent png to webp",
+    ],
+    faq: [
+      {
+        question: "Is this PNG to WebP converter free?",
+        answer:
+          "Yes. Convert and download unlimited PNG-to-WebP files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple PNG files at once?",
+        answer:
+          "Yes. Add up to 20 PNG images. One file downloads as a .webp; multiple files download together as a ZIP.",
+      },
+      {
+        question: "What quality options are available?",
+        answer:
+          "Choose Smaller, Balanced, or High WebP quality to trade file size for detail before downloading.",
+      },
+      {
+        question: "Does WebP keep PNG transparency?",
+        answer:
+          "Yes. Transparent PNG pixels stay transparent in the WebP output — no white background is added.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each PNG can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PNG images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "png-to-svg",
+    name: "PNG to SVG Converter",
+    shortName: "PNG to SVG",
+    description:
+      "Convert PNG to SVG online — trace PNG logos and icons into scalable vector SVG files. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/png-to-svg",
+    keywords: [
+      "png to svg",
+      "convert png to svg",
+      "png to svg converter",
+      "png to svg online",
+      "trace png to svg",
+      "vectorize png",
+      "png svg converter",
+      "free png to svg",
+      "raster to svg",
+      "png to vector",
+    ],
+    faq: [
+      {
+        question: "Is this PNG to SVG converter free?",
+        answer:
+          "Yes. Convert and download unlimited PNG-to-SVG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Tracing runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple PNG files at once?",
+        answer:
+          "Yes. Add up to 10 PNG images. One file downloads as a .svg; multiple files download together as a ZIP.",
+      },
+      {
+        question: "What do Simple, Balanced, and Detailed mean?",
+        answer:
+          "They control how many colors and path details the tracer keeps. Simple produces fewer shapes; Detailed keeps more fidelity; Balanced is a good default for logos and icons.",
+      },
+      {
+        question: "Will photos convert cleanly to SVG?",
+        answer:
+          "Tracing works best on logos, icons, and flat illustrations with clear edges. Photos can convert, but the SVG will contain many shapes and may look posterized.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each PNG can be up to 10 MB, with a combined limit of 40 MB per conversion. Very large images are downscaled before tracing so conversion stays responsive.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PNG images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "jpg-to-svg",
+    name: "JPG to SVG Converter",
+    shortName: "JPG to SVG",
+    description:
+      "Convert JPG to SVG online — trace JPG logos and icons into scalable vector SVG files. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/jpg-to-svg",
+    keywords: [
+      "jpg to svg",
+      "jpeg to svg",
+      "convert jpg to svg",
+      "jpg to svg converter",
+      "jpeg to svg converter",
+      "jpg to svg online",
+      "trace jpg to svg",
+      "vectorize jpg",
+      "jpg svg converter",
+      "free jpg to svg",
+      "raster to svg",
+      "jpg to vector",
+    ],
+    faq: [
+      {
+        question: "Is this JPG to SVG converter free?",
+        answer:
+          "Yes. Convert and download unlimited JPG-to-SVG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Tracing runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple JPG files at once?",
+        answer:
+          "Yes. Add up to 10 JPG or JPEG images. One file downloads as a .svg; multiple files download together as a ZIP.",
+      },
+      {
+        question: "What do Simple, Balanced, and Detailed mean?",
+        answer:
+          "They control how many colors and path details the tracer keeps. Simple produces fewer shapes; Detailed keeps more fidelity; Balanced is a good default for logos and icons.",
+      },
+      {
+        question: "Will photos convert cleanly to SVG?",
+        answer:
+          "Tracing works best on logos, icons, and flat illustrations with clear edges. Photos can convert, but the SVG will contain many shapes and may look posterized.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each JPG can be up to 10 MB, with a combined limit of 40 MB per conversion. Very large images are downscaled before tracing so conversion stays responsive.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your JPG images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "jpg-to-png",
+    name: "JPG to PNG Converter",
+    shortName: "JPG to PNG",
+    description:
+      "Convert JPG to PNG online — turn JPEG photos into lossless PNG files. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/jpg-to-png",
+    keywords: [
+      "jpg to png",
+      "jpeg to png",
+      "convert jpg to png",
+      "jpg to png converter",
+      "jpeg to png converter",
+      "change jpg to png",
+      "jpg png converter",
+      "free jpg to png",
+      "jpg to png online",
+      "convert jpeg to png",
+    ],
+    faq: [
+      {
+        question: "Is this JPG to PNG converter free?",
+        answer:
+          "Yes. Convert and download unlimited JPG-to-PNG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple JPG files at once?",
+        answer:
+          "Yes. Add up to 20 JPG or JPEG images. One file downloads as a .png; multiple files download together as a ZIP.",
+      },
+      {
+        question: "Will the PNG file be larger than the JPG?",
+        answer:
+          "Often yes. JPEG uses lossy compression optimized for photos; PNG is lossless, so the same image can grow in file size.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each JPG can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your JPG images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "jpg-to-webp",
+    name: "JPG to WebP Converter",
+    shortName: "JPG to WebP",
+    description:
+      "Convert JPG to WebP online — turn JPEG photos into smaller WebP files with quality control. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/jpg-to-webp",
+    keywords: [
+      "jpg to webp",
+      "jpeg to webp",
+      "convert jpg to webp",
+      "jpg to webp converter",
+      "jpeg to webp converter",
+      "change jpg to webp",
+      "jpg webp converter",
+      "free jpg to webp",
+      "jpg to webp online",
+      "convert jpeg to webp",
+      "jpg to webp tool",
+    ],
+    faq: [
+      {
+        question: "Is this JPG to WebP converter free?",
+        answer:
+          "Yes. Convert and download unlimited JPG-to-WebP files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple JPG files at once?",
+        answer:
+          "Yes. Add up to 20 JPG or JPEG images. One file downloads as a .webp; multiple files download together as a ZIP.",
+      },
+      {
+        question: "What quality options are available?",
+        answer:
+          "Choose Smaller, Balanced, or High WebP quality to trade file size for detail before downloading.",
+      },
+      {
+        question: "Will the WebP file be smaller than the JPG?",
+        answer:
+          "Often yes. WebP usually compresses photos more efficiently than JPEG at similar visual quality, though results vary by image.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each JPG can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your JPG images, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "webp-to-jpg",
     name: "WebP to JPG Converter",
     shortName: "WebP to JPG",
@@ -4993,6 +5532,64 @@ export const tools: Tool[] = [
         question: "Why do JPG frames have a white background?",
         answer:
           "JPEG does not support transparency. Transparent WebP areas are filled with white so frames look correct in viewers and editors.",
+      },
+      {
+        question: "Which browsers work best?",
+        answer:
+          "Chrome, Edge, and Safari support full animated-frame extraction via WebCodecs. Other browsers may convert the first frame only.",
+      },
+    ],
+  },
+  {
+    slug: "webp-to-png",
+    name: "WebP to PNG Converter",
+    shortName: "WebP to PNG",
+    description:
+      "Convert WebP to PNG online — extract every frame from animated WebP or convert a still WebP to PNG with transparency preserved. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/webp-to-png",
+    keywords: [
+      "webp to png",
+      "convert webp to png",
+      "webp to png converter",
+      "animated webp to png",
+      "webp frames to png",
+      "extract webp frames png",
+      "webp to png transparent",
+      "free webp to png",
+      "webp to png online",
+    ],
+    faq: [
+      {
+        question: "Is this WebP to PNG converter free?",
+        answer:
+          "Yes. Convert and download unlimited WebP-to-PNG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my files uploaded to a server?",
+        answer:
+          "No. Decoding and conversion run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Does it support animated WebP?",
+        answer:
+          "Yes. Upload an animated WebP and every frame is exported as a separate PNG. Download one frame or a ZIP of all frames.",
+      },
+      {
+        question: "Is transparency preserved?",
+        answer:
+          "Yes. PNG supports alpha, so transparent areas in your WebP stay transparent in the exported frames.",
+      },
+      {
+        question: "What about still WebP images?",
+        answer:
+          "Still (single-frame) WebP files convert to one PNG with the same local workflow.",
+      },
+      {
+        question: "Is there a file size or frame limit?",
+        answer:
+          "Yes. Upload WebP files up to 25 MB with a maximum of 300 frames per conversion.",
       },
       {
         question: "Which browsers work best?",

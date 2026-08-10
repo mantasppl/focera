@@ -108,6 +108,10 @@ export default function ProfilePhotoMakerLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/round-image">Round Image</Link> — Circle-only crop
+            with transparent edges when you do not need platform size presets.
+          </li>
+          <li>
             <Link href="/background-remover">AI Background Remover</Link> —
             Cut out the subject before framing a cleaner avatar.
           </li>

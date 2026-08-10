@@ -85,6 +85,13 @@ function iconKindForSlug(slug: string): IconKind {
     slug.includes("image-compressor") ||
     slug.includes("image-converter") ||
     slug.includes("heic-to-jpg") ||
+    slug.includes("png-to-jpg") ||
+    slug.includes("png-to-webp") ||
+    slug.includes("png-to-svg") ||
+    slug.includes("jpg-to-svg") ||
+    slug.includes("jpg-to-png") ||
+    slug.includes("webp-to-jpg") ||
+    slug.includes("webp-to-png") ||
     slug.includes("heic")
   )
     return "image";

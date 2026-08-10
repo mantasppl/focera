@@ -265,6 +265,16 @@ export const ResizeImageLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const AddTextOnImageLazy = dynamic(
+  () => import("@/components/tools/AddTextOnImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const CropImageLazy = dynamic(
+  () => import("@/components/tools/CropImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const CombinePhotoLazy = dynamic(
   () => import("@/components/tools/CombinePhoto"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -272,6 +282,11 @@ export const CombinePhotoLazy = dynamic(
 
 export const ProfilePhotoMakerLazy = dynamic(
   () => import("@/components/tools/ProfilePhotoMaker"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const RoundImageLazy = dynamic(
+  () => import("@/components/tools/RoundImage"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -292,6 +307,41 @@ export const HeicToJpgLazy = dynamic(
 
 export const WebpToJpgLazy = dynamic(
   () => import("@/components/tools/WebpToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const WebpToPngLazy = dynamic(
+  () => import("@/components/tools/WebpToPng"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PngToJpgLazy = dynamic(
+  () => import("@/components/tools/PngToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PngToWebpLazy = dynamic(
+  () => import("@/components/tools/PngToWebp"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PngToSvgLazy = dynamic(
+  () => import("@/components/tools/PngToSvg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const JpgToSvgLazy = dynamic(
+  () => import("@/components/tools/JpgToSvg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const JpgToPngLazy = dynamic(
+  () => import("@/components/tools/JpgToPng"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const JpgToWebpLazy = dynamic(
+  () => import("@/components/tools/JpgToWebp"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

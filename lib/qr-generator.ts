@@ -170,17 +170,17 @@ export const QR_PREVIEW_BACKGROUNDS: Array<{
 ];
 
 export const DEFAULT_QR_DESIGN: QrDesignSettings = {
-  darkColor: "#0B1F1C",
+  darkColor: "#0B3B36",
   lightColor: "#F4FBF8",
-  eyeColor: "#0B1F1C",
-  gradientEnabled: false,
+  eyeColor: "#0F7A66",
+  gradientEnabled: true,
   gradientColor: "#0F7A66",
   transparentBackground: false,
   size: 512,
   margin: 2,
   ecc: "M",
-  moduleStyle: "square",
-  eyeStyle: "square",
+  moduleStyle: "rounded",
+  eyeStyle: "rounded",
   frameStyle: "none",
   frameLabel: "Scan me",
   logoShape: "rounded",
