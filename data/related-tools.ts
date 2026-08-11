@@ -157,7 +157,16 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   ],
   "image-to-pdf": ["png-to-pdf", "webp-to-pdf", "gif-to-pdf"],
   "gif-to-pdf": ["image-to-pdf", "png-to-pdf", "video-to-gif"],
-  "image-to-text": ["pdf-to-text", "text-case-converter", "upscale-image"],
+  "image-to-text": [
+    "translate-your-image",
+    "pdf-to-text",
+    "text-case-converter",
+  ],
+  "translate-your-image": [
+    "image-to-text",
+    "pdf-translator",
+    "add-text-on-image",
+  ],
   "password-checker": [
     "password-generator",
     "qr-generator",
@@ -197,7 +206,11 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   "pdf-to-powerpoint": ["pdf-to-word", "pdf-to-excel", "pdf-to-csv"],
   "pdf-to-text": ["pdf-translator", "pdf-to-csv", "pdf-to-word"],
   "pdf-to-word": ["word-to-pdf", "pdf-to-excel", "pdf-to-csv"],
-  "pdf-translator": ["pdf-to-text", "pdf-to-word", "image-to-text"],
+  "pdf-translator": [
+    "pdf-to-text",
+    "translate-your-image",
+    "image-to-text",
+  ],
   "pdf-watermark": ["add-images-to-pdf", "merge-pdf", "compress-pdf"],
   "png-to-pdf": ["image-to-pdf", "webp-to-pdf", "gif-to-pdf"],
   "png-to-jpg": ["png-to-webp", "png-to-svg", "image-compressor"],

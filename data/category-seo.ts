@@ -184,7 +184,7 @@ export const categorySeo: Record<ToolCategory, CategorySeoContent> = {
     ],
     heading: "Free AI tools online — generate, summarize, and transform content in your browser",
     intro: [
-      "Focera’s AI Tools category focuses on free online AI utilities that speed up creative and productivity tasks: generate images and stories, remove or change backgrounds, colorize photos, turn speech and video into text, summarize YouTube content, run OCR on images, and translate PDFs.",
+      "Focera’s AI Tools category focuses on free online AI utilities that speed up creative and productivity tasks: generate images and stories, remove or change backgrounds, colorize photos, turn speech and video into text, summarize YouTube content, run OCR on images, translate image text, and translate PDFs.",
       "These tools help you draft ideas, clean visuals, and extract meaning from media — with clear, practical workflows and a privacy-minded design so you can work without creating an account.",
     ],
     toolsHeading: "What AI tools you’ll find here",

@@ -5035,6 +5035,7 @@ a {
 .round-image__options,
 .colorize-photo__options,
 .black-and-white-photo__options,
+.translate-your-image__options,
 .image-compressor__options,
 .heic-to-jpg__options,
 .compress-video__options,
@@ -6277,13 +6278,15 @@ a {
   gap: 1rem;
 }
 
-.image-to-text__chips {
+.image-to-text__chips,
+.translate-your-image__chips {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
 }
 
-.image-to-text__chip {
+.image-to-text__chip,
+.translate-your-image__chip {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -6300,38 +6303,45 @@ a {
     color 160ms ease;
 }
 
-.image-to-text__chip:hover:not(:disabled) {
+.image-to-text__chip:hover:not(:disabled),
+.translate-your-image__chip:hover:not(:disabled) {
   border-color: var(--accent);
 }
 
-.image-to-text__chip.is-active {
+.image-to-text__chip.is-active,
+.translate-your-image__chip.is-active {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.1);
   color: var(--accent-deep);
 }
 
-.image-to-text__chip:disabled {
+.image-to-text__chip:disabled,
+.translate-your-image__chip:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
 
-.image-to-text__chip-label {
+.image-to-text__chip-label,
+.translate-your-image__chip-label {
   font-size: 0.9rem;
   font-weight: 600;
 }
 
-.image-to-text__chip-hint {
+.image-to-text__chip-hint,
+.translate-your-image__chip-hint {
   font-size: 0.75rem;
   color: var(--muted);
 }
 
-.image-to-text__chip.is-active .image-to-text__chip-hint {
+.image-to-text__chip.is-active .image-to-text__chip-hint,
+.translate-your-image__chip.is-active .translate-your-image__chip-hint {
   color: var(--accent-deep);
 }
 
 .image-to-text__result,
 .pdf-to-text__result,
-.pdf-translator__result {
+.pdf-translator__result,
+.translate-your-image__result {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
@@ -6340,7 +6350,8 @@ a {
 
 .image-to-text__result-meta,
 .pdf-to-text__result-meta,
-.pdf-translator__result-meta {
+.pdf-translator__result-meta,
+.translate-your-image__result-meta {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
@@ -6349,7 +6360,8 @@ a {
 
 .image-to-text__textarea,
 .pdf-to-text__textarea,
-.pdf-translator__textarea {
+.pdf-translator__textarea,
+.translate-your-image__textarea {
   min-height: 16rem;
   resize: vertical;
   font-family: var(--font-geist-mono), ui-monospace, monospace;
@@ -6370,7 +6382,8 @@ a {
 }
 
 @media (max-width: 640px) {
-  .image-to-text__chips {
+  .image-to-text__chips,
+  .translate-your-image__chips {
     grid-template-columns: 1fr 1fr;
   }
 }

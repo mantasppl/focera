@@ -133,6 +133,7 @@ export async function translateTextChunks(
   options: {
     onProgress?: (current: number, total: number) => void;
     signal?: AbortSignal;
+    toolSlug?: string;
   } = {},
 ): Promise<string> {
   const chunks = chunkTextForTranslation(text);
@@ -151,6 +152,7 @@ export async function translateTextChunks(
         text: chunks[i],
         sourceLang,
         targetLang,
+        toolSlug: options.toolSlug,
       }),
       signal: options.signal,
     });

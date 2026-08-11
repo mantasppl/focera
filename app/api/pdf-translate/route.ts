@@ -12,20 +12,32 @@ import { guardApiRequest } from "@/lib/security/request";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const TOOL_SLUG = "pdf-translator";
+const DEFAULT_TOOL_SLUG = "pdf-translator";
+const TRANSLATE_TOOL_SLUGS = new Set([
+  "pdf-translator",
+  "translate-your-image",
+]);
 
 type TranslateBody = {
   text?: unknown;
   sourceLang?: unknown;
   targetLang?: unknown;
+  toolSlug?: unknown;
 };
+
+function resolveToolSlug(value: unknown): string {
+  if (typeof value === "string" && TRANSLATE_TOOL_SLUGS.has(value)) {
+    return value;
+  }
+  return DEFAULT_TOOL_SLUG;
+}
 
 function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status });
 }
 
-function track(request: Request, success: boolean) {
-  const tool = getToolBySlug(TOOL_SLUG);
+function track(request: Request, success: boolean, toolSlug: string) {
+  const tool = getToolBySlug(toolSlug);
   if (tool) {
     trackToolUsageServer(
       { toolId: tool.slug, toolName: tool.name, success },
@@ -115,6 +127,7 @@ export async function POST(request: Request) {
     return jsonError("Invalid JSON body.", 400);
   }
 
+  const toolSlug = resolveToolSlug(body.toolSlug);
   const text = typeof body.text === "string" ? body.text.trim() : "";
   if (!text) {
     return jsonError("Nothing to translate.", 400);
@@ -170,7 +183,7 @@ export async function POST(request: Request) {
       signal: AbortSignal.timeout(55_000),
     });
   } catch {
-    track(request, false);
+    track(request, false, toolSlug);
     return jsonError(
       "The translation service timed out. Wait a moment and try again.",
       504,
@@ -178,7 +191,7 @@ export async function POST(request: Request) {
   }
 
   if (!upstream.ok) {
-    track(request, false);
+    track(request, false, toolSlug);
     if (upstream.status === 429) {
       return jsonError(
         "Too many requests right now. Wait about 15 seconds and try again.",
@@ -211,7 +224,7 @@ export async function POST(request: Request) {
   }
 
   if (!translated) {
-    track(request, false);
+    track(request, false, toolSlug);
     return jsonError(
       "The translation service returned an empty result. Try again.",
       502,
@@ -220,14 +233,14 @@ export async function POST(request: Request) {
 
   const cleaned = cleanTranslation(translated);
   if (!cleaned) {
-    track(request, false);
+    track(request, false, toolSlug);
     return jsonError(
       "The translation service returned an empty result. Try again.",
       502,
     );
   }
 
-  track(request, true);
+  track(request, true, toolSlug);
 
   return Response.json(
     { translatedText: cleaned },

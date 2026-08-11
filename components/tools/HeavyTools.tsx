@@ -395,6 +395,11 @@ export const ImageToTextLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const TranslateYourImageLazy = dynamic(
+  () => import("@/components/tools/TranslateYourImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const VideoAutocaptionLazy = dynamic(
   () => import("@/components/tools/VideoAutocaption"),
   { ssr: false, loading: () => <ToolLoading /> },

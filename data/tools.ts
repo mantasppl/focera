@@ -3872,6 +3872,65 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "translate-your-image",
+    name: "Translate Your Image — Image Text Translator",
+    shortName: "Translate Your Image",
+    description:
+      "Translate text in images online — OCR photos and screenshots, then translate into 15+ languages. Free, private OCR in your browser.",
+    categories: ["image", "ai"],
+    status: "ready",
+    href: "/translate-your-image",
+    keywords: [
+      "translate your image",
+      "translate image text",
+      "image translator",
+      "translate photo text",
+      "ocr translate",
+      "translate screenshot",
+      "image to translated text",
+      "translate text from image",
+      "photo translator online",
+      "free image translator",
+    ],
+    faq: [
+      {
+        question: "Is this image translator free?",
+        answer:
+          "Yes. Upload an image, translate the text, copy, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. OCR runs entirely in your browser. Only the extracted text is sent to the translation service — not the original image.",
+      },
+      {
+        question: "Which languages are supported?",
+        answer:
+          "OCR supports English, Spanish, French, German, Portuguese, Simplified Chinese, and Japanese. You can translate into English, Spanish, French, German, Portuguese, Italian, Dutch, Polish, Russian, Chinese, Japanese, Korean, Arabic, Turkish, and Hindi.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. Clear, high-contrast text usually recognizes and translates best.",
+      },
+      {
+        question: "Can I edit the translation?",
+        answer:
+          "Yes. After translation finishes, edit the result in the text panel, then copy it or download a .txt file.",
+      },
+      {
+        question: "Does handwriting work?",
+        answer:
+          "Printed or typed text works best. Neat, high-contrast handwriting may work for OCR, but results vary.",
+      },
+      {
+        question: "Can I use the translation commercially?",
+        answer:
+          "Yes. Text you extract and translate is yours to use. Only process images you own or have permission to convert.",
+      },
+    ],
+  },
+  {
     slug: "image-compressor",
     name: "Compress Image Size",
     shortName: "Image Compressor",
