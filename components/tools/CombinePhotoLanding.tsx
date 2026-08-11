@@ -109,6 +109,10 @@ export default function CombinePhotoLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/add-images-to-image">Add Images to Image</Link> —
+            Layer logos or stickers on a single photo instead of a collage.
+          </li>
+          <li>
             <Link href="/resize-image">Resize Image</Link> — Set exact pixel
             dimensions for the finished collage.
           </li>

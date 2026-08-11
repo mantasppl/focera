@@ -5023,14 +5023,18 @@ a {
 .add-page-numbers-to-pdf__options,
 .add-text-to-pdf__options,
 .add-text-on-image__options,
+.add-images-to-image__options,
+.add-border-to-image__options,
 .upscale-image__options,
 .unblur-image__options,
 .resize-image__options,
 .crop-image__options,
+.image-splitter__options,
 .combine-photo__options,
 .profile-photo-maker__options,
 .round-image__options,
 .colorize-photo__options,
+.black-and-white-photo__options,
 .image-compressor__options,
 .heic-to-jpg__options,
 .compress-video__options,
@@ -5066,14 +5070,18 @@ a {
 .add-page-numbers-to-pdf__chips,
 .add-text-to-pdf__chips,
 .add-text-on-image__chips,
+.add-images-to-image__chips,
+.add-border-to-image__chips,
 .upscale-image__chips,
 .unblur-image__chips,
 .resize-image__chips,
 .crop-image__chips,
+.image-splitter__chips,
 .combine-photo__chips,
 .profile-photo-maker__chips,
 .round-image__chips,
 .colorize-photo__chips,
+.black-and-white-photo__chips,
 .image-compressor__chips,
 .heic-to-jpg__chips,
 .compress-video__chips,
@@ -5087,7 +5095,8 @@ a {
 .pdf-watermark__chips--positions,
 .add-page-numbers-to-pdf__chips--positions,
 .add-text-to-pdf__chips--positions,
-.add-text-on-image__chips--positions {
+.add-text-on-image__chips--positions,
+.add-images-to-image__chips--positions {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -5096,7 +5105,9 @@ a {
 .add-text-to-pdf__chips--pages,
 .add-text-to-pdf__chips--colors,
 .add-text-on-image__chips--rotation,
-.add-text-on-image__chips--colors {
+.add-text-on-image__chips--colors,
+.add-border-to-image__chips--colors,
+.add-images-to-image__chips--rotation {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -5119,6 +5130,10 @@ a {
 }
 
 .crop-image__chips {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.image-splitter__chips {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -5164,14 +5179,18 @@ a {
 .add-page-numbers-to-pdf__chip,
 .add-text-to-pdf__chip,
 .add-text-on-image__chip,
+.add-images-to-image__chip,
+.add-border-to-image__chip,
 .upscale-image__chip,
 .unblur-image__chip,
 .resize-image__chip,
 .crop-image__chip,
+.image-splitter__chip,
 .combine-photo__chip,
 .profile-photo-maker__chip,
 .round-image__chip,
 .colorize-photo__chip,
+.black-and-white-photo__chip,
 .image-compressor__chip,
 .heic-to-jpg__chip,
 .compress-video__chip,
@@ -5218,14 +5237,18 @@ a {
 .add-page-numbers-to-pdf__chip:hover:not(:disabled),
 .add-text-to-pdf__chip:hover:not(:disabled),
 .add-text-on-image__chip:hover:not(:disabled),
+.add-images-to-image__chip:hover:not(:disabled),
+.add-border-to-image__chip:hover:not(:disabled),
 .upscale-image__chip:hover:not(:disabled),
 .unblur-image__chip:hover:not(:disabled),
 .resize-image__chip:hover:not(:disabled),
 .crop-image__chip:hover:not(:disabled),
+.image-splitter__chip:hover:not(:disabled),
 .combine-photo__chip:hover:not(:disabled),
 .profile-photo-maker__chip:hover:not(:disabled),
 .round-image__chip:hover:not(:disabled),
 .colorize-photo__chip:hover:not(:disabled),
+.black-and-white-photo__chip:hover:not(:disabled),
 .image-compressor__chip:hover:not(:disabled),
 .heic-to-jpg__chip:hover:not(:disabled),
 .compress-video__chip:hover:not(:disabled),
@@ -5259,14 +5282,18 @@ a {
 .add-page-numbers-to-pdf__chip.is-active,
 .add-text-to-pdf__chip.is-active,
 .add-text-on-image__chip.is-active,
+.add-images-to-image__chip.is-active,
+.add-border-to-image__chip.is-active,
 .upscale-image__chip.is-active,
 .unblur-image__chip.is-active,
 .resize-image__chip.is-active,
 .crop-image__chip.is-active,
+.image-splitter__chip.is-active,
 .combine-photo__chip.is-active,
 .profile-photo-maker__chip.is-active,
 .round-image__chip.is-active,
 .colorize-photo__chip.is-active,
+.black-and-white-photo__chip.is-active,
 .image-compressor__chip.is-active,
 .heic-to-jpg__chip.is-active,
 .compress-video__chip.is-active,
@@ -5302,14 +5329,18 @@ a {
 .add-page-numbers-to-pdf__chip:disabled,
 .add-text-to-pdf__chip:disabled,
 .add-text-on-image__chip:disabled,
+.add-images-to-image__chip:disabled,
+.add-border-to-image__chip:disabled,
 .upscale-image__chip:disabled,
 .unblur-image__chip:disabled,
 .resize-image__chip:disabled,
 .crop-image__chip:disabled,
+.image-splitter__chip:disabled,
 .combine-photo__chip:disabled,
 .profile-photo-maker__chip:disabled,
 .round-image__chip:disabled,
 .colorize-photo__chip:disabled,
+.black-and-white-photo__chip:disabled,
 .image-compressor__chip:disabled,
 .heic-to-jpg__chip:disabled,
 .compress-video__chip:disabled,
@@ -5344,14 +5375,18 @@ a {
 .add-page-numbers-to-pdf__chip-label,
 .add-text-to-pdf__chip-label,
 .add-text-on-image__chip-label,
+.add-images-to-image__chip-label,
+.add-border-to-image__chip-label,
 .upscale-image__chip-label,
 .unblur-image__chip-label,
 .resize-image__chip-label,
 .crop-image__chip-label,
+.image-splitter__chip-label,
 .combine-photo__chip-label,
 .profile-photo-maker__chip-label,
 .round-image__chip-label,
 .colorize-photo__chip-label,
+.black-and-white-photo__chip-label,
 .image-compressor__chip-label,
 .heic-to-jpg__chip-label,
 .compress-video__chip-label,
@@ -5386,14 +5421,18 @@ a {
 .add-page-numbers-to-pdf__chip-hint,
 .add-text-to-pdf__chip-hint,
 .add-text-on-image__chip-hint,
+.add-images-to-image__chip-hint,
+.add-border-to-image__chip-hint,
 .upscale-image__chip-hint,
 .unblur-image__chip-hint,
 .resize-image__chip-hint,
 .crop-image__chip-hint,
+.image-splitter__chip-hint,
 .combine-photo__chip-hint,
 .profile-photo-maker__chip-hint,
 .round-image__chip-hint,
 .colorize-photo__chip-hint,
+.black-and-white-photo__chip-hint,
 .image-compressor__chip-hint,
 .heic-to-jpg__chip-hint,
 .compress-video__chip-hint,
@@ -5429,14 +5468,18 @@ a {
 .add-page-numbers-to-pdf__chip.is-active .add-page-numbers-to-pdf__chip-hint,
 .add-text-to-pdf__chip.is-active .add-text-to-pdf__chip-hint,
 .add-text-on-image__chip.is-active .add-text-on-image__chip-hint,
+.add-images-to-image__chip.is-active .add-images-to-image__chip-hint,
+.add-border-to-image__chip.is-active .add-border-to-image__chip-hint,
 .upscale-image__chip.is-active .upscale-image__chip-hint,
 .unblur-image__chip.is-active .unblur-image__chip-hint,
 .resize-image__chip.is-active .resize-image__chip-hint,
 .crop-image__chip.is-active .crop-image__chip-hint,
+.image-splitter__chip.is-active .image-splitter__chip-hint,
 .combine-photo__chip.is-active .combine-photo__chip-hint,
 .profile-photo-maker__chip.is-active .profile-photo-maker__chip-hint,
 .round-image__chip.is-active .round-image__chip-hint,
 .colorize-photo__chip.is-active .colorize-photo__chip-hint,
+.black-and-white-photo__chip.is-active .black-and-white-photo__chip-hint,
 .image-compressor__chip.is-active .image-compressor__chip-hint,
 .heic-to-jpg__chip.is-active .heic-to-jpg__chip-hint,
 .compress-video__chip.is-active .compress-video__chip-hint,
@@ -5567,15 +5610,22 @@ a {
   .add-text-on-image__chips--fonts,
   .add-text-on-image__chips--colors,
   .add-text-on-image__chips--rotation,
+  .add-border-to-image__chips,
+  .add-border-to-image__chips--colors,
+  .add-images-to-image__chips,
+  .add-images-to-image__chips--positions,
+  .add-images-to-image__chips--rotation,
   .upscale-image__chips,
   .unblur-image__chips,
   .resize-image__chips,
   .crop-image__chips,
+  .image-splitter__chips,
   .combine-photo__chips,
   .profile-photo-maker__chips,
   .profile-photo-maker__chips--shape,
   .round-image__chips,
   .colorize-photo__chips,
+  .black-and-white-photo__chips,
   .image-compressor__chips,
   .image-compressor__chips--levels,
   .heic-to-jpg__chips,
@@ -5646,7 +5696,8 @@ a {
   color: var(--muted);
 }
 
-.add-text-on-image__canvas {
+.add-text-on-image__canvas,
+.add-images-to-image__canvas {
   display: block;
   max-width: 100%;
   height: auto;
@@ -5659,9 +5710,13 @@ a {
 .crop-image__result,
 .add-text-on-image__result,
 .add-text-on-image__preview,
+.add-images-to-image__result,
+.add-images-to-image__preview,
+.add-border-to-image__result,
 .profile-photo-maker__result,
 .round-image__result,
-.colorize-photo__result {
+.colorize-photo__result,
+.black-and-white-photo__result {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -5673,9 +5728,12 @@ a {
 .resize-image__result-meta,
 .crop-image__result-meta,
 .add-text-on-image__result-meta,
+.add-images-to-image__result-meta,
+.add-border-to-image__result-meta,
 .profile-photo-maker__result-meta,
 .round-image__result-meta,
-.colorize-photo__result-meta {
+.colorize-photo__result-meta,
+.black-and-white-photo__result-meta {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
@@ -5921,6 +5979,114 @@ a {
   bottom: -6px;
   left: -6px;
   cursor: nesw-resize;
+}
+
+/* -- Image Splitter -- */
+.image-splitter__dims {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.image-splitter__preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.image-splitter__stage {
+  position: relative;
+  width: min(100%, 420px);
+  max-height: min(52vh, 420px);
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.image-splitter__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(52vh, 420px);
+  object-fit: contain;
+}
+
+.image-splitter__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: repeat(var(--split-rows, 2), 1fr);
+  grid-template-columns: repeat(var(--split-cols, 2), 1fr);
+  pointer-events: none;
+}
+
+.image-splitter__cell {
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  background: rgba(15, 122, 102, 0.08);
+}
+
+.image-splitter__preview-image {
+  max-width: min(100%, 420px);
+  max-height: 360px;
+}
+
+.image-splitter__thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+  max-height: 11rem;
+  overflow: auto;
+  padding: 0.15rem;
+}
+
+.image-splitter__thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.image-splitter__thumb:hover {
+  border-color: var(--accent);
+}
+
+.image-splitter__thumb.is-active {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.1);
+}
+
+.image-splitter__thumb-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.image-splitter__thumb-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--muted);
+}
+
+.image-splitter__thumb.is-active .image-splitter__thumb-label {
+  color: var(--accent-deep);
+}
+
+@media (max-width: 640px) {
+  .image-splitter__dims {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* -- Resize Image -- */
@@ -8245,7 +8411,8 @@ a {
 .merge-pdf__list-wrap,
 .png-to-pdf__list-wrap,
 .add-images-to-pdf__list-wrap,
-.combine-photo__list-wrap {
+.combine-photo__list-wrap,
+.add-images-to-image__list-wrap {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -8254,7 +8421,8 @@ a {
 .merge-pdf__list-header,
 .png-to-pdf__list-header,
 .add-images-to-pdf__list-header,
-.combine-photo__list-header {
+.combine-photo__list-header,
+.add-images-to-image__list-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -8264,7 +8432,8 @@ a {
 .merge-pdf__list-title,
 .png-to-pdf__list-title,
 .add-images-to-pdf__list-title,
-.combine-photo__list-title {
+.combine-photo__list-title,
+.add-images-to-image__list-title {
   margin: 0;
   font-size: 0.88rem;
   font-weight: 600;
@@ -8274,7 +8443,8 @@ a {
 .merge-pdf__list-meta,
 .png-to-pdf__list-meta,
 .add-images-to-pdf__list-meta,
-.combine-photo__list-meta {
+.combine-photo__list-meta,
+.add-images-to-image__list-meta {
   margin: 0;
   font-size: 0.78rem;
   color: var(--muted);
@@ -8283,7 +8453,8 @@ a {
 .merge-pdf__list,
 .png-to-pdf__list,
 .add-images-to-pdf__list,
-.combine-photo__list {
+.combine-photo__list,
+.add-images-to-image__list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -8297,7 +8468,8 @@ a {
 .merge-pdf__item,
 .png-to-pdf__item,
 .add-images-to-pdf__item,
-.combine-photo__item {
+.combine-photo__item,
+.add-images-to-image__item {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -8308,10 +8480,34 @@ a {
   background: rgba(255, 255, 255, 0.55);
 }
 
+.add-images-to-image__item {
+  grid-template-columns: 1fr auto;
+}
+
+.add-images-to-image__item.is-active {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.08);
+}
+
+.add-images-to-image__select {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .merge-pdf__index,
 .png-to-pdf__index,
 .add-images-to-pdf__index,
-.combine-photo__index {
+.combine-photo__index,
+.add-images-to-image__index {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -8327,14 +8523,18 @@ a {
 .merge-pdf__file,
 .png-to-pdf__file,
 .add-images-to-pdf__file,
-.combine-photo__file {
+.combine-photo__file,
+.add-images-to-image__file {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .merge-pdf__name,
 .png-to-pdf__name,
 .add-images-to-pdf__name,
-.combine-photo__name {
+.combine-photo__name,
+.add-images-to-image__name {
   margin: 0;
   font-size: 0.86rem;
   font-weight: 600;
@@ -8347,7 +8547,8 @@ a {
 .merge-pdf__size,
 .png-to-pdf__size,
 .add-images-to-pdf__size,
-.combine-photo__size {
+.combine-photo__size,
+.add-images-to-image__size {
   margin: 0.1rem 0 0;
   font-size: 0.75rem;
   color: var(--muted);
@@ -8356,7 +8557,8 @@ a {
 .merge-pdf__item-actions,
 .png-to-pdf__item-actions,
 .add-images-to-pdf__item-actions,
-.combine-photo__item-actions {
+.combine-photo__item-actions,
+.add-images-to-image__item-actions {
   display: inline-flex;
   gap: 0.25rem;
 }
@@ -8364,7 +8566,8 @@ a {
 .merge-pdf__icon-btn,
 .png-to-pdf__icon-btn,
 .add-images-to-pdf__icon-btn,
-.combine-photo__icon-btn {
+.combine-photo__icon-btn,
+.add-images-to-image__icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -8386,7 +8589,8 @@ a {
 .merge-pdf__icon-btn:hover:not(:disabled),
 .png-to-pdf__icon-btn:hover:not(:disabled),
 .add-images-to-pdf__icon-btn:hover:not(:disabled),
-.combine-photo__icon-btn:hover:not(:disabled) {
+.combine-photo__icon-btn:hover:not(:disabled),
+.add-images-to-image__icon-btn:hover:not(:disabled) {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.06);
 }
@@ -8394,7 +8598,8 @@ a {
 .merge-pdf__icon-btn:disabled,
 .png-to-pdf__icon-btn:disabled,
 .add-images-to-pdf__icon-btn:disabled,
-.combine-photo__icon-btn:disabled {
+.combine-photo__icon-btn:disabled,
+.add-images-to-image__icon-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }

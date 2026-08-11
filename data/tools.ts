@@ -3312,6 +3312,67 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "image-splitter",
+    name: "Image Splitter — Cut Photo Into Pieces",
+    shortName: "Image Splitter",
+    description:
+      "Split an image into a grid of pieces online — 2×2, 3×3, custom rows and columns, then download PNGs or a ZIP. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/image-splitter",
+    keywords: [
+      "image splitter",
+      "split image",
+      "cut image into pieces",
+      "split photo",
+      "image grid cutter",
+      "slice image",
+      "cut photo into tiles",
+      "split picture online",
+      "divide image",
+      "photo splitter",
+      "cut image into squares",
+      "free image splitter",
+    ],
+    faq: [
+      {
+        question: "Is this image splitter free?",
+        answer:
+          "Yes. Upload, choose a grid, preview pieces, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Splitting runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "What grids can I use?",
+        answer:
+          "Presets include 2×2, 3×3, 4×4, 1×2, 2×1, and 1×3. Or set custom rows and columns from 1–10 (more than one piece).",
+      },
+      {
+        question: "How do I download the pieces?",
+        answer:
+          "After splitting, download the selected piece as a PNG, or download all pieces in one ZIP. Files are named by row and column.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. Each piece exports as a PNG at the sliced pixel size.",
+      },
+      {
+        question: "How is this different from Crop Image?",
+        answer:
+          "Crop Image keeps one reframed area. Image Splitter cuts the whole photo into a grid of separate files.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects.",
+      },
+    ],
+  },
+  {
     slug: "combine-photo",
     name: "Combine Photos — Photo Collage Maker",
     shortName: "Combine Photos",
@@ -3374,6 +3435,133 @@ export const tools: Tool[] = [
         question: "Can I use the results commercially?",
         answer:
           "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects — subject to rights in your original photos.",
+      },
+    ],
+  },
+  {
+    slug: "add-images-to-image",
+    name: "Add Images to Image — Overlay Photos Online",
+    shortName: "Add Images to Image",
+    description:
+      "Add images to an image online — overlay logos, stamps, or stickers with position, size, opacity, and live preview. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/add-images-to-image",
+    keywords: [
+      "add images to image",
+      "overlay images",
+      "add image on image",
+      "put logo on photo",
+      "stamp image on photo",
+      "layer images online",
+      "image watermark photo",
+      "add sticker to photo",
+      "overlay png on image",
+      "add logo to picture",
+      "composite images online",
+      "free image overlay tool",
+    ],
+    faq: [
+      {
+        question: "Is this add images to image tool free?",
+        answer:
+          "Yes. Overlay unlimited images with no account, subscription, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Compositing runs entirely in your browser. Your photos stay on your device.",
+      },
+      {
+        question: "How many overlays can I add?",
+        answer:
+          "You can place up to five overlay images on one base photo. Each overlay has its own position, size, opacity, and rotation.",
+      },
+      {
+        question: "How is this different from Combine Photos?",
+        answer:
+          "Combine Photos builds a side-by-side, stacked, or grid collage. Add Images to Image layers overlays on top of a single base photo.",
+      },
+      {
+        question: "Can I preview before downloading?",
+        answer:
+          "Yes. The preview updates live as you move, resize, or fade overlays. Download a full-resolution PNG when you are ready.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB each. The tool exports a PNG with overlays baked in. Transparent PNGs keep their alpha.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, social, client work, and personal projects — subject to rights in your original files.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your base and overlay images, and download immediately.",
+      },
+    ],
+  },
+  {
+    slug: "add-border-to-image",
+    name: "Add Border to Image — Frame Your Photo Online",
+    shortName: "Add Border to Image",
+    description:
+      "Add a border to your image online — choose width and color, preview before and after, then download a PNG. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/add-border-to-image",
+    keywords: [
+      "add border to image",
+      "add border to photo",
+      "photo border",
+      "frame image online",
+      "image border tool",
+      "add frame to picture",
+      "white border on photo",
+      "polaroid border",
+      "picture frame online",
+      "add edge to image",
+      "photo mat border",
+      "free image border tool",
+    ],
+    faq: [
+      {
+        question: "Is this add border to image tool free?",
+        answer:
+          "Yes. Upload, choose a border, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Adding a border runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "What border widths and colors can I use?",
+        answer:
+          "Widths include Thin, Medium, Thick, and Extra (scaled to your image). Colors include White, Black, Gray, Cream, Navy, and Forest.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a PNG with the border baked in.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After adding a border, drag the preview slider to compare the original with the framed photo.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your photo, and download immediately.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, social, client work, and personal projects — subject to rights in your original image.",
       },
     ],
   },
@@ -3491,6 +3679,66 @@ export const tools: Tool[] = [
         question: "Which image formats are supported?",
         answer:
           "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a circular PNG.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects — subject to rights in your original image.",
+      },
+    ],
+  },
+  {
+    slug: "black-and-white-photo",
+    name: "Black and White Photo — Convert Photo to Grayscale",
+    shortName: "B&W Photo",
+    description:
+      "Convert a photo to black and white online — Classic, Soft, or High contrast grayscale in your browser. Free, private, and no account required.",
+    categories: ["image"],
+    status: "ready",
+    href: "/black-and-white-photo",
+    keywords: [
+      "black and white photo",
+      "photo black and white",
+      "convert photo to black and white",
+      "grayscale photo",
+      "make photo black and white",
+      "desaturate photo",
+      "black and white filter",
+      "monochrome photo",
+      "bw photo converter",
+      "free black and white photo tool",
+      "grayscale image online",
+    ],
+    faq: [
+      {
+        question: "Is this black and white photo tool free?",
+        answer:
+          "Yes. Upload, convert, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Black and white conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "What do Classic, Soft, and High contrast mean?",
+        answer:
+          "Classic is true grayscale. Soft eases contrast for gentler tones. High contrast deepens blacks and brightens whites for a bolder look.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a black and white PNG.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After converting, drag the preview slider to compare the original with the black and white photo.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your photo, and convert immediately.",
       },
       {
         question: "Can I use the results commercially?",
@@ -3745,6 +3993,65 @@ export const tools: Tool[] = [
         question: "What quality options are available?",
         answer:
           "Choose Smaller, Balanced, or High JPEG quality to trade file size for detail before downloading.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each HEIC can be up to 20 MB, with a combined limit of 100 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your HEIC photos, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "heic-to-png",
+    name: "HEIC to PNG Converter",
+    shortName: "HEIC to PNG",
+    description:
+      "Convert HEIC to PNG online — turn iPhone .heic and .heif photos into lossless PNG files. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/heic-to-png",
+    keywords: [
+      "heic to png",
+      "convert heic to png",
+      "heic to png converter",
+      "heif to png",
+      "iphone heic to png",
+      "heic converter",
+      "free heic to png",
+      "heic to png online",
+      "convert heif to png",
+      "heic png",
+    ],
+    faq: [
+      {
+        question: "Is this HEIC to PNG converter free?",
+        answer:
+          "Yes. Convert and download unlimited HEIC-to-PNG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Decoding and conversion run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          ".heic and .heif (including image/heic and image/heif). Live Photo containers may only export the still image frame.",
+      },
+      {
+        question: "Can I convert multiple HEIC files at once?",
+        answer:
+          "Yes. Add up to 20 HEIC photos. One file downloads as a .png; multiple files download together as a ZIP.",
+      },
+      {
+        question: "Why PNG instead of JPG?",
+        answer:
+          "PNG is lossless, so it keeps sharp detail without JPEG compression artifacts. Choose HEIC to JPG when you need smaller files for sharing.",
       },
       {
         question: "Is there a file size limit?",

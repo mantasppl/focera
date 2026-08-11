@@ -275,8 +275,23 @@ export const CropImageLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const ImageSplitterLazy = dynamic(
+  () => import("@/components/tools/ImageSplitter"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const CombinePhotoLazy = dynamic(
   () => import("@/components/tools/CombinePhoto"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const AddImagesToImageLazy = dynamic(
+  () => import("@/components/tools/AddImagesToImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const AddBorderToImageLazy = dynamic(
+  () => import("@/components/tools/AddBorderToImage"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -295,6 +310,11 @@ export const ColorizePhotoLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const BlackAndWhitePhotoLazy = dynamic(
+  () => import("@/components/tools/BlackAndWhitePhoto"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const ImageCompressorLazy = dynamic(
   () => import("@/components/tools/ImageCompressor"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -302,6 +322,11 @@ export const ImageCompressorLazy = dynamic(
 
 export const HeicToJpgLazy = dynamic(
   () => import("@/components/tools/HeicToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const HeicToPngLazy = dynamic(
+  () => import("@/components/tools/HeicToPng"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

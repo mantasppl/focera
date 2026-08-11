@@ -108,6 +108,10 @@ export default function ColorizePhotoLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/black-and-white-photo">Black and White Photo</Link> —
+            Convert a color photo to grayscale when you want the reverse flow.
+          </li>
+          <li>
             <Link href="/upscale-image">Upscale Image</Link> — Increase
             resolution after colorizing for sharper prints and zooms.
           </li>

@@ -42,6 +42,8 @@ type IconKind =
   | "upscale"
   | "unblur"
   | "colorize"
+  | "blackwhite"
+  | "border"
   | "ocr";
 
 function iconKindForSlug(slug: string): IconKind {
@@ -62,6 +64,9 @@ function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("esign")) return "sign";
   if (slug.includes("annotate") || slug.includes("add-text")) return "annotate";
   if (slug.includes("page-numbers")) return "pages";
+  if (slug.includes("add-border") || slug.includes("border-to-image"))
+    return "border";
+  if (slug.includes("add-images-to-image")) return "watermark";
   if (
     slug.includes("cleanup-picture") ||
     slug.includes("remove-objects") ||
@@ -79,12 +84,19 @@ function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("upscale") || slug.includes("resize-image"))
     return "upscale";
   if (slug.includes("colorize")) return "colorize";
+  if (
+    slug.includes("black-and-white") ||
+    slug.includes("black-white") ||
+    slug.includes("grayscale")
+  )
+    return "blackwhite";
   if (slug.includes("background") || slug.includes("bg")) return "eraser";
   if (slug.includes("image-to-text") || slug.includes("ocr")) return "ocr";
   if (
     slug.includes("image-compressor") ||
     slug.includes("image-converter") ||
     slug.includes("heic-to-jpg") ||
+    slug.includes("heic-to-png") ||
     slug.includes("png-to-jpg") ||
     slug.includes("png-to-webp") ||
     slug.includes("png-to-svg") ||
@@ -449,6 +461,20 @@ export default function ToolIcon({
         <svg {...common}>
           <path d="M12 3v6M8 6h8" {...stroke} />
           <path d="M6 11h12a2 2 0 0 1 2 2v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-5a2 2 0 0 1 2-2Z" {...stroke} />
+        </svg>
+      );
+    case "blackwhite":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" {...stroke} />
+          <path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "border":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="18" height="18" rx="2" {...stroke} />
+          <rect x="7" y="7" width="10" height="10" rx="1" {...stroke} />
         </svg>
       );
     case "ocr":

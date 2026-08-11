@@ -3,19 +3,19 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "HEIC to JPG in seconds",
+    title: "HEIC to PNG in seconds",
     description:
-      "Turn iPhone HEIC photos into standard JPG files that open everywhere — Windows, Android, email, and the web.",
+      "Turn iPhone HEIC photos into lossless PNG files that keep sharp detail for editing, design, and transparent workflows.",
   },
   {
     title: "Batch convert your camera roll",
     description:
-      "Upload up to 20 HEIC or HEIF photos at once. One file downloads as JPG; batches download as a ZIP.",
+      "Upload up to 20 HEIC or HEIF photos at once. One file downloads as PNG; batches download as a ZIP.",
   },
   {
-    title: "Choose JPEG quality",
+    title: "Lossless PNG output",
     description:
-      "Pick Smaller, Balanced, or High so you control file size versus detail before downloading.",
+      "PNG preserves pixel detail without JPEG compression artifacts — ideal when quality matters more than file size.",
   },
   {
     title: "100% browser-based",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function HeicToJpgLanding() {
+export default function HeicToPngLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="heic-to-jpg-features"
-        title="Everything you need in a free HEIC to JPG converter"
+        id="heic-to-png-features"
+        title="Everything you need in a free HEIC to PNG converter"
         features={FEATURES}
       />
 
@@ -41,10 +41,9 @@ export default function HeicToJpgLanding() {
           How It Works
         </h2>
         <p>
-          iPhones often save photos as HEIC, which many apps and PCs still
-          struggle with. Focera converts them to JPG on one page — upload,
-          choose quality, convert, and download without an account or desktop
-          installer.
+          iPhones often save photos as HEIC, which many apps and editors still
+          struggle with. Focera converts them to PNG on one page — upload,
+          convert, and download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -53,18 +52,17 @@ export default function HeicToJpgLanding() {
             to 20 files per conversion.
           </li>
           <li>
-            <strong>Choose JPEG quality.</strong> Balanced is a solid default.
-            Use Smaller for email and forms, or High when you want more detail.
+            <strong>Convert to PNG.</strong> Click Convert to PNG. Decoding and
+            encoding run entirely in your browser — nothing leaves your device.
           </li>
           <li>
-            <strong>Convert and download.</strong> Click Convert to JPG.
-            Processing runs locally — one photo downloads as a .jpg; multiple
-            photos download as a ZIP.
+            <strong>Download your files.</strong> One photo downloads as a
+            .png; multiple photos download together as a ZIP.
           </li>
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#heic-to-jpg-tool">HEIC to JPG converter</a> anytime to
+          <a href="#heic-to-png-tool">HEIC to PNG converter</a> anytime to
           process another batch.
         </p>
       </section>
@@ -74,13 +72,14 @@ export default function HeicToJpgLanding() {
         aria-labelledby="why-convert"
       >
         <h2 id="why-convert" className="tool-content__heading">
-          Why Convert HEIC to JPG?
+          Why Convert HEIC to PNG?
         </h2>
         <p>
           HEIC (High Efficiency Image Container) is Apple’s default on many
-          iPhones. It saves space, but Windows PCs, older Android phones, and
-          plenty of websites expect JPEG. Converting to JPG makes photos easy to
-          share, upload, and edit without asking recipients to install codecs.
+          iPhones. It saves space, but design tools, browsers, and many websites
+          prefer PNG for crisp stills and editing. Converting to PNG makes
+          photos easy to open, edit, and upload without asking recipients to
+          install codecs.
         </p>
       </section>
 
@@ -93,20 +92,20 @@ export default function HeicToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Share from iPhone</strong> — Send camera-roll photos that
-            open on any phone, laptop, or messaging app.
+            <strong>Design and editing</strong> — Open iPhone photos in tools
+            that expect PNG without quality loss from JPEG.
           </li>
           <li>
             <strong>Web and form uploads</strong> — Meet site requirements that
-            only accept JPG or JPEG.
+            accept PNG but not HEIC.
           </li>
           <li>
             <strong>Windows and Office</strong> — Drop converted photos into
-            Word, PowerPoint, and Explorer without HEIC support issues.
+            documents and Explorer without HEIC support issues.
           </li>
           <li>
-            <strong>Email attachments</strong> — Convert a batch and attach
-            smaller JPGs that recipients can preview inline.
+            <strong>Screenshots and graphics</strong> — Keep sharp edges and
+            text when you need pixel-accurate stills from HEIC sources.
           </li>
         </ul>
       </section>
@@ -135,32 +134,30 @@ export default function HeicToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <Link href="/heic-to-png">HEIC to PNG</Link> — Convert iPhone HEIC
-            photos to lossless PNG instead of JPEG.
+            <Link href="/heic-to-jpg">HEIC to JPG</Link> — Convert iPhone HEIC
+            photos to JPEG when you need smaller files.
           </li>
           <li>
-            <Link href="/png-to-jpg">PNG to JPG</Link> — Convert PNG images to
-            JPEG with the same quality controls.
+            <Link href="/jpg-to-png">JPG to PNG</Link> — Convert JPEG images to
+            PNG with the same local workflow.
           </li>
           <li>
             <Link href="/image-compressor">Compress Image Size</Link> — Shrink
-            JPG file size after converting for email and uploads.
+            PNG or JPG file size after converting for email and uploads.
           </li>
           <li>
             <Link href="/resize-image">Resize Image</Link> — Set exact pixel
             dimensions for web, profiles, and print.
           </li>
           <li>
-            <Link href="/profile-photo-maker">Profile Photo Maker</Link> —
-            Crop a converted photo into a square or circle avatar.
+            <Link href="/make-background-transparent">
+              Make Background Transparent
+            </Link>{" "}
+            — Remove a background after you have a standard PNG.
           </li>
           <li>
-            <Link href="/image-to-pdf">Image to PDF</Link> — Turn JPG photos into
+            <Link href="/image-to-pdf">Image to PDF</Link> — Turn PNG photos into
             a multi-page PDF.
-          </li>
-          <li>
-            <Link href="/background-remover">Background Remover</Link> — Cut out
-            the subject after you have a standard JPG or PNG.
           </li>
         </ul>
       </section>
