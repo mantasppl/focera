@@ -285,6 +285,11 @@ export const CombinePhotoLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PhotoCollageLazy = dynamic(
+  () => import("@/components/tools/PhotoCollage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const AddImagesToImageLazy = dynamic(
   () => import("@/components/tools/AddImagesToImage"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -312,6 +317,11 @@ export const ColorizePhotoLazy = dynamic(
 
 export const BlackAndWhitePhotoLazy = dynamic(
   () => import("@/components/tools/BlackAndWhitePhoto"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PixelateImageLazy = dynamic(
+  () => import("@/components/tools/PixelateImage"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -362,6 +372,11 @@ export const JpgToSvgLazy = dynamic(
 
 export const JpgToPngLazy = dynamic(
   () => import("@/components/tools/JpgToPng"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const SvgToPngLazy = dynamic(
+  () => import("@/components/tools/SvgToPng"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -417,6 +432,11 @@ export const TrimVideoLazy = dynamic(
 
 export const VideoToGifLazy = dynamic(
   () => import("@/components/tools/VideoToGif"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const GifToMp4Lazy = dynamic(
+  () => import("@/components/tools/GifToMp4"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

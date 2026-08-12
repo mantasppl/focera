@@ -153,6 +153,10 @@ export default function PngToSvgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/svg-to-png">SVG to PNG</Link> — Rasterize SVG logos and
+            icons into crisp PNG files.
+          </li>
+          <li>
             <Link href="/jpg-to-svg">JPG to SVG</Link> — Trace JPG logos and
             icons into scalable SVG files.
           </li>

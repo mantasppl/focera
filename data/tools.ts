@@ -115,6 +115,60 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "gif-to-mp4",
+    name: "GIF to MP4 Converter",
+    shortName: "GIF to MP4",
+    description:
+      "Convert animated GIF to MP4 online — turn GIF into video with size and quality controls. Free, private, and local in your browser.",
+    categories: ["video", "image"],
+    status: "ready",
+    href: "/gif-to-mp4",
+    keywords: [
+      "gif to mp4",
+      "convert gif to mp4",
+      "animated gif to video",
+      "gif to video converter",
+      "gif to mp4 online",
+      "free gif to mp4",
+      "turn gif into mp4",
+      "gif to webm",
+      "convert gif to video",
+      "animated gif converter",
+    ],
+    faq: [
+      {
+        question: "Is this GIF to MP4 converter free?",
+        answer:
+          "Yes. Upload a GIF, convert to video, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my GIFs uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How does GIF to MP4 conversion work?",
+        answer:
+          "Your browser decodes each GIF frame, draws them onto a canvas with the original timing, and encodes a video locally with MediaRecorder.",
+      },
+      {
+        question: "Which formats and limits are supported?",
+        answer:
+          "Upload GIF files up to 25 MB, 500 frames, and 60 seconds. Output is MP4 when your browser supports it; otherwise WebM.",
+      },
+      {
+        question: "Which settings should I pick?",
+        answer:
+          "Medium size and Medium quality is a solid default. Use Small or Low for lighter files, or Large / High for sharper video.",
+      },
+      {
+        question: "Does the video include audio?",
+        answer:
+          "No. GIFs are silent, so the exported video has no soundtrack.",
+      },
+    ],
+  },
+  {
     slug: "compress-video",
     name: "Compress Video Tool",
     shortName: "Compress Video",
@@ -3439,6 +3493,72 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "photo-collage",
+    name: "Photo Collage — Template Collage Maker Online",
+    shortName: "Photo Collage",
+    description:
+      "Make a photo collage online with template layouts — hero, magazine, grid, and more. Pick square, landscape, portrait, or story ratios and download a PNG. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/photo-collage",
+    keywords: [
+      "photo collage",
+      "photo collage maker",
+      "collage maker online",
+      "make a collage",
+      "picture collage",
+      "photo collage templates",
+      "instagram collage maker",
+      "free collage maker",
+      "create photo collage",
+      "collage photos online",
+      "photo montage maker",
+      "template collage",
+    ],
+    faq: [
+      {
+        question: "Is this photo collage maker free?",
+        answer:
+          "Yes. Upload, pick a template, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Collages are built entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "How many photos can I use?",
+        answer:
+          "You can use 2 to 6 JPG, PNG, or WebP photos per collage. Each file can be up to 10 MB.",
+      },
+      {
+        question: "How is this different from Combine Photos?",
+        answer:
+          "Combine Photos uses uniform side-by-side, stacked, or grid cells. Photo Collage offers template layouts with mixed cell sizes (hero, magazine, and more) plus canvas ratios for feed and story formats.",
+      },
+      {
+        question: "What canvas ratios are available?",
+        answer:
+          "Square (1:1), landscape (16:9), portrait (3:4), and story (9:16). Templates scale to the ratio you pick.",
+      },
+      {
+        question: "Can I add space between photos?",
+        answer:
+          "Yes. Choose None, Small, or Medium gap, and pick a white, black, or transparent background for spacing and letterboxing.",
+      },
+      {
+        question: "Which format do I download?",
+        answer:
+          "The tool exports a PNG collage. Use Image Compressor afterward if you need a smaller file for email or social uploads.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects — subject to rights in your original photos.",
+      },
+    ],
+  },
+  {
     slug: "add-images-to-image",
     name: "Add Images to Image — Overlay Photos Online",
     shortName: "Add Images to Image",
@@ -3739,6 +3859,67 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your photo, and convert immediately.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects — subject to rights in your original image.",
+      },
+    ],
+  },
+  {
+    slug: "pixelate-image",
+    name: "Pixelate Image — Mosaic & Pixel Effect Online",
+    shortName: "Pixelate Image",
+    description:
+      "Pixelate an image online — Light, Medium, or Heavy mosaic blocks in your browser. Free, private, and no account required.",
+    categories: ["image"],
+    status: "ready",
+    href: "/pixelate-image",
+    keywords: [
+      "pixelate image",
+      "pixelate photo",
+      "pixelate picture",
+      "mosaic image",
+      "pixel effect",
+      "pixelate online",
+      "blur face pixelate",
+      "pixel art filter",
+      "blocky image",
+      "free pixelate tool",
+      "pixelate jpg",
+      "pixelate png",
+    ],
+    faq: [
+      {
+        question: "Is this pixelate image tool free?",
+        answer:
+          "Yes. Upload, pixelate, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Pixelation runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "What do Light, Medium, and Heavy mean?",
+        answer:
+          "Light uses smaller blocks for a subtle mosaic. Medium is the classic pixel look. Heavy uses larger blocks for a stronger, more abstract effect.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a pixelated PNG.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After pixelating, drag the preview slider to compare the original with the pixelated image.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your image, and pixelate immediately.",
       },
       {
         question: "Can I use the results commercially?",
@@ -5779,6 +5960,60 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your JPG images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "svg-to-png",
+    name: "SVG to PNG Converter",
+    shortName: "SVG to PNG",
+    description:
+      "Convert SVG to PNG online — rasterize vector logos and icons into crisp PNG files with 1×–4× export scale. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/svg-to-png",
+    keywords: [
+      "svg to png",
+      "convert svg to png",
+      "svg to png converter",
+      "svg to png online",
+      "svg png converter",
+      "rasterize svg",
+      "svg to png free",
+      "export svg as png",
+      "vector to png",
+      "svg to transparent png",
+    ],
+    faq: [
+      {
+        question: "Is this SVG to PNG converter free?",
+        answer:
+          "Yes. Convert and download unlimited SVG-to-PNG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple SVG files at once?",
+        answer:
+          "Yes. Add up to 20 SVG images. One file downloads as a .png; multiple files download together as a ZIP.",
+      },
+      {
+        question: "What does export scale mean?",
+        answer:
+          "Scale multiplies the SVG’s width and height when rendering. 2× is a good default for retina screens; 3× and 4× create larger PNGs for high-DPI use.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each SVG can be up to 10 MB, with a combined limit of 80 MB per conversion. Very large outputs are capped to stay within browser canvas limits.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your SVG files, and convert immediately.",
       },
     ],
   },

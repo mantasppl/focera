@@ -43,10 +43,14 @@ type IconKind =
   | "unblur"
   | "colorize"
   | "blackwhite"
+  | "pixelate"
+  | "collage"
   | "border"
   | "ocr";
 
 function iconKindForSlug(slug: string): IconKind {
+  if (slug.includes("photo-collage") || slug.includes("collage"))
+    return "collage";
   if (slug.includes("merge") || slug.includes("combine-photo")) return "merge";
   if (slug.includes("split") || slug.includes("delete-pdf")) return "split";
   if (slug.includes("compress")) return "compress";
@@ -90,6 +94,7 @@ function iconKindForSlug(slug: string): IconKind {
     slug.includes("grayscale")
   )
     return "blackwhite";
+  if (slug.includes("pixelate") || slug.includes("mosaic")) return "pixelate";
   if (slug.includes("background") || slug.includes("bg")) return "eraser";
   if (slug.includes("image-to-text") || slug.includes("ocr")) return "ocr";
   if (
@@ -102,6 +107,7 @@ function iconKindForSlug(slug: string): IconKind {
     slug.includes("png-to-svg") ||
     slug.includes("jpg-to-svg") ||
     slug.includes("jpg-to-png") ||
+    slug.includes("svg-to-png") ||
     slug.includes("webp-to-jpg") ||
     slug.includes("webp-to-png") ||
     slug.includes("heic")
@@ -199,6 +205,14 @@ export default function ToolIcon({
           <path d="M8 4v7a4 4 0 0 0 4 4h8" {...stroke} />
           <path d="M8 20v-5" {...stroke} />
           <path d="M16 8h4l-2-3M20 8l-2 3" {...stroke} />
+        </svg>
+      );
+    case "collage":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="10" height="18" rx="1" {...stroke} />
+          <rect x="15" y="3" width="6" height="8" rx="1" {...stroke} />
+          <rect x="15" y="13" width="6" height="8" rx="1" {...stroke} />
         </svg>
       );
     case "split":
@@ -468,6 +482,20 @@ export default function ToolIcon({
         <svg {...common}>
           <circle cx="12" cy="12" r="9" {...stroke} />
           <path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "pixelate":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="6" height="6" {...stroke} />
+          <rect x="9" y="3" width="6" height="6" {...stroke} />
+          <rect x="15" y="3" width="6" height="6" {...stroke} />
+          <rect x="3" y="9" width="6" height="6" {...stroke} />
+          <rect x="9" y="9" width="6" height="6" fill="currentColor" stroke="none" />
+          <rect x="15" y="9" width="6" height="6" {...stroke} />
+          <rect x="3" y="15" width="6" height="6" {...stroke} />
+          <rect x="9" y="15" width="6" height="6" {...stroke} />
+          <rect x="15" y="15" width="6" height="6" fill="currentColor" stroke="none" />
         </svg>
       );
     case "border":

@@ -5031,17 +5031,20 @@ a {
 .crop-image__options,
 .image-splitter__options,
 .combine-photo__options,
+.photo-collage__options,
 .profile-photo-maker__options,
 .round-image__options,
 .colorize-photo__options,
 .black-and-white-photo__options,
+.pixelate-image__options,
 .translate-your-image__options,
 .image-compressor__options,
 .heic-to-jpg__options,
 .compress-video__options,
 .trim-video__options,
 .mp4-to-mp3__options,
-.video-to-gif__options {
+.video-to-gif__options,
+.gif-to-mp4__options {
   display: grid;
   gap: 1rem;
 }
@@ -5079,15 +5082,18 @@ a {
 .crop-image__chips,
 .image-splitter__chips,
 .combine-photo__chips,
+.photo-collage__chips,
 .profile-photo-maker__chips,
 .round-image__chips,
 .colorize-photo__chips,
 .black-and-white-photo__chips,
+.pixelate-image__chips,
 .image-compressor__chips,
 .heic-to-jpg__chips,
 .compress-video__chips,
 .mp4-to-mp3__chips,
-.video-to-gif__chips {
+.video-to-gif__chips,
+.gif-to-mp4__chips {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
@@ -5188,15 +5194,18 @@ a {
 .crop-image__chip,
 .image-splitter__chip,
 .combine-photo__chip,
+.photo-collage__chip,
 .profile-photo-maker__chip,
 .round-image__chip,
 .colorize-photo__chip,
 .black-and-white-photo__chip,
+.pixelate-image__chip,
 .image-compressor__chip,
 .heic-to-jpg__chip,
 .compress-video__chip,
 .mp4-to-mp3__chip,
-.video-to-gif__chip {
+.video-to-gif__chip,
+.gif-to-mp4__chip {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -5246,15 +5255,18 @@ a {
 .crop-image__chip:hover:not(:disabled),
 .image-splitter__chip:hover:not(:disabled),
 .combine-photo__chip:hover:not(:disabled),
+.photo-collage__chip:hover:not(:disabled),
 .profile-photo-maker__chip:hover:not(:disabled),
 .round-image__chip:hover:not(:disabled),
 .colorize-photo__chip:hover:not(:disabled),
 .black-and-white-photo__chip:hover:not(:disabled),
+.pixelate-image__chip:hover:not(:disabled),
 .image-compressor__chip:hover:not(:disabled),
 .heic-to-jpg__chip:hover:not(:disabled),
 .compress-video__chip:hover:not(:disabled),
 .mp4-to-mp3__chip:hover:not(:disabled),
-.video-to-gif__chip:hover:not(:disabled) {
+.video-to-gif__chip:hover:not(:disabled),
+.gif-to-mp4__chip:hover:not(:disabled) {
   border-color: var(--accent);
 }
 
@@ -5291,15 +5303,18 @@ a {
 .crop-image__chip.is-active,
 .image-splitter__chip.is-active,
 .combine-photo__chip.is-active,
+.photo-collage__chip.is-active,
 .profile-photo-maker__chip.is-active,
 .round-image__chip.is-active,
 .colorize-photo__chip.is-active,
 .black-and-white-photo__chip.is-active,
+.pixelate-image__chip.is-active,
 .image-compressor__chip.is-active,
 .heic-to-jpg__chip.is-active,
 .compress-video__chip.is-active,
 .mp4-to-mp3__chip.is-active,
-.video-to-gif__chip.is-active {
+.video-to-gif__chip.is-active,
+.gif-to-mp4__chip.is-active {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.1);
   color: var(--accent-deep);
@@ -5338,15 +5353,18 @@ a {
 .crop-image__chip:disabled,
 .image-splitter__chip:disabled,
 .combine-photo__chip:disabled,
+.photo-collage__chip:disabled,
 .profile-photo-maker__chip:disabled,
 .round-image__chip:disabled,
 .colorize-photo__chip:disabled,
 .black-and-white-photo__chip:disabled,
+.pixelate-image__chip:disabled,
 .image-compressor__chip:disabled,
 .heic-to-jpg__chip:disabled,
 .compress-video__chip:disabled,
 .mp4-to-mp3__chip:disabled,
-.video-to-gif__chip:disabled {
+.video-to-gif__chip:disabled,
+.gif-to-mp4__chip:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
@@ -5384,15 +5402,18 @@ a {
 .crop-image__chip-label,
 .image-splitter__chip-label,
 .combine-photo__chip-label,
+.photo-collage__chip-label,
 .profile-photo-maker__chip-label,
 .round-image__chip-label,
 .colorize-photo__chip-label,
 .black-and-white-photo__chip-label,
+.pixelate-image__chip-label,
 .image-compressor__chip-label,
 .heic-to-jpg__chip-label,
 .compress-video__chip-label,
 .mp4-to-mp3__chip-label,
-.video-to-gif__chip-label {
+.video-to-gif__chip-label,
+.gif-to-mp4__chip-label {
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -5430,15 +5451,18 @@ a {
 .crop-image__chip-hint,
 .image-splitter__chip-hint,
 .combine-photo__chip-hint,
+.photo-collage__chip-hint,
 .profile-photo-maker__chip-hint,
 .round-image__chip-hint,
 .colorize-photo__chip-hint,
 .black-and-white-photo__chip-hint,
+.pixelate-image__chip-hint,
 .image-compressor__chip-hint,
 .heic-to-jpg__chip-hint,
 .compress-video__chip-hint,
 .mp4-to-mp3__chip-hint,
-.video-to-gif__chip-hint {
+.video-to-gif__chip-hint,
+.gif-to-mp4__chip-hint {
   font-size: 0.75rem;
   color: var(--muted);
 }
@@ -5477,15 +5501,18 @@ a {
 .crop-image__chip.is-active .crop-image__chip-hint,
 .image-splitter__chip.is-active .image-splitter__chip-hint,
 .combine-photo__chip.is-active .combine-photo__chip-hint,
+.photo-collage__chip.is-active .photo-collage__chip-hint,
 .profile-photo-maker__chip.is-active .profile-photo-maker__chip-hint,
 .round-image__chip.is-active .round-image__chip-hint,
 .colorize-photo__chip.is-active .colorize-photo__chip-hint,
 .black-and-white-photo__chip.is-active .black-and-white-photo__chip-hint,
+.pixelate-image__chip.is-active .pixelate-image__chip-hint,
 .image-compressor__chip.is-active .image-compressor__chip-hint,
 .heic-to-jpg__chip.is-active .heic-to-jpg__chip-hint,
 .compress-video__chip.is-active .compress-video__chip-hint,
 .mp4-to-mp3__chip.is-active .mp4-to-mp3__chip-hint,
-.video-to-gif__chip.is-active .video-to-gif__chip-hint {
+.video-to-gif__chip.is-active .video-to-gif__chip-hint,
+.gif-to-mp4__chip.is-active .gif-to-mp4__chip-hint {
   color: var(--accent-deep);
 }
 
@@ -5622,18 +5649,22 @@ a {
   .crop-image__chips,
   .image-splitter__chips,
   .combine-photo__chips,
+  .photo-collage__chips,
+  .photo-collage__templates,
   .profile-photo-maker__chips,
   .profile-photo-maker__chips--shape,
   .round-image__chips,
   .colorize-photo__chips,
   .black-and-white-photo__chips,
+  .pixelate-image__chips,
   .image-compressor__chips,
   .image-compressor__chips--levels,
   .heic-to-jpg__chips,
   .compress-video__chips,
   .compress-video__chips--levels,
   .mp4-to-mp3__chips,
-  .video-to-gif__chips {
+  .video-to-gif__chips,
+  .gif-to-mp4__chips {
     grid-template-columns: 1fr;
   }
 }
@@ -5717,7 +5748,8 @@ a {
 .profile-photo-maker__result,
 .round-image__result,
 .colorize-photo__result,
-.black-and-white-photo__result {
+.black-and-white-photo__result,
+.pixelate-image__result {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -5734,7 +5766,8 @@ a {
 .profile-photo-maker__result-meta,
 .round-image__result-meta,
 .colorize-photo__result-meta,
-.black-and-white-photo__result-meta {
+.black-and-white-photo__result-meta,
+.pixelate-image__result-meta {
   margin: 0;
   font-size: 0.85rem;
   color: var(--muted);
@@ -6402,7 +6435,8 @@ a {
 .compress-video__success,
 .trim-video__success,
 .mp4-to-mp3__success,
-.video-to-gif__success {
+.video-to-gif__success,
+.gif-to-mp4__success {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6424,7 +6458,8 @@ a {
 .compress-video__success-title,
 .trim-video__success-title,
 .mp4-to-mp3__success-title,
-.video-to-gif__success-title {
+.video-to-gif__success-title,
+.gif-to-mp4__success-title {
   margin: 0;
   font-size: 1.05rem;
   font-weight: 650;
@@ -6444,7 +6479,8 @@ a {
 .compress-video__success-meta,
 .trim-video__success-meta,
 .mp4-to-mp3__success-meta,
-.video-to-gif__success-meta {
+.video-to-gif__success-meta,
+.gif-to-mp4__success-meta {
   margin: 0;
   font-size: 0.9rem;
   color: var(--muted);
@@ -6459,7 +6495,8 @@ a {
 .compress-video__stats,
 .trim-video__stats,
 .mp4-to-mp3__stats,
-.video-to-gif__stats {
+.video-to-gif__stats,
+.gif-to-mp4__stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.55rem;
@@ -6477,7 +6514,8 @@ a {
 .compress-video__stats li,
 .trim-video__stats li,
 .mp4-to-mp3__stats li,
-.video-to-gif__stats li {
+.video-to-gif__stats li,
+.gif-to-mp4__stats li {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -6494,7 +6532,8 @@ a {
 .compress-video__stat-label,
 .trim-video__stat-label,
 .mp4-to-mp3__stat-label,
-.video-to-gif__stat-label {
+.video-to-gif__stat-label,
+.gif-to-mp4__stat-label {
   font-size: 0.72rem;
   color: var(--muted);
   text-transform: uppercase;
@@ -6509,7 +6548,8 @@ a {
 .compress-video__stat-value,
 .trim-video__stat-value,
 .mp4-to-mp3__stat-value,
-.video-to-gif__stat-value {
+.video-to-gif__stat-value,
+.gif-to-mp4__stat-value {
   font-size: 0.95rem;
   font-weight: 650;
   color: var(--ink);
@@ -6615,7 +6655,8 @@ a {
 .compress-video__preview,
 .trim-video__preview,
 .mp4-to-mp3__preview,
-.video-to-gif__preview {
+.video-to-gif__preview,
+.gif-to-mp4__preview {
   width: min(100%, 420px);
   max-height: 280px;
   margin-top: 0.35rem;
@@ -6643,7 +6684,8 @@ a {
   .compress-video__stats,
   .trim-video__stats,
   .mp4-to-mp3__stats,
-  .video-to-gif__stats {
+  .video-to-gif__stats,
+  .gif-to-mp4__stats {
     grid-template-columns: 1fr;
     width: 100%;
   }
@@ -6665,7 +6707,8 @@ a {
   .compress-video__preview,
   .trim-video__preview,
   .mp4-to-mp3__preview,
-  .video-to-gif__preview {
+  .video-to-gif__preview,
+  .gif-to-mp4__preview {
     max-height: 220px;
   }
 }
@@ -8425,6 +8468,7 @@ a {
 .png-to-pdf__list-wrap,
 .add-images-to-pdf__list-wrap,
 .combine-photo__list-wrap,
+.photo-collage__list-wrap,
 .add-images-to-image__list-wrap {
   display: flex;
   flex-direction: column;
@@ -8435,6 +8479,7 @@ a {
 .png-to-pdf__list-header,
 .add-images-to-pdf__list-header,
 .combine-photo__list-header,
+.photo-collage__list-header,
 .add-images-to-image__list-header {
   display: flex;
   align-items: baseline;
@@ -8446,6 +8491,7 @@ a {
 .png-to-pdf__list-title,
 .add-images-to-pdf__list-title,
 .combine-photo__list-title,
+.photo-collage__list-title,
 .add-images-to-image__list-title {
   margin: 0;
   font-size: 0.88rem;
@@ -8457,6 +8503,7 @@ a {
 .png-to-pdf__list-meta,
 .add-images-to-pdf__list-meta,
 .combine-photo__list-meta,
+.photo-collage__list-meta,
 .add-images-to-image__list-meta {
   margin: 0;
   font-size: 0.78rem;
@@ -8467,6 +8514,7 @@ a {
 .png-to-pdf__list,
 .add-images-to-pdf__list,
 .combine-photo__list,
+.photo-collage__list,
 .add-images-to-image__list {
   list-style: none;
   margin: 0;
@@ -8482,6 +8530,7 @@ a {
 .png-to-pdf__item,
 .add-images-to-pdf__item,
 .combine-photo__item,
+.photo-collage__item,
 .add-images-to-image__item {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -8520,6 +8569,7 @@ a {
 .png-to-pdf__index,
 .add-images-to-pdf__index,
 .combine-photo__index,
+.photo-collage__index,
 .add-images-to-image__index {
   display: inline-flex;
   align-items: center;
@@ -8537,6 +8587,7 @@ a {
 .png-to-pdf__file,
 .add-images-to-pdf__file,
 .combine-photo__file,
+.photo-collage__file,
 .add-images-to-image__file {
   min-width: 0;
   display: flex;
@@ -8547,6 +8598,7 @@ a {
 .png-to-pdf__name,
 .add-images-to-pdf__name,
 .combine-photo__name,
+.photo-collage__name,
 .add-images-to-image__name {
   margin: 0;
   font-size: 0.86rem;
@@ -8561,6 +8613,7 @@ a {
 .png-to-pdf__size,
 .add-images-to-pdf__size,
 .combine-photo__size,
+.photo-collage__size,
 .add-images-to-image__size {
   margin: 0.1rem 0 0;
   font-size: 0.75rem;
@@ -8571,6 +8624,7 @@ a {
 .png-to-pdf__item-actions,
 .add-images-to-pdf__item-actions,
 .combine-photo__item-actions,
+.photo-collage__item-actions,
 .add-images-to-image__item-actions {
   display: inline-flex;
   gap: 0.25rem;
@@ -8580,6 +8634,7 @@ a {
 .png-to-pdf__icon-btn,
 .add-images-to-pdf__icon-btn,
 .combine-photo__icon-btn,
+.photo-collage__icon-btn,
 .add-images-to-image__icon-btn {
   display: inline-flex;
   align-items: center;
@@ -8603,6 +8658,7 @@ a {
 .png-to-pdf__icon-btn:hover:not(:disabled),
 .add-images-to-pdf__icon-btn:hover:not(:disabled),
 .combine-photo__icon-btn:hover:not(:disabled),
+.photo-collage__icon-btn:hover:not(:disabled),
 .add-images-to-image__icon-btn:hover:not(:disabled) {
   border-color: var(--accent);
   background: rgba(15, 122, 102, 0.06);
@@ -8612,6 +8668,7 @@ a {
 .png-to-pdf__icon-btn:disabled,
 .add-images-to-pdf__icon-btn:disabled,
 .combine-photo__icon-btn:disabled,
+.photo-collage__icon-btn:disabled,
 .add-images-to-image__icon-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -8620,7 +8677,8 @@ a {
 .merge-pdf__icon-btn--danger:hover:not(:disabled),
 .png-to-pdf__icon-btn--danger:hover:not(:disabled),
 .add-images-to-pdf__icon-btn--danger:hover:not(:disabled),
-.combine-photo__icon-btn--danger:hover:not(:disabled) {
+.combine-photo__icon-btn--danger:hover:not(:disabled),
+.photo-collage__icon-btn--danger:hover:not(:disabled) {
   border-color: #c45c4a;
   color: #a43d2d;
   background: rgba(196, 92, 74, 0.08);
@@ -8631,7 +8689,9 @@ a {
 .png-to-pdf__empty,
 .pdf-creator__empty,
 .combine-photo__empty,
-.combine-photo__success {
+.combine-photo__success,
+.photo-collage__empty,
+.photo-collage__success {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8642,7 +8702,8 @@ a {
 }
 
 .merge-pdf__success-title,
-.combine-photo__success-title {
+.combine-photo__success-title,
+.photo-collage__success-title {
   margin: 0;
   font-size: 1.15rem;
   font-weight: 700;
@@ -8650,7 +8711,8 @@ a {
 }
 
 .merge-pdf__success-meta,
-.combine-photo__success-meta {
+.combine-photo__success-meta,
+.photo-collage__success-meta {
   margin: 0;
   font-size: 0.9rem;
   color: var(--ink);
@@ -8659,7 +8721,8 @@ a {
 .merge-pdf__summary,
 .png-to-pdf__summary,
 .pdf-creator__summary,
-.combine-photo__summary {
+.combine-photo__summary,
+.photo-collage__summary {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -8675,13 +8738,15 @@ a {
 .merge-pdf__summary li,
 .png-to-pdf__summary li,
 .pdf-creator__summary li,
-.combine-photo__summary li {
+.combine-photo__summary li,
+.photo-collage__summary li {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.combine-photo__preview {
+.combine-photo__preview,
+.photo-collage__preview {
   max-width: min(100%, 420px);
   max-height: 320px;
   object-fit: contain;
@@ -8697,6 +8762,63 @@ a {
     0 8px,
     8px -8px,
     -8px 0;
+}
+
+/* -- Photo Collage templates -- */
+.photo-collage__templates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.photo-collage__template {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.photo-collage__template:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.06);
+}
+
+.photo-collage__template.is-active {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(15, 122, 102, 0.35);
+}
+
+.photo-collage__template:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.photo-collage__template-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: calc(var(--radius) - 4px);
+  background: rgba(15, 122, 102, 0.06);
+  overflow: hidden;
+}
+
+.photo-collage__template-cell {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: rgba(15, 122, 102, 0.28);
 }
 
 /* -- PDF Editor -- */
