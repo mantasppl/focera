@@ -137,6 +137,10 @@ export default function PngToPdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/png-to-eps">PNG to EPS</Link> — Wrap PNG images in
+            Encapsulated PostScript for print and layout apps.
+          </li>
+          <li>
             <Link href="/image-to-pdf">Image to PDF</Link> — Convert PNG, JPG,
             or WebP photos into a multi-page PDF.
           </li>

@@ -112,6 +112,14 @@ export default function GifToMp4Landing() {
             direction and turn a short clip into an animated GIF.
           </li>
           <li>
+            <Link href="/webp-to-gif">WebP to GIF</Link> — Convert an animated
+            WebP sticker or still image into a GIF.
+          </li>
+          <li>
+            <Link href="/png-to-gif">PNG to GIF</Link> — Turn PNG screenshots
+            and graphics into still or animated GIFs.
+          </li>
+          <li>
             <Link href="/compress-video">Compress Video</Link> — Shrink the
             exported clip further for email or chat.
           </li>

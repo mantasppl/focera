@@ -123,6 +123,14 @@ export default function PdfToTiffLanding() {
             back into a multi-page PDF (the reverse of PDF to TIFF).
           </li>
           <li>
+            <Link href="/jpg-to-tiff">JPG to TIFF</Link> — Convert JPEG photos
+            into uncompressed .tif / .tiff files.
+          </li>
+          <li>
+            <Link href="/tiff-to-jpg">TIFF to JPG</Link> — Convert .tif / .tiff
+            files into standard JPEG images for sharing and uploads.
+          </li>
+          <li>
             <Link href="/pdf-to-png">PDF to PNG</Link> — Convert PDF pages to
             lossless PNG images for the web and design tools.
           </li>

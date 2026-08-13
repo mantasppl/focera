@@ -161,6 +161,10 @@ export default function PngToSvgLanding() {
             icons into scalable SVG files.
           </li>
           <li>
+            <Link href="/png-to-eps">PNG to EPS</Link> — Wrap PNG images in
+            Encapsulated PostScript for print and layout apps.
+          </li>
+          <li>
             <Link href="/png-to-jpg">PNG to JPG</Link> — Convert PNG images to
             standard JPEG with quality control.
           </li>

@@ -139,6 +139,18 @@ export default function EpsToPdfLanding() {
             or WebP images into a multi-page PDF.
           </li>
           <li>
+            <Link href="/eps-to-png">EPS to PNG</Link> — Rasterize Encapsulated
+            PostScript artwork into a PNG with DPI and transparency options.
+          </li>
+          <li>
+            <Link href="/png-to-eps">PNG to EPS</Link> — Convert PNG images into
+            Encapsulated PostScript for print workflows.
+          </li>
+          <li>
+            <Link href="/psd-to-ai">PSD to AI</Link> — Convert Photoshop PSD
+            files into Adobe Illustrator AI files.
+          </li>
+          <li>
             <Link href="/png-to-pdf">PNG to PDF</Link> — Turn PNG images into a
             PDF with Fit / A4 / Letter options.
           </li>

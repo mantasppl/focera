@@ -148,6 +148,10 @@ export default function SvgToPngLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/eps-to-png">EPS to PNG</Link> — Rasterize Encapsulated
+            PostScript logos into PNG with DPI and transparency options.
+          </li>
+          <li>
             <Link href="/png-to-svg">PNG to SVG</Link> — Trace PNG logos and
             icons into scalable SVG files.
           </li>

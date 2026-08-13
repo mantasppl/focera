@@ -8,6 +8,7 @@ type IconKind =
   | "split"
   | "compress"
   | "rotate"
+  | "flip"
   | "crop"
   | "lock"
   | "unlock"
@@ -46,7 +47,8 @@ type IconKind =
   | "pixelate"
   | "collage"
   | "border"
-  | "ocr";
+  | "ocr"
+  | "metadata";
 
 function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("photo-collage") || slug.includes("collage"))
@@ -55,6 +57,7 @@ function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("split") || slug.includes("delete-pdf")) return "split";
   if (slug.includes("compress")) return "compress";
   if (slug.includes("rotate") || slug.includes("rearrange")) return "rotate";
+  if (slug.includes("flip")) return "flip";
   if (
     slug.includes("crop") ||
     slug.includes("trim") ||
@@ -96,6 +99,7 @@ function iconKindForSlug(slug: string): IconKind {
     return "blackwhite";
   if (slug.includes("pixelate") || slug.includes("mosaic")) return "pixelate";
   if (slug.includes("background") || slug.includes("bg")) return "eraser";
+  if (slug.includes("metadata") || slug.includes("exif")) return "metadata";
   if (slug.includes("image-to-text") || slug.includes("ocr")) return "ocr";
   if (
     slug.includes("image-compressor") ||
@@ -105,11 +109,16 @@ function iconKindForSlug(slug: string): IconKind {
     slug.includes("png-to-jpg") ||
     slug.includes("png-to-webp") ||
     slug.includes("png-to-svg") ||
+    slug.includes("png-to-eps") ||
+    slug.includes("eps-to-png") ||
+    slug.includes("psd-to-ai") ||
     slug.includes("jpg-to-svg") ||
     slug.includes("jpg-to-png") ||
+    slug.includes("jpg-to-tiff") ||
     slug.includes("svg-to-png") ||
     slug.includes("webp-to-jpg") ||
     slug.includes("webp-to-png") ||
+    slug.includes("tiff-to-jpg") ||
     slug.includes("heic")
   )
     return "image";
@@ -234,6 +243,14 @@ export default function ToolIcon({
           <path d="M20 7v5h-5" {...stroke} />
           <path d="M4 12a8 8 0 0 1 14.3-5L20 9" {...stroke} />
           <path d="M4 12a8 8 0 0 0 14.3 5" {...stroke} />
+        </svg>
+      );
+    case "flip":
+      return (
+        <svg {...common}>
+          <path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3" {...stroke} />
+          <path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3" {...stroke} />
+          <path d="M12 4v16" {...stroke} />
         </svg>
       );
     case "crop":
@@ -510,6 +527,13 @@ export default function ToolIcon({
         <svg {...common}>
           <path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3" {...stroke} />
           <path d="M8 9h8v6H8V9Z" {...stroke} />
+        </svg>
+      );
+    case "metadata":
+      return (
+        <svg {...common}>
+          <rect x="5" y="3" width="14" height="18" rx="2" {...stroke} />
+          <path d="M8 8h8M8 12h8M8 16h5" {...stroke} />
         </svg>
       );
     case "file":

@@ -149,6 +149,14 @@ export default function PngToJpgLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/png-to-eps">PNG to EPS</Link> — Wrap PNG images in
+            Encapsulated PostScript for print workflows.
+          </li>
+          <li>
+            <Link href="/png-to-gif">PNG to GIF</Link> — Turn PNG images into
+            still or animated GIFs for chat and uploads.
+          </li>
+          <li>
             <Link href="/png-to-webp">PNG to WebP</Link> — Convert PNG images to
             smaller WebP files while keeping transparency.
           </li>
@@ -167,6 +175,10 @@ export default function PngToJpgLanding() {
           <li>
             <Link href="/heic-to-jpg">HEIC to JPG</Link> — Turn iPhone HEIC
             photos into standard JPG files.
+          </li>
+          <li>
+            <Link href="/tiff-to-jpg">TIFF to JPG</Link> — Convert .tif / .tiff
+            scans, including multi-page files, into JPEG.
           </li>
           <li>
             <Link href="/png-to-pdf">PNG to PDF</Link> — Combine PNG images into

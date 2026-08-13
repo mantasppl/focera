@@ -112,6 +112,10 @@ export default function CropImageLanding() {
             width and height after cropping.
           </li>
           <li>
+            <Link href="/flip-image">Flip Image</Link> — Mirror the photo
+            horizontally or vertically before or after cropping.
+          </li>
+          <li>
             <Link href="/round-image">Round Image</Link> — Crop to a circle
             with a transparent edge for avatars and badges.
           </li>

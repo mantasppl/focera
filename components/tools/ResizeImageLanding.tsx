@@ -117,6 +117,10 @@ export default function ResizeImageLanding() {
             file size after exporting a resized PNG.
           </li>
           <li>
+            <Link href="/flip-image">Flip Image</Link> — Mirror the photo
+            horizontally or vertically after you set the size.
+          </li>
+          <li>
             <Link href="/background-remover">AI Background Remover</Link> —
             Cut out subjects before or after changing dimensions.
           </li>

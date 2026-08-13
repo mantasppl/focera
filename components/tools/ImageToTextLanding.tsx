@@ -115,6 +115,12 @@ export default function ImageToTextLanding() {
             text from digital PDFs without OCR.
           </li>
           <li>
+            <Link href="/view-metadata-for-your-image">
+              View Metadata For Your Image
+            </Link>{" "}
+            — Read EXIF, camera, and GPS tags without uploading the file.
+          </li>
+          <li>
             <Link href="/text-case-converter">Text Case Converter</Link> —
             Change capitalization of the extracted text.
           </li>

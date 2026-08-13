@@ -148,6 +148,14 @@ export default function JpgToPngLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/jpg-to-tiff">JPG to TIFF</Link> — Convert JPEG photos
+            into uncompressed .tif / .tiff files for print and scans.
+          </li>
+          <li>
+            <Link href="/jpg-to-gif">JPG to GIF</Link> — Turn JPEG photos into
+            still or animated GIFs.
+          </li>
+          <li>
             <Link href="/png-to-jpg">PNG to JPG</Link> — Convert PNG images back
             to standard JPEG with quality control.
           </li>

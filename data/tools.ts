@@ -3366,6 +3366,67 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "flip-image",
+    name: "Flip Image Online",
+    shortName: "Flip Image",
+    description:
+      "Flip an image online — mirror horizontally, vertically, or both, then download a PNG. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/flip-image",
+    keywords: [
+      "flip image",
+      "flip photo",
+      "mirror image",
+      "flip picture online",
+      "mirror photo",
+      "flip jpg",
+      "flip png",
+      "horizontal flip",
+      "vertical flip",
+      "free image flipper",
+      "reverse image",
+      "mirror image online",
+    ],
+    faq: [
+      {
+        question: "Is this image flipper free?",
+        answer:
+          "Yes. Upload, flip, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Flipping runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "What is the difference between horizontal and vertical flip?",
+        answer:
+          "Horizontal flip mirrors left and right (like a selfie camera). Vertical flip mirrors top and bottom. Both applies both axes at once.",
+      },
+      {
+        question: "Does flipping change the image size?",
+        answer:
+          "No. The exported PNG keeps the original width and height. Only the pixel order is reversed along the axes you choose.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a PNG of the flipped image.",
+      },
+      {
+        question: "How is this different from Crop Image?",
+        answer:
+          "Flip Image mirrors the whole photo. Crop Image reframes a rectangular area. Use both when you want to mirror first, then trim.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, web, client work, and personal projects.",
+      },
+    ],
+  },
+  {
     slug: "image-splitter",
     name: "Image Splitter — Cut Photo Into Pieces",
     shortName: "Image Splitter",
@@ -4049,6 +4110,67 @@ export const tools: Tool[] = [
         question: "Can I use the text commercially?",
         answer:
           "Yes. Text you extract is yours to use. Only process images you own or have permission to convert.",
+      },
+    ],
+  },
+  {
+    slug: "view-metadata-for-your-image",
+    name: "View Metadata For Your Image — EXIF Viewer",
+    shortName: "View Image Metadata",
+    description:
+      "View image metadata online — read EXIF, camera settings, dates, and GPS from JPG, PNG, or WebP. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/view-metadata-for-your-image",
+    keywords: [
+      "view image metadata",
+      "exif viewer",
+      "photo metadata viewer",
+      "view metadata for your image",
+      "image exif data",
+      "read photo metadata",
+      "gps from photo",
+      "camera settings from image",
+      "exif viewer online",
+      "free image metadata viewer",
+      "jpg exif",
+      "view photo properties",
+    ],
+    faq: [
+      {
+        question: "Is this image metadata viewer free?",
+        answer:
+          "Yes. Upload a photo, read its tags, copy JSON, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Metadata is parsed entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "What metadata can I see?",
+        answer:
+          "File name, size, type, and pixel dimensions always appear. When the file includes EXIF, IPTC, or XMP, you also see camera make and model, lens, shutter, aperture, ISO, dates, and GPS coordinates.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. JPEG photos from cameras and phones usually contain the richest EXIF.",
+      },
+      {
+        question: "Why does my image show almost no tags?",
+        answer:
+          "Many apps strip metadata when they export or compress. Screenshots and some PNGs have little or no EXIF. The tool still shows file size and dimensions.",
+      },
+      {
+        question: "Is GPS shown to anyone else?",
+        answer:
+          "No. Coordinates stay in your browser. Opening the map link loads OpenStreetMap in a new tab from your device only.",
+      },
+      {
+        question: "Can I export the metadata?",
+        answer:
+          "Yes. Copy JSON to the clipboard or download a .json file for your records.",
       },
     ],
   },
@@ -5849,6 +5971,268 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "png-to-eps",
+    name: "PNG to EPS Converter",
+    shortName: "PNG to EPS",
+    description:
+      "Convert PNG to EPS online — wrap PNG images in Encapsulated PostScript for Illustrator, InDesign, and print. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/png-to-eps",
+    keywords: [
+      "png to eps",
+      "convert png to eps",
+      "png to eps converter",
+      "png to eps online",
+      "png to postscript",
+      "png eps converter",
+      "free png to eps",
+      "raster to eps",
+      "png to encapsulated postscript",
+      "convert png into eps",
+    ],
+    faq: [
+      {
+        question: "Is this PNG to EPS converter free?",
+        answer:
+          "Yes. Convert and download unlimited PNG-to-EPS files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple PNG files at once?",
+        answer:
+          "Yes. Add up to 10 PNG images. One file downloads as a .eps; multiple files download together as a ZIP.",
+      },
+      {
+        question: "Is the EPS a vector tracing of my PNG?",
+        answer:
+          "No. The tool embeds the PNG pixels in a valid EPS file so photos and detailed graphics keep their look. Use PNG to SVG when you need traced vector paths.",
+      },
+      {
+        question: "Does EPS keep PNG transparency?",
+        answer:
+          "Classic EPS does not support PNG-style alpha. Transparent pixels are flattened onto white.",
+      },
+      {
+        question: "What do Screen, Draft, and Print mean?",
+        answer:
+          "They set placement DPI. Screen (72 DPI) makes 1 pixel equal 1 PostScript point. Draft uses 150 DPI and Print uses 300 DPI so the placed size matches print layouts. Pixel data is not downsampled.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each PNG can be up to 10 MB, with a combined limit of 40 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PNG images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "eps-to-png",
+    name: "EPS to PNG Converter",
+    shortName: "EPS to PNG",
+    description:
+      "Convert EPS to PNG online — rasterize Encapsulated PostScript logos and artwork into PNG with DPI and transparent background options. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/eps-to-png",
+    keywords: [
+      "eps to png",
+      "convert eps to png",
+      "eps to png converter",
+      "eps to png online",
+      "encapsulated postscript to png",
+      "epsf to png",
+      "free eps to png",
+      "illustrator eps to png",
+      "eps png converter",
+      "convert eps into png",
+      "rasterize eps",
+    ],
+    faq: [
+      {
+        question: "Is this EPS to PNG converter free?",
+        answer:
+          "Yes. Convert and download unlimited EPS-to-PNG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my EPS files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device. The first visit downloads a converter engine (~15 MB) to your browser; the EPS itself is never uploaded.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          ".eps and .epsf (Encapsulated PostScript). Plain .ps multi-page documents are not the focus of this tool.",
+      },
+      {
+        question: "What do Screen, Draft, and Print mean?",
+        answer:
+          "They set output DPI. Screen is 72 DPI for web-sized assets, Draft is 150 DPI, and Print is 300 DPI for sharper logos and mockups. Higher DPI makes a larger PNG.",
+      },
+      {
+        question: "Does the PNG keep a transparent background?",
+        answer:
+          "Yes, when you choose Transparent. Unpainted areas stay alpha-transparent. Choose White if you need an opaque PNG.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each EPS can be up to 25 MB. Very large artwork at 300 DPI may exceed the 8192 px edge limit — try a lower DPI if that happens.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your EPS file, and convert. No Ghostscript or Illustrator install is required on your computer.",
+      },
+    ],
+  },
+  {
+    slug: "psd-to-ai",
+    name: "PSD to AI Converter",
+    shortName: "PSD to AI",
+    description:
+      "Convert PSD to AI online — turn Photoshop .psd files into Adobe Illustrator .ai files. Free, private, and local in your browser.",
+    categories: ["image", "file"],
+    status: "ready",
+    href: "/psd-to-ai",
+    keywords: [
+      "psd to ai",
+      "convert psd to ai",
+      "psd to ai converter",
+      "psd to ai online",
+      "photoshop to illustrator",
+      "psd to illustrator",
+      "convert photoshop to ai",
+      "psd ai converter",
+      "free psd to ai",
+      "photoshop psd to ai",
+    ],
+    faq: [
+      {
+        question: "Is this PSD to AI converter free?",
+        answer:
+          "Yes. Convert and download unlimited PSD-to-AI files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PSD files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple PSD files at once?",
+        answer:
+          "Yes. Add up to 10 Photoshop .psd files. One file downloads as a .ai; multiple files download together as a ZIP.",
+      },
+      {
+        question: "Is the AI file a vector tracing of my PSD?",
+        answer:
+          "No. The tool flattens the PSD composite and embeds it in a PDF-compatible .ai file so photos and detailed graphics keep their look. Use PNG to SVG when you need traced vector paths.",
+      },
+      {
+        question: "Are Photoshop layers preserved?",
+        answer:
+          "No. Layers, masks, and blend modes are flattened into a single artboard image. Transparency is kept where the PSD has it.",
+      },
+      {
+        question: "Which PSD files are supported?",
+        answer:
+          "8-bit RGB .psd files with a saved composite. CMYK, Lab, Indexed, 16-bit, and PSB large documents are not supported — convert those to 8-bit RGB in Photoshop first.",
+      },
+      {
+        question: "What do Screen, Draft, and Print mean?",
+        answer:
+          "They set artboard DPI. Screen (72 DPI) makes 1 pixel equal 1 PostScript point. Draft uses 150 DPI and Print uses 300 DPI so the artboard size matches print layouts. Pixel data is not downsampled.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each PSD can be up to 25 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PSD files, and convert immediately. Adobe Illustrator is only needed if you want to edit the downloaded .ai file.",
+      },
+    ],
+  },
+  {
+    slug: "png-to-gif",
+    name: "PNG to GIF Converter",
+    shortName: "PNG to GIF",
+    description:
+      "Convert PNG to GIF online — turn PNG images into still or animated GIFs with size, color, and frame-delay controls. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/png-to-gif",
+    keywords: [
+      "png to gif",
+      "convert png to gif",
+      "png to gif converter",
+      "png gif converter",
+      "make gif from png",
+      "images to gif",
+      "png to gif online",
+      "animated gif from png",
+      "free png to gif",
+      "change png to gif",
+    ],
+    faq: [
+      {
+        question: "Is this PNG to GIF converter free?",
+        answer:
+          "Yes. Convert and download unlimited PNG-to-GIF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I make an animated GIF from multiple PNGs?",
+        answer:
+          "Yes. Add two or more PNG images and keep Animated GIF selected. Reorder the frames, pick a delay, and download one looping GIF. Switch to Separate GIFs to convert each image on its own.",
+      },
+      {
+        question: "Can I convert a single PNG to GIF?",
+        answer:
+          "Yes. One PNG downloads as a still .gif. Multiple files can download as one animated GIF or as a ZIP of individual GIFs.",
+      },
+      {
+        question: "What size and quality options are available?",
+        answer:
+          "Choose Small (320px), Medium (480px), or Large (640px) output, plus Low, Medium, or High color quality (64–256 colors). Animated GIFs also let you set frame delay from 0.1s to 1s.",
+      },
+      {
+        question: "What happens to transparent PNG areas?",
+        answer:
+          "GIF transparency is limited. Transparent pixels are filled with white so the GIF looks correct in viewers and chat apps.",
+      },
+      {
+        question: "Will the GIF be larger than the PNG?",
+        answer:
+          "It depends. GIF is limited to 256 colors. Simple graphics can stay compact; photos and detailed screenshots often grow. Smaller size and fewer colors keep the file lighter.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each PNG can be up to 10 MB, with a combined limit of 80 MB and up to 20 files per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PNG images, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "jpg-to-svg",
     name: "JPG to SVG Converter",
     shortName: "JPG to SVG",
@@ -6078,6 +6462,131 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "jpg-to-gif",
+    name: "JPG to GIF Converter",
+    shortName: "JPG to GIF",
+    description:
+      "Convert JPG to GIF online — turn JPEG photos into still or animated GIFs with size, color, and frame-delay controls. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/jpg-to-gif",
+    keywords: [
+      "jpg to gif",
+      "jpeg to gif",
+      "convert jpg to gif",
+      "jpg to gif converter",
+      "jpeg to gif converter",
+      "make gif from jpg",
+      "images to gif",
+      "photo to gif",
+      "animated gif from jpg",
+      "free jpg to gif",
+      "jpg to gif online",
+    ],
+    faq: [
+      {
+        question: "Is this JPG to GIF converter free?",
+        answer:
+          "Yes. Convert and download unlimited JPG-to-GIF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I make an animated GIF from multiple JPGs?",
+        answer:
+          "Yes. Add two or more JPG or JPEG images and keep Animated GIF selected. Reorder the frames, pick a delay, and download one looping GIF. Switch to Separate GIFs to convert each photo on its own.",
+      },
+      {
+        question: "Can I convert a single JPG to GIF?",
+        answer:
+          "Yes. One JPG downloads as a still .gif. Multiple files can download as one animated GIF or as a ZIP of individual GIFs.",
+      },
+      {
+        question: "What size and quality options are available?",
+        answer:
+          "Choose Small (320px), Medium (480px), or Large (640px) output, plus Low, Medium, or High color quality (64–256 colors). Animated GIFs also let you set frame delay from 0.1s to 1s.",
+      },
+      {
+        question: "Will the GIF be larger than the JPG?",
+        answer:
+          "Often yes for photos. GIF is limited to 256 colors and is less efficient than JPEG for still photography. Smaller size and fewer colors keep the file lighter.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each JPG can be up to 10 MB, with a combined limit of 80 MB and up to 20 files per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your JPG images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "jpg-to-tiff",
+    name: "JPG to TIFF Converter",
+    shortName: "JPG to TIFF",
+    description:
+      "Convert JPG to TIFF online — turn JPEG photos into uncompressed .tif / .tiff files for print, scans, and archival workflows. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/jpg-to-tiff",
+    keywords: [
+      "jpg to tiff",
+      "jpeg to tiff",
+      "jpg to tif",
+      "convert jpg to tiff",
+      "jpg to tiff converter",
+      "jpeg to tiff converter",
+      "change jpg to tiff",
+      "jpg tiff converter",
+      "free jpg to tiff",
+      "jpg to tiff online",
+      "convert jpeg to tif",
+    ],
+    faq: [
+      {
+        question: "Is this JPG to TIFF converter free?",
+        answer:
+          "Yes. Convert and download unlimited JPG-to-TIFF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple JPG files at once?",
+        answer:
+          "Yes. Add up to 20 JPG or JPEG images. One file downloads as a .tiff; multiple files download together as a ZIP.",
+      },
+      {
+        question: "Will the TIFF file be larger than the JPG?",
+        answer:
+          "Usually yes. JPEG is a compact lossy format; this tool writes uncompressed TIFF at the original pixel size, so the file is often much larger.",
+      },
+      {
+        question: "Which TIFF format is downloaded?",
+        answer:
+          "Each image downloads as a standard uncompressed .tiff (image/tiff) at the original width and height. Browsers preview a PNG of the result because TIFF is not widely displayable inline.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each JPG can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your JPG images, and convert immediately.",
+      },
+    ],
+  },
+  {
     slug: "webp-to-jpg",
     name: "WebP to JPG Converter",
     shortName: "WebP to JPG",
@@ -6196,6 +6705,75 @@ export const tools: Tool[] = [
         question: "Which browsers work best?",
         answer:
           "Chrome, Edge, and Safari support full animated-frame extraction via WebCodecs. Other browsers may convert the first frame only.",
+      },
+    ],
+  },
+  {
+    slug: "webp-to-gif",
+    name: "WebP to GIF Converter",
+    shortName: "WebP to GIF",
+    description:
+      "Convert WebP to GIF online — turn animated or still WebP into a looping GIF with size and color controls. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/webp-to-gif",
+    keywords: [
+      "webp to gif",
+      "convert webp to gif",
+      "webp to gif converter",
+      "animated webp to gif",
+      "webp animation to gif",
+      "webp sticker to gif",
+      "convert animated webp",
+      "webp to gif online",
+      "free webp to gif",
+      "still webp to gif",
+    ],
+    faq: [
+      {
+        question: "Is this WebP to GIF converter free?",
+        answer:
+          "Yes. Convert and download unlimited WebP-to-GIF files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my files uploaded to a server?",
+        answer:
+          "No. Decoding and conversion run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Does it support animated WebP?",
+        answer:
+          "Yes. Animated WebP files are decoded frame by frame and encoded as a looping GIF. Frame timing from the source is preserved.",
+      },
+      {
+        question: "What about still WebP images?",
+        answer:
+          "Still (single-frame) WebP files convert to one still GIF with the same size and color controls.",
+      },
+      {
+        question: "What size and quality options are available?",
+        answer:
+          "Choose Small (320px), Medium (480px), or Large (640px) output, plus Low, Medium, or High color quality (64–256 colors).",
+      },
+      {
+        question: "Will the GIF be larger than the WebP?",
+        answer:
+          "Often yes. GIF is limited to 256 colors and is less efficient than WebP. Smaller size and fewer colors keep the file lighter.",
+      },
+      {
+        question: "Is transparency preserved?",
+        answer:
+          "GIF transparency is limited. Transparent WebP areas are filled with white so the animation looks correct in viewers and chat apps.",
+      },
+      {
+        question: "Is there a file size or frame limit?",
+        answer:
+          "Yes. Upload WebP files up to 25 MB with a maximum of 300 frames per conversion.",
+      },
+      {
+        question: "Which browsers work best?",
+        answer:
+          "Chrome, Edge, and Safari support full animated-frame conversion via WebCodecs. Other browsers may convert the first frame only.",
       },
     ],
   },
@@ -6319,6 +6897,71 @@ export const tools: Tool[] = [
         question: "Do I need to install software?",
         answer:
           "No. Open the page in a modern browser, drop your GIF images, and convert immediately.",
+      },
+    ],
+  },
+  {
+    slug: "tiff-to-jpg",
+    name: "TIFF to JPG Converter",
+    shortName: "TIFF to JPG",
+    description:
+      "Convert TIFF to JPG online — turn .tif and .tiff scans, including multi-page files, into standard JPEG images with quality control. Free, private, and local in your browser.",
+    categories: ["image"],
+    status: "ready",
+    href: "/tiff-to-jpg",
+    keywords: [
+      "tiff to jpg",
+      "tiff to jpeg",
+      "tif to jpg",
+      "convert tiff to jpg",
+      "tiff to jpg converter",
+      "tiff to jpeg converter",
+      "multipage tiff to jpg",
+      "scan to jpg",
+      "free tiff to jpg",
+      "tiff to jpg online",
+      "convert tif to jpeg",
+    ],
+    faq: [
+      {
+        question: "Is this TIFF to JPG converter free?",
+        answer:
+          "Yes. Convert and download unlimited TIFF-to-JPG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my TIFF files uploaded to a server?",
+        answer:
+          "No. Decoding and conversion run entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which formats are supported?",
+        answer:
+          ".tif and .tiff files (image/tiff). Multi-page TIFFs are supported — each page becomes a separate JPG.",
+      },
+      {
+        question: "Can I convert multiple TIFF files at once?",
+        answer:
+          "Yes. Add up to 20 TIFF files (up to 100 pages total). One page downloads as a .jpg; multiple pages download together as a ZIP.",
+      },
+      {
+        question: "What quality options are available?",
+        answer:
+          "Choose Smaller, Balanced, or High JPEG quality to trade file size for detail before downloading.",
+      },
+      {
+        question: "What happens to transparent TIFF areas?",
+        answer:
+          "JPEG does not support transparency. Transparent pixels are filled with white so the JPG looks correct in viewers and editors.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each TIFF can be up to 10 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your TIFF files, and convert immediately.",
       },
     ],
   },
@@ -6730,6 +7373,7 @@ const SEO_TAG_UPPERCASE = new Set([
   "tif",
   "svg",
   "eps",
+  "psd",
   "webp",
   "heic",
   "bmp",

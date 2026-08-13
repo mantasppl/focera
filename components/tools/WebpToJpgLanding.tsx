@@ -138,6 +138,10 @@ export default function WebpToJpgLanding() {
             to PNG with transparency preserved.
           </li>
           <li>
+            <Link href="/webp-to-gif">WebP to GIF</Link> — Turn animated or still
+            WebP into a looping GIF.
+          </li>
+          <li>
             <Link href="/webp-to-pdf">WebP to PDF</Link> — Turn WebP images into
             a multi-page PDF.
           </li>

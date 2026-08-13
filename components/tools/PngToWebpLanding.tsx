@@ -152,6 +152,10 @@ export default function PngToWebpLanding() {
             back into lossless PNG files.
           </li>
           <li>
+            <Link href="/png-to-gif">PNG to GIF</Link> — Turn PNG images into
+            still or animated GIFs for chat and uploads.
+          </li>
+          <li>
             <Link href="/png-to-jpg">PNG to JPG</Link> — Convert PNG images to
             standard JPEG when you do not need transparency.
           </li>

@@ -95,7 +95,7 @@ export const categorySeo: Record<ToolCategory, CategorySeoContent> = {
     tools: [
       "Background & AI — Background Remover, Change Background, AI Image Generator, Colorize Photo, Cleanup Picture, and Remove Watermark for cleanup and creative edits.",
       "Quality & size — Crop Image and Resize Image for framing and dimensions, Image Compressor for lighter uploads, Upscale Image for clearer enlargements, and Color Palette Generator for brand-ready swatches.",
-      "Text & conversion — Add Text on Image for captions and stamps, Image to Text (OCR), Image / PNG / TIFF to PDF, PDF to JPG / PNG / TIFF, Extract Images from PDF, Add Images to PDF, and PDF Watermark when your workflow spans documents.",
+      "Text & conversion — Add Text on Image for captions and stamps, Image to Text (OCR), JPG to TIFF / TIFF to JPG, PNG to EPS / GIF, EPS to PNG, WebP to GIF / JPG / PNG, Image / PNG / TIFF to PDF, PDF to JPG / PNG / TIFF, Extract Images from PDF, Add Images to PDF, and PDF Watermark when your workflow spans documents.",
     ],
     useCasesHeading: "Where you can use these image tools",
     useCases: [

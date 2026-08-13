@@ -85,8 +85,18 @@ export const TiffToPdfLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const TiffToJpgLazy = dynamic(
+  () => import("@/components/tools/TiffToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const EpsToPdfLazy = dynamic(
   () => import("@/components/tools/EpsToPdf"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const EpsToPngLazy = dynamic(
+  () => import("@/components/tools/EpsToPng"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -275,6 +285,11 @@ export const CropImageLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const FlipImageLazy = dynamic(
+  () => import("@/components/tools/FlipImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const ImageSplitterLazy = dynamic(
   () => import("@/components/tools/ImageSplitter"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -350,6 +365,11 @@ export const WebpToPngLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const WebpToGifLazy = dynamic(
+  () => import("@/components/tools/WebpToGif"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PngToJpgLazy = dynamic(
   () => import("@/components/tools/PngToJpg"),
   { ssr: false, loading: () => <ToolLoading /> },
@@ -362,6 +382,21 @@ export const PngToWebpLazy = dynamic(
 
 export const PngToSvgLazy = dynamic(
   () => import("@/components/tools/PngToSvg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PngToEpsLazy = dynamic(
+  () => import("@/components/tools/PngToEps"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PsdToAiLazy = dynamic(
+  () => import("@/components/tools/PsdToAi"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PngToGifLazy = dynamic(
+  () => import("@/components/tools/PngToGif"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -382,6 +417,16 @@ export const SvgToPngLazy = dynamic(
 
 export const JpgToWebpLazy = dynamic(
   () => import("@/components/tools/JpgToWebp"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const JpgToGifLazy = dynamic(
+  () => import("@/components/tools/JpgToGif"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const JpgToTiffLazy = dynamic(
+  () => import("@/components/tools/JpgToTiff"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
@@ -412,6 +457,11 @@ export const ImageToTextLazy = dynamic(
 
 export const TranslateYourImageLazy = dynamic(
   () => import("@/components/tools/TranslateYourImage"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const ViewMetadataForYourImageLazy = dynamic(
+  () => import("@/components/tools/ViewMetadataForYourImage"),
   { ssr: false, loading: () => <ToolLoading /> },
 );
 

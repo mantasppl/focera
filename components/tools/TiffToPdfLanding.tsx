@@ -138,6 +138,14 @@ export default function TiffToPdfLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/tiff-to-jpg">TIFF to JPG</Link> — Convert .tif / .tiff
+            scans into standard JPEG images instead of a PDF.
+          </li>
+          <li>
+            <Link href="/jpg-to-tiff">JPG to TIFF</Link> — Convert JPEG photos
+            into uncompressed .tif / .tiff files.
+          </li>
+          <li>
             <Link href="/image-to-pdf">Image to PDF</Link> — Convert PNG, JPG,
             or WebP photos into a multi-page PDF.
           </li>

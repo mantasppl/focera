@@ -107,6 +107,18 @@ export default function VideoToGifLanding() {
         </p>
         <ul className="tool-content__list">
           <li>
+            <Link href="/webp-to-gif">WebP to GIF</Link> — Convert an animated
+            or still WebP into a looping GIF.
+          </li>
+          <li>
+            <Link href="/png-to-gif">PNG to GIF</Link> — Turn PNG screenshots
+            into a still or animated GIF instead of a video clip.
+          </li>
+          <li>
+            <Link href="/jpg-to-gif">JPG to GIF</Link> — Make a still or
+            animated GIF from JPEG photos instead of a video clip.
+          </li>
+          <li>
             <Link href="/compress-video">Compress Video</Link> — Shrink a clip
             before converting if you need a lighter source file.
           </li>
