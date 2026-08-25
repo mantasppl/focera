@@ -121,11 +121,16 @@ function installBenignOnnxConsoleFilter() {
   }
 }
 
-function patchOrt(mod: { default?: OrtLike } | OrtLike) {
-  const ort = (
-    "default" in mod && mod.default ? mod.default : mod
-  ) as OrtLike;
-  if (!ort?.InferenceSession || patchedOrt.has(ort)) return;
+function asOrtModule(mod: unknown): OrtLike | null {
+  if (!mod || typeof mod !== "object") return null;
+  const record = mod as { default?: OrtLike } & Partial<OrtLike>;
+  const ort = record.default ?? record;
+  return ort.InferenceSession ? (ort as OrtLike) : null;
+}
+
+function patchOrt(mod: unknown) {
+  const ort = asOrtModule(mod);
+  if (!ort || patchedOrt.has(ort)) return;
   patchedOrt.add(ort);
 
   if (ort.env) {
@@ -143,7 +148,9 @@ function patchOrt(mod: { default?: OrtLike } | OrtLike) {
     }
   }
 
-  const create = ort.InferenceSession.create.bind(ort.InferenceSession);
+  const create = ort.InferenceSession.create.bind(
+    ort.InferenceSession,
+  ) as OrtLike["InferenceSession"]["create"];
   ort.InferenceSession.create = (model, options = {}) =>
     create(model, {
       ...options,
