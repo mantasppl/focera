@@ -6,8 +6,9 @@ import BackgroundExportOptions, {
   type ExportMode,
 } from "@/components/tools/BackgroundExportOptions";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
+import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { removeImageBackground } from "@/lib/background-removal";
+import { removeImageBackground, preloadBackgroundRemoval, BACKGROUND_FIRST_RUN_HINT, hasPreparedBackgroundModel } from "@/lib/background-removal";
 import { compositeOnColor, compositeOnImage, compositeWithBlur, BLUR_RADIUS } from "@/lib/composite-image";
 import { useToolAnalytics } from "@/lib/analytics/client";
 import {
@@ -29,6 +30,11 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function BackgroundRemover() {
   const { trackSuccess, trackFailure } = useToolAnalytics();
+
+  useEffect(() => {
+    void preloadBackgroundRemoval();
+  }, []);
+
   const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState("");
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
@@ -42,9 +48,10 @@ export default function BackgroundRemover() {
   const [compositing, setCompositing] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [progressText, setProgressText] = useState("");
+  const [showFirstRunHint, setShowFirstRunHint] = useState(false);
 
   const compositeUrlRef = useRef("");
+  const processIdRef = useRef(0);
   const debouncedBgColor = useDebouncedValue(bgColor, 180);
   const debouncedBlurRadius = useDebouncedValue(blurRadius, 120);
 
@@ -104,45 +111,39 @@ export default function BackgroundRemover() {
     setError("");
     setSourceFile(file);
     setOriginalUrl(URL.createObjectURL(file));
+    void removeBackground(file);
   }
 
-  async function removeBackground() {
-    if (!sourceFile) {
+  async function removeBackground(file?: File | null) {
+    const source = file ?? sourceFile;
+    if (!source) {
       setError("Upload an image to get started.");
       return;
     }
 
+    const processId = ++processIdRef.current;
+    setShowFirstRunHint(!hasPreparedBackgroundModel());
     setLoading(true);
     setError("");
-    setProgressText("Preparing AI model…");
     resetResult();
 
     try {
-      const blob = await removeImageBackground(sourceFile, {
-        onProgress: ({ key, current, total }) => {
-          if (total > 0) {
-            const percent = Math.round((current / total) * 100);
-            setProgressText(`Loading ${key}… ${percent}%`);
-            return;
-          }
-          setProgressText(`Processing ${key}…`);
-        },
-      });
+      const blob = await removeImageBackground(source);
+      if (processId !== processIdRef.current) return;
 
       const url = URL.createObjectURL(blob);
       setResultBlob(blob);
       setResultUrl(url);
-      setProgressText("");
       trackSuccess();
     } catch (err) {
+      if (processId !== processIdRef.current) return;
       trackFailure();
       console.error("[background-remover]", err);
       setError(
         "Could not remove the background. Try a smaller image or a different browser.",
       );
-      setProgressText("");
     } finally {
-      setLoading(false);
+      if (processId === processIdRef.current) setLoading(false);
     }
   }
 
@@ -230,12 +231,14 @@ export default function BackgroundRemover() {
   }
 
   function handleReset() {
+    processIdRef.current += 1;
     if (originalUrl) URL.revokeObjectURL(originalUrl);
     resetResult();
     setSourceFile(null);
     setOriginalUrl("");
     setError("");
-    setProgressText("");
+    setLoading(false);
+    setShowFirstRunHint(false);
   }
 
   const previewHint =
@@ -267,7 +270,7 @@ export default function BackgroundRemover() {
 
         <div className="tool-actions">
           <Button onClick={() => void removeBackground()} disabled={!canProcess}>
-            {loading ? "Removing…" : "Remove background"}
+            Remove background
           </Button>
           <Button
             variant="ghost"
@@ -310,16 +313,8 @@ export default function BackgroundRemover() {
         <div
           className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
         >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Removing background…"}
-              </span>
-              <span className="tool-loading__subtext">
-                First run downloads the AI model — this may take a moment.
-              </span>
-            </div>
+          {loading && originalUrl ? (
+            <EnhancingPreview src={originalUrl} />
           ) : hasResult && exportMode === "transparent" && originalUrl ? (
             <BeforeAfterPreview
               beforeSrc={originalUrl}
@@ -359,7 +354,7 @@ export default function BackgroundRemover() {
                 className="preview-single__image"
               />
               <p className="tool-placeholder preview-single__hint">
-                Click Remove background to process this image.
+                Upload another image to remove a new background.
               </p>
             </div>
           ) : (
@@ -369,9 +364,11 @@ export default function BackgroundRemover() {
           )}
         </div>
         <p className="tool-hint">
-          {hasResult
-            ? "Export as transparent PNG, blurred background, solid color, or custom photo · processed locally"
-            : "Transparent PNG output · processed locally in your browser · no upload to our servers"}
+          {loading && showFirstRunHint
+            ? BACKGROUND_FIRST_RUN_HINT
+            : hasResult
+              ? "Export as transparent PNG, blurred background, solid color, or custom photo · processed locally"
+              : "Transparent PNG output · processed locally in your browser · no upload to our servers"}
         </p>
       </div>
     </div>

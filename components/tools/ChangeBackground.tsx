@@ -6,8 +6,9 @@ import ChangeBackgroundOptions, {
   type BackgroundMode,
 } from "@/components/tools/ChangeBackgroundOptions";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
+import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { removeImageBackground } from "@/lib/background-removal";
+import { removeImageBackground, preloadBackgroundRemoval, BACKGROUND_FIRST_RUN_HINT, hasPreparedBackgroundModel } from "@/lib/background-removal";
 import {
   compositeOnColor,
   compositeOnImage,
@@ -34,6 +35,11 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function ChangeBackground() {
   const { trackSuccess, trackFailure } = useToolAnalytics();
+
+  useEffect(() => {
+    void preloadBackgroundRemoval();
+  }, []);
+
   const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState("");
   const [cutoutBlob, setCutoutBlob] = useState<Blob | null>(null);
@@ -46,9 +52,10 @@ export default function ChangeBackground() {
   const [compositing, setCompositing] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [progressText, setProgressText] = useState("");
+  const [showFirstRunHint, setShowFirstRunHint] = useState(false);
 
   const resultUrlRef = useRef("");
+  const processIdRef = useRef(0);
   const debouncedBgColor = useDebouncedValue(bgColor, 180);
   const debouncedBlurRadius = useDebouncedValue(blurRadius, 120);
 
@@ -106,43 +113,36 @@ export default function ChangeBackground() {
     setError("");
     setSourceFile(file);
     setOriginalUrl(URL.createObjectURL(file));
+    void changeBackground(file);
   }
 
-  async function changeBackground() {
-    if (!sourceFile) {
+  async function changeBackground(file?: File | null) {
+    const source = file ?? sourceFile;
+    if (!source) {
       setError("Upload an image to get started.");
       return;
     }
 
+    const processId = ++processIdRef.current;
+    setShowFirstRunHint(!hasPreparedBackgroundModel());
     setLoading(true);
     setError("");
-    setProgressText("Preparing AI model…");
     resetCutout();
 
     try {
-      const blob = await removeImageBackground(sourceFile, {
-        onProgress: ({ key, current, total }) => {
-          if (total > 0) {
-            const percent = Math.round((current / total) * 100);
-            setProgressText(`Loading ${key}… ${percent}%`);
-            return;
-          }
-          setProgressText(`Processing ${key}…`);
-        },
-      });
-
+      const blob = await removeImageBackground(source);
+      if (processId !== processIdRef.current) return;
       setCutoutBlob(blob);
-      setProgressText("");
       trackSuccess();
     } catch (err) {
+      if (processId !== processIdRef.current) return;
       trackFailure();
       console.error("[change-background]", err);
       setError(
         "Could not change the background. Try a smaller image or a different browser.",
       );
-      setProgressText("");
     } finally {
-      setLoading(false);
+      if (processId === processIdRef.current) setLoading(false);
     }
   }
 
@@ -229,12 +229,14 @@ export default function ChangeBackground() {
   }
 
   function handleReset() {
+    processIdRef.current += 1;
     if (originalUrl) URL.revokeObjectURL(originalUrl);
     resetCutout();
     setSourceFile(null);
     setOriginalUrl("");
     setError("");
-    setProgressText("");
+    setLoading(false);
+    setShowFirstRunHint(false);
   }
 
   const previewHint =
@@ -264,7 +266,7 @@ export default function ChangeBackground() {
 
         <div className="tool-actions">
           <Button onClick={() => void changeBackground()} disabled={!canProcess}>
-            {loading ? "Changing…" : "Change background"}
+            Change background
           </Button>
           <Button
             variant="ghost"
@@ -304,16 +306,8 @@ export default function ChangeBackground() {
         <div
           className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
         >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Changing background…"}
-              </span>
-              <span className="tool-loading__subtext">
-                First run downloads the AI model — this may take a moment.
-              </span>
-            </div>
+          {loading && originalUrl ? (
+            <EnhancingPreview src={originalUrl} />
           ) : hasResult && originalUrl ? (
             <BeforeAfterPreview
               beforeSrc={originalUrl}
@@ -338,7 +332,7 @@ export default function ChangeBackground() {
                 className="preview-single__image"
               />
               <p className="tool-placeholder preview-single__hint">
-                Click Change background to replace the scene.
+                Upload another image to change a new background.
               </p>
             </div>
           ) : (
@@ -348,9 +342,11 @@ export default function ChangeBackground() {
           )}
         </div>
         <p className="tool-hint">
-          {hasCutout
-            ? "Solid color, blurred background, or custom photo · processed locally"
-            : "AI cutout + new background · processed locally in your browser · no upload to our servers"}
+          {loading && showFirstRunHint
+            ? BACKGROUND_FIRST_RUN_HINT
+            : hasCutout
+              ? "Solid color, blurred background, or custom photo · processed locally"
+              : "AI cutout + new background · processed locally in your browser · no upload to our servers"}
         </p>
       </div>
     </div>

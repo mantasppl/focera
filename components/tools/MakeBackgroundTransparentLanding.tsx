@@ -8,19 +8,19 @@ const FEATURES = [
       "AI segmentation clears the background from portraits, products, and graphics so you get a clean PNG with alpha — no manual masking.",
   },
   {
+    title: "Crop, shadow, and sticker outline",
+    description:
+      "Trim empty pixels, add padding, drop a soft or hard shadow, or wrap the subject in a white, black, or custom sticker stroke.",
+  },
+  {
+    title: "PNG or WebP with true alpha",
+    description:
+      "Download a transparent PNG for compatibility, or WebP when you want a smaller file for the web.",
+  },
+  {
     title: "100% browser-based",
     description:
       "Your photos never leave your device. Cutouts run locally with ONNX models for private, free edits.",
-  },
-  {
-    title: "True alpha PNG export",
-    description:
-      "Download a transparent PNG ready for e-commerce listings, Canva/Figma layouts, slides, and social graphics.",
-  },
-  {
-    title: "Before & after preview",
-    description:
-      "Compare the original photo with the transparent result using a slider, then download when edges look right.",
   },
 ];
 
@@ -43,7 +43,7 @@ export default function MakeBackgroundTransparentLanding() {
         <p>
           Making a photo background transparent should be fast, private, and
           free. Focera keeps the whole workflow on one page — upload, clear the
-          background, compare, and download without an account.
+          background, refine the cutout, and download without an account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -58,8 +58,9 @@ export default function MakeBackgroundTransparentLanding() {
             visit.
           </li>
           <li>
-            <strong>Compare and download.</strong> Use the before/after slider
-            to inspect edges, then download a transparent PNG for your project.
+            <strong>Refine and download.</strong> Use the before/after slider
+            to inspect edges, then crop to the subject, add padding, a drop
+            shadow, or a sticker outline. Download a transparent PNG or WebP.
           </li>
         </ol>
         <p>

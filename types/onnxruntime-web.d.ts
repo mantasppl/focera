@@ -15,6 +15,8 @@ declare module "onnxruntime-web" {
 
   export type InferenceSessionCreateOptions = {
     executionProviders?: Array<string | { name: string }>;
+    logSeverityLevel?: 0 | 1 | 2 | 3 | 4;
+    logVerbosityLevel?: number;
   };
 
   export interface InferenceSession {
@@ -33,10 +35,26 @@ declare module "onnxruntime-web" {
     ): Promise<InferenceSession>;
   }
 
+  export const env: {
+    debug?: boolean;
+    logLevel?: "verbose" | "info" | "warning" | "error" | "fatal";
+    wasm?: {
+      numThreads?: number;
+      proxy?: boolean;
+      wasmPaths?: Record<string, string>;
+    };
+  };
+
   const ort: {
     Tensor: typeof Tensor;
     InferenceSession: typeof InferenceSession;
+    env: typeof env;
   };
 
   export default ort;
+}
+
+declare module "onnxruntime-web/webgpu" {
+  export * from "onnxruntime-web";
+  export { default } from "onnxruntime-web";
 }

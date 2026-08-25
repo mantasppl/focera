@@ -2542,6 +2542,228 @@ a {
   cursor: pointer;
 }
 
+.export-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.export-field__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.export-chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.export-chips--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.export-chips--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.export-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.12rem;
+  padding: 0.6rem 0.65rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.export-chip:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.export-chip.is-active {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.1);
+  color: var(--accent-deep);
+}
+
+.export-chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.export-chip__label {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.export-chip__hint {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.export-chip.is-active .export-chip__hint {
+  color: var(--accent-deep);
+}
+
+.preview-checker {
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(45deg, #d8e8e3 25%, transparent 25%),
+    linear-gradient(-45deg, #d8e8e3 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #d8e8e3 75%),
+    linear-gradient(-45deg, transparent 75%, #d8e8e3 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+}
+
+.preview-checker__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.enhancing {
+  width: 100%;
+  max-width: 360px;
+}
+
+.enhancing__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(45deg, #d8e8e3 25%, transparent 25%),
+    linear-gradient(-45deg, #d8e8e3 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #d8e8e3 75%),
+    linear-gradient(-45deg, transparent 75%, #d8e8e3 75%);
+  background-size: 16px 16px;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+}
+
+.enhancing__image {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: enhancing-breathe 2.4s ease-in-out infinite;
+}
+
+.enhancing__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(
+    120% 80% at 50% 40%,
+    rgba(255, 255, 255, 0.18),
+    transparent 62%
+  );
+  pointer-events: none;
+}
+
+.enhancing__shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(
+    105deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.38) 50%,
+    transparent 68%
+  );
+  background-size: 220% 100%;
+  animation: enhancing-shimmer 1.8s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+.enhancing__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  height: 28%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(15, 122, 102, 0.18),
+    transparent
+  );
+  animation: enhancing-scan 2.1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes enhancing-breathe {
+  0%,
+  100% {
+    filter: saturate(1) brightness(1);
+    transform: scale(1);
+  }
+  50% {
+    filter: saturate(1.08) brightness(1.06);
+    transform: scale(1.015);
+  }
+}
+
+@keyframes enhancing-shimmer {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+@keyframes enhancing-scan {
+  0% {
+    top: -28%;
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .export-chips--four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* -- Invoice generator -- */
 .invoice-tool {
   display: grid;

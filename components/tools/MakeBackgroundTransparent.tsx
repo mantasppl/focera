@@ -3,14 +3,40 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
+import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { removeImageBackground } from "@/lib/background-removal";
+import TransparentCutoutOptions from "@/components/tools/TransparentCutoutOptions";
+import {
+  BACKGROUND_FIRST_RUN_HINT,
+  hasPreparedBackgroundModel,
+  preloadBackgroundRemoval,
+  removeImageBackground,
+} from "@/lib/background-removal";
 import { useToolAnalytics } from "@/lib/analytics/client";
 import {
   downloadBlob,
   fileBaseName,
   formatFileSize,
 } from "@/lib/image";
+import {
+  applyTransparentCutoutOptions,
+  cutoutExtension,
+  hasVisualCutoutOptions,
+  type CutoutFormat,
+  type CutoutOutline,
+  type CutoutShadow,
+} from "@/lib/transparent-cutout";
+
+function useDebouncedValue<T>(value: T, delayMs: number): T {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebouncedValue(value), delayMs);
+    return () => window.clearTimeout(timer);
+  }, [value, delayMs]);
+
+  return debouncedValue;
+}
 
 export default function MakeBackgroundTransparent() {
   const { trackSuccess, trackFailure } = useToolAnalytics();
@@ -18,26 +44,76 @@ export default function MakeBackgroundTransparent() {
   const [originalUrl, setOriginalUrl] = useState("");
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
   const [resultUrl, setResultUrl] = useState("");
+  const [exportBlob, setExportBlob] = useState<Blob | null>(null);
+  const [exportUrl, setExportUrl] = useState("");
+  const [crop, setCrop] = useState(false);
+  const [padding, setPadding] = useState(0);
+  const [shadow, setShadow] = useState<CutoutShadow>("none");
+  const [outline, setOutline] = useState<CutoutOutline>("none");
+  const [outlineColor, setOutlineColor] = useState("#ffffff");
+  const [format, setFormat] = useState<CutoutFormat>("png");
+  const [compositing, setCompositing] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [progressText, setProgressText] = useState("");
+  const [showFirstRunHint, setShowFirstRunHint] = useState(false);
 
   const resultUrlRef = useRef("");
+  const exportUrlRef = useRef("");
+  const processIdRef = useRef(0);
+  const debouncedOutlineColor = useDebouncedValue(outlineColor, 180);
+
+  useEffect(() => {
+    void preloadBackgroundRemoval();
+  }, []);
 
   const hasSource = Boolean(sourceFile && originalUrl);
   const hasResult = Boolean(resultBlob && resultUrl);
   const canProcess = hasSource && !loading;
+  const visualOptions = hasVisualCutoutOptions({
+    crop,
+    padding,
+    shadow,
+    outline,
+    outlineColor: debouncedOutlineColor,
+    format,
+  });
+  const needsExportPass = visualOptions || format === "webp";
+  const downloadBlobReady = needsExportPass ? exportBlob : resultBlob;
 
   useEffect(() => {
     resultUrlRef.current = resultUrl;
   }, [resultUrl]);
 
   useEffect(() => {
+    exportUrlRef.current = exportUrl;
+  }, [exportUrl]);
+
+  useEffect(() => {
     return () => {
       if (originalUrl) URL.revokeObjectURL(originalUrl);
       if (resultUrlRef.current) URL.revokeObjectURL(resultUrlRef.current);
+      if (exportUrlRef.current) URL.revokeObjectURL(exportUrlRef.current);
     };
   }, [originalUrl]);
+
+  function clearExportState() {
+    setExportBlob(null);
+    setExportUrl((previous) => {
+      if (previous) URL.revokeObjectURL(previous);
+      return "";
+    });
+    setCompositing(false);
+  }
+
+  function resetCutoutOptions() {
+    setCrop(false);
+    setPadding(0);
+    setShadow("none");
+    setOutline("none");
+    setOutlineColor("#ffffff");
+    setFormat("png");
+    clearExportState();
+  }
 
   function resetResult() {
     setResultBlob(null);
@@ -45,6 +121,7 @@ export default function MakeBackgroundTransparent() {
       if (previous) URL.revokeObjectURL(previous);
       return "";
     });
+    resetCutoutOptions();
   }
 
   function handleFile(file: File) {
@@ -53,61 +130,118 @@ export default function MakeBackgroundTransparent() {
     setError("");
     setSourceFile(file);
     setOriginalUrl(URL.createObjectURL(file));
+    void makeTransparent(file);
   }
 
-  async function makeTransparent() {
-    if (!sourceFile) {
+  async function makeTransparent(file?: File | null) {
+    const source = file ?? sourceFile;
+    if (!source) {
       setError("Upload an image to get started.");
       return;
     }
 
+    const processId = ++processIdRef.current;
+    setShowFirstRunHint(!hasPreparedBackgroundModel());
     setLoading(true);
     setError("");
-    setProgressText("Preparing AI model…");
     resetResult();
 
     try {
-      const blob = await removeImageBackground(sourceFile, {
-        onProgress: ({ key, current, total }) => {
-          if (total > 0) {
-            const percent = Math.round((current / total) * 100);
-            setProgressText(`Loading ${key}… ${percent}%`);
-            return;
-          }
-          setProgressText(`Processing ${key}…`);
-        },
-      });
+      const blob = await removeImageBackground(source);
+      if (processId !== processIdRef.current) return;
 
       const url = URL.createObjectURL(blob);
       setResultBlob(blob);
       setResultUrl(url);
-      setProgressText("");
       trackSuccess();
     } catch (err) {
+      if (processId !== processIdRef.current) return;
       trackFailure();
       console.error("[make-background-transparent]", err);
       setError(
         "Could not make the background transparent. Try a smaller image or a different browser.",
       );
-      setProgressText("");
     } finally {
-      setLoading(false);
+      if (processId === processIdRef.current) setLoading(false);
     }
   }
 
+  useEffect(() => {
+    if (!resultBlob || !hasResult || !needsExportPass) {
+      clearExportState();
+      return;
+    }
+
+    let cancelled = false;
+
+    async function buildExport() {
+      setCompositing(true);
+
+      try {
+        const blob = await applyTransparentCutoutOptions(resultBlob!, {
+          crop,
+          padding,
+          shadow,
+          outline,
+          outlineColor: debouncedOutlineColor,
+          format,
+        });
+
+        if (cancelled) return;
+
+        const url = URL.createObjectURL(blob);
+        setExportBlob(blob);
+        setExportUrl((previous) => {
+          if (previous) URL.revokeObjectURL(previous);
+          return url;
+        });
+      } catch {
+        if (!cancelled) {
+          setError("Could not apply cutout options. Try another setting.");
+        }
+      } finally {
+        if (!cancelled) setCompositing(false);
+      }
+    }
+
+    void buildExport();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    resultBlob,
+    hasResult,
+    needsExportPass,
+    crop,
+    padding,
+    shadow,
+    outline,
+    debouncedOutlineColor,
+    format,
+  ]);
+
   function handleDownload() {
-    if (!sourceFile || !resultBlob) return;
-    downloadBlob(resultBlob, `${fileBaseName(sourceFile)}-transparent.png`);
+    if (!sourceFile || !downloadBlobReady) return;
+    const ext = cutoutExtension(format, downloadBlobReady.type);
+    downloadBlob(
+      downloadBlobReady,
+      `${fileBaseName(sourceFile)}-transparent.${ext}`,
+    );
   }
 
   function handleReset() {
+    processIdRef.current += 1;
     if (originalUrl) URL.revokeObjectURL(originalUrl);
     resetResult();
     setSourceFile(null);
     setOriginalUrl("");
     setError("");
-    setProgressText("");
+    setLoading(false);
+    setShowFirstRunHint(false);
   }
+
+  const previewSrc = visualOptions && exportUrl ? exportUrl : resultUrl;
 
   return (
     <div className="tool-grid">
@@ -129,7 +263,7 @@ export default function MakeBackgroundTransparent() {
 
         <div className="tool-actions">
           <Button onClick={() => void makeTransparent()} disabled={!canProcess}>
-            {loading ? "Processing…" : "Make background transparent"}
+            Make background transparent
           </Button>
           <Button
             variant="ghost"
@@ -141,26 +275,24 @@ export default function MakeBackgroundTransparent() {
         </div>
 
         {hasResult ? (
-          <section
-            className="export-options"
-            aria-labelledby="transparent-bg-options-heading"
-          >
-            <h2
-              id="transparent-bg-options-heading"
-              className="export-options__heading"
-            >
-              Transparent PNG ready
-            </h2>
-            <p className="export-options__lede">
-              Your subject is cut out with alpha transparency — download and
-              drop it into any design or storefront layout.
-            </p>
-            <div className="export-options__actions">
-              <Button onClick={handleDownload} disabled={loading}>
-                Download transparent PNG
-              </Button>
-            </div>
-          </section>
+          <TransparentCutoutOptions
+            crop={crop}
+            onCropChange={setCrop}
+            padding={padding}
+            onPaddingChange={setPadding}
+            shadow={shadow}
+            onShadowChange={setShadow}
+            outline={outline}
+            onOutlineChange={setOutline}
+            outlineColor={outlineColor}
+            onOutlineColorChange={setOutlineColor}
+            format={format}
+            onFormatChange={setFormat}
+            onDownload={handleDownload}
+            downloadDisabled={compositing || !downloadBlobReady}
+            compositing={compositing}
+            disabled={loading}
+          />
         ) : null}
 
         {error ? (
@@ -174,21 +306,27 @@ export default function MakeBackgroundTransparent() {
         <div
           className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
         >
-          {loading ? (
+          {loading && originalUrl ? (
+            <EnhancingPreview src={originalUrl} />
+          ) : hasResult && visualOptions && exportUrl ? (
+            <div className="preview-checker">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={previewSrc}
+                alt="Transparent cutout preview"
+                className="preview-checker__image"
+              />
+            </div>
+          ) : hasResult && visualOptions ? (
             <div className="tool-loading" role="status" aria-live="polite">
               <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Making background transparent…"}
-              </span>
-              <span className="tool-loading__subtext">
-                First run downloads the AI model — this may take a moment.
-              </span>
+              <span className="tool-loading__text">Applying cutout options…</span>
             </div>
           ) : hasResult && originalUrl ? (
             <BeforeAfterPreview
               beforeSrc={originalUrl}
               afterSrc={resultUrl}
-              hint="Drag the slider to compare the original and transparent PNG."
+              hint="Drag the slider to compare the original and transparent cutout."
             />
           ) : hasSource && originalUrl ? (
             <div className="preview-single">
@@ -199,7 +337,7 @@ export default function MakeBackgroundTransparent() {
                 className="preview-single__image"
               />
               <p className="tool-placeholder preview-single__hint">
-                Click Make background transparent to process this image.
+                Upload another image to make a new transparent cutout.
               </p>
             </div>
           ) : (
@@ -209,8 +347,11 @@ export default function MakeBackgroundTransparent() {
           )}
         </div>
         <p className="tool-hint">
-          Transparent PNG output · processed locally in your browser · no upload
-          to our servers
+          {loading && showFirstRunHint
+            ? BACKGROUND_FIRST_RUN_HINT
+            : hasResult
+              ? "Crop, padding, shadow, and sticker outline stay transparent · processed locally"
+              : "Transparent PNG or WebP · processed locally in your browser · no upload to our servers"}
         </p>
       </div>
     </div>

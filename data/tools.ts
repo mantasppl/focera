@@ -2813,12 +2813,17 @@ export const tools: Tool[] = [
       {
         question: "What file do I get after processing?",
         answer:
-          "A PNG with alpha transparency — ready for e-commerce, design tools, slides, and social graphics.",
+          "A PNG or WebP with alpha transparency — ready for e-commerce, design tools, slides, and social graphics.",
+      },
+      {
+        question: "Can I crop the cutout, add a shadow, or a sticker outline?",
+        answer:
+          "Yes. After the background is cleared, crop to the subject, add padding, apply a drop shadow, or wrap the cutout in a white, black, or custom outline, then download PNG or WebP.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a transparent PNG.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. Download a transparent PNG or WebP.",
       },
       {
         question: "Why does the first run take longer?",
