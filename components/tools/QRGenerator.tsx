@@ -974,7 +974,7 @@ function QRGeneratorInner() {
             </div>
 
             <div className="qr-tool__section">
-              <p className="ui-label">Frame</p>
+              <p className="ui-label">Frame & Text</p>
               <div className="qr-tool__chips">
                 {QR_FRAME_STYLES.map((item) => (
                   <button
