@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import BrandMark from "@/components/BrandMark";
 import Button from "@/components/Button";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import { adminFetch } from "@/lib/admin/csrf-client";
@@ -62,7 +63,7 @@ export default function AdminChrome({ children, title }: AdminChromeProps) {
         <div className="admin-header__inner">
           <div className="admin-header__brand">
             <Link href={analyticsPath} className="site-logo">
-              <span className="site-logo__mark" aria-hidden />
+              <BrandMark className="site-logo__mark" />
               Focera
             </Link>
             <span className="admin-header__badge">Analytics</span>

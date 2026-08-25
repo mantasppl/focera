@@ -217,6 +217,38 @@ export function faqPageSchema(items: ToolFaq[]) {
   };
 }
 
+export function seoLandingPageSchema({
+  title,
+  description,
+  path,
+  parentName,
+  parentHref,
+}: {
+  title: string;
+  description: string;
+  path: string;
+  parentName: string;
+  parentHref: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: title,
+    description,
+    url: absoluteUrl(path),
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    about: {
+      "@type": "WebApplication",
+      name: parentName,
+      url: absoluteUrl(parentHref),
+    },
+  };
+}
+
 export function breadcrumbSchema(
   items: Array<{ name: string; href: string }>,
 ) {

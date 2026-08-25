@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { seoLandings } from "@/data/seo-landings";
 import { categoryOrder, tools } from "@/data/tools";
 import { SITE_URL } from "@/lib/seo";
 
@@ -62,5 +63,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     }));
 
-  return [...staticRoutes, ...categoryRoutes, ...toolRoutes];
+  const seoLandingRoutes: MetadataRoute.Sitemap = seoLandings.map((page) => ({
+    url: `${SITE_URL}${page.href}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.65,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...categoryRoutes,
+    ...toolRoutes,
+    ...seoLandingRoutes,
+  ];
 }

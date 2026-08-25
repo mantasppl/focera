@@ -1,0 +1,38 @@
+type BrandMarkProps = {
+  className?: string;
+  title?: string;
+};
+
+/** Geometric F + hub node — Focera mark, sized for header and favicon. */
+export default function BrandMark({ className, title }: BrandMarkProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden={title ? undefined : true}
+      role={title ? "img" : undefined}
+    >
+      {title ? <title>{title}</title> : null}
+      <defs>
+        <linearGradient
+          id="focera-mark-fill"
+          x1="4"
+          y1="2"
+          x2="28"
+          y2="30"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#2dd4bf" />
+          <stop offset="1" stopColor="#0f766e" />
+        </linearGradient>
+      </defs>
+      <rect width="32" height="32" rx="8" fill="url(#focera-mark-fill)" />
+      <rect x="7.5" y="7" width="6.5" height="18" rx="1.8" fill="#fff" />
+      <rect x="7.5" y="7" width="17" height="6.5" rx="1.8" fill="#fff" />
+      <rect x="7.5" y="14.25" width="11.5" height="6.5" rx="1.8" fill="#fff" />
+      <circle cx="23.15" cy="17.5" r="3.35" fill="#ccfbf1" />
+    </svg>
+  );
+}

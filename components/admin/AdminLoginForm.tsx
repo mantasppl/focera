@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import BrandMark from "@/components/BrandMark";
 import Button from "@/components/Button";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 
@@ -70,7 +71,7 @@ export default function AdminLoginForm() {
     <div className="admin-login">
       <form className="admin-login__card" onSubmit={handleSubmit}>
         <div className="admin-login__brand">
-          <span className="site-logo__mark" aria-hidden />
+          <BrandMark className="site-logo__mark" />
           <h1>Focera Admin</h1>
         </div>
         <p className="admin-login__copy">Sign in to continue.</p>

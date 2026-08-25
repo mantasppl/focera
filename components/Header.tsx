@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandMark from "@/components/BrandMark";
 import { SITE_NAME } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +12,7 @@ export default function Header({ className }: HeaderProps) {
     <header className={cn("site-header", className)}>
       <div className="site-header__inner">
         <Link href="/" className="site-logo" aria-label={`${SITE_NAME} home`}>
-          <span className="site-logo__mark" aria-hidden="true" />
+          <BrandMark className="site-logo__mark" />
           {SITE_NAME}
         </Link>
         <nav className="site-nav" aria-label="Primary">
