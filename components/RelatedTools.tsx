@@ -110,7 +110,7 @@ export function getRelatedTools(currentSlug: string, limit = 3): Tool[] {
 export default function RelatedTools({
   currentSlug,
   limit = 3,
-  title = "Keep the momentum",
+  title = "You may also be interested in:",
   className,
 }: RelatedToolsProps) {
   const related = getRelatedTools(currentSlug, limit);
@@ -122,14 +122,9 @@ export default function RelatedTools({
       aria-labelledby="related-tools-heading"
     >
       <div className="related-tools__intro">
-        <p className="related-tools__eyebrow">Up next</p>
         <h2 id="related-tools-heading" className="related-tools__title">
           {title}
         </h2>
-        <p className="related-tools__lede">
-          Three tools that pair with this workflow — free, private, and ready
-          instantly in your browser.
-        </p>
       </div>
 
       <ul className="related-tools__list">
