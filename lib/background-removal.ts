@@ -35,6 +35,7 @@ type ImglyConfig = {
   model: "isnet_quint8";
   device: RemovalDevice;
   debug: false;
+  proxyToWorker: false;
   output: {
     format: "image/png";
     quality: number;
@@ -45,13 +46,63 @@ type ImglyConfig = {
 let preloadPromise: Promise<void> | null = null;
 let preferredDevice: RemovalDevice | null = null;
 
+export function isConstrainedClient(): boolean {
+  if (typeof navigator === "undefined") return false;
+
+  const ua = navigator.userAgent;
+  if (/iPhone|iPod|Android.+Mobile|webOS|BlackBerry/i.test(ua)) return true;
+  if (/iPad|Android/i.test(ua)) return true;
+  if (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) {
+    return true;
+  }
+
+  return false;
+}
+
 function supportsWebGpu(): boolean {
+  if (isConstrainedClient()) return false;
   return typeof navigator !== "undefined" && "gpu" in navigator;
 }
 
 function resolveDevice(): RemovalDevice {
   if (preferredDevice) return preferredDevice;
   return supportsWebGpu() ? "gpu" : "cpu";
+}
+
+type ProgressListener = (percent: number) => void;
+
+const progressListeners = new Set<ProgressListener>();
+let lastRemovalPercent = 0;
+
+export function subscribeRemovalProgress(
+  listener: ProgressListener,
+): () => void {
+  progressListeners.add(listener);
+  listener(lastRemovalPercent);
+  return () => {
+    progressListeners.delete(listener);
+  };
+}
+
+function emitRemovalPercent(percent: number) {
+  const next = Math.max(0, Math.min(100, Math.round(percent)));
+  if (next === lastRemovalPercent) return;
+  lastRemovalPercent = next;
+  progressListeners.forEach((listener) => listener(next));
+}
+
+function removalProgressPercent({
+  key,
+  current,
+  total,
+}: RemovalProgress): number {
+  if (key.startsWith("fetch:")) {
+    if (total <= 0) return 4;
+    return Math.max(1, Math.min(36, Math.round((current / total) * 36)));
+  }
+
+  if (total <= 0) return 40;
+  return Math.max(38, Math.min(99, Math.round(38 + (current / total) * 61)));
 }
 
 function buildConfig(
@@ -62,13 +113,15 @@ function buildConfig(
     model: "isnet_quint8",
     device,
     debug: false,
+    proxyToWorker: false,
     output: {
       format: "image/png",
       quality: 1,
     },
-    progress: onProgress
-      ? (key, current, total) => onProgress({ key, current, total })
-      : undefined,
+    progress: (key, current, total) => {
+      emitRemovalPercent(removalProgressPercent({ key, current, total }));
+      onProgress?.({ key, current, total });
+    },
   };
 }
 
@@ -178,6 +231,76 @@ async function quietOnnxRuntime() {
   }
 }
 
+async function yieldToUi(): Promise<void> {
+  await new Promise<void>((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => resolve());
+    });
+  });
+}
+
+let previewPrepare: Promise<void> = Promise.resolve();
+let settlePreviewPrepare: (() => void) | null = null;
+
+export function beginPreviewPrepare(): () => void {
+  let settled = false;
+  const settle = () => {
+    if (settled) return;
+    settled = true;
+    settlePreviewPrepare?.();
+  };
+
+  previewPrepare = new Promise<void>((resolve) => {
+    settlePreviewPrepare = resolve;
+  });
+
+  const timeout = window.setTimeout(settle, 2000);
+  return () => {
+    window.clearTimeout(timeout);
+    settle();
+  };
+}
+
+function waitForPreviewPrepare(): Promise<void> {
+  return previewPrepare;
+}
+
+async function prepareRemovalSource(source: Blob): Promise<Blob> {
+  if (!isConstrainedClient() || typeof createImageBitmap !== "function") {
+    return source;
+  }
+
+  const maxEdge = 1600;
+  const bitmap = await createImageBitmap(source);
+  const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+
+  if (scale >= 1) {
+    bitmap.close();
+    return source;
+  }
+
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d", { alpha: true });
+
+  if (!context) {
+    bitmap.close();
+    return source;
+  }
+
+  context.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+
+  const prepared = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, "image/png");
+  });
+
+  return prepared ?? source;
+}
+
 async function loadRemovalApi() {
   await quietOnnxRuntime();
   return import("@imgly/background-removal");
@@ -210,6 +333,13 @@ export async function removeImageBackground(
   source: Blob,
   options: RemoveBackgroundOptions = {},
 ): Promise<Blob> {
+  emitRemovalPercent(1);
+  await yieldToUi();
+  await new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 0);
+  });
+  await waitForPreviewPrepare();
+  const prepared = await prepareRemovalSource(source);
   const { removeBackground } = await loadRemovalApi();
   await preloadBackgroundRemoval();
 
@@ -218,11 +348,12 @@ export async function removeImageBackground(
   if (tryGpu) {
     try {
       const blob = await removeBackground(
-        source,
+        prepared,
         buildConfig("gpu", options.onProgress),
       );
       preferredDevice = "gpu";
       markBackgroundModelPrepared();
+      emitRemovalPercent(100);
       return blob;
     } catch {
       preferredDevice = "cpu";
@@ -231,10 +362,11 @@ export async function removeImageBackground(
   }
 
   const blob = await removeBackground(
-    source,
+    prepared,
     buildConfig("cpu", options.onProgress),
   );
   preferredDevice = "cpu";
   markBackgroundModelPrepared();
+  emitRemovalPercent(100);
   return blob;
 }
