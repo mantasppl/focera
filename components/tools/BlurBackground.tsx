@@ -5,6 +5,7 @@ import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
+import { useMobilePreviewReveal } from "@/components/tools/useMobilePreviewReveal";
 import { removeImageBackground, preloadBackgroundRemoval, BACKGROUND_FIRST_RUN_HINT, hasPreparedBackgroundModel } from "@/lib/background-removal";
 import { compositeWithBlur, BLUR_RADIUS } from "@/lib/composite-image";
 import { useToolAnalytics } from "@/lib/analytics/client";
@@ -178,8 +179,10 @@ export default function BlurBackground() {
     setShowFirstRunHint(false);
   }
 
+  const previewRef = useMobilePreviewReveal(loading || hasResult || compositing);
+
   return (
-    <div className="tool-grid">
+    <div className={`tool-grid${loading || hasResult || compositing ? " is-preview-first" : ""}`}>
       <div className="tool-panel">
         <ImageDropzone
           onFile={handleFile}
@@ -265,7 +268,7 @@ export default function BlurBackground() {
         ) : null}
       </div>
 
-      <div className="tool-panel tool-panel--preview">
+      <div className="tool-panel tool-panel--preview" ref={previewRef}>
         <div
           className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
         >

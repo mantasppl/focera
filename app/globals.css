@@ -1242,6 +1242,13 @@ a {
   }
 }
 
+@media (max-width: 859px) {
+  .tool-grid.is-preview-first > .tool-panel--preview {
+    order: -1;
+    scroll-margin-top: 4.75rem;
+  }
+}
+
 .tool-panel {
   background: var(--surface);
   border: 1px solid var(--line);

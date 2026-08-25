@@ -6,6 +6,7 @@ import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
 import TransparentCutoutOptions from "@/components/tools/TransparentCutoutOptions";
+import { useMobilePreviewReveal } from "@/components/tools/useMobilePreviewReveal";
 import {
   BACKGROUND_FIRST_RUN_HINT,
   hasPreparedBackgroundModel,
@@ -241,10 +242,11 @@ export default function MakeBackgroundTransparent() {
     setShowFirstRunHint(false);
   }
 
+  const previewRef = useMobilePreviewReveal(loading || hasResult || compositing);
   const previewSrc = visualOptions && exportUrl ? exportUrl : resultUrl;
 
   return (
-    <div className="tool-grid">
+    <div className={`tool-grid${loading || hasResult || compositing ? " is-preview-first" : ""}`}>
       <div className="tool-panel">
         <ImageDropzone
           onFile={handleFile}
@@ -302,7 +304,7 @@ export default function MakeBackgroundTransparent() {
         ) : null}
       </div>
 
-      <div className="tool-panel tool-panel--preview">
+      <div className="tool-panel tool-panel--preview" ref={previewRef}>
         <div
           className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
         >
