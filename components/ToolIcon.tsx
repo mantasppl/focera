@@ -112,6 +112,8 @@ function iconKindForSlug(slug: string): IconKind {
     slug.includes("png-to-eps") ||
     slug.includes("eps-to-png") ||
     slug.includes("psd-to-ai") ||
+    slug.includes("psd-to-jpg") ||
+    slug.includes("psd-to-png") ||
     slug.includes("jpg-to-svg") ||
     slug.includes("jpg-to-png") ||
     slug.includes("jpg-to-tiff") ||

@@ -150,6 +150,10 @@ export default function EpsToPngLanding() {
             and icons into crisp PNG files.
           </li>
           <li>
+            <Link href="/psd-to-png">PSD to PNG</Link> — Flatten Photoshop PSD
+            files into lossless PNG images with optional transparency.
+          </li>
+          <li>
             <Link href="/psd-to-ai">PSD to AI</Link> — Convert Photoshop PSD
             files into Adobe Illustrator AI files.
           </li>

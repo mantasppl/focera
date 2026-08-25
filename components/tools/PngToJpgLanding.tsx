@@ -177,6 +177,10 @@ export default function PngToJpgLanding() {
             photos into standard JPG files.
           </li>
           <li>
+            <Link href="/psd-to-jpg">PSD to JPG</Link> — Flatten Photoshop PSD
+            files into standard JPEG images.
+          </li>
+          <li>
             <Link href="/tiff-to-jpg">TIFF to JPG</Link> — Convert .tif / .tiff
             scans, including multi-page files, into JPEG.
           </li>

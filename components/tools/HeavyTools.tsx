@@ -395,6 +395,16 @@ export const PsdToAiLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const PsdToJpgLazy = dynamic(
+  () => import("@/components/tools/PsdToJpg"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
+export const PsdToPngLazy = dynamic(
+  () => import("@/components/tools/PsdToPng"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const PngToGifLazy = dynamic(
   () => import("@/components/tools/PngToGif"),
   { ssr: false, loading: () => <ToolLoading /> },

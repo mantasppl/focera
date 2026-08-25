@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <p className="page-hero__brand">{SITE_NAME}</p>
         <h1 className="page-hero__title">Privacy Policy</h1>
         <p className="page-hero__lede">
-          Last updated: July 24, 2026. This policy explains how {SITE_NAME}{" "}
+          Last updated: August 25, 2026. This policy explains how {SITE_NAME}{" "}
           ({SITE_URL}) handles information when you use our free online tools.
         </p>
 
@@ -43,11 +43,16 @@ export default function PrivacyPage() {
               storage so you can refresh without losing work.
             </p>
             <p>
-              <strong>Usage analytics (optional).</strong> If Google Analytics 4
-              is enabled in production, we may collect aggregated usage metrics
-              such as page views, approximate location (country/region), device
-              type, and referral source. IP addresses may be anonymized where
-              configured.
+              <strong>Usage analytics.</strong> In production we use Google
+              Analytics 4 and Microsoft Clarity to understand how the site is
+              used. GA4 may collect aggregated metrics such as page views,
+              approximate location (country/region), device type, and referral
+              source. IP addresses may be anonymized where configured. Clarity
+              may collect similar usage data plus interaction details (clicks,
+              scrolls, and mouse movement) and session recordings that help us
+              see how pages are used. Recordings can include on-screen content
+              from the pages you visit; we do not use them to sell personal
+              data.
             </p>
             <p>
               <strong>Technical logs.</strong> Hosting providers may automatically
@@ -60,9 +65,9 @@ export default function PrivacyPage() {
             <h2>3. Cookies and local storage</h2>
             <p>
               We may use essential cookies or local storage for preferences
-              (for example editor theme) and, when enabled, analytics cookies
-              from Google Analytics. You can clear site data in your browser
-              settings at any time.
+              (for example editor theme) and analytics cookies from Google
+              Analytics and Microsoft Clarity. You can clear site data in your
+              browser settings at any time.
             </p>
           </section>
 
@@ -70,8 +75,25 @@ export default function PrivacyPage() {
             <h2>4. Third-party services</h2>
             <p>
               We may use hosting, CDN, and analytics providers. Those providers
-              process data under their own terms. When GA4 is active, Google&apos;s
-              privacy policy also applies to analytics data.
+              process data under their own terms. Google&apos;s privacy policy
+              applies to GA4 data. Microsoft&apos;s privacy statement applies to
+              Clarity data. See{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Google Privacy Policy
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://www.microsoft.com/privacy/privacystatement"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Microsoft Privacy Statement
+              </a>
+              .
             </p>
           </section>
 
@@ -79,8 +101,9 @@ export default function PrivacyPage() {
             <h2>5. Data retention</h2>
             <p>
               Local drafts remain on your device until you clear them. Server
-              logs and analytics (if enabled) are retained only as long as
-              needed for security, debugging, and product improvement.
+              logs and analytics data (including Clarity recordings) are
+              retained only as long as needed for security, debugging, and
+              product improvement.
             </p>
           </section>
 
@@ -96,8 +119,16 @@ export default function PrivacyPage() {
             <h2>7. Your choices</h2>
             <p>
               You can stop using the site, clear browser storage, and block
-              analytics cookies via browser or OS controls. For privacy
-              questions, email{" "}
+              analytics cookies via browser or OS controls. You can also opt
+              out of Clarity at{" "}
+              <a
+                href="https://aka.ms/clarityoptout"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                aka.ms/clarityoptout
+              </a>
+              . For privacy questions, email{" "}
               <a href="mailto:support@focera.co">support@focera.co</a> or use
               the contact form on {SITE_URL}/contact.
             </p>

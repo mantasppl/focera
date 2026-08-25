@@ -191,6 +191,14 @@ export default function PsdToAiLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
+            <Link href="/psd-to-png">PSD to PNG</Link> — Flatten Photoshop PSD
+            files into lossless PNG images with optional transparency.
+          </li>
+          <li>
+            <Link href="/psd-to-jpg">PSD to JPG</Link> — Flatten Photoshop PSD
+            files into standard JPEG images for sharing.
+          </li>
+          <li>
             <Link href="/png-to-eps">PNG to EPS</Link> — Wrap PNG images in
             Encapsulated PostScript for print workflows.
           </li>

@@ -6095,6 +6095,134 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "psd-to-jpg",
+    name: "PSD to JPG Converter",
+    shortName: "PSD to JPG",
+    description:
+      "Convert PSD to JPG online — turn Photoshop .psd files into standard JPEG images. Free, private, and local in your browser.",
+    categories: ["image", "file"],
+    status: "ready",
+    href: "/psd-to-jpg",
+    keywords: [
+      "psd to jpg",
+      "psd to jpeg",
+      "convert psd to jpg",
+      "psd to jpg converter",
+      "psd to jpg online",
+      "photoshop to jpg",
+      "psd to jpeg converter",
+      "convert photoshop to jpg",
+      "free psd to jpg",
+      "photoshop psd to jpg",
+    ],
+    faq: [
+      {
+        question: "Is this PSD to JPG converter free?",
+        answer:
+          "Yes. Convert and download unlimited PSD-to-JPG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PSD files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple PSD files at once?",
+        answer:
+          "Yes. Add up to 10 Photoshop .psd files. One file downloads as a .jpg; multiple files download together as a ZIP.",
+      },
+      {
+        question: "Are Photoshop layers preserved?",
+        answer:
+          "No. Layers, masks, and blend modes are flattened into a single JPG. Transparent areas become white because JPEG does not support alpha.",
+      },
+      {
+        question: "Which PSD files are supported?",
+        answer:
+          "8-bit RGB .psd files with a saved composite. CMYK, Lab, Indexed, 16-bit, and PSB large documents are not supported — convert those to 8-bit RGB in Photoshop first.",
+      },
+      {
+        question: "What quality options are available?",
+        answer:
+          "Choose Smaller, Balanced, or High JPEG quality to trade file size for detail before downloading.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each PSD can be up to 25 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PSD files, and convert immediately. Photoshop is not required.",
+      },
+    ],
+  },
+  {
+    slug: "psd-to-png",
+    name: "PSD to PNG Converter",
+    shortName: "PSD to PNG",
+    description:
+      "Convert PSD to PNG online — turn Photoshop .psd files into lossless PNG images with optional transparency. Free, private, and local in your browser.",
+    categories: ["image", "file"],
+    status: "ready",
+    href: "/psd-to-png",
+    keywords: [
+      "psd to png",
+      "convert psd to png",
+      "psd to png converter",
+      "psd to png online",
+      "photoshop to png",
+      "psd png converter",
+      "convert photoshop to png",
+      "free psd to png",
+      "photoshop psd to png",
+      "psd to png transparent",
+    ],
+    faq: [
+      {
+        question: "Is this PSD to PNG converter free?",
+        answer:
+          "Yes. Convert and download unlimited PSD-to-PNG files with no account, subscription, watermark, or daily limit.",
+      },
+      {
+        question: "Are my PSD files uploaded to a server?",
+        answer:
+          "No. Conversion runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Can I convert multiple PSD files at once?",
+        answer:
+          "Yes. Add up to 10 Photoshop .psd files. One file downloads as a .png; multiple files download together as a ZIP.",
+      },
+      {
+        question: "Does the PNG keep a transparent background?",
+        answer:
+          "Yes, when you choose Transparent. Unpainted areas stay alpha-transparent. Choose White if you need an opaque PNG.",
+      },
+      {
+        question: "Are Photoshop layers preserved?",
+        answer:
+          "No. Layers, masks, and blend modes are flattened into a single PNG — the same composite Photoshop saves with the file.",
+      },
+      {
+        question: "Which PSD files are supported?",
+        answer:
+          "8-bit RGB .psd files with a saved composite. CMYK, Lab, Indexed, 16-bit, and PSB large documents are not supported — convert those to 8-bit RGB in Photoshop first.",
+      },
+      {
+        question: "Is there a file size limit?",
+        answer:
+          "Yes. Each PSD can be up to 25 MB, with a combined limit of 80 MB per conversion.",
+      },
+      {
+        question: "Do I need to install software?",
+        answer:
+          "No. Open the page in a modern browser, drop your PSD files, and convert immediately. Photoshop is not required.",
+      },
+    ],
+  },
+  {
     slug: "psd-to-ai",
     name: "PSD to AI Converter",
     shortName: "PSD to AI",
