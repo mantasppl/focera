@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import ToolLayout from "@/components/ToolLayout";
-import RemoveBackgroundFromImageSeoLanding from "@/components/tools/RemoveBackgroundFromImageSeoLanding";
+import TransparentBackgroundMakerSeoLanding from "@/components/tools/TransparentBackgroundMakerSeoLanding";
 import { MakeBackgroundTransparentLazy } from "@/components/tools/HeavyTools";
 import { getSeoLandingBySlug } from "@/data/seo-landings";
 import { getToolBySlug } from "@/data/tools";
@@ -13,7 +13,7 @@ import {
   seoLandingPageSchema,
 } from "@/lib/seo";
 
-const page = getSeoLandingBySlug("remove-background-from-image")!;
+const page = getSeoLandingBySlug("transparent-background-maker")!;
 const parentTool = getToolBySlug(page.parentToolSlug)!;
 
 export const metadata: Metadata = pageMetadata({
@@ -23,7 +23,7 @@ export const metadata: Metadata = pageMetadata({
   keywords: page.keywords,
 });
 
-export default function RemoveBackgroundFromImagePage() {
+export default function TransparentBackgroundMakerPage() {
   const displayTool = {
     ...parentTool,
     name: page.h1,
@@ -57,9 +57,9 @@ export default function RemoveBackgroundFromImagePage() {
       <ToolAnalyticsProvider toolId={parentTool.slug}>
         <ToolLayout
           tool={displayTool}
-          workspaceId="remove-background-from-image-tool"
-          content={<RemoveBackgroundFromImageSeoLanding />}
-          ctaTitle="Need a new background instead?"
+          workspaceId="transparent-background-maker-tool"
+          content={<TransparentBackgroundMakerSeoLanding />}
+          ctaTitle="Need a different backdrop instead?"
           ctaDescription="Swap in a solid color or custom photo, blur the scene, or keep working with everyday image utilities in one fast hub."
         >
           <MakeBackgroundTransparentLazy />

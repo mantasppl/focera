@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "One-click background removal",
+    title: "One-click backdrop clear",
     description:
-      "AI segmentation isolates people, products, and graphics so you can remove background from an image and keep a clean PNG with alpha — no manual masking.",
+      "AI segmentation isolates people, products, and graphics so you can clear a background and keep a PNG with real alpha — no manual masking.",
   },
   {
     title: "Crop, shadow, and sticker outline",
@@ -24,12 +24,12 @@ const FEATURES = [
   },
 ];
 
-export default function RemoveBackgroundFromImageSeoLanding() {
+export default function ClearBackgroundSeoLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="remove-background-from-image-features"
-        title="Everything you need to remove a background from an image"
+        id="clear-background-features"
+        title="Everything you need to clear a background"
         features={FEATURES}
       />
 
@@ -41,9 +41,8 @@ export default function RemoveBackgroundFromImageSeoLanding() {
           How It Works
         </h2>
         <p>
-          Removing a background from an image should be fast, private, and
-          free. Focera keeps the whole workflow on one page — upload, clear the
-          backdrop, refine the cutout, and download without an account.
+          Clearing a background should stay fast and private. Focera keeps
+          upload, cutout, refine, and download on one page with no account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -52,7 +51,7 @@ export default function RemoveBackgroundFromImageSeoLanding() {
             original preview appears immediately on the right.
           </li>
           <li>
-            <strong>Remove the background.</strong> Click Make background
+            <strong>Clear the background.</strong> Click Make background
             transparent to run AI cutout in your browser. A loading indicator
             shows model download and processing progress on the first visit.
           </li>
@@ -64,10 +63,8 @@ export default function RemoveBackgroundFromImageSeoLanding() {
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#remove-background-from-image-tool">
-            remove background from image tool
-          </a>{" "}
-          anytime to process another file.
+          <a href="#clear-background-tool">clear background tool</a> anytime to
+          process another file.
         </p>
       </section>
 
@@ -80,20 +77,20 @@ export default function RemoveBackgroundFromImageSeoLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Product photos for stores</strong> — Clear busy shelves so
-            items sit on white or branded storefront backgrounds.
+            <strong>Product listings</strong> — Clear busy shelves so items sit
+            on a consistent storefront canvas.
           </li>
           <li>
-            <strong>Design and marketing layouts</strong> — Place subjects on
-            slides, posters, and web banners without a leftover rectangle.
+            <strong>Marketing layouts</strong> — Place subjects on banners and
+            slides without leftover rooms behind them.
           </li>
           <li>
-            <strong>Social graphics and stickers</strong> — Cut out people and
-            objects for stories, thumbnails, and profile images.
+            <strong>Social graphics</strong> — Cut people and objects free for
+            stories, thumbnails, and stickers.
           </li>
           <li>
-            <strong>Headshots and ID photos</strong> — Prepare transparent
-            cutouts for team pages, badges, and composite backgrounds.
+            <strong>Headshots</strong> — Prepare portraits that can sit on any
+            branded color or photo.
           </li>
         </ul>
       </section>
@@ -107,8 +104,7 @@ export default function RemoveBackgroundFromImageSeoLanding() {
         </h2>
         <p>
           Focera groups fast, privacy-friendly utilities in one hub. After you
-          remove background from an image, these tools often fit the same
-          workflow:
+          clear a background, these tools often fit the same workflow:
         </p>
         <ul className="tool-content__list">
           <li>

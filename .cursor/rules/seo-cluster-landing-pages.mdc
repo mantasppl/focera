@@ -1,0 +1,48 @@
+---
+description: Create supporting SEO landing pages that wrap an existing tool — same layout as the parent tool, unique copy only, never a new catalog tool
+globs: data/seo-landings.ts,components/tools/*SeoLanding.tsx,app/sitemap.ts
+alwaysApply: false
+---
+
+# SEO cluster landing pages
+
+Supporting long-tail pages that embed an existing tool. They are not new products.
+
+Reference: `/remove-background-from-image` wrapping Make Background Transparent.
+
+## Do not register as a tool
+
+Never add the page to `data/tools.ts`, `data/related-tools.ts`, homepage grids, category listings, or search catalogs. Register only in `data/seo-landings.ts` (sitemap already maps that array).
+
+## Look like the parent tool
+
+Reuse `ToolLayout` + the parent’s lazy editor. Keep the parent `slug` on the display tool so analytics, feedback, and “You may also be interested in:” resolve to the parent’s 3 related tools.
+
+Override only: `name` (H1), `shortName`, `description` (one sentence), `href`, `faq`.
+
+Hero must match the parent:
+
+- Eyebrow: `Free tool` (comes from `ToolLayout`)
+- H1: unique, keyword-natural, tool-name style
+- Lede: one sentence, same shape as the parent description
+
+Landing body must use the parent’s section order (see `MakeBackgroundTransparentLanding`): FeatureGrid → How It Works (intro + 3 steps + in-page jump) → Popular Use Cases → Related Free Tools → FAQ. Unique copy only. CTA same pattern as the parent.
+
+## Copy rules
+
+- Write useful product text. Do not say this is an SEO page, funnel, cluster, or “not a real tool”.
+- Do not name other brands (Canva, Figma, Photoshop, etc.).
+- Title includes the keyword plus “online” and “free” when natural.
+- FAQ: same topics/count as the parent, rewritten for the keyword.
+
+```tsx
+// ✅ GOOD — parent slug, unique name/lede/faq, same shell
+const displayTool = { ...parentTool, name: page.h1, shortName: page.shortName, description: page.description, href: page.href, faq: page.faq };
+<ToolAnalyticsProvider toolId={parentTool.slug}>
+  <ToolLayout tool={displayTool} workspaceId={`${page.slug}-tool`} content={<SeoLanding />} ctaTitle={...} ctaDescription={...}>
+    <ParentToolLazy />
+  </ToolLayout>
+</ToolAnalyticsProvider>
+
+// ❌ BAD — custom shell, multi-paragraph intro, no related-tool cards, “this is not a separate tool”
+```

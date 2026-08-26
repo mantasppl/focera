@@ -1187,23 +1187,6 @@ a {
   font-size: 1.05rem;
 }
 
-.tool-hero--seo {
-  max-width: 42rem;
-}
-
-.tool-hero__intro {
-  display: grid;
-  gap: 0.75rem;
-  margin-top: 0.9rem;
-}
-
-.tool-hero__intro p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.65;
-  font-size: 1.05rem;
-}
-
 .tool-workspace {
   display: grid;
   gap: 1.25rem;

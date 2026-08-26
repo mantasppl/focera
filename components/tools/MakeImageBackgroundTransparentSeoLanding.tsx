@@ -3,33 +3,33 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "One-click background removal",
+    title: "Clean subject isolation",
     description:
-      "AI segmentation isolates people, products, and graphics so you can remove background from an image and keep a clean PNG with alpha — no manual masking.",
+      "AI separates people, products, and graphics so you can make an image background transparent and keep real alpha — no pen-tool tracing.",
   },
   {
     title: "Crop, shadow, and sticker outline",
     description:
-      "Trim empty pixels, add padding, drop a soft or hard shadow, or wrap the subject in a white, black, or custom sticker stroke.",
+      "Trim leftover empty space, add padding, drop a soft or hard shadow, or wrap the subject in a white, black, or custom stroke.",
   },
   {
     title: "PNG or WebP with true alpha",
     description:
-      "Download a transparent PNG for compatibility, or WebP when you want a smaller file for the web.",
+      "Save a transparent PNG for the widest compatibility, or WebP when you need a smaller web-ready file.",
   },
   {
     title: "100% browser-based",
     description:
-      "Your photos never leave your device. Cutouts run locally with ONNX models for private, free edits.",
+      "Cutouts run locally with ONNX models. Images stay on your device for private, free edits.",
   },
 ];
 
-export default function RemoveBackgroundFromImageSeoLanding() {
+export default function MakeImageBackgroundTransparentSeoLanding() {
   return (
     <article className="tool-content">
       <FeatureGrid
-        id="remove-background-from-image-features"
-        title="Everything you need to remove a background from an image"
+        id="make-image-background-transparent-features"
+        title="Everything you need to make an image background transparent"
         features={FEATURES}
       />
 
@@ -41,9 +41,9 @@ export default function RemoveBackgroundFromImageSeoLanding() {
           How It Works
         </h2>
         <p>
-          Removing a background from an image should be fast, private, and
-          free. Focera keeps the whole workflow on one page — upload, clear the
-          backdrop, refine the cutout, and download without an account.
+          Making an image background transparent should stay on one screen:
+          upload, isolate the subject, then download. Focera keeps that path
+          free and without an account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -52,7 +52,7 @@ export default function RemoveBackgroundFromImageSeoLanding() {
             original preview appears immediately on the right.
           </li>
           <li>
-            <strong>Remove the background.</strong> Click Make background
+            <strong>Clear the backdrop.</strong> Click Make background
             transparent to run AI cutout in your browser. A loading indicator
             shows model download and processing progress on the first visit.
           </li>
@@ -64,8 +64,8 @@ export default function RemoveBackgroundFromImageSeoLanding() {
         </ol>
         <p>
           Jump back to the{" "}
-          <a href="#remove-background-from-image-tool">
-            remove background from image tool
+          <a href="#make-image-background-transparent-tool">
+            make image background transparent tool
           </a>{" "}
           anytime to process another file.
         </p>
@@ -80,20 +80,20 @@ export default function RemoveBackgroundFromImageSeoLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <strong>Product photos for stores</strong> — Clear busy shelves so
-            items sit on white or branded storefront backgrounds.
+            <strong>Product listings</strong> — Lift a bottle, bag, or gadget
+            off a cluttered desk so it sits on a clean store canvas.
           </li>
           <li>
-            <strong>Design and marketing layouts</strong> — Place subjects on
-            slides, posters, and web banners without a leftover rectangle.
+            <strong>Campaign layouts</strong> — Place a person or object on
+            banners and slides without leftover walls.
           </li>
           <li>
-            <strong>Social graphics and stickers</strong> — Cut out people and
-            objects for stories, thumbnails, and profile images.
+            <strong>Thumbnails and stickers</strong> — Cut subjects free for
+            covers, stories, and outline graphics.
           </li>
           <li>
-            <strong>Headshots and ID photos</strong> — Prepare transparent
-            cutouts for team pages, badges, and composite backgrounds.
+            <strong>Team portraits</strong> — Prepare headshots that can sit
+            on any branded color or photo.
           </li>
         </ul>
       </section>
@@ -107,7 +107,7 @@ export default function RemoveBackgroundFromImageSeoLanding() {
         </h2>
         <p>
           Focera groups fast, privacy-friendly utilities in one hub. After you
-          remove background from an image, these tools often fit the same
+          make an image background transparent, these tools often fit the same
           workflow:
         </p>
         <ul className="tool-content__list">
