@@ -16,7 +16,7 @@ Never add the page to `data/tools.ts`, `data/related-tools.ts`, homepage grids, 
 
 ## Look like the parent tool
 
-Reuse `ToolLayout` + the parent’s lazy editor. Keep the parent `slug` on the display tool so analytics, feedback, and “You may also be interested in:” resolve to the parent’s 3 related tools.
+Reuse `ToolLayout` + the parent’s lazy editor. Keep the parent `slug` on the display tool so analytics, feedback, and “You may also be interested in:” resolve to the parent. The 3 related-tool cards are a random relevant set on every page open — SEO landings and the main catalog tool both show them, independently.
 
 Override only: `name` (H1), `shortName`, `description` (one sentence), `href`, `faq`.
 

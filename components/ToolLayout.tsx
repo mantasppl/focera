@@ -72,7 +72,7 @@ export default function ToolLayout({
           ) : null}
           <ToolFeedbackPrompt toolSlug={tool.slug} />
         </div>
-        <RelatedTools currentSlug={tool.slug} />
+        <RelatedTools key={tool.href} currentSlug={tool.slug} />
 
         {content}
 
