@@ -11,12 +11,13 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
   "font-src 'self' data:",
-  // Next.js / GA / inline styles used across tool UIs.
+  // Next.js / GA / Clarity / inline styles used across tool UIs.
   // blob: — @imgly/background-removal loads onnxruntime WASM via blob: module URLs.
   // wasm-unsafe-eval — required to compile/instantiate WebAssembly under CSP.
   // unsafe-eval — required by onnxruntime-web / @imgly image decode (new Function).
   //   Also needed in production for background-remover, change-background, colorize-photo.
-  "script-src 'self' 'unsafe-inline' blob: 'wasm-unsafe-eval' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
+  // Clarity — www/scripts/*.clarity.ms plus c.bing.com (Microsoft identity endpoint).
+  "script-src 'self' 'unsafe-inline' blob: 'wasm-unsafe-eval' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://scripts.clarity.ms https://*.clarity.ms https://c.bing.com",
   "style-src 'self' 'unsafe-inline'",
   // blob: — onnxruntime fetches WASM/JS glue via blob: URLs created by @imgly/background-removal.
   "connect-src 'self' blob: https://www.google-analytics.com https://region1.google-analytics.com https://image.pollinations.ai https://text.pollinations.ai https://api.groq.com https:",

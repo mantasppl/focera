@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans, Syne } from "next/font/google";
-import Script from "next/script";
 import Analytics from "@/components/Analytics";
 import JsonLd from "@/components/JsonLd";
 import {
@@ -46,15 +45,15 @@ export default function RootLayout({
       className={`${syne.variable} ${plusJakarta.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <Script id="microsoft-clarity" strategy="beforeInteractive">
-          {`
-            (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "y80jin447l");
-          `}
-        </Script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "y80jin447l");`,
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col">
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
