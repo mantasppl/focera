@@ -1,6 +1,6 @@
 ---
 description: Create supporting SEO landing pages that wrap an existing tool — same layout as the parent tool, unique copy only, never a new catalog tool
-globs: data/seo-landings.ts,components/tools/*SeoLanding.tsx,app/sitemap.ts
+globs: data/seo-landings.ts,components/tools/*SeoLanding.tsx,components/ToolLayout.tsx,app/sitemap.ts
 alwaysApply: false
 ---
 
@@ -27,6 +27,10 @@ Hero must match the parent:
 - Lede: one sentence, same shape as the parent description
 
 Landing body must use the parent’s section order (see `MakeBackgroundTransparentLanding`): FeatureGrid → How It Works (intro + 3 steps + in-page jump) → Popular Use Cases → Related Free Tools → FAQ. Unique copy only. CTA same pattern as the parent.
+
+## Parent tool button
+
+Every SEO landing must show a normal primary button to the parent tool, placed immediately above the “Found a bug…” line. The label is the parent’s full `name` (e.g. `Make Background Transparent`, `QR Code Generator`). `ToolLayout` renders this automatically when `displayTool.href` differs from the catalog tool — do not omit it, and do not explain that this is an SEO page.
 
 ## Copy rules
 

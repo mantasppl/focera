@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import type { Tool } from "@/data/tools";
+import { getToolBySlug } from "@/data/tools";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import CTA from "@/components/CTA";
 import FAQ from "@/components/FAQ";
@@ -28,6 +30,10 @@ export default function ToolLayout({
   ctaTitle,
   ctaDescription,
 }: ToolLayoutProps) {
+  const catalogTool = getToolBySlug(tool.slug);
+  const parentTool =
+    catalogTool && catalogTool.href !== tool.href ? catalogTool : undefined;
+
   const crumbs = [
     { name: "Home", href: "/" },
     { name: "All tools", href: "/tools" },
@@ -58,7 +64,14 @@ export default function ToolLayout({
           {children}
         </section>
 
-        <ToolFeedbackPrompt toolSlug={tool.slug} />
+        <div className="tool-after-workspace">
+          {parentTool ? (
+            <Link href={parentTool.href} className="ui-btn ui-btn--primary">
+              {parentTool.name}
+            </Link>
+          ) : null}
+          <ToolFeedbackPrompt toolSlug={tool.slug} />
+        </div>
         <RelatedTools currentSlug={tool.slug} />
 
         {content}

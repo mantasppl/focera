@@ -612,6 +612,75 @@ export const seoLandings: SeoLandingPage[] = [
       },
     ],
   },
+  {
+    slug: "qr-code-generator",
+    href: "/qr-code-generator",
+    keyword: "qr code generator",
+    title: "QR Code Generator Online Free",
+    h1: "QR Code Generator",
+    shortName: "QR Codes",
+    description:
+      "Use a QR code generator online for free — branded codes for URLs, Wi‑Fi, vCards, events, and more, with PNG, SVG, or PDF download in your browser.",
+    keywords: [
+      "qr code generator",
+      "qr code generator online",
+      "qr code generator free",
+      "online qr code generator",
+      "free qr code generator online",
+      "create qr code online",
+      "make a qr code",
+    ],
+    parentToolSlug: "qr-generator",
+    parentHref: "/qr-generator",
+    parentName: "QR Code Generator",
+    faq: [
+      {
+        question: "Is this QR code generator free to use?",
+        answer:
+          "Yes. Create, preview, and download codes with no payment, account, or daily cap.",
+      },
+      {
+        question: "Does this QR code generator upload my content?",
+        answer:
+          "No. Codes are built in your browser. The URL, Wi‑Fi details, or other payload never leave this device during generation.",
+      },
+      {
+        question: "What files can I download from this QR code generator?",
+        answer:
+          "PNG, SVG, or a print-ready PDF. Transparent backgrounds and batch ZIP exports are available too.",
+      },
+      {
+        question: "What can I encode with this QR code generator?",
+        answer:
+          "URL, text, Wi‑Fi, vCard, email, phone, SMS, calendar events, geo locations, and app store links — each with guided fields.",
+      },
+      {
+        question: "Can I check a code before I print it?",
+        answer:
+          "Yes. Scan to verify with your camera, or decode an existing QR image to import its payload.",
+      },
+      {
+        question: "Do I need an account to use this QR code generator?",
+        answer:
+          "No signup is required. Open the page, enter your content, and download the code right away.",
+      },
+      {
+        question: "What print size works best?",
+        answer:
+          "It depends on scan distance. Cards often work from 2–3 cm; posters need a larger code. Test with a phone before you print a batch.",
+      },
+      {
+        question: "Can I use these codes in commercial work?",
+        answer:
+          "Yes. Codes you create here are yours for marketing, packaging, events, and client projects.",
+      },
+      {
+        question: "How is a QR code different from a barcode?",
+        answer:
+          "A classic barcode stores a short numeric string in one dimension. A QR code holds more data in two dimensions and scans from any angle with a phone camera.",
+      },
+    ],
+  },
 ];
 
 export function getSeoLandingBySlug(slug: string): SeoLandingPage | undefined {
