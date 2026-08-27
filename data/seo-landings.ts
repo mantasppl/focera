@@ -681,6 +681,420 @@ export const seoLandings: SeoLandingPage[] = [
       },
     ],
   },
+  {
+    slug: "free-qr-code-generator",
+    href: "/free-qr-code-generator",
+    keyword: "free qr code generator",
+    title: "Free QR Code Generator Online",
+    h1: "Free QR Code Generator",
+    shortName: "Free QR",
+    description:
+      "Use a free QR code generator online — branded codes for URLs, Wi‑Fi, vCards, and events, then download PNG, SVG, or PDF in your browser.",
+    keywords: [
+      "free qr code generator",
+      "free qr code generator online",
+      "qr code generator free",
+      "free qr generator",
+      "no signup qr code",
+      "free qr png",
+      "unlimited qr code generator",
+    ],
+    parentToolSlug: "qr-generator",
+    parentHref: "/qr-generator",
+    parentName: "QR Code Generator",
+    faq: [
+      {
+        question: "Is this free QR code generator actually free?",
+        answer:
+          "Yes. Preview and download as many codes as you need with no payment, account, or daily limit.",
+      },
+      {
+        question: "Does the free QR code generator send my data to a server?",
+        answer:
+          "No. Encoding runs in your browser. URLs, Wi‑Fi details, and other payloads stay on this device.",
+      },
+      {
+        question: "What can I download from this free QR code generator?",
+        answer:
+          "PNG, SVG, or a print-ready PDF. Transparent backgrounds and batch ZIP exports are included.",
+      },
+      {
+        question: "What can I encode for free?",
+        answer:
+          "URL, text, Wi‑Fi, vCard, email, phone, SMS, calendar events, geo locations, and app store links — each with guided fields.",
+      },
+      {
+        question: "Can I check a free code before I print it?",
+        answer:
+          "Yes. Scan to verify with your camera, or decode an existing QR image to import its payload.",
+      },
+      {
+        question: "Do I need an account for this free QR code generator?",
+        answer:
+          "No. Open the page, enter the payload, and download. There is no signup wall.",
+      },
+      {
+        question: "What print size should I use?",
+        answer:
+          "Match scan distance. Cards often work from 2–3 cm; posters need a larger mark. Test with a phone before a bulk run.",
+      },
+      {
+        question: "Can I use free downloads in commercial work?",
+        answer:
+          "Yes. Files you export here are yours for marketing, packaging, events, and client projects.",
+      },
+      {
+        question: "How is a QR code different from a barcode?",
+        answer:
+          "A barcode stores a short numeric string in one dimension. A QR code stores more data in two dimensions and scans from any angle with a phone camera.",
+      },
+    ],
+  },
+  {
+    slug: "create-qr-code",
+    href: "/create-qr-code",
+    keyword: "create qr code",
+    title: "Create QR Code Online Free",
+    h1: "Create QR Code",
+    shortName: "Create QR",
+    description:
+      "Create a QR code online for free — customize colors and logo for URLs, Wi‑Fi, vCards, and more, then download PNG, SVG, or PDF in your browser.",
+    keywords: [
+      "create qr code",
+      "create qr code online",
+      "create qr code free",
+      "create a qr code",
+      "make qr code",
+      "create qr png",
+      "create wifi qr code",
+    ],
+    parentToolSlug: "qr-generator",
+    parentHref: "/qr-generator",
+    parentName: "QR Code Generator",
+    faq: [
+      {
+        question: "Is it free to create a QR code here?",
+        answer:
+          "Yes. Create, preview, and download with no payment, account, or cap on how many files you make.",
+      },
+      {
+        question: "When I create a QR code, does it leave my device?",
+        answer:
+          "No. The pattern is built in your browser. The payload never uploads during creation.",
+      },
+      {
+        question: "What file do I get after I create a QR code?",
+        answer:
+          "PNG, SVG, or a print-ready PDF. You can also export a transparent background or a ZIP of several codes.",
+      },
+      {
+        question: "What can I put in a QR code I create?",
+        answer:
+          "URL, text, Wi‑Fi, vCard, email, phone, SMS, calendar events, geo locations, and app store links — each with guided fields.",
+      },
+      {
+        question: "Can I verify a code I just created?",
+        answer:
+          "Yes. Scan to verify with your camera, or decode an existing QR image to import its payload.",
+      },
+      {
+        question: "Do I need to sign up to create a QR code?",
+        answer:
+          "No account is required. Enter your content and download as soon as the preview looks right.",
+      },
+      {
+        question: "How large should a created QR code be in print?",
+        answer:
+          "It depends on scan distance. Cards often work from 2–3 cm; posters need more size. Test with a phone first.",
+      },
+      {
+        question: "Can I use a QR code I create for client work?",
+        answer:
+          "Yes. Codes you make here are yours for marketing, packaging, events, and commercial projects.",
+      },
+      {
+        question: "How is a QR code different from a barcode?",
+        answer:
+          "A barcode is a one-line numeric mark. A QR code is a 2D grid that holds more data and reads from any angle on a phone.",
+      },
+    ],
+  },
+  {
+    slug: "generate-qr-code",
+    href: "/generate-qr-code",
+    keyword: "generate qr code",
+    title: "Generate QR Code Online Free",
+    h1: "Generate QR Code",
+    shortName: "Generate QR",
+    description:
+      "Generate a QR code online for free — encode URLs, Wi‑Fi, vCards, events, and more, then download PNG, SVG, or PDF in your browser.",
+    keywords: [
+      "generate qr code",
+      "generate qr code online",
+      "generate qr code free",
+      "generate a qr code",
+      "qr code generate",
+      "generate qr png",
+      "generate wifi qr",
+    ],
+    parentToolSlug: "qr-generator",
+    parentHref: "/qr-generator",
+    parentName: "QR Code Generator",
+    faq: [
+      {
+        question: "Is it free to generate a QR code here?",
+        answer:
+          "Yes. Generate, preview, and download without paying, creating an account, or hitting a daily limit.",
+      },
+      {
+        question: "Where is the QR code generated?",
+        answer:
+          "On your device. The browser builds the pattern locally, so the payload is not uploaded for encoding.",
+      },
+      {
+        question: "What formats can I generate?",
+        answer:
+          "PNG, SVG, or a print-ready PDF. Transparent backgrounds and batch ZIP exports are available.",
+      },
+      {
+        question: "What payloads can I generate a QR code from?",
+        answer:
+          "URL, text, Wi‑Fi, vCard, email, phone, SMS, calendar events, geo locations, and app store links — each with guided fields.",
+      },
+      {
+        question: "Can I scan a generated code before printing?",
+        answer:
+          "Yes. Use Scan to verify with your camera, or decode an existing QR image to import its payload.",
+      },
+      {
+        question: "Do I need an account to generate a QR code?",
+        answer:
+          "No. Open the page, enter the content, and download as soon as the live preview is ready.",
+      },
+      {
+        question: "What size should a generated QR code be?",
+        answer:
+          "Size follows scan distance. Cards often work from 2–3 cm; posters need a larger mark. Always test with a phone.",
+      },
+      {
+        question: "Can generated codes be used commercially?",
+        answer:
+          "Yes. Files you generate here are yours for marketing, packaging, events, and client work.",
+      },
+      {
+        question: "How is a QR code different from a barcode?",
+        answer:
+          "Barcodes hold a short number in one dimension. QR codes hold more information in two dimensions and scan from any angle.",
+      },
+    ],
+  },
+  {
+    slug: "qr-code-maker",
+    href: "/qr-code-maker",
+    keyword: "qr code maker",
+    title: "QR Code Maker Online Free",
+    h1: "QR Code Maker",
+    shortName: "QR Maker",
+    description:
+      "Use a QR code maker online for free — style colors, frames, and logos for URLs, Wi‑Fi, vCards, and more, then download PNG, SVG, or PDF in your browser.",
+    keywords: [
+      "qr code maker",
+      "qr code maker online",
+      "qr code maker free",
+      "online qr code maker",
+      "free qr maker",
+      "png qr code maker",
+      "wifi qr code maker",
+    ],
+    parentToolSlug: "qr-generator",
+    parentHref: "/qr-generator",
+    parentName: "QR Code Generator",
+    faq: [
+      {
+        question: "Is this QR code maker free?",
+        answer:
+          "Yes. Make, preview, and download codes with no payment, account, or daily cap.",
+      },
+      {
+        question: "Does this QR code maker upload what I type?",
+        answer:
+          "No. The maker runs in your browser. Payloads stay on this device while the image is built.",
+      },
+      {
+        question: "What files does the QR code maker export?",
+        answer:
+          "PNG, SVG, or a print-ready PDF. Transparent backgrounds and batch ZIP exports are included.",
+      },
+      {
+        question: "What can this QR code maker encode?",
+        answer:
+          "URL, text, Wi‑Fi, vCard, email, phone, SMS, calendar events, geo locations, and app store links — each with guided fields.",
+      },
+      {
+        question: "Can I test a code from this QR code maker before print?",
+        answer:
+          "Yes. Scan to verify with your camera, or decode an existing QR image to import its payload.",
+      },
+      {
+        question: "Do I need to register to use the QR code maker?",
+        answer:
+          "No signup. Open the page, set the content and style, and download when the preview looks right.",
+      },
+      {
+        question: "How big should a made QR code be on paper?",
+        answer:
+          "It depends on how far the camera will be. Cards often work from 2–3 cm; posters need more size. Test first.",
+      },
+      {
+        question: "Can I use codes from this maker in paid campaigns?",
+        answer:
+          "Yes. Exports are yours for marketing, packaging, events, and client projects.",
+      },
+      {
+        question: "How is a QR code different from a barcode?",
+        answer:
+          "A barcode is a 1D numeric stripe. A QR code is a 2D grid that stores more data and reads from any angle on a phone.",
+      },
+    ],
+  },
+  {
+    slug: "qr-code-creator",
+    href: "/qr-code-creator",
+    keyword: "qr code creator",
+    title: "QR Code Creator Online Free",
+    h1: "QR Code Creator",
+    shortName: "QR Creator",
+    description:
+      "Use a QR code creator online for free — design branded codes for URLs, Wi‑Fi, vCards, and events, then download PNG, SVG, or PDF in your browser.",
+    keywords: [
+      "qr code creator",
+      "qr code creator online",
+      "qr code creator free",
+      "online qr code creator",
+      "free qr creator",
+      "branded qr code creator",
+      "logo qr code creator",
+    ],
+    parentToolSlug: "qr-generator",
+    parentHref: "/qr-generator",
+    parentName: "QR Code Generator",
+    faq: [
+      {
+        question: "Is this QR code creator free to use?",
+        answer:
+          "Yes. Design, preview, and download with no payment, account, or usage cap.",
+      },
+      {
+        question: "Does the QR code creator upload my designs?",
+        answer:
+          "No. Creation stays in the browser. Your URL, vCard, or other payload never leaves this device for encoding.",
+      },
+      {
+        question: "What can I download from this QR code creator?",
+        answer:
+          "PNG, SVG, or a print-ready PDF. Transparent backgrounds and batch ZIP exports are available.",
+      },
+      {
+        question: "What content can this QR code creator hold?",
+        answer:
+          "URL, text, Wi‑Fi, vCard, email, phone, SMS, calendar events, geo locations, and app store links — each with guided fields.",
+      },
+      {
+        question: "Can I verify a designed code before printing?",
+        answer:
+          "Yes. Scan to verify with your camera, or decode an existing QR image to import its payload.",
+      },
+      {
+        question: "Do I need an account for this QR code creator?",
+        answer:
+          "No. Open the page, style the code, and download as soon as the live preview is ready.",
+      },
+      {
+        question: "What print size works for a designed QR code?",
+        answer:
+          "Match the viewing distance. Cards often work from 2–3 cm; posters need a larger mark. Test with a phone.",
+      },
+      {
+        question: "Can I use created codes in commercial projects?",
+        answer:
+          "Yes. Codes you design here are yours for marketing, packaging, events, and client work.",
+      },
+      {
+        question: "How is a QR code different from a barcode?",
+        answer:
+          "Barcodes store limited numbers in a single line. QR codes store more in a square grid and scan from any angle.",
+      },
+    ],
+  },
+  {
+    slug: "qr-code-builder",
+    href: "/qr-code-builder",
+    keyword: "qr code builder",
+    title: "QR Code Builder Online Free",
+    h1: "QR Code Builder",
+    shortName: "QR Builder",
+    description:
+      "Use a QR code builder online for free — assemble content, colors, and a logo for URLs, Wi‑Fi, vCards, and more, then download PNG, SVG, or PDF in your browser.",
+    keywords: [
+      "qr code builder",
+      "qr code builder online",
+      "qr code builder free",
+      "online qr code builder",
+      "free qr builder",
+      "build qr code",
+      "qr builder png",
+    ],
+    parentToolSlug: "qr-generator",
+    parentHref: "/qr-generator",
+    parentName: "QR Code Generator",
+    faq: [
+      {
+        question: "Is this QR code builder free?",
+        answer:
+          "Yes. Build, preview, and download codes with no payment, account, or daily limit.",
+      },
+      {
+        question: "Does the QR code builder send my payload to a server?",
+        answer:
+          "No. The builder encodes in your browser. Fields you fill in stay on this device.",
+      },
+      {
+        question: "What files can I build and download?",
+        answer:
+          "PNG, SVG, or a print-ready PDF. Transparent backgrounds and batch ZIP exports are included.",
+      },
+      {
+        question: "What can I assemble in this QR code builder?",
+        answer:
+          "URL, text, Wi‑Fi, vCard, email, phone, SMS, calendar events, geo locations, and app store links — each with guided fields.",
+      },
+      {
+        question: "Can I check a built code before a print run?",
+        answer:
+          "Yes. Scan to verify with your camera, or decode an existing QR image to import its payload.",
+      },
+      {
+        question: "Do I need to sign up to use the QR code builder?",
+        answer:
+          "No account. Fill in the content, adjust style, and download when the preview is ready.",
+      },
+      {
+        question: "How large should a built QR code print?",
+        answer:
+          "It depends on scan distance. Cards often work from 2–3 cm; posters need more size. Always test with a phone.",
+      },
+      {
+        question: "Can I use built codes in commercial work?",
+        answer:
+          "Yes. Files you build here are yours for marketing, packaging, events, and client projects.",
+      },
+      {
+        question: "How is a QR code different from a barcode?",
+        answer:
+          "A barcode is a 1D stripe with a short number. A QR code is a 2D grid with more capacity and all-angle phone scanning.",
+      },
+    ],
+  },
 ];
 
 export function getSeoLandingBySlug(slug: string): SeoLandingPage | undefined {
