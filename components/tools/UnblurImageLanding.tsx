@@ -5,7 +5,7 @@ const FEATURES = [
   {
     title: "Sharpen blurry photos",
     description:
-      "Reduce soft focus, camera shake haze, and mild motion blur with a tunable unsharp-mask pass — keep the original resolution.",
+      "Reduce soft focus, camera shake haze, and mild motion blur with a local deblur pass — keep the original resolution.",
   },
   {
     title: "Three strength levels",
@@ -42,21 +42,21 @@ export default function UnblurImageLanding() {
         </h2>
         <p>
           Clearing up a soft photo should be fast and private. Focera keeps the
-          whole flow on one page — upload, choose a strength, unblur, compare,
-          and download without an account or desktop installer.
+          whole flow on one page — upload to start unblurring, compare, and
+          download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
           <li>
             <strong>Upload your image.</strong> Drag and drop a JPG, PNG, or
-            WebP file up to 10 MB, or click the zone to browse from your device.
+            WebP file up to 10 MB. Unblurring starts automatically.
           </li>
           <li>
-            <strong>Pick an unblur strength.</strong> Start with Medium for most
-            photos. Use Light for subtle haze, or Strong for heavier blur.
+            <strong>Pick an unblur strength.</strong> Medium is the default.
+            Switch to Light or Strong anytime — the preview updates on its own.
           </li>
           <li>
-            <strong>Unblur and download.</strong> Processing runs in your
-            browser. Compare with the before/after slider, then download a PNG.
+            <strong>Compare, then download.</strong> Use the before/after slider,
+            then click Download PNG when you are ready.
           </li>
         </ol>
         <p>

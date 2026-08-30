@@ -2,45 +2,79 @@ import { downloadBlob, fileBaseName } from "@/lib/image";
 
 export type UnblurStrength = "light" | "medium" | "strong";
 
+type DeconvSettings = {
+  /** Assumed blur size as a fraction of the shortest side. */
+  radiusFraction: number;
+  minRadius: number;
+  maxRadius: number;
+  /** Van Cittert iterations — more = stronger deblur. */
+  iterations: number;
+  /** Residual gain per iteration (0–1). */
+  gain: number;
+  /** Box-blur repeats used to approximate the PSF (3 ≈ Gaussian). */
+  psfPasses: number;
+};
+
+type SharpenSettings = {
+  /** 3×3 sharpen mix (0 = none, 1 = full high-pass kernel). */
+  amount: number;
+};
+
 export type UnblurPreset = {
   strength: UnblurStrength;
   label: string;
   hint: string;
-  /** Unsharp mask amount (how strongly high-pass is added back). */
-  amount: number;
-  /** Box-blur radius in pixels (larger = broader haze recovery). */
-  radius: number;
-  /** Ignore diffs below this to avoid boosting noise. */
-  threshold: number;
-  /** Extra sharpen pass after the main unsharp mask. */
-  secondPass?: { amount: number; radius: number; threshold: number };
+  deconv: DeconvSettings;
+  sharpen: SharpenSettings;
 };
 
+/**
+ * Deconvolution radius scales with image size so a 12MP photo is not
+ * sharpened by 1–2px (invisible in the preview). Van Cittert actually
+ * undoes blur; a tight unsharp pass then restores edge bite.
+ */
 export const UNBLUR_PRESETS: UnblurPreset[] = [
   {
     strength: "light",
     label: "Light",
     hint: "Soft haze",
-    amount: 0.85,
-    radius: 1,
-    threshold: 3,
+    deconv: {
+      radiusFraction: 0.005,
+      minRadius: 2,
+      maxRadius: 9,
+      iterations: 7,
+      gain: 0.68,
+      psfPasses: 3,
+    },
+    sharpen: { amount: 0.45 },
   },
   {
     strength: "medium",
     label: "Medium",
     hint: "Everyday blur",
-    amount: 1.25,
-    radius: 2,
-    threshold: 2,
+    deconv: {
+      radiusFraction: 0.008,
+      minRadius: 3,
+      maxRadius: 14,
+      iterations: 12,
+      gain: 0.84,
+      psfPasses: 3,
+    },
+    sharpen: { amount: 0.7 },
   },
   {
     strength: "strong",
     label: "Strong",
     hint: "Heavy blur",
-    amount: 1.55,
-    radius: 3,
-    threshold: 1,
-    secondPass: { amount: 0.55, radius: 1, threshold: 4 },
+    deconv: {
+      radiusFraction: 0.011,
+      minRadius: 4,
+      maxRadius: 20,
+      iterations: 16,
+      gain: 0.92,
+      psfPasses: 3,
+    },
+    sharpen: { amount: 0.9 },
   },
 ];
 
@@ -61,6 +95,14 @@ function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) {
     throw new DOMException("Unblur cancelled.", "AbortError");
   }
+}
+
+async function yieldToMain(signal?: AbortSignal) {
+  throwIfAborted(signal);
+  await new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 0);
+  });
+  throwIfAborted(signal);
 }
 
 function loadImage(file: File): Promise<HTMLImageElement> {
@@ -102,6 +144,19 @@ function getPreset(strength: UnblurStrength): UnblurPreset {
   );
 }
 
+function scaledRadius(
+  width: number,
+  height: number,
+  fraction: number,
+  minRadius: number,
+  maxRadius: number,
+): number {
+  const minSide = Math.min(width, height);
+  return Math.round(
+    Math.min(maxRadius, Math.max(minRadius, minSide * fraction)),
+  );
+}
+
 /**
  * Separable box blur into `out` (RGBA). Alpha is copied from source.
  * Uses a sliding-window sum so large radii stay reasonably fast.
@@ -117,7 +172,6 @@ function boxBlurSeparable(
   const r = Math.max(1, Math.floor(radius));
   const windowSize = r * 2 + 1;
 
-  // Horizontal pass → temp (RGB only, as float).
   for (let y = 0; y < height; y += 1) {
     const row = y * width;
     let sumR = 0;
@@ -148,7 +202,6 @@ function boxBlurSeparable(
     }
   }
 
-  // Vertical pass → out.
   for (let x = 0; x < width; x += 1) {
     let sumR = 0;
     let sumG = 0;
@@ -180,51 +233,109 @@ function boxBlurSeparable(
   }
 }
 
-/** Unsharp mask: original + amount × (original − blurred). */
-function applyUnsharpMask(
-  canvas: HTMLCanvasElement,
-  amount: number,
+function blurImage(
+  src: Uint8ClampedArray,
+  out: Uint8ClampedArray,
+  scratch: Uint8ClampedArray,
+  width: number,
+  height: number,
   radius: number,
-  threshold: number,
-): void {
-  const ctx = getContext(canvas);
-  const { width, height } = canvas;
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const src = imageData.data;
-  const copy = new Uint8ClampedArray(src);
-  const blurred = new Uint8ClampedArray(src.length);
-  const temp = new Float32Array(width * height * 3);
+  iterations: number,
+  temp: Float32Array,
+) {
+  const n = Math.max(1, Math.floor(iterations));
+  let from = src;
+  let to = out;
 
-  boxBlurSeparable(copy, blurred, width, height, radius, temp);
+  for (let i = 0; i < n; i += 1) {
+    boxBlurSeparable(from, to, width, height, radius, temp);
+    if (i === n - 1) {
+      if (to !== out) {
+        out.set(to);
+      }
+      return;
+    }
+    const nextFrom = to;
+    to = from === src ? scratch : from;
+    from = nextFrom;
+  }
+}
 
-  for (let i = 0; i < src.length; i += 4) {
+/**
+ * Van Cittert iteration: estimate += gain × (observed − blur(estimate)).
+ * Repeating this with a PSF similar to the blur actually tightens edges.
+ */
+function vanCittertStep(
+  observed: Uint8ClampedArray,
+  estimate: Uint8ClampedArray,
+  blurred: Uint8ClampedArray,
+  scratch: Uint8ClampedArray,
+  temp: Float32Array,
+  width: number,
+  height: number,
+  radius: number,
+  gain: number,
+  psfPasses: number,
+) {
+  blurImage(
+    estimate,
+    blurred,
+    scratch,
+    width,
+    height,
+    radius,
+    psfPasses,
+    temp,
+  );
+
+  for (let i = 0; i < estimate.length; i += 4) {
     for (let c = 0; c < 3; c += 1) {
-      const diff = copy[i + c] - blurred[i + c];
-      if (Math.abs(diff) > threshold) {
-        src[i + c] = Math.min(
-          255,
-          Math.max(0, Math.round(copy[i + c] + diff * amount)),
-        );
+      const next = estimate[i + c] + gain * (observed[i + c] - blurred[i + c]);
+      estimate[i + c] = Math.min(255, Math.max(0, Math.round(next)));
+    }
+  }
+}
+
+/** 3×3 sharpen: center × (1+4a) − a × (N+S+E+W). */
+function applySharpenKernel(
+  pixels: Uint8ClampedArray,
+  copy: Uint8ClampedArray,
+  width: number,
+  height: number,
+  amount: number,
+) {
+  if (amount <= 0) return;
+  copy.set(pixels);
+
+  for (let y = 0; y < height; y += 1) {
+    const yUp = Math.max(0, y - 1);
+    const yDown = Math.min(height - 1, y + 1);
+    for (let x = 0; x < width; x += 1) {
+      const xLeft = Math.max(0, x - 1);
+      const xRight = Math.min(width - 1, x + 1);
+      const i = (y * width + x) * 4;
+      for (let c = 0; c < 3; c += 1) {
+        const center = copy[i + c];
+        const up = copy[(yUp * width + x) * 4 + c];
+        const down = copy[(yDown * width + x) * 4 + c];
+        const left = copy[(y * width + xLeft) * 4 + c];
+        const right = copy[(y * width + xRight) * 4 + c];
+        const next = center * (1 + 4 * amount) - amount * (up + down + left + right);
+        pixels[i + c] = Math.min(255, Math.max(0, Math.round(next)));
       }
     }
-    src[i + 3] = copy[i + 3];
   }
-
-  ctx.putImageData(imageData, 0, 0);
 }
 
 function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) {
-          reject(new Error("Could not export the unblurred image."));
-          return;
-        }
-        resolve(blob);
-      },
-      "image/png",
-    );
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error("Could not export the unblurred image."));
+        return;
+      }
+      resolve(blob);
+    }, "image/png");
   });
 }
 
@@ -264,24 +375,62 @@ export async function unblurImageFile(
   }
 
   onProgress?.("Preparing image…");
+  await yieldToMain(signal);
   const canvas = createCanvas(width, height);
   const ctx = getContext(canvas);
   ctx.drawImage(image, 0, 0, width, height);
 
-  throwIfAborted(signal);
-  onProgress?.(`Sharpening (${preset.label.toLowerCase()})…`);
-  applyUnsharpMask(canvas, preset.amount, preset.radius, preset.threshold);
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const pixels = imageData.data;
+  const observed = new Uint8ClampedArray(pixels);
+  const blurred = new Uint8ClampedArray(pixels.length);
+  const scratch = new Uint8ClampedArray(pixels.length);
+  const temp = new Float32Array(width * height * 3);
 
-  if (preset.secondPass) {
+  const deconvRadius = scaledRadius(
+    width,
+    height,
+    preset.deconv.radiusFraction,
+    preset.deconv.minRadius,
+    preset.deconv.maxRadius,
+  );
+
+  for (let step = 0; step < preset.deconv.iterations; step += 1) {
     throwIfAborted(signal);
-    onProgress?.("Refining edges…");
-    applyUnsharpMask(
-      canvas,
-      preset.secondPass.amount,
-      preset.secondPass.radius,
-      preset.secondPass.threshold,
+    if (step === 0 || step % 3 === 0) {
+      onProgress?.(
+        `Deblurring (${preset.label.toLowerCase()}) ${step + 1}/${preset.deconv.iterations}…`,
+      );
+      await yieldToMain(signal);
+    }
+
+    vanCittertStep(
+      observed,
+      pixels,
+      blurred,
+      scratch,
+      temp,
+      width,
+      height,
+      deconvRadius,
+      preset.deconv.gain,
+      preset.deconv.psfPasses,
     );
   }
+
+  throwIfAborted(signal);
+  onProgress?.("Refining edges…");
+  await yieldToMain(signal);
+
+  applySharpenKernel(
+    pixels,
+    observed,
+    width,
+    height,
+    preset.sharpen.amount,
+  );
+
+  ctx.putImageData(imageData, 0, 0);
 
   throwIfAborted(signal);
   onProgress?.("Exporting PNG…");

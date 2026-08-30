@@ -3224,7 +3224,7 @@ export const tools: Tool[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Compare with the before/after slider and retry if needed.",
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs unblur automatically — compare with the before/after slider.",
       },
       {
         question: "Will this recover extreme motion blur?",

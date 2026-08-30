@@ -36,10 +36,20 @@ export default function UnblurImage() {
   useEffect(() => {
     return () => {
       abortRef.current?.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
       if (originalUrl) URL.revokeObjectURL(originalUrl);
+    };
+  }, [originalUrl]);
+
+  useEffect(() => {
+    return () => {
       if (resultUrl) URL.revokeObjectURL(resultUrl);
     };
-  }, [originalUrl, resultUrl]);
+  }, [resultUrl]);
 
   function clearResult() {
     if (resultUrl) URL.revokeObjectURL(resultUrl);
@@ -55,6 +65,15 @@ export default function UnblurImage() {
     setProgressText("");
     setSourceFile(file);
     setOriginalUrl(URL.createObjectURL(file));
+    void runUnblur(file, strength);
+  }
+
+  function handleStrength(next: UnblurStrength) {
+    if (next === strength) return;
+    setStrength(next);
+    if (sourceFile) {
+      void runUnblur(sourceFile, next);
+    }
   }
 
   function handleReset() {
@@ -68,12 +87,7 @@ export default function UnblurImage() {
     setLoading(false);
   }
 
-  async function handleUnblur() {
-    if (!sourceFile) {
-      setError("Upload an image to get started.");
-      return;
-    }
-
+  async function runUnblur(file: File, nextStrength: UnblurStrength) {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -84,8 +98,8 @@ export default function UnblurImage() {
     clearResult();
 
     try {
-      const unblurred = await unblurImageFile(sourceFile, {
-        strength,
+      const unblurred = await unblurImageFile(file, {
+        strength: nextStrength,
         signal: controller.signal,
         onProgress: setProgressText,
       });
@@ -95,7 +109,6 @@ export default function UnblurImage() {
       const url = URL.createObjectURL(unblurred.blob);
       setResult(unblurred);
       setResultUrl(url);
-      downloadUnblurredImage(unblurred.blob, sourceFile, unblurred.strength);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -116,7 +129,7 @@ export default function UnblurImage() {
     }
   }
 
-  function handleDownloadAgain() {
+  function handleDownload() {
     if (!sourceFile || !result) return;
     downloadUnblurredImage(result.blob, sourceFile, result.strength);
   }
@@ -127,7 +140,6 @@ export default function UnblurImage() {
         <ImageDropzone
           onFile={handleFile}
           onError={setError}
-          disabled={loading}
         />
 
         {hasSource ? (
@@ -161,8 +173,7 @@ export default function UnblurImage() {
                       "unblur-image__chip",
                       selected && "is-active",
                     )}
-                    disabled={loading}
-                    onClick={() => setStrength(preset.strength)}
+                    onClick={() => handleStrength(preset.strength)}
                   >
                     <span className="unblur-image__chip-label">
                       {preset.label}
@@ -178,26 +189,17 @@ export default function UnblurImage() {
         </div>
 
         <div className="tool-actions">
-          <Button
-            onClick={() => void handleUnblur()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Unblurring…" : "Unblur image"}
-          </Button>
+          {hasResult ? (
+            <Button onClick={handleDownload}>Download PNG</Button>
+          ) : null}
           <Button
             variant="ghost"
             onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
+            disabled={!hasSource && !hasResult}
           >
             Start over
           </Button>
         </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
-          </div>
-        ) : null}
 
         {error ? (
           <p className="tool-error" role="alert">
@@ -246,7 +248,7 @@ export default function UnblurImage() {
                 className="preview-single__image"
               />
               <p className="tool-placeholder preview-single__hint">
-                Choose a strength and click Unblur image.
+                Try another file, or pick a different strength.
               </p>
             </div>
           ) : (
@@ -258,7 +260,7 @@ export default function UnblurImage() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "Sharpen soft or blurry photos in your browser · files never upload to Focera"}
         </p>
       </div>

@@ -6077,6 +6077,11 @@ a {
   text-align: center;
 }
 
+.unblur-image .compare__stage {
+  max-width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
 /* -- Profile Photo Maker / Round Image -- */
 .profile-photo-maker__editor,
 .round-image__editor {
