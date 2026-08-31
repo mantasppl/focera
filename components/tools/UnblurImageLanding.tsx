@@ -3,9 +3,9 @@ import FeatureGrid from "@/components/tools/FeatureGrid";
 
 const FEATURES = [
   {
-    title: "Sharpen blurry photos",
+    title: "AI unblur",
     description:
-      "Reduce soft focus, camera shake haze, and mild motion blur with a sharpen pass — keep the original resolution.",
+      "A compact on-device model reconstructs missing detail in soft photos, then keeps the original resolution.",
   },
   {
     title: "Three strength levels",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and sharpened result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and unblurred result with a slider, then download a PNG ready for sharing or editing.",
   },
 ];
 
@@ -41,9 +41,9 @@ export default function UnblurImageLanding() {
           How It Works
         </h2>
         <p>
-          Clearing up a soft photo should be fast and private. Focera keeps the
-          whole flow on one page — upload to start unblurring, compare, and
-          download without an account or desktop installer.
+          Clearing up a soft photo should be fast and private. Focera runs an
+          on-device AI unblur pass in your browser — upload to start, compare,
+          and download without an account or desktop installer.
         </p>
         <ol className="tool-content__steps">
           <li>

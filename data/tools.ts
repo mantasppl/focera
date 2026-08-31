@@ -3194,8 +3194,8 @@ export const tools: Tool[] = [
     name: "Unblur Image — Sharpen Blurry Photos",
     shortName: "Unblur Image",
     description:
-      "Unblur images online — sharpen soft or blurry photos with light, medium, or strong clarity recovery. Free, private, and local in your browser.",
-    categories: ["image"],
+      "Unblur images online with AI — recover clarity on soft or blurry photos in your browser. Free, private, and no account required.",
+    categories: ["image", "ai"],
     status: "ready",
     href: "/unblur-image",
     keywords: [
@@ -3219,7 +3219,7 @@ export const tools: Tool[] = [
       {
         question: "Are my images uploaded to a server?",
         answer:
-          "No. Unblurring runs entirely in your browser. Your files stay on your device.",
+          "No. AI unblur runs entirely in your browser. The model downloads once to your device (about 5 MB). Your files stay on your device.",
       },
       {
         question: "Which strength should I choose?",
@@ -3229,17 +3229,17 @@ export const tools: Tool[] = [
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "An on-device AI restore pass reconstructs missing detail for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports an unblurred PNG at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
         answer:
-          "Yes. After unblurring, drag the preview slider to compare the original with the sharpened image.",
+          "Yes. After unblurring, drag the preview slider to compare the original with the AI result.",
       },
       {
         question: "Can I use the results commercially?",

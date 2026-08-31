@@ -1,4 +1,5 @@
 import { downloadBlob, fileBaseName } from "@/lib/image";
+import { unblurWithAi } from "@/lib/unblur-ai";
 
 export type UnblurStrength = "light" | "medium" | "strong";
 
@@ -23,9 +24,8 @@ export type UnblurPreset = {
 };
 
 /**
- * Classic unsharp mask: original + amount × (original − blur).
- * That sharpens edges. Iterative deconvolution is not used — it smears
- * photos and boosts noise when the blur kernel is unknown.
+ * AI restore (Real-ESRGAN compact) first. If the model cannot run, fall back
+ * to classic unsharp mask: original + amount × (original − blur).
  */
 export const UNBLUR_PRESETS: UnblurPreset[] = [
   {
@@ -93,11 +93,14 @@ export const UNBLUR_PRESETS: UnblurPreset[] = [
 
 const HALO_LIMIT = 42;
 
+export type UnblurEngine = "ai" | "sharpen";
+
 export type UnblurImageResult = {
   blob: Blob;
   width: number;
   height: number;
   strength: UnblurStrength;
+  engine: UnblurEngine;
 };
 
 export type UnblurImageOptions = {
@@ -337,7 +340,6 @@ export async function unblurImageFile(
   options: UnblurImageOptions = {},
 ): Promise<UnblurImageResult> {
   const strength = options.strength ?? "medium";
-  const preset = getPreset(strength);
   const { onProgress, signal } = options;
 
   throwIfAborted(signal);
@@ -345,6 +347,33 @@ export async function unblurImageFile(
   const image = await loadImage(file);
   throwIfAborted(signal);
 
+  try {
+    const enhanced = await unblurWithAi(image, {
+      strength,
+      onProgress,
+      signal,
+    });
+    return {
+      ...enhanced,
+      strength,
+      engine: "ai",
+    };
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw error;
+    }
+    onProgress?.("AI unavailable — sharpening instead…");
+    return unblurWithSharpen(image, strength, onProgress, signal);
+  }
+}
+
+async function unblurWithSharpen(
+  image: HTMLImageElement,
+  strength: UnblurStrength,
+  onProgress?: (message: string) => void,
+  signal?: AbortSignal,
+): Promise<UnblurImageResult> {
+  const preset = getPreset(strength);
   const width = image.naturalWidth || image.width;
   const height = image.naturalHeight || image.height;
 
@@ -403,5 +432,6 @@ export async function unblurImageFile(
     width,
     height,
     strength,
+    engine: "sharpen",
   };
 }

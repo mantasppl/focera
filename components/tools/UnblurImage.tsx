@@ -15,14 +15,36 @@ import {
   type UnblurImageResult,
   type UnblurStrength,
 } from "@/lib/unblur-image";
+import {
+  UNBLUR_FIRST_RUN_HINT,
+  hasPreparedUnblurModel,
+} from "@/lib/unblur-ai";
 import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
 
 function unblurHudProgress(text: string): number {
   const value = text.toLowerCase();
   if (value.includes("export")) return 90;
+  if (value.includes("blend")) return 84;
+  if (value.includes("enhancing")) {
+    const parts = text.match(/(\d+)\s*\/\s*(\d+)/);
+    if (parts) {
+      const current = Number(parts[1]);
+      const total = Number(parts[2]);
+      if (total > 0) return Math.min(82, 40 + Math.round((current / total) * 40));
+    }
+    return 48;
+  }
+  if (value.includes("preparing ai") || value.includes("loading ai")) return 34;
+  if (value.includes("download")) {
+    const percent = Number(text.replace(/[^\d]/g, ""));
+    if (Number.isFinite(percent) && percent > 0) {
+      return Math.min(32, 8 + Math.round(percent * 0.24));
+    }
+    return 12;
+  }
+  if (value.includes("sharpen") || value.includes("unavailable")) return 42;
   if (value.includes("refin")) return 72;
-  if (value.includes("sharpen")) return 42;
   if (value.includes("prepar")) return 18;
   if (value.includes("load")) return 8;
   return 6;
@@ -246,7 +268,8 @@ export default function UnblurImage() {
               <p className="unblur-image__result-meta">
                 {result!.width}×{result!.height}
                 {" · "}
-                {strengthLabel(result!.strength)} unblur
+                {strengthLabel(result!.strength)}
+                {result!.engine === "ai" ? " AI unblur" : " unblur"}
                 {" · "}
                 {formatFileSize(result!.blob.size)}
               </p>
@@ -279,10 +302,14 @@ export default function UnblurImage() {
 
         <p className="tool-hint">
           {loading
-            ? progressText || "Sharpening your photo…"
+            ? progressText || "Unblurring your photo…"
             : hasResult
-              ? "Download when you are ready · processed locally"
-              : "Sharpen soft or blurry photos in your browser · files never upload to Focera"}
+              ? result?.engine === "sharpen"
+                ? "AI model unavailable — used a local sharpen pass · processed locally"
+                : "Download when you are ready · AI ran locally in your browser"
+              : hasPreparedUnblurModel()
+                ? "AI unblur in your browser · files never upload to Focera"
+                : UNBLUR_FIRST_RUN_HINT}
         </p>
       </div>
     </div>
