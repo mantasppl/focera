@@ -3,7 +3,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
+import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
+import { useMobilePreviewReveal } from "@/components/tools/useMobilePreviewReveal";
 import { formatFileSize } from "@/lib/image";
 import {
   UNBLUR_PRESETS,
@@ -15,6 +17,16 @@ import {
 } from "@/lib/unblur-image";
 import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
+
+function unblurHudProgress(text: string): number {
+  const value = text.toLowerCase();
+  if (value.includes("export")) return 90;
+  if (value.includes("refin")) return 72;
+  if (value.includes("sharpen")) return 42;
+  if (value.includes("prepar")) return 18;
+  if (value.includes("load")) return 8;
+  return 6;
+}
 
 export default function UnblurImage() {
   const { trackSuccess, trackFailure } = useToolAnalytics();
@@ -32,6 +44,8 @@ export default function UnblurImage() {
 
   const hasSource = Boolean(sourceFile && originalUrl);
   const hasResult = Boolean(result && resultUrl);
+  const showPreviewFirst = loading || hasResult || hasSource;
+  const previewRef = useMobilePreviewReveal(loading);
 
   useEffect(() => {
     return () => {
@@ -135,7 +149,7 @@ export default function UnblurImage() {
   }
 
   return (
-    <div className="tool-grid unblur-image">
+    <div className={cn("tool-grid unblur-image", showPreviewFirst && "is-preview-first")}>
       <div className="tool-panel">
         <ImageDropzone
           onFile={handleFile}
@@ -208,18 +222,23 @@ export default function UnblurImage() {
         ) : null}
       </div>
 
-      <div className="tool-panel tool-panel--preview">
+      <div className="tool-panel tool-panel--preview" ref={previewRef}>
         <div
           className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
         >
-          {loading ? (
+          {loading && originalUrl ? (
+            <EnhancingPreview
+              key={`${originalUrl}-${strength}`}
+              src={originalUrl}
+              alt="Uploaded photo being unblurred"
+              label="Unblurring photo"
+              reportedProgress={unblurHudProgress(progressText)}
+            />
+          ) : loading ? (
             <div className="tool-loading" role="status" aria-live="polite">
               <span className="tool-loading__spinner" aria-hidden="true" />
               <span className="tool-loading__text">
                 {progressText || "Unblurring image…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Sharpening runs locally in your browser.
               </span>
             </div>
           ) : hasResult && originalUrl && resultUrl ? (
@@ -259,9 +278,11 @@ export default function UnblurImage() {
         </div>
 
         <p className="tool-hint">
-          {hasResult
-            ? "Download when you are ready · processed locally"
-            : "Sharpen soft or blurry photos in your browser · files never upload to Focera"}
+          {loading
+            ? progressText || "Sharpening your photo…"
+            : hasResult
+              ? "Download when you are ready · processed locally"
+              : "Sharpen soft or blurry photos in your browser · files never upload to Focera"}
         </p>
       </div>
     </div>

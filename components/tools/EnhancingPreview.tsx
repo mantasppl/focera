@@ -10,6 +10,13 @@ import {
 type EnhancingPreviewProps = {
   src: string;
   alt?: string;
+  /** Screen-reader and progress label. Defaults to background-removal copy. */
+  label?: string;
+  /**
+   * When set, drive the HUD from this 0–100 value instead of the
+   * background-removal progress feed.
+   */
+  reportedProgress?: number;
 };
 
 async function makePreviewUrl(src: string): Promise<string> {
@@ -58,15 +65,18 @@ function creepCap(reported: number): number {
 export default function EnhancingPreview({
   src,
   alt = "Uploaded preview",
+  label = "Enhancing photo",
+  reportedProgress,
 }: EnhancingPreviewProps) {
   const [previewSrc, setPreviewSrc] = useState("");
   const [reported, setReported] = useState(1);
   const [percent, setPercent] = useState(1);
+  const useRemovalFeed = reportedProgress == null;
 
   useEffect(() => {
     let cancelled = false;
     let createdUrl = "";
-    const release = beginPreviewPrepare();
+    const release = useRemovalFeed ? beginPreviewPrepare() : () => {};
 
     void (async () => {
       try {
@@ -89,13 +99,22 @@ export default function EnhancingPreview({
       release();
       if (createdUrl) URL.revokeObjectURL(createdUrl);
     };
+  }, [src, useRemovalFeed]);
+
+  useEffect(() => {
+    setPercent(1);
+    setReported(1);
   }, [src]);
 
   useEffect(() => {
+    if (!useRemovalFeed) {
+      setReported(Math.max(1, Math.min(100, reportedProgress ?? 1)));
+      return;
+    }
     setReported(1);
     setPercent(1);
     return subscribeRemovalProgress(setReported);
-  }, [src]);
+  }, [src, useRemovalFeed, reportedProgress]);
 
   useEffect(() => {
     setPercent((current) => Math.max(current, reported));
@@ -114,7 +133,9 @@ export default function EnhancingPreview({
 
   return (
     <div className="enhancing" role="status" aria-live="polite">
-      <span className="sr-only">Enhancing photo {percent} percent</span>
+      <span className="sr-only">
+        {label} {percent} percent
+      </span>
       <div className="enhancing__frame">
         {previewSrc ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -135,7 +156,7 @@ export default function EnhancingPreview({
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={percent}
-          aria-label="Enhancing progress"
+          aria-label={`${label} progress`}
         >
           <p className="enhancing__percent">{percent}%</p>
         </div>
