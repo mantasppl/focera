@@ -7129,6 +7129,714 @@ export const seoLandings: SeoLandingPage[] = [
       },
     ],
   },
+  {
+    slug: "ai-unblur-image",
+    href: "/ai-unblur-image",
+    keyword: "AI unblur image",
+    title: "AI Unblur Image Online Free",
+    h1: "AI Unblur Image",
+    shortName: "AI Unblur",
+    description:
+      "AI unblur an image online — recover soft or blurry photos with light, medium, or strong clarity. Free, private, and local in your browser.",
+    keywords: [
+      "AI unblur image",
+      "AI unblur image online",
+      "AI unblur image free",
+      "AI unblur photo",
+      "artificial intelligence unblur",
+      "AI sharpen blurry image",
+      "automatic image unblur",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this AI unblur image tool free?",
+        answer:
+          "Yes. Upload, run AI unblur, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. AI unblur runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs unblur automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will AI unblur recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After AI unblur finishes, drag the preview slider to compare the original with the sharpened image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "image-unblur-tool",
+    href: "/image-unblur-tool",
+    keyword: "image unblur tool",
+    title: "Image Unblur Tool Online Free",
+    h1: "Image Unblur Tool",
+    shortName: "Unblur Tool",
+    description:
+      "Unblur an image online with a free image unblur tool — light, medium, or strong sharpening. Private and local in your browser.",
+    keywords: [
+      "image unblur tool",
+      "image unblur tool online",
+      "image unblur tool free",
+      "online unblur tool",
+      "photo unblur utility",
+      "sharpen image tool",
+      "free unblur software",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this image unblur tool free?",
+        answer:
+          "Yes. Upload, unblur, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. The image unblur tool runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs unblur automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After unblurring, drag the preview slider to compare the original with the sharpened image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "sharpen-blurry-image",
+    href: "/sharpen-blurry-image",
+    keyword: "sharpen blurry image",
+    title: "Sharpen Blurry Image Online Free",
+    h1: "Sharpen Blurry Image",
+    shortName: "Sharpen Image",
+    description:
+      "Sharpen a blurry image online — restore edge clarity with light, medium, or strong recovery. Free, private, and local in your browser.",
+    keywords: [
+      "sharpen blurry image",
+      "sharpen blurry image online",
+      "sharpen blurry image free",
+      "sharpen a blurry photo",
+      "make blurry picture sharp",
+      "sharpen soft image",
+      "online image sharpener",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this sharpen blurry image tool free?",
+        answer:
+          "Yes. Upload, sharpen, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Sharpening runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs sharpening automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After sharpening, drag the preview slider to compare the original with the clearer image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "remove-blur-from-image",
+    href: "/remove-blur-from-image",
+    keyword: "remove blur from image",
+    title: "Remove Blur From Image Online Free",
+    h1: "Remove Blur From Image",
+    shortName: "Remove Blur",
+    description:
+      "Remove blur from an image online — tighten soft focus with light, medium, or strong clarity. Free, private, and local in your browser.",
+    keywords: [
+      "remove blur from image",
+      "remove blur from image online",
+      "remove blur from image free",
+      "remove blur from photo",
+      "get rid of image blur",
+      "reduce photo blur",
+      "clear blur from picture",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this remove blur from image tool free?",
+        answer:
+          "Yes. Upload, remove blur, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Blur removal runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After blur is reduced, drag the preview slider to compare the original with the clearer image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "ai-fix-blurry-photos",
+    href: "/ai-fix-blurry-photos",
+    keyword: "AI fix blurry photos",
+    title: "AI Fix Blurry Photos Online Free",
+    h1: "AI Fix Blurry Photos",
+    shortName: "Fix Photos",
+    description:
+      "AI fix blurry photos online — recover soft shots with light, medium, or strong sharpening. Free, private, and local in your browser.",
+    keywords: [
+      "AI fix blurry photos",
+      "AI fix blurry photos online",
+      "AI fix blurry photos free",
+      "fix blurry photos AI",
+      "repair blurry pictures",
+      "AI photo blur fixer",
+      "correct blurry photos online",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this AI fix blurry photos tool free?",
+        answer:
+          "Yes. Upload, fix blur, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. The AI fix runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs the fix automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After the AI fix finishes, drag the preview slider to compare the original with the repaired photo.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "ai-photo-sharpener",
+    href: "/ai-photo-sharpener",
+    keyword: "AI photo sharpener",
+    title: "AI Photo Sharpener Online Free",
+    h1: "AI Photo Sharpener",
+    shortName: "Photo Sharpener",
+    description:
+      "Sharpen photos with an AI photo sharpener online — light, medium, or strong clarity recovery. Free, private, and local in your browser.",
+    keywords: [
+      "AI photo sharpener",
+      "AI photo sharpener online",
+      "AI photo sharpener free",
+      "AI image sharpener",
+      "automatic photo sharpener",
+      "sharpen photos with AI",
+      "online photo sharpener",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this AI photo sharpener free?",
+        answer:
+          "Yes. Upload, sharpen, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. The photo sharpener runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when edges need a heavier pass. Changing the strength re-runs sharpening automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After sharpening, drag the preview slider to compare the original with the AI-sharpened photo.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "fix-blurry-screenshot",
+    href: "/fix-blurry-screenshot",
+    keyword: "fix blurry screenshot",
+    title: "Fix Blurry Screenshot Online Free",
+    h1: "Fix Blurry Screenshot",
+    shortName: "Fix Screenshot",
+    description:
+      "Fix a blurry screenshot online — sharpen mushy text and UI with light, medium, or strong recovery. Free, private, and local in your browser.",
+    keywords: [
+      "fix blurry screenshot",
+      "fix blurry screenshot online",
+      "fix blurry screenshot free",
+      "sharpen screenshot",
+      "unblur screenshot",
+      "clear blurry screen capture",
+      "make screenshot sharper",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this fix blurry screenshot tool free?",
+        answer:
+          "Yes. Upload a capture, sharpen it, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my screenshots uploaded to a server?",
+        answer:
+          "No. Screenshot sharpening runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for compressed captures. Use Light if type is only slightly soft, or Strong when UI edges look mushy. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Heavily scaled or extremely compressed screenshots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After the fix, drag the preview slider to compare the original capture with the sharper screenshot.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in docs, tickets, slides, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "unblur-old-photos",
+    href: "/unblur-old-photos",
+    keyword: "unblur old photos",
+    title: "Unblur Old Photos Online Free",
+    h1: "Unblur Old Photos",
+    shortName: "Unblur Old",
+    description:
+      "Unblur old photos online — refresh archived shots with light, medium, or strong clarity. Free, private, and local in your browser.",
+    keywords: [
+      "unblur old photos",
+      "unblur old photos online",
+      "unblur old photos free",
+      "sharpen old photographs",
+      "restore blurry old pictures",
+      "fix faded digital photos",
+      "unblur archived photos",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this unblur old photos tool free?",
+        answer:
+          "Yes. Upload an archive shot, unblur it, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my photos uploaded to a server?",
+        answer:
+          "No. Unblurring old photos runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most re-saved JPEGs. Use Light for slight softness, or Strong when edges have faded across copies. Changing the strength re-runs unblur automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After unblurring, drag the preview slider to compare the original archive file with the refreshed photo.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in albums, prints, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "fix-motion-blur-photo",
+    href: "/fix-motion-blur-photo",
+    keyword: "fix motion blur photo",
+    title: "Fix Motion Blur Photo Online Free",
+    h1: "Fix Motion Blur Photo",
+    shortName: "Motion Blur",
+    description:
+      "Fix motion blur in a photo online — recover edges from mild camera shake with light, medium, or strong pass. Free, private, and local in your browser.",
+    keywords: [
+      "fix motion blur photo",
+      "fix motion blur photo online",
+      "fix motion blur photo free",
+      "remove motion blur",
+      "correct camera shake photo",
+      "fix shaky photo",
+      "reduce motion blur online",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this fix motion blur photo tool free?",
+        answer:
+          "Yes. Upload, reduce motion haze, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Motion-blur recovery runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for mild camera shake. Use Light for slight smear, or Strong when subject movement left heavier haze. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild motion. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After the pass, drag the preview slider to compare the original with the tighter edges.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "make-image-clear-online",
+    href: "/make-image-clear-online",
+    keyword: "make image clear online",
+    title: "Make Image Clear Online Free",
+    h1: "Make Image Clear Online",
+    shortName: "Make Clear",
+    description:
+      "Make an image clear online — restore soft photos with light, medium, or strong clarity recovery. Free, private, and local in your browser.",
+    keywords: [
+      "make image clear online",
+      "make image clear online free",
+      "make a picture clear",
+      "make photo clear",
+      "clear up blurry image",
+      "make blurry image clear",
+      "online image clearer",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this make image clear online tool free?",
+        answer:
+          "Yes. Upload, clarify, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Clarifying runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when the picture needs a heavier recovery. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After clarifying, drag the preview slider to compare the original with the clearer image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "increase-image-clarity",
+    href: "/increase-image-clarity",
+    keyword: "increase image clarity",
+    title: "Increase Image Clarity Online Free",
+    h1: "Increase Image Clarity",
+    shortName: "Image Clarity",
+    description:
+      "Increase image clarity online — sharpen soft or blurry photos with light, medium, or strong recovery. Free, private, and local in your browser.",
+    keywords: [
+      "increase image clarity",
+      "increase image clarity online",
+      "increase image clarity free",
+      "improve image clarity",
+      "boost photo clarity",
+      "enhance picture clarity",
+      "add clarity to image",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this increase image clarity tool free?",
+        answer:
+          "Yes. Upload, raise clarity, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Clarity recovery runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for a subtle lift, or Strong when edges need a heavier recovery. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After the clarity pass, drag the preview slider to compare the original with the sharper image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
+  {
+    slug: "deblur-image-online",
+    href: "/deblur-image-online",
+    keyword: "deblur image online",
+    title: "Deblur Image Online Free",
+    h1: "Deblur Image Online",
+    shortName: "Deblur Image",
+    description:
+      "Deblur an image online — restore edge detail with light, medium, or strong clarity recovery. Free, private, and local in your browser.",
+    keywords: [
+      "deblur image online",
+      "deblur image online free",
+      "deblur photo online",
+      "online deblur tool",
+      "deblur a picture",
+      "image deblurring",
+      "free deblur image",
+    ],
+    parentToolSlug: "unblur-image",
+    parentHref: "/unblur-image",
+    parentName: "Unblur Image — Sharpen Blurry Photos",
+    faq: [
+      {
+        question: "Is this deblur image online tool free?",
+        answer:
+          "Yes. Upload, deblur, preview, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Are my images uploaded to a server?",
+        answer:
+          "No. Deblurring runs entirely in your browser. Your files stay on your device.",
+      },
+      {
+        question: "Which strength should I choose?",
+        answer:
+          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs deblur automatically — compare with the before/after slider.",
+      },
+      {
+        question: "Will this recover extreme motion blur?",
+        answer:
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+      },
+      {
+        question: "Can I compare before and after?",
+        answer:
+          "Yes. After deblurring, drag the preview slider to compare the original with the restored image.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+      },
+    ],
+  },
 ];
 
 export function getSeoLandingBySlug(slug: string): SeoLandingPage | undefined {
