@@ -73,9 +73,10 @@ function maxWorkSide(): number {
   return 512;
 }
 
-function disposeTensor(tensor: { dispose?: () => void } | undefined) {
+function disposeTensor(tensor: unknown) {
+  const disposable = tensor as { dispose?: () => void } | undefined;
   try {
-    tensor?.dispose?.();
+    disposable?.dispose?.();
   } catch {
     // Already released, or this ORT build has no dispose().
   }
