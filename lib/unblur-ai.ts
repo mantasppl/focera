@@ -65,7 +65,20 @@ function isConstrainedClient(): boolean {
 }
 
 function maxWorkSide(): number {
-  return isConstrainedClient() ? 320 : 512;
+  if (isConstrainedClient()) return 288;
+  const memory = Number(
+    (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
+  );
+  if (Number.isFinite(memory) && memory > 0 && memory <= 4) return 384;
+  return 512;
+}
+
+function disposeTensor(tensor: { dispose?: () => void } | undefined) {
+  try {
+    tensor?.dispose?.();
+  } catch {
+    // Already released, or this ORT build has no dispose().
+  }
 }
 
 async function getOrt(): Promise<OrtModule> {
@@ -377,95 +390,130 @@ export async function unblurWithAi(
   const tiles = collectTiles(work.width, work.height);
   const outW = work.width * UNBLUR_SCALE;
   const outH = work.height * UNBLUR_SCALE;
-  const accR = new Float32Array(outW * outH);
-  const accG = new Float32Array(outW * outH);
-  const accB = new Float32Array(outW * outH);
-  const accW = new Float32Array(outW * outH);
+  let accR = new Float32Array(outW * outH);
+  let accG = new Float32Array(outW * outH);
+  let accB = new Float32Array(outW * outH);
+  let accW = new Float32Array(outW * outH);
   const overlapOut = TILE_OVERLAP * UNBLUR_SCALE;
 
-  for (let index = 0; index < tiles.length; index += 1) {
-    throwIfAborted(signal);
-    onProgress?.(
-      tiles.length === 1
-        ? "Enhancing with AI…"
-        : `Enhancing with AI… ${index + 1}/${tiles.length}`,
-    );
-    await yieldToMain(signal);
+  try {
+    for (let index = 0; index < tiles.length; index += 1) {
+      throwIfAborted(signal);
+      onProgress?.(
+        tiles.length === 1
+          ? "Enhancing with AI…"
+          : `Enhancing with AI… ${index + 1}/${tiles.length}`,
+      );
+      await yieldToMain(signal);
 
-    const tile = tiles[index];
-    const tileData = workCtx.getImageData(tile.x, tile.y, tile.w, tile.h);
-    const inputTensor = new ort.Tensor(
-      "float32",
-      rgbaToNchw(tileData.data, tile.w, tile.h),
-      [1, 3, tile.h, tile.w],
-    );
-    const inputName = session.inputNames[0] ?? "input";
-    const outputMap = await session.run({ [inputName]: inputTensor });
-    const outputName = session.outputNames[0];
-    const output =
-      (outputName ? outputMap[outputName] : undefined) ??
-      outputMap.output ??
-      Object.values(outputMap)[0];
-    const raw = output?.data;
-    const floats =
-      raw instanceof Float32Array
-        ? raw
-        : raw
-          ? Float32Array.from(raw as ArrayLike<number>)
-          : null;
-    if (!output || !floats) {
-      throw new Error("Unblur model returned an unexpected result.");
+      const tile = tiles[index];
+      const tileData = workCtx.getImageData(tile.x, tile.y, tile.w, tile.h);
+      const inputTensor = new ort.Tensor(
+        "float32",
+        rgbaToNchw(tileData.data, tile.w, tile.h),
+        [1, 3, tile.h, tile.w],
+      );
+      const inputName = session.inputNames[0] ?? "input";
+      let outputMap: Awaited<ReturnType<UnblurSession["run"]>> | undefined;
+      try {
+        outputMap = await session.run({ [inputName]: inputTensor });
+        throwIfAborted(signal);
+        const outputName = session.outputNames[0];
+        const output =
+          (outputName ? outputMap[outputName] : undefined) ??
+          outputMap.output ??
+          Object.values(outputMap)[0];
+        const raw = output?.data;
+        const floats =
+          raw instanceof Float32Array
+            ? raw
+            : raw
+              ? Float32Array.from(raw as ArrayLike<number>)
+              : null;
+        if (!output || !floats) {
+          throw new Error("Unblur model returned an unexpected result.");
+        }
+
+        const dims = output.dims;
+        const tileOutH =
+          dims && dims.length === 4 ? Number(dims[2]) : tile.h * UNBLUR_SCALE;
+        const tileOutW =
+          dims && dims.length === 4 ? Number(dims[3]) : tile.w * UNBLUR_SCALE;
+
+        accumulateTile(
+          accR,
+          accG,
+          accB,
+          accW,
+          outW,
+          outH,
+          floats,
+          tileOutW,
+          tileOutH,
+          tile.x * UNBLUR_SCALE,
+          tile.y * UNBLUR_SCALE,
+          overlapOut,
+          tile.x === 0,
+          tile.y === 0,
+          tile.x + tile.w >= work.width,
+          tile.y + tile.h >= work.height,
+        );
+      } finally {
+        disposeTensor(inputTensor);
+        if (outputMap) {
+          for (const value of Object.values(outputMap)) {
+            disposeTensor(value);
+          }
+        }
+      }
     }
 
-    const dims = output.dims;
-    const tileOutH =
-      dims && dims.length === 4 ? Number(dims[2]) : tile.h * UNBLUR_SCALE;
-    const tileOutW =
-      dims && dims.length === 4 ? Number(dims[3]) : tile.w * UNBLUR_SCALE;
-
-    accumulateTile(
+    throwIfAborted(signal);
+    onProgress?.("Applying AI result…");
+    const enhancedData = accumulatorsToImageData(
       accR,
       accG,
       accB,
       accW,
       outW,
       outH,
-      floats,
-      tileOutW,
-      tileOutH,
-      tile.x * UNBLUR_SCALE,
-      tile.y * UNBLUR_SCALE,
-      overlapOut,
-      tile.x === 0,
-      tile.y === 0,
-      tile.x + tile.w >= work.width,
-      tile.y + tile.h >= work.height,
     );
+    accR = new Float32Array(0);
+    accG = new Float32Array(0);
+    accB = new Float32Array(0);
+    accW = new Float32Array(0);
+
+    const enhanced = createCanvas(outW, outH);
+    const enhancedCtx = getContext(enhanced);
+    enhancedCtx.putImageData(enhancedData, 0, 0);
+    workCanvas.width = 0;
+    workCanvas.height = 0;
+
+    // 4× AI output is the real detail. Stretching it onto a larger original
+    // (12MP phone photos) allocates a huge canvas and often OOMs the tab
+    // when the before/after preview decodes the PNG.
+    const exportWidth = Math.min(width, outW);
+    const exportHeight = Math.min(height, outH);
+    let exportCanvas = enhanced;
+    if (exportWidth !== outW || exportHeight !== outH) {
+      exportCanvas = createCanvas(exportWidth, exportHeight);
+      const exportCtx = getContext(exportCanvas);
+      exportCtx.imageSmoothingEnabled = true;
+      exportCtx.imageSmoothingQuality = "high";
+      exportCtx.drawImage(enhanced, 0, 0, exportWidth, exportHeight);
+      enhanced.width = 0;
+      enhanced.height = 0;
+    }
+
+    onProgress?.("Exporting PNG…");
+    const blob = await canvasToPngBlob(exportCanvas);
+    exportCanvas.width = 0;
+    exportCanvas.height = 0;
+
+    return { blob, width: exportWidth, height: exportHeight };
+  } catch (error) {
+    workCanvas.width = 0;
+    workCanvas.height = 0;
+    throw error;
   }
-
-  onProgress?.("Applying AI result…");
-  const enhanced = createCanvas(outW, outH);
-  const enhancedCtx = getContext(enhanced);
-  enhancedCtx.putImageData(
-    accumulatorsToImageData(accR, accG, accB, accW, outW, outH),
-    0,
-    0,
-  );
-  const result = createCanvas(width, height);
-  const resultCtx = getContext(result);
-  resultCtx.imageSmoothingEnabled = true;
-  resultCtx.imageSmoothingQuality = "high";
-  resultCtx.drawImage(enhanced, 0, 0, width, height);
-
-  onProgress?.("Exporting PNG…");
-  const blob = await canvasToPngBlob(result);
-
-  workCanvas.width = 0;
-  workCanvas.height = 0;
-  enhanced.width = 0;
-  enhanced.height = 0;
-  result.width = 0;
-  result.height = 0;
-
-  return { blob, width, height };
 }

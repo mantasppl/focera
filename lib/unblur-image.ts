@@ -265,6 +265,34 @@ function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return canvasToBlob(canvas, "image/png");
 }
 
+const PREVIEW_MAX_EDGE = 1400;
+
+/** Decode a blob/file into a display-sized JPEG so the slider does not OOM. */
+export async function createUnblurPreviewUrl(source: Blob): Promise<string> {
+  const bitmap = await createImageBitmap(source);
+  const longest = Math.max(bitmap.width, bitmap.height);
+  if (longest <= PREVIEW_MAX_EDGE) {
+    bitmap.close();
+    return URL.createObjectURL(source);
+  }
+
+  const scale = PREVIEW_MAX_EDGE / longest;
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const ctx = canvas.getContext("2d", { alpha: false });
+  if (!ctx) {
+    bitmap.close();
+    return URL.createObjectURL(source);
+  }
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  const preview = await canvasToBlob(canvas, "image/jpeg", 0.85);
+  canvas.width = 0;
+  canvas.height = 0;
+  return URL.createObjectURL(preview);
+}
+
 export type UnblurDownloadFormat = "jpg" | "png" | "webp";
 
 export const UNBLUR_DOWNLOAD_FORMATS: Array<{

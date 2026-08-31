@@ -9,6 +9,7 @@ import { useMobilePreviewReveal } from "@/components/tools/useMobilePreviewRevea
 import { formatFileSize } from "@/lib/image";
 import {
   UNBLUR_DOWNLOAD_FORMATS,
+  createUnblurPreviewUrl,
   downloadUnblurredImage,
   unblurImageFile,
   type UnblurDownloadFormat,
@@ -192,9 +193,19 @@ export default function UnblurImage() {
 
       if (controller.signal.aborted) return;
 
-      const url = URL.createObjectURL(unblurred.blob);
+      const [beforePreview, afterPreview] = await Promise.all([
+        createUnblurPreviewUrl(file),
+        createUnblurPreviewUrl(unblurred.blob),
+      ]);
+      if (controller.signal.aborted) {
+        URL.revokeObjectURL(beforePreview);
+        URL.revokeObjectURL(afterPreview);
+        return;
+      }
+
+      setOriginalUrl(beforePreview);
       setResult(unblurred);
-      setResultUrl(url);
+      setResultUrl(afterPreview);
       setProgressText("");
       trackSuccess();
     } catch (err) {
