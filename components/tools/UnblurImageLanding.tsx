@@ -5,7 +5,7 @@ const FEATURES = [
   {
     title: "Sharpen blurry photos",
     description:
-      "Reduce soft focus, camera shake haze, and mild motion blur with a local deblur pass — keep the original resolution.",
+      "Reduce soft focus, camera shake haze, and mild motion blur with a sharpen pass — keep the original resolution.",
   },
   {
     title: "Three strength levels",

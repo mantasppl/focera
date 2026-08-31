@@ -2,81 +2,96 @@ import { downloadBlob, fileBaseName } from "@/lib/image";
 
 export type UnblurStrength = "light" | "medium" | "strong";
 
-type DeconvSettings = {
-  /** Assumed blur size as a fraction of the shortest side. */
+type UnblurPass = {
+  /** Blur radius as a fraction of the shortest side. */
   radiusFraction: number;
   minRadius: number;
   maxRadius: number;
-  /** Van Cittert iterations — more = stronger deblur. */
-  iterations: number;
-  /** Residual gain per iteration (0–1). */
-  gain: number;
-  /** Box-blur repeats used to approximate the PSF (3 ≈ Gaussian). */
-  psfPasses: number;
-};
-
-type SharpenSettings = {
-  /** 3×3 sharpen mix (0 = none, 1 = full high-pass kernel). */
+  /** How strongly the high-pass is added back (sharpen). */
   amount: number;
+  /** Skip tiny diffs so noise is not amplified. */
+  threshold: number;
+  /** Box-blur repeats (1 = box, 2–3 ≈ Gaussian). */
+  blurPasses: number;
 };
 
 export type UnblurPreset = {
   strength: UnblurStrength;
   label: string;
   hint: string;
-  deconv: DeconvSettings;
-  sharpen: SharpenSettings;
+  passes: UnblurPass[];
 };
 
 /**
- * Deconvolution radius scales with image size so a 12MP photo is not
- * sharpened by 1–2px (invisible in the preview). Van Cittert actually
- * undoes blur; a tight unsharp pass then restores edge bite.
+ * Classic unsharp mask: original + amount × (original − blur).
+ * That sharpens edges. Iterative deconvolution is not used — it smears
+ * photos and boosts noise when the blur kernel is unknown.
  */
 export const UNBLUR_PRESETS: UnblurPreset[] = [
   {
     strength: "light",
     label: "Light",
     hint: "Soft haze",
-    deconv: {
-      radiusFraction: 0.005,
-      minRadius: 2,
-      maxRadius: 9,
-      iterations: 7,
-      gain: 0.68,
-      psfPasses: 3,
-    },
-    sharpen: { amount: 0.45 },
+    passes: [
+      {
+        radiusFraction: 0.0025,
+        minRadius: 1,
+        maxRadius: 3,
+        amount: 1.2,
+        threshold: 3,
+        blurPasses: 1,
+      },
+    ],
   },
   {
     strength: "medium",
     label: "Medium",
     hint: "Everyday blur",
-    deconv: {
-      radiusFraction: 0.008,
-      minRadius: 3,
-      maxRadius: 14,
-      iterations: 12,
-      gain: 0.84,
-      psfPasses: 3,
-    },
-    sharpen: { amount: 0.7 },
+    passes: [
+      {
+        radiusFraction: 0.0045,
+        minRadius: 1,
+        maxRadius: 5,
+        amount: 0.75,
+        threshold: 4,
+        blurPasses: 2,
+      },
+      {
+        radiusFraction: 0.002,
+        minRadius: 1,
+        maxRadius: 2,
+        amount: 1.4,
+        threshold: 2,
+        blurPasses: 1,
+      },
+    ],
   },
   {
     strength: "strong",
     label: "Strong",
     hint: "Heavy blur",
-    deconv: {
-      radiusFraction: 0.011,
-      minRadius: 4,
-      maxRadius: 20,
-      iterations: 16,
-      gain: 0.92,
-      psfPasses: 3,
-    },
-    sharpen: { amount: 0.9 },
+    passes: [
+      {
+        radiusFraction: 0.006,
+        minRadius: 2,
+        maxRadius: 7,
+        amount: 0.9,
+        threshold: 3,
+        blurPasses: 2,
+      },
+      {
+        radiusFraction: 0.0025,
+        minRadius: 1,
+        maxRadius: 3,
+        amount: 1.65,
+        threshold: 1,
+        blurPasses: 1,
+      },
+    ],
   },
 ];
+
+const HALO_LIMIT = 42;
 
 export type UnblurImageResult = {
   blob: Blob;
@@ -144,16 +159,13 @@ function getPreset(strength: UnblurStrength): UnblurPreset {
   );
 }
 
-function scaledRadius(
-  width: number,
-  height: number,
-  fraction: number,
-  minRadius: number,
-  maxRadius: number,
-): number {
+function passRadius(width: number, height: number, pass: UnblurPass): number {
   const minSide = Math.min(width, height);
   return Math.round(
-    Math.min(maxRadius, Math.max(minRadius, minSide * fraction)),
+    Math.min(
+      pass.maxRadius,
+      Math.max(pass.minRadius, minSide * pass.radiusFraction),
+    ),
   );
 }
 
@@ -261,69 +273,35 @@ function blurImage(
   }
 }
 
-/**
- * Van Cittert iteration: estimate += gain × (observed − blur(estimate)).
- * Repeating this with a PSF similar to the blur actually tightens edges.
- */
-function vanCittertStep(
-  observed: Uint8ClampedArray,
-  estimate: Uint8ClampedArray,
+/** Unsharp mask: original + amount × (original − blurred). */
+function applyUnsharpMask(
+  pixels: Uint8ClampedArray,
+  copy: Uint8ClampedArray,
   blurred: Uint8ClampedArray,
   scratch: Uint8ClampedArray,
   temp: Float32Array,
   width: number,
   height: number,
-  radius: number,
-  gain: number,
-  psfPasses: number,
-) {
-  blurImage(
-    estimate,
-    blurred,
-    scratch,
-    width,
-    height,
-    radius,
-    psfPasses,
-    temp,
-  );
-
-  for (let i = 0; i < estimate.length; i += 4) {
-    for (let c = 0; c < 3; c += 1) {
-      const next = estimate[i + c] + gain * (observed[i + c] - blurred[i + c]);
-      estimate[i + c] = Math.min(255, Math.max(0, Math.round(next)));
-    }
-  }
-}
-
-/** 3×3 sharpen: center × (1+4a) − a × (N+S+E+W). */
-function applySharpenKernel(
-  pixels: Uint8ClampedArray,
-  copy: Uint8ClampedArray,
-  width: number,
-  height: number,
   amount: number,
+  radius: number,
+  threshold: number,
+  blurPasses: number,
 ) {
-  if (amount <= 0) return;
   copy.set(pixels);
+  blurImage(copy, blurred, scratch, width, height, radius, blurPasses, temp);
 
-  for (let y = 0; y < height; y += 1) {
-    const yUp = Math.max(0, y - 1);
-    const yDown = Math.min(height - 1, y + 1);
-    for (let x = 0; x < width; x += 1) {
-      const xLeft = Math.max(0, x - 1);
-      const xRight = Math.min(width - 1, x + 1);
-      const i = (y * width + x) * 4;
-      for (let c = 0; c < 3; c += 1) {
-        const center = copy[i + c];
-        const up = copy[(yUp * width + x) * 4 + c];
-        const down = copy[(yDown * width + x) * 4 + c];
-        const left = copy[(y * width + xLeft) * 4 + c];
-        const right = copy[(y * width + xRight) * 4 + c];
-        const next = center * (1 + 4 * amount) - amount * (up + down + left + right);
-        pixels[i + c] = Math.min(255, Math.max(0, Math.round(next)));
+  for (let i = 0; i < pixels.length; i += 4) {
+    for (let c = 0; c < 3; c += 1) {
+      const diff = copy[i + c] - blurred[i + c];
+      if (Math.abs(diff) > threshold) {
+        const delta = Math.max(-HALO_LIMIT, Math.min(HALO_LIMIT, diff * amount));
+        pixels[i + c] = Math.min(
+          255,
+          Math.max(0, Math.round(copy[i + c] + delta)),
+        );
       }
     }
+    pixels[i + 3] = copy[i + 3];
   }
 }
 
@@ -382,53 +360,35 @@ export async function unblurImageFile(
 
   const imageData = ctx.getImageData(0, 0, width, height);
   const pixels = imageData.data;
-  const observed = new Uint8ClampedArray(pixels);
+  const copy = new Uint8ClampedArray(pixels.length);
   const blurred = new Uint8ClampedArray(pixels.length);
   const scratch = new Uint8ClampedArray(pixels.length);
   const temp = new Float32Array(width * height * 3);
 
-  const deconvRadius = scaledRadius(
-    width,
-    height,
-    preset.deconv.radiusFraction,
-    preset.deconv.minRadius,
-    preset.deconv.maxRadius,
-  );
-
-  for (let step = 0; step < preset.deconv.iterations; step += 1) {
+  for (let index = 0; index < preset.passes.length; index += 1) {
     throwIfAborted(signal);
-    if (step === 0 || step % 3 === 0) {
-      onProgress?.(
-        `Deblurring (${preset.label.toLowerCase()}) ${step + 1}/${preset.deconv.iterations}…`,
-      );
-      await yieldToMain(signal);
-    }
+    onProgress?.(
+      index === 0
+        ? `Sharpening (${preset.label.toLowerCase()})…`
+        : "Refining edges…",
+    );
+    await yieldToMain(signal);
 
-    vanCittertStep(
-      observed,
+    const pass = preset.passes[index];
+    applyUnsharpMask(
       pixels,
+      copy,
       blurred,
       scratch,
       temp,
       width,
       height,
-      deconvRadius,
-      preset.deconv.gain,
-      preset.deconv.psfPasses,
+      pass.amount,
+      passRadius(width, height, pass),
+      pass.threshold,
+      pass.blurPasses,
     );
   }
-
-  throwIfAborted(signal);
-  onProgress?.("Refining edges…");
-  await yieldToMain(signal);
-
-  applySharpenKernel(
-    pixels,
-    observed,
-    width,
-    height,
-    preset.sharpen.amount,
-  );
 
   ctx.putImageData(imageData, 0, 0);
 
