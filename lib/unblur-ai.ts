@@ -9,13 +9,7 @@ export const UNBLUR_FIRST_RUN_HINT =
 
 const MODEL_READY_KEY = "focera-unblur-model-ready";
 const TILE_SIZE = 128;
-const TILE_OVERLAP = 8;
-
-const BLEND: Record<"light" | "medium" | "strong", number> = {
-  light: 0.48,
-  medium: 0.78,
-  strong: 1,
-};
+const TILE_OVERLAP = 24;
 
 type OrtModule = {
   env?: {
@@ -233,36 +227,24 @@ function rgbaToNchw(data: Uint8ClampedArray, width: number, height: number) {
   return tensor;
 }
 
-function nchwToImageData(
-  tensor: Float32Array,
-  width: number,
-  height: number,
-): ImageData {
-  const image = new ImageData(width, height);
-  const plane = width * height;
-  const { data } = image;
-  for (let i = 0; i < plane; i += 1) {
-    const o = i * 4;
-    data[o] = Math.max(0, Math.min(255, Math.round(tensor[i] * 255)));
-    data[o + 1] = Math.max(
-      0,
-      Math.min(255, Math.round(tensor[plane + i] * 255)),
-    );
-    data[o + 2] = Math.max(
-      0,
-      Math.min(255, Math.round(tensor[plane * 2 + i] * 255)),
-    );
-    data[o + 3] = 255;
+function tileStarts(length: number): number[] {
+  if (length <= TILE_SIZE) return [0];
+  const stride = Math.max(1, TILE_SIZE - TILE_OVERLAP);
+  const starts: number[] = [];
+  for (let pos = 0; pos < length; pos += stride) {
+    const start = Math.min(pos, length - TILE_SIZE);
+    if (starts.length === 0 || starts[starts.length - 1] !== start) {
+      starts.push(start);
+    }
+    if (start + TILE_SIZE >= length) break;
   }
-  return image;
+  return starts;
 }
 
 function collectTiles(width: number, height: number) {
-  const stride = TILE_SIZE - TILE_OVERLAP;
   const tiles: Array<{ x: number; y: number; w: number; h: number }> = [];
-
-  for (let y = 0; y < height; y += stride) {
-    for (let x = 0; x < width; x += stride) {
+  for (const y of tileStarts(height)) {
+    for (const x of tileStarts(width)) {
       tiles.push({
         x,
         y,
@@ -271,8 +253,84 @@ function collectTiles(width: number, height: number) {
       });
     }
   }
-
   return tiles;
+}
+
+function edgeFeather(
+  local: number,
+  size: number,
+  overlap: number,
+  atLowEdge: boolean,
+  atHighEdge: boolean,
+): number {
+  let weight = 1;
+  if (!atLowEdge && overlap > 0 && local < overlap) {
+    weight = (local + 0.5) / overlap;
+  }
+  if (!atHighEdge && overlap > 0 && local > size - overlap - 1) {
+    weight = Math.min(weight, (size - local - 0.5) / overlap);
+  }
+  return Math.max(0, Math.min(1, weight));
+}
+
+function accumulateTile(
+  accR: Float32Array,
+  accG: Float32Array,
+  accB: Float32Array,
+  accW: Float32Array,
+  outW: number,
+  outH: number,
+  floats: Float32Array,
+  tileOutW: number,
+  tileOutH: number,
+  destX: number,
+  destY: number,
+  overlapOut: number,
+  atLeft: boolean,
+  atTop: boolean,
+  atRight: boolean,
+  atBottom: boolean,
+) {
+  const plane = tileOutW * tileOutH;
+  for (let y = 0; y < tileOutH; y += 1) {
+    const gy = destY + y;
+    if (gy < 0 || gy >= outH) continue;
+    const wy = edgeFeather(y, tileOutH, overlapOut, atTop, atBottom);
+    if (wy <= 0) continue;
+    for (let x = 0; x < tileOutW; x += 1) {
+      const gx = destX + x;
+      if (gx < 0 || gx >= outW) continue;
+      const w = wy * edgeFeather(x, tileOutW, overlapOut, atLeft, atRight);
+      if (w <= 0) continue;
+      const i = y * tileOutW + x;
+      const o = gy * outW + gx;
+      accR[o] += floats[i] * w;
+      accG[o] += floats[plane + i] * w;
+      accB[o] += floats[plane * 2 + i] * w;
+      accW[o] += w;
+    }
+  }
+}
+
+function accumulatorsToImageData(
+  accR: Float32Array,
+  accG: Float32Array,
+  accB: Float32Array,
+  accW: Float32Array,
+  width: number,
+  height: number,
+): ImageData {
+  const image = new ImageData(width, height);
+  const { data } = image;
+  for (let i = 0; i < width * height; i += 1) {
+    const w = accW[i] > 1e-6 ? accW[i] : 1;
+    const o = i * 4;
+    data[o] = Math.max(0, Math.min(255, Math.round((accR[i] / w) * 255)));
+    data[o + 1] = Math.max(0, Math.min(255, Math.round((accG[i] / w) * 255)));
+    data[o + 2] = Math.max(0, Math.min(255, Math.round((accB[i] / w) * 255)));
+    data[o + 3] = 255;
+  }
+  return image;
 }
 
 function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
@@ -288,16 +346,15 @@ function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
 }
 
 export type UnblurAiOptions = {
-  strength: "light" | "medium" | "strong";
   onProgress?: (message: string) => void;
   signal?: AbortSignal;
 };
 
 export async function unblurWithAi(
   image: HTMLImageElement,
-  options: UnblurAiOptions,
+  options: UnblurAiOptions = {},
 ): Promise<{ blob: Blob; width: number; height: number }> {
-  const { strength, onProgress, signal } = options;
+  const { onProgress, signal } = options;
   throwIfAborted(signal);
 
   const width = image.naturalWidth || image.width;
@@ -318,11 +375,13 @@ export async function unblurWithAi(
   const ort = await getOrt();
 
   const tiles = collectTiles(work.width, work.height);
-  const enhanced = createCanvas(
-    work.width * UNBLUR_SCALE,
-    work.height * UNBLUR_SCALE,
-  );
-  const enhancedCtx = getContext(enhanced);
+  const outW = work.width * UNBLUR_SCALE;
+  const outH = work.height * UNBLUR_SCALE;
+  const accR = new Float32Array(outW * outH);
+  const accG = new Float32Array(outW * outH);
+  const accB = new Float32Array(outW * outH);
+  const accW = new Float32Array(outW * outH);
+  const overlapOut = TILE_OVERLAP * UNBLUR_SCALE;
 
   for (let index = 0; index < tiles.length; index += 1) {
     throwIfAborted(signal);
@@ -359,49 +418,44 @@ export async function unblurWithAi(
     }
 
     const dims = output.dims;
-    const outH =
+    const tileOutH =
       dims && dims.length === 4 ? Number(dims[2]) : tile.h * UNBLUR_SCALE;
-    const outW =
+    const tileOutW =
       dims && dims.length === 4 ? Number(dims[3]) : tile.w * UNBLUR_SCALE;
-    const tileImage = nchwToImageData(floats, outW, outH);
 
-    const innerL = tile.x === 0 ? 0 : TILE_OVERLAP;
-    const innerT = tile.y === 0 ? 0 : TILE_OVERLAP;
-    const innerR =
-      tile.x + tile.w >= work.width ? tile.w : tile.w - TILE_OVERLAP;
-    const innerB =
-      tile.y + tile.h >= work.height ? tile.h : tile.h - TILE_OVERLAP;
-    const cropX = innerL * UNBLUR_SCALE;
-    const cropY = innerT * UNBLUR_SCALE;
-    const cropW = (innerR - innerL) * UNBLUR_SCALE;
-    const cropH = (innerB - innerT) * UNBLUR_SCALE;
-
-    enhancedCtx.putImageData(
-      tileImage,
+    accumulateTile(
+      accR,
+      accG,
+      accB,
+      accW,
+      outW,
+      outH,
+      floats,
+      tileOutW,
+      tileOutH,
       tile.x * UNBLUR_SCALE,
       tile.y * UNBLUR_SCALE,
-      cropX,
-      cropY,
-      cropW,
-      cropH,
+      overlapOut,
+      tile.x === 0,
+      tile.y === 0,
+      tile.x + tile.w >= work.width,
+      tile.y + tile.h >= work.height,
     );
   }
 
-  onProgress?.("Blending result…");
+  onProgress?.("Applying AI result…");
+  const enhanced = createCanvas(outW, outH);
+  const enhancedCtx = getContext(enhanced);
+  enhancedCtx.putImageData(
+    accumulatorsToImageData(accR, accG, accB, accW, outW, outH),
+    0,
+    0,
+  );
   const result = createCanvas(width, height);
   const resultCtx = getContext(result);
   resultCtx.imageSmoothingEnabled = true;
   resultCtx.imageSmoothingQuality = "high";
-
-  const blend = BLEND[strength];
-  if (blend >= 0.999) {
-    resultCtx.drawImage(enhanced, 0, 0, width, height);
-  } else {
-    resultCtx.drawImage(image, 0, 0, width, height);
-    resultCtx.globalAlpha = blend;
-    resultCtx.drawImage(enhanced, 0, 0, width, height);
-    resultCtx.globalAlpha = 1;
-  }
+  resultCtx.drawImage(enhanced, 0, 0, width, height);
 
   onProgress?.("Exporting PNG…");
   const blob = await canvasToPngBlob(result);

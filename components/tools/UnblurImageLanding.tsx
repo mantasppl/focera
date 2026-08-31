@@ -8,9 +8,9 @@ const FEATURES = [
       "A compact on-device model reconstructs missing detail in soft photos, then keeps the original resolution.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for everyday blur, or Strong when edges need a heavier recovery pass.",
+      "Every upload runs a full-strength on-device AI pass — no Light, Medium, or Strong picker to choose.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and unblurred result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and unblurred result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -51,12 +51,12 @@ export default function UnblurImageLanding() {
             WebP file up to 10 MB. Unblurring starts automatically.
           </li>
           <li>
-            <strong>Pick an unblur strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI restore the photo.</strong> The first visit downloads
+            a 5 MB model. After that, unblur runs automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

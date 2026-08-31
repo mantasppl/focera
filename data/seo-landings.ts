@@ -7137,7 +7137,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "AI Unblur Image",
     shortName: "AI Unblur",
     description:
-      "AI unblur an image online — recover soft or blurry photos with light, medium, or strong clarity. Free, private, and local in your browser.",
+      "AI unblur an image online — recover soft or blurry photos with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "AI unblur image",
       "AI unblur image online",
@@ -7164,17 +7164,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs unblur automatically — compare with the before/after slider.",
+          "You don’t pick a level for AI unblur. Upload starts a full-strength restore automatically — then compare with the before/after slider.",
       },
       {
         question: "Will AI unblur recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7184,7 +7184,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7196,7 +7196,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Image Unblur Tool",
     shortName: "Unblur Tool",
     description:
-      "Unblur an image online with a free image unblur tool — light, medium, or strong sharpening. Private and local in your browser.",
+      "Unblur an image online with a free image unblur tool — a full-strength AI restore. Private and local in your browser.",
     keywords: [
       "image unblur tool",
       "image unblur tool online",
@@ -7223,17 +7223,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs unblur automatically — compare with the before/after slider.",
+          "The image unblur tool does not use Light / Medium / Strong. Every file gets the full on-device restore, then you compare with the slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7243,7 +7243,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7255,7 +7255,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Sharpen Blurry Image",
     shortName: "Sharpen Image",
     description:
-      "Sharpen a blurry image online — restore edge clarity with light, medium, or strong recovery. Free, private, and local in your browser.",
+      "Sharpen a blurry image online — restore edge clarity with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "sharpen blurry image",
       "sharpen blurry image online",
@@ -7282,17 +7282,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs sharpening automatically — compare with the before/after slider.",
+          "You don’t choose a sharpen strength. The tool always runs a full-strength AI restore, then you compare with the before/after slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7302,7 +7302,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7314,7 +7314,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Remove Blur From Image",
     shortName: "Remove Blur",
     description:
-      "Remove blur from an image online — tighten soft focus with light, medium, or strong clarity. Free, private, and local in your browser.",
+      "Remove blur from an image online — tighten soft focus with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "remove blur from image",
       "remove blur from image online",
@@ -7341,17 +7341,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+          "There is no strength picker for blur removal. Upload starts the strongest local AI pass automatically — compare with the slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7361,7 +7361,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7373,7 +7373,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "AI Fix Blurry Photos",
     shortName: "Fix Photos",
     description:
-      "AI fix blurry photos online — recover soft shots with light, medium, or strong sharpening. Free, private, and local in your browser.",
+      "AI fix blurry photos online — recover soft shots with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "AI fix blurry photos",
       "AI fix blurry photos online",
@@ -7400,17 +7400,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs the fix automatically — compare with the before/after slider.",
+          "You don’t pick a fix strength. Each blurry photo gets a full-strength AI restore, then you compare with the before/after slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7420,7 +7420,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7432,7 +7432,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "AI Photo Sharpener",
     shortName: "Photo Sharpener",
     description:
-      "Sharpen photos with an AI photo sharpener online — light, medium, or strong clarity recovery. Free, private, and local in your browser.",
+      "Sharpen photos with an AI photo sharpener online — a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "AI photo sharpener",
       "AI photo sharpener online",
@@ -7459,17 +7459,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when edges need a heavier pass. Changing the strength re-runs sharpening automatically — compare with the before/after slider.",
+          "The AI photo sharpener has no Light / Medium / Strong control. It always applies the full restore, then you compare with the slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7479,7 +7479,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7491,7 +7491,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Fix Blurry Screenshot",
     shortName: "Fix Screenshot",
     description:
-      "Fix a blurry screenshot online — sharpen mushy text and UI with light, medium, or strong recovery. Free, private, and local in your browser.",
+      "Fix a blurry screenshot online — sharpen mushy text and UI with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "fix blurry screenshot",
       "fix blurry screenshot online",
@@ -7518,17 +7518,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for compressed captures. Use Light if type is only slightly soft, or Strong when UI edges look mushy. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+          "Screenshots don’t need a strength choice. The tool runs a full-strength AI restore automatically — compare text and UI with the slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Heavily scaled or extremely compressed screenshots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Heavily scaled or extremely compressed screenshots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7538,7 +7538,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in docs, tickets, slides, and personal projects.",
+          "Yes. Files you download are yours to use in docs, tickets, slides, and personal projects.",
       },
     ],
   },
@@ -7550,7 +7550,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Unblur Old Photos",
     shortName: "Unblur Old",
     description:
-      "Unblur old photos online — refresh archived shots with light, medium, or strong clarity. Free, private, and local in your browser.",
+      "Unblur old photos online — refresh archived shots with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "unblur old photos",
       "unblur old photos online",
@@ -7577,17 +7577,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most re-saved JPEGs. Use Light for slight softness, or Strong when edges have faded across copies. Changing the strength re-runs unblur automatically — compare with the before/after slider.",
+          "Old photos always get the full AI restore. You don’t pick Light, Medium, or Strong — compare the archive file with the slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7597,7 +7597,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in albums, prints, client work, and personal projects.",
+          "Yes. Files you download are yours to use in albums, prints, client work, and personal projects.",
       },
     ],
   },
@@ -7609,7 +7609,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Fix Motion Blur Photo",
     shortName: "Motion Blur",
     description:
-      "Fix motion blur in a photo online — recover edges from mild camera shake with light, medium, or strong pass. Free, private, and local in your browser.",
+      "Fix motion blur in a photo online — recover edges from mild camera shake with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "fix motion blur photo",
       "fix motion blur photo online",
@@ -7636,17 +7636,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for mild camera shake. Use Light for slight smear, or Strong when subject movement left heavier haze. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+          "You don’t pick a motion-blur strength. Upload starts a full-strength AI pass automatically, then compare with the before/after slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild motion. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild motion. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7656,7 +7656,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7668,7 +7668,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Make Image Clear Online",
     shortName: "Make Clear",
     description:
-      "Make an image clear online — restore soft photos with light, medium, or strong clarity recovery. Free, private, and local in your browser.",
+      "Make an image clear online — restore soft photos with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "make image clear online",
       "make image clear online free",
@@ -7695,17 +7695,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when the picture needs a heavier recovery. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+          "Making an image clear always uses the full AI restore. There is no Light / Medium / Strong setting — compare with the slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7715,7 +7715,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7727,7 +7727,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Increase Image Clarity",
     shortName: "Image Clarity",
     description:
-      "Increase image clarity online — sharpen soft or blurry photos with light, medium, or strong recovery. Free, private, and local in your browser.",
+      "Increase image clarity online — sharpen soft or blurry photos with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "increase image clarity",
       "increase image clarity online",
@@ -7754,17 +7754,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for a subtle lift, or Strong when edges need a heavier recovery. Changing the strength re-runs the pass automatically — compare with the before/after slider.",
+          "You don’t choose a clarity level. Every upload runs the strongest on-device AI pass, then you compare with the before/after slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7774,7 +7774,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },
@@ -7786,7 +7786,7 @@ export const seoLandings: SeoLandingPage[] = [
     h1: "Deblur Image Online",
     shortName: "Deblur Image",
     description:
-      "Deblur an image online — restore edge detail with light, medium, or strong clarity recovery. Free, private, and local in your browser.",
+      "Deblur an image online — restore edge detail with a full-strength AI restore. Free, private, and local in your browser.",
     keywords: [
       "deblur image online",
       "deblur image online free",
@@ -7813,17 +7813,17 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs deblur automatically — compare with the before/after slider.",
+          "Deblur has no strength chips. Upload starts a full-strength AI restore automatically — then compare with the before/after slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "It restores edge clarity for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — or pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports a sharpened PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -7833,7 +7833,7 @@ export const seoLandings: SeoLandingPage[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },

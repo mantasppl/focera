@@ -8,9 +8,9 @@ const FEATURES = [
       "Recover edges from light camera shake or subject movement — a sharpen pass at the original resolution, not a miracle restore.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for slight smear, Medium for everyday shake, or Strong when motion haze is heavier.",
+      "Mild camera shake is restored at full AI strength on every upload, without a Light / Medium / Strong picker.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and tightened result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and tightened result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function FixMotionBlurPhotoSeoLanding() {
         </h2>
         <p>
           Fixing motion blur should stay fast and private. Focera keeps
-          upload, strength, compare, and download on one page with no account.
+          upload, compare, and download on one page with no account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -50,12 +50,11 @@ export default function FixMotionBlurPhotoSeoLanding() {
             WebP file up to 10 MB. Recovery starts automatically.
           </li>
           <li>
-            <strong>Pick a recovery strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI recover the motion haze.</strong> The first visit downloads a 5 MB model. After that, the pass runs automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

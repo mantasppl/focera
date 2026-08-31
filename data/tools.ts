@@ -3224,17 +3224,17 @@ export const tools: Tool[] = [
       {
         question: "Which strength should I choose?",
         answer:
-          "Start with Medium for most soft photos. Use Light for mild haze, or Strong when blur is heavier. Changing the strength re-runs unblur automatically — compare with the before/after slider.",
+          "You don’t pick a level. Upload starts a full-strength AI restore automatically — then compare with the before/after slider.",
       },
       {
         question: "Will this recover extreme motion blur?",
         answer:
-          "An on-device AI restore pass reconstructs missing detail for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — try Strong, or pair with Upscale Image for larger exports.",
+          "An on-device AI restore pass reconstructs missing detail for soft focus and mild blur. Severe motion trails or heavily out-of-focus shots may only improve partially — pair with Upscale Image for larger exports.",
       },
       {
         question: "Which image formats are supported?",
         answer:
-          "Upload JPG, PNG, or WebP files up to 10 MB. The tool exports an unblurred PNG at the original resolution.",
+          "Upload JPG, PNG, or WebP files up to 10 MB. After unblurring, download as JPG, PNG, or WebP at the original resolution.",
       },
       {
         question: "Can I compare before and after?",
@@ -3244,7 +3244,7 @@ export const tools: Tool[] = [
       {
         question: "Can I use the results commercially?",
         answer:
-          "Yes. PNGs you download are yours to use in marketing, print, client work, and personal projects.",
+          "Yes. Files you download are yours to use in marketing, print, client work, and personal projects.",
       },
     ],
   },

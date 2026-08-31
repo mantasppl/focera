@@ -8,9 +8,9 @@ const FEATURES = [
       "Increase image clarity with a local sharpen pass that recovers soft edges while keeping the original resolution.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for a subtle lift, Medium for everyday softness, or Strong when edges need a heavier recovery.",
+      "Clarity increase always runs the strongest on-device AI pass, so you never pick a recovery level.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and higher-clarity result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and higher-clarity result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function IncreaseImageClaritySeoLanding() {
         </h2>
         <p>
           Increasing image clarity should stay fast and private. Focera keeps
-          upload, strength, compare, and download on one page with no account.
+          upload, compare, and download on one page with no account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -50,12 +50,11 @@ export default function IncreaseImageClaritySeoLanding() {
             WebP file up to 10 MB. The clarity pass starts automatically.
           </li>
           <li>
-            <strong>Pick a clarity strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI increase the clarity.</strong> The first visit downloads a 5 MB model. After that, the pass runs automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

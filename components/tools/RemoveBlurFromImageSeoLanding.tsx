@@ -8,9 +8,9 @@ const FEATURES = [
       "Reduce soft focus and mild haze so the subject reads cleaner, then export a PNG at the original resolution.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for everyday blur, or Strong when edges need a heavier recovery pass.",
+      "Blur removal always uses the full AI restore — upload once and get the strongest local result.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and de-blurred result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and de-blurred result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function RemoveBlurFromImageSeoLanding() {
         </h2>
         <p>
           Removing blur from an image should stay fast and private. Focera
-          keeps upload, strength, compare, and download on one page with no
+          keeps upload, compare, and download on one page with no
           account.
         </p>
         <ol className="tool-content__steps">
@@ -51,12 +51,11 @@ export default function RemoveBlurFromImageSeoLanding() {
             WebP file up to 10 MB. Blur reduction starts automatically.
           </li>
           <li>
-            <strong>Pick a recovery strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI remove the blur.</strong> The first visit downloads a 5 MB model. After that, the pass runs automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

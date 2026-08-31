@@ -8,9 +8,9 @@ const FEATURES = [
       "Run a local AI pass that lifts soft focus and mild haze so edges read more clearly — without changing the original pixel size.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for everyday blur, or Strong when edges need a heavier recovery pass.",
+      "Every upload runs a full-strength local AI unblur pass — no Light, Medium, or Strong picker.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and AI-unblurred result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and AI-unblurred result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -51,12 +51,11 @@ export default function AiUnblurImageSeoLanding() {
             WebP file up to 10 MB. AI unblur starts automatically.
           </li>
           <li>
-            <strong>Pick a recovery strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI unblur run.</strong> The first visit downloads a 5 MB model. After that, recovery starts automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

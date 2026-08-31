@@ -8,9 +8,9 @@ const FEATURES = [
       "Restore edge contrast on soft photos so subjects, type, and details read more clearly at the original size.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for everyday blur, or Strong when edges need a heavier recovery pass.",
+      "Sharpening uses a full-strength AI restore on every photo, so you do not pick Light, Medium, or Strong.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and sharpened result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and sharpened result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function SharpenBlurryImageSeoLanding() {
         </h2>
         <p>
           Sharpening a blurry image should stay fast and private. Focera keeps
-          upload, strength, compare, and download on one page with no account.
+          upload, compare, and download on one page with no account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -50,12 +50,11 @@ export default function SharpenBlurryImageSeoLanding() {
             WebP file up to 10 MB. Sharpening starts automatically.
           </li>
           <li>
-            <strong>Pick a sharpen strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI sharpen the photo.</strong> The first visit downloads a 5 MB model. After that, sharpening runs automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

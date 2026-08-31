@@ -1,93 +1,35 @@
 import { downloadBlob, fileBaseName } from "@/lib/image";
 import { unblurWithAi } from "@/lib/unblur-ai";
 
-export type UnblurStrength = "light" | "medium" | "strong";
-
 type UnblurPass = {
-  /** Blur radius as a fraction of the shortest side. */
   radiusFraction: number;
   minRadius: number;
   maxRadius: number;
-  /** How strongly the high-pass is added back (sharpen). */
   amount: number;
-  /** Skip tiny diffs so noise is not amplified. */
   threshold: number;
-  /** Box-blur repeats (1 = box, 2–3 ≈ Gaussian). */
   blurPasses: number;
 };
 
-export type UnblurPreset = {
-  strength: UnblurStrength;
-  label: string;
-  hint: string;
-  passes: UnblurPass[];
-};
-
 /**
- * AI restore (Real-ESRGAN compact) first. If the model cannot run, fall back
- * to classic unsharp mask: original + amount × (original − blur).
+ * AI restore first. If the model cannot run, fall back to a strong
+ * unsharp mask: original + amount × (original − blur).
  */
-export const UNBLUR_PRESETS: UnblurPreset[] = [
+const SHARPEN_FALLBACK_PASSES: UnblurPass[] = [
   {
-    strength: "light",
-    label: "Light",
-    hint: "Soft haze",
-    passes: [
-      {
-        radiusFraction: 0.0025,
-        minRadius: 1,
-        maxRadius: 3,
-        amount: 1.2,
-        threshold: 3,
-        blurPasses: 1,
-      },
-    ],
+    radiusFraction: 0.006,
+    minRadius: 2,
+    maxRadius: 7,
+    amount: 0.9,
+    threshold: 3,
+    blurPasses: 2,
   },
   {
-    strength: "medium",
-    label: "Medium",
-    hint: "Everyday blur",
-    passes: [
-      {
-        radiusFraction: 0.0045,
-        minRadius: 1,
-        maxRadius: 5,
-        amount: 0.75,
-        threshold: 4,
-        blurPasses: 2,
-      },
-      {
-        radiusFraction: 0.002,
-        minRadius: 1,
-        maxRadius: 2,
-        amount: 1.4,
-        threshold: 2,
-        blurPasses: 1,
-      },
-    ],
-  },
-  {
-    strength: "strong",
-    label: "Strong",
-    hint: "Heavy blur",
-    passes: [
-      {
-        radiusFraction: 0.006,
-        minRadius: 2,
-        maxRadius: 7,
-        amount: 0.9,
-        threshold: 3,
-        blurPasses: 2,
-      },
-      {
-        radiusFraction: 0.0025,
-        minRadius: 1,
-        maxRadius: 3,
-        amount: 1.65,
-        threshold: 1,
-        blurPasses: 1,
-      },
-    ],
+    radiusFraction: 0.0025,
+    minRadius: 1,
+    maxRadius: 3,
+    amount: 1.65,
+    threshold: 1,
+    blurPasses: 1,
   },
 ];
 
@@ -99,12 +41,10 @@ export type UnblurImageResult = {
   blob: Blob;
   width: number;
   height: number;
-  strength: UnblurStrength;
   engine: UnblurEngine;
 };
 
 export type UnblurImageOptions = {
-  strength?: UnblurStrength;
   onProgress?: (message: string) => void;
   signal?: AbortSignal;
 };
@@ -153,13 +93,6 @@ function getContext(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
     throw new Error("Canvas is not supported in this browser.");
   }
   return ctx;
-}
-
-function getPreset(strength: UnblurStrength): UnblurPreset {
-  return (
-    UNBLUR_PRESETS.find((preset) => preset.strength === strength) ??
-    UNBLUR_PRESETS[1]
-  );
 }
 
 function passRadius(width: number, height: number, pass: UnblurPass): number {
@@ -308,38 +241,97 @@ function applyUnsharpMask(
   }
 }
 
-function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  mimeType: string,
+  quality?: number,
+): Promise<Blob> {
   return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        reject(new Error("Could not export the unblurred image."));
-        return;
-      }
-      resolve(blob);
-    }, "image/png");
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          reject(new Error("Could not export the unblurred image."));
+          return;
+        }
+        resolve(blob);
+      },
+      mimeType,
+      quality,
+    );
   });
 }
 
-export function strengthLabel(strength: UnblurStrength): string {
-  return getPreset(strength).label.toLowerCase();
+function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+  return canvasToBlob(canvas, "image/png");
 }
 
-export function downloadUnblurredImage(
+export type UnblurDownloadFormat = "jpg" | "png" | "webp";
+
+export const UNBLUR_DOWNLOAD_FORMATS: Array<{
+  value: UnblurDownloadFormat;
+  label: string;
+  hint: string;
+}> = [
+  {
+    value: "jpg",
+    label: "JPG",
+    hint: "Smaller file size, great for photos",
+  },
+  {
+    value: "png",
+    label: "PNG",
+    hint: "Lossless quality, supports transparency",
+  },
+  {
+    value: "webp",
+    label: "WebP",
+    hint: "Modern format, best compression",
+  },
+];
+
+async function encodeUnblurDownload(
+  source: Blob,
+  format: UnblurDownloadFormat,
+): Promise<Blob> {
+  if (format === "png") return source;
+
+  const bitmap = await createImageBitmap(source);
+  const canvas = document.createElement("canvas");
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const ctx = canvas.getContext("2d", { alpha: format !== "jpg" });
+  if (!ctx) {
+    bitmap.close();
+    throw new Error("Canvas is not supported in this browser.");
+  }
+
+  if (format === "jpg") {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  ctx.drawImage(bitmap, 0, 0);
+  bitmap.close();
+
+  const mimeType = format === "jpg" ? "image/jpeg" : "image/webp";
+  const blob = await canvasToBlob(canvas, mimeType, 0.92);
+  canvas.width = 0;
+  canvas.height = 0;
+  return blob;
+}
+
+export async function downloadUnblurredImage(
   blob: Blob,
   sourceFile: File,
-  strength: UnblurStrength,
+  format: UnblurDownloadFormat = "png",
 ) {
-  downloadBlob(
-    blob,
-    `${fileBaseName(sourceFile)}-unblurred-${strength}.png`,
-  );
+  const encoded = await encodeUnblurDownload(blob, format);
+  downloadBlob(encoded, `${fileBaseName(sourceFile)}-unblurred.${format}`);
 }
 
 export async function unblurImageFile(
   file: File,
   options: UnblurImageOptions = {},
 ): Promise<UnblurImageResult> {
-  const strength = options.strength ?? "medium";
   const { onProgress, signal } = options;
 
   throwIfAborted(signal);
@@ -349,13 +341,11 @@ export async function unblurImageFile(
 
   try {
     const enhanced = await unblurWithAi(image, {
-      strength,
       onProgress,
       signal,
     });
     return {
       ...enhanced,
-      strength,
       engine: "ai",
     };
   } catch (error) {
@@ -363,17 +353,15 @@ export async function unblurImageFile(
       throw error;
     }
     onProgress?.("AI unavailable — sharpening instead…");
-    return unblurWithSharpen(image, strength, onProgress, signal);
+    return unblurWithSharpen(image, onProgress, signal);
   }
 }
 
 async function unblurWithSharpen(
   image: HTMLImageElement,
-  strength: UnblurStrength,
   onProgress?: (message: string) => void,
   signal?: AbortSignal,
 ): Promise<UnblurImageResult> {
-  const preset = getPreset(strength);
   const width = image.naturalWidth || image.width;
   const height = image.naturalHeight || image.height;
 
@@ -394,16 +382,12 @@ async function unblurWithSharpen(
   const scratch = new Uint8ClampedArray(pixels.length);
   const temp = new Float32Array(width * height * 3);
 
-  for (let index = 0; index < preset.passes.length; index += 1) {
+  for (let index = 0; index < SHARPEN_FALLBACK_PASSES.length; index += 1) {
     throwIfAborted(signal);
-    onProgress?.(
-      index === 0
-        ? `Sharpening (${preset.label.toLowerCase()})…`
-        : "Refining edges…",
-    );
+    onProgress?.(index === 0 ? "Sharpening…" : "Refining edges…");
     await yieldToMain(signal);
 
-    const pass = preset.passes[index];
+    const pass = SHARPEN_FALLBACK_PASSES[index];
     applyUnsharpMask(
       pixels,
       copy,
@@ -431,7 +415,6 @@ async function unblurWithSharpen(
     blob,
     width,
     height,
-    strength,
     engine: "sharpen",
   };
 }

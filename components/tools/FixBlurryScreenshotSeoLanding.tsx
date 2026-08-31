@@ -8,9 +8,9 @@ const FEATURES = [
       "Tighten blurry screenshots so UI edges and type read more clearly after compression, resize, or a soft screen grab.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for slight softness, Medium for typical captures, or Strong when interface lines look smeared.",
+      "Screenshots get a full-strength AI restore so mushy UI and text tighten up without picking a level.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original capture and the sharper result with a slider, then download a PNG for docs or tickets.",
+      "Compare the original capture and the sharper result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function FixBlurryScreenshotSeoLanding() {
         </h2>
         <p>
           Fixing a blurry screenshot should stay fast and private. Focera
-          keeps upload, strength, compare, and download on one page with no
+          keeps upload, compare, and download on one page with no
           account.
         </p>
         <ol className="tool-content__steps">
@@ -51,12 +51,11 @@ export default function FixBlurryScreenshotSeoLanding() {
             or WebP file up to 10 MB. Sharpening starts automatically.
           </li>
           <li>
-            <strong>Pick a recovery strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI restore the screenshot.</strong> The first visit downloads a 5 MB model. After that, recovery runs automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

@@ -8,9 +8,9 @@ const FEATURES = [
       "A focused image unblur tool: drop a file, recover edges, and export a PNG at the same resolution you started with.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for everyday blur, or Strong when edges need a heavier recovery pass.",
+      "Drop a file and the image unblur tool applies the strongest on-device restore it can — no strength chips.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and unblurred result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and unblurred result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function ImageUnblurToolSeoLanding() {
         </h2>
         <p>
           An image unblur tool should stay simple. Focera keeps upload,
-          strength, compare, and download on one page with no account.
+          compare, and download on one page with no account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -50,12 +50,11 @@ export default function ImageUnblurToolSeoLanding() {
             WebP file up to 10 MB. Unblurring starts automatically.
           </li>
           <li>
-            <strong>Pick an unblur strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let the unblur pass finish.</strong> The first visit downloads a 5 MB model. Later files unblur automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

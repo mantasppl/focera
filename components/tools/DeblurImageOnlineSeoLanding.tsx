@@ -8,9 +8,9 @@ const FEATURES = [
       "Run an online deblur pass that restores edge detail on soft photos and exports a PNG at the original resolution.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for everyday blur, or Strong when edges need a heavier recovery pass.",
+      "Deblur always applies a full-strength AI restore in your browser — no Light, Medium, or Strong setting.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and deblurred result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and deblurred result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function DeblurImageOnlineSeoLanding() {
         </h2>
         <p>
           Deblurring an image online should stay fast and private. Focera
-          keeps upload, strength, compare, and download on one page with no
+          keeps upload, compare, and download on one page with no
           account.
         </p>
         <ol className="tool-content__steps">
@@ -51,12 +51,11 @@ export default function DeblurImageOnlineSeoLanding() {
             WebP file up to 10 MB. Deblur starts automatically.
           </li>
           <li>
-            <strong>Pick a deblur strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI deblur the image.</strong> The first visit downloads a 5 MB model. After that, deblur runs automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

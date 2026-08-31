@@ -8,9 +8,9 @@ const FEATURES = [
       "Unblur old digital copies that went soft after scans, reprints, or years of JPEG re-saves — keep the original size.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for typical archive softness, or Strong when edges have faded across copies.",
+      "Archived photos always get the strongest local AI restore — no Light, Medium, or Strong choice.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original archive file and the refreshed photo with a slider, then download a PNG for albums or prints.",
+      "Compare the original archive file and the refreshed photo with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function UnblurOldPhotosSeoLanding() {
         </h2>
         <p>
           Unblurring old photos should stay fast and private. Focera keeps
-          upload, strength, compare, and download on one page with no account.
+          upload, compare, and download on one page with no account.
         </p>
         <ol className="tool-content__steps">
           <li>
@@ -50,12 +50,11 @@ export default function UnblurOldPhotosSeoLanding() {
             WebP file up to 10 MB. Unblurring starts automatically.
           </li>
           <li>
-            <strong>Pick an unblur strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI refresh the photo.</strong> The first visit downloads a 5 MB model. Later album scans unblur automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

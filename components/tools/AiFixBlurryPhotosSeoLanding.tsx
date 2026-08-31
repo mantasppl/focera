@@ -8,9 +8,9 @@ const FEATURES = [
       "Fix soft or slightly smeared shots with a local AI pass that restores edges while keeping the original dimensions.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for everyday blur, or Strong when edges need a heavier recovery pass.",
+      "Each blurry photo gets a full-strength AI fix in the browser, with no Light / Medium / Strong control.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and repaired photo with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and repaired photo with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -51,12 +51,11 @@ export default function AiFixBlurryPhotosSeoLanding() {
             WebP file up to 10 MB. The AI fix starts automatically.
           </li>
           <li>
-            <strong>Pick a fix strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let the AI fix run.</strong> The first visit downloads a 5 MB model. Later photos process automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>

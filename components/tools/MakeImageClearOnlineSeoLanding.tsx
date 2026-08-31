@@ -8,9 +8,9 @@ const FEATURES = [
       "Restore edge detail on blurry or hazy photos so the picture reads more clearly at the same pixel size.",
   },
   {
-    title: "Three strength levels",
+    title: "Automatic best result",
     description:
-      "Pick Light for gentle haze, Medium for everyday blur, or Strong when the image needs a heavier recovery pass.",
+      "Making an image clear always uses the full-strength AI restore — upload and wait for the best local pass.",
   },
   {
     title: "100% browser-based",
@@ -20,7 +20,7 @@ const FEATURES = [
   {
     title: "Before & after preview",
     description:
-      "Compare the original and clearer result with a slider, then download a PNG ready for sharing or editing.",
+      "Compare the original and clearer result with a slider, then download as JPG, PNG, or WebP.",
   },
 ];
 
@@ -42,7 +42,7 @@ export default function MakeImageClearOnlineSeoLanding() {
         </h2>
         <p>
           Making an image clear online should stay fast and private. Focera
-          keeps upload, strength, compare, and download on one page with no
+          keeps upload, compare, and download on one page with no
           account.
         </p>
         <ol className="tool-content__steps">
@@ -51,12 +51,11 @@ export default function MakeImageClearOnlineSeoLanding() {
             WebP file up to 10 MB. Clarifying starts automatically.
           </li>
           <li>
-            <strong>Pick a clarity strength.</strong> Medium is the default.
-            Switch to Light or Strong anytime — the preview updates on its own.
+            <strong>Let AI clear the photo.</strong> The first visit downloads a 5 MB model. After that, clarity recovery runs automatically at full strength.
           </li>
           <li>
             <strong>Compare, then download.</strong> Use the before/after slider,
-            then click Download PNG when you are ready.
+            then click Download and choose JPG, PNG, or WebP.
           </li>
         </ol>
         <p>
