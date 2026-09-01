@@ -1,5 +1,5 @@
 import { downloadBlob, fileBaseName } from "@/lib/image";
-import { canUseUnblurAi, unblurWithAi } from "@/lib/unblur-ai";
+import { isConstrainedClient, unblurWithAi } from "@/lib/unblur-ai";
 
 type UnblurPass = {
   radiusFraction: number;
@@ -244,22 +244,24 @@ function canvasToBlob(
   });
 }
 
-function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
-  return canvasToBlob(canvas, "image/png");
-}
+const PREVIEW_MAX_EDGE_DESKTOP = 1024;
+const PREVIEW_MAX_EDGE_MOBILE = 720;
 
-const PREVIEW_MAX_EDGE = 1024;
+function previewMaxEdge(): number {
+  return isConstrainedClient() ? PREVIEW_MAX_EDGE_MOBILE : PREVIEW_MAX_EDGE_DESKTOP;
+}
 
 /** Decode a blob/file into a display-sized JPEG so the slider does not OOM. */
 export async function createUnblurPreviewUrl(source: Blob): Promise<string> {
+  const maxEdge = previewMaxEdge();
   const bitmap = await createImageBitmap(source);
   const longest = Math.max(bitmap.width, bitmap.height);
-  if (longest <= PREVIEW_MAX_EDGE) {
+  if (longest <= maxEdge) {
     bitmap.close();
     return URL.createObjectURL(source);
   }
 
-  const scale = PREVIEW_MAX_EDGE / longest;
+  const scale = maxEdge / longest;
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.round(bitmap.width * scale));
   canvas.height = Math.max(1, Math.round(bitmap.height * scale));
@@ -304,7 +306,8 @@ async function encodeUnblurDownload(
   source: Blob,
   format: UnblurDownloadFormat,
 ): Promise<Blob> {
-  if (format === "png") return source;
+  if (format === "jpg" && source.type === "image/jpeg") return source;
+  if (format === "png" && source.type === "image/png") return source;
 
   const bitmap = await createImageBitmap(source);
   const canvas = document.createElement("canvas");
@@ -351,11 +354,6 @@ export async function unblurImageFile(
   throwIfAborted(signal);
 
   try {
-    if (!canUseUnblurAi()) {
-      onProgress?.("Enhancing photo…");
-      return await unblurWithSharpen(bitmap, onProgress, signal);
-    }
-
     const enhanced = await unblurWithAi(bitmap, {
       onProgress,
       signal,
@@ -368,7 +366,7 @@ export async function unblurImageFile(
     if (error instanceof DOMException && error.name === "AbortError") {
       throw error;
     }
-    onProgress?.("Enhancing photo…");
+    onProgress?.("AI unavailable — sharpening instead…");
     const fallback = await createImageBitmap(file);
     try {
       return await unblurWithSharpen(fallback, onProgress, signal);
@@ -448,8 +446,8 @@ async function unblurWithSharpen(
   ctx.putImageData(imageData, 0, 0);
 
   throwIfAborted(signal);
-  onProgress?.("Exporting PNG…");
-  const blob = await canvasToPngBlob(canvas);
+  onProgress?.("Exporting…");
+  const blob = await canvasToBlob(canvas, "image/jpeg", 0.9);
   canvas.width = 0;
   canvas.height = 0;
 

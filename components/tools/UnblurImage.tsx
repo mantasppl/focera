@@ -157,7 +157,7 @@ export default function UnblurImage() {
     setError("");
     setProgressText("");
     setSourceFile(file);
-    setOriginalUrl(URL.createObjectURL(file));
+    setOriginalUrl("");
     setFormatOpen(false);
     void runUnblur(file);
   }
@@ -186,6 +186,13 @@ export default function UnblurImage() {
     clearResult();
 
     try {
+      const beforePreview = await createUnblurPreviewUrl(file);
+      if (controller.signal.aborted) {
+        URL.revokeObjectURL(beforePreview);
+        return;
+      }
+      setOriginalUrl(beforePreview);
+
       const unblurred = await unblurImageFile(file, {
         signal: controller.signal,
         onProgress: setProgressText,
@@ -193,17 +200,12 @@ export default function UnblurImage() {
 
       if (controller.signal.aborted) return;
 
-      const [beforePreview, afterPreview] = await Promise.all([
-        createUnblurPreviewUrl(file),
-        createUnblurPreviewUrl(unblurred.blob),
-      ]);
+      const afterPreview = await createUnblurPreviewUrl(unblurred.blob);
       if (controller.signal.aborted) {
-        URL.revokeObjectURL(beforePreview);
         URL.revokeObjectURL(afterPreview);
         return;
       }
 
-      setOriginalUrl(beforePreview);
       setResult(unblurred);
       setResultUrl(afterPreview);
       setProgressText("");
@@ -341,7 +343,9 @@ export default function UnblurImage() {
           {loading
             ? progressText || "Unblurring your photo…"
             : hasResult
-              ? "Download when you are ready · processed locally in your browser"
+              ? result?.engine === "sharpen"
+                ? "AI model unavailable — used a local sharpen pass · processed locally"
+                : "Download when you are ready · AI ran locally in your browser"
               : hasPreparedUnblurModel()
                 ? "AI unblur in your browser · files never upload to Focera"
                 : UNBLUR_FIRST_RUN_HINT}

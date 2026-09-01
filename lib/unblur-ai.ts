@@ -8,8 +8,11 @@ export const UNBLUR_FIRST_RUN_HINT =
   "The first run downloads a 5 MB AI model, then caches it on this device.";
 
 const MODEL_READY_KEY = "focera-unblur-model-ready";
-const TILE_SIZE = 96;
-const TILE_OVERLAP = 16;
+
+function tileConfig(): { size: number; overlap: number } {
+  if (isConstrainedClient()) return { size: 64, overlap: 12 };
+  return { size: 96, overlap: 16 };
+}
 
 type OrtModule = {
   env?: {
@@ -64,12 +67,9 @@ export function isConstrainedClient(): boolean {
   return false;
 }
 
-/** Phones cannot keep the Real-ESRGAN WASM heap without the tab being killed. */
-export function canUseUnblurAi(): boolean {
-  return !isConstrainedClient();
-}
-
+/** Phones use a smaller work size to keep WASM + tile buffers under the tab limit. */
 function maxWorkSide(): number {
+  if (isConstrainedClient()) return 168;
   const memory = Number(
     (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
   );
@@ -77,10 +77,28 @@ function maxWorkSide(): number {
   return 320;
 }
 
+async function yieldBetweenTiles(signal?: AbortSignal) {
+  if (!isConstrainedClient()) {
+    await yieldToMain(signal);
+    return;
+  }
+  throwIfAborted(signal);
+  await new Promise<void>((resolve) => {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => resolve());
+    });
+  });
+  throwIfAborted(signal);
+}
+
 async function getOrt(): Promise<OrtModule> {
   if (!ortModulePromise) {
     ortModulePromise = import("onnxruntime-web").then((mod) => {
       const ort = ("default" in mod && mod.default ? mod.default : mod) as OrtModule;
+      if (ort.env) {
+        ort.env.debug = false;
+        ort.env.logLevel = "error";
+      }
       if (ort.env?.wasm) {
         ort.env.wasm.numThreads = 1;
         ort.env.wasm.proxy = false;
@@ -224,41 +242,45 @@ function fitDimensions(
   };
 }
 
-function rgbaToNchw(data: Uint8ClampedArray, width: number, height: number) {
+function rgbaToNchwInto(
+  data: Uint8ClampedArray,
+  width: number,
+  height: number,
+  out: Float32Array,
+) {
   const plane = width * height;
-  const tensor = new Float32Array(plane * 3);
   for (let i = 0; i < plane; i += 1) {
     const o = i * 4;
-    tensor[i] = data[o] / 255;
-    tensor[plane + i] = data[o + 1] / 255;
-    tensor[plane * 2 + i] = data[o + 2] / 255;
+    out[i] = data[o] / 255;
+    out[plane + i] = data[o + 1] / 255;
+    out[plane * 2 + i] = data[o + 2] / 255;
   }
-  return tensor;
 }
 
-function tileStarts(length: number): number[] {
-  if (length <= TILE_SIZE) return [0];
-  const stride = Math.max(1, TILE_SIZE - TILE_OVERLAP);
+function tileStarts(length: number, tileSize: number, tileOverlap: number): number[] {
+  if (length <= tileSize) return [0];
+  const stride = Math.max(1, tileSize - tileOverlap);
   const starts: number[] = [];
   for (let pos = 0; pos < length; pos += stride) {
-    const start = Math.min(pos, length - TILE_SIZE);
+    const start = Math.min(pos, length - tileSize);
     if (starts.length === 0 || starts[starts.length - 1] !== start) {
       starts.push(start);
     }
-    if (start + TILE_SIZE >= length) break;
+    if (start + tileSize >= length) break;
   }
   return starts;
 }
 
 function collectTiles(width: number, height: number) {
+  const { size: tileSize, overlap: tileOverlap } = tileConfig();
   const tiles: Array<{ x: number; y: number; w: number; h: number }> = [];
-  for (const y of tileStarts(height)) {
-    for (const x of tileStarts(width)) {
+  for (const y of tileStarts(height, tileSize, tileOverlap)) {
+    for (const x of tileStarts(width, tileSize, tileOverlap)) {
       tiles.push({
         x,
         y,
-        w: Math.min(TILE_SIZE, width - x),
-        h: Math.min(TILE_SIZE, height - y),
+        w: Math.min(tileSize, width - x),
+        h: Math.min(tileSize, height - y),
       });
     }
   }
@@ -342,15 +364,19 @@ function accumulatorsToImageData(
   return image;
 }
 
-function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+function canvasToResultBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        reject(new Error("Could not export the unblurred image."));
-        return;
-      }
-      resolve(blob);
-    }, "image/png");
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          reject(new Error("Could not export the unblurred image."));
+          return;
+        }
+        resolve(blob);
+      },
+      "image/jpeg",
+      0.9,
+    );
   });
 }
 
@@ -397,13 +423,16 @@ export async function unblurWithAi(
   const ort = await getOrt();
 
   const tiles = collectTiles(work.width, work.height);
+  const { overlap: tileOverlap } = tileConfig();
   const outW = work.width * UNBLUR_SCALE;
   const outH = work.height * UNBLUR_SCALE;
   const accR = new Float32Array(outW * outH);
   const accG = new Float32Array(outW * outH);
   const accB = new Float32Array(outW * outH);
   const accW = new Float32Array(outW * outH);
-  const overlapOut = TILE_OVERLAP * UNBLUR_SCALE;
+  const overlapOut = tileOverlap * UNBLUR_SCALE;
+  const maxTilePixels = tileConfig().size * tileConfig().size;
+  const inputBuffer = new Float32Array(maxTilePixels * 3);
 
   try {
     for (let index = 0; index < tiles.length; index += 1) {
@@ -413,13 +442,15 @@ export async function unblurWithAi(
           ? "Enhancing with AI…"
           : `Enhancing with AI… ${index + 1}/${tiles.length}`,
       );
-      await yieldToMain(signal);
+      await yieldBetweenTiles(signal);
 
       const tile = tiles[index];
       const tileData = workCtx.getImageData(tile.x, tile.y, tile.w, tile.h);
+      const plane = tile.w * tile.h;
+      rgbaToNchwInto(tileData.data, tile.w, tile.h, inputBuffer.subarray(0, plane * 3));
       const inputTensor = new ort.Tensor(
         "float32",
-        rgbaToNchw(tileData.data, tile.w, tile.h),
+        inputBuffer.slice(0, plane * 3),
         [1, 3, tile.h, tile.w],
       );
       const inputName = session.inputNames[0] ?? "input";
@@ -497,8 +528,8 @@ export async function unblurWithAi(
       enhanced.height = 0;
     }
 
-    onProgress?.("Exporting PNG…");
-    const blob = await canvasToPngBlob(exportCanvas);
+    onProgress?.("Exporting…");
+    const blob = await canvasToResultBlob(exportCanvas);
     exportCanvas.width = 0;
     exportCanvas.height = 0;
 
