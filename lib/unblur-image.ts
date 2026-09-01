@@ -252,8 +252,8 @@ function canvasToBlob(
   });
 }
 
-const PREVIEW_MAX_EDGE_DESKTOP = 640;
-const PREVIEW_MAX_EDGE_MOBILE = 480;
+const PREVIEW_MAX_EDGE_DESKTOP = 1024;
+const PREVIEW_MAX_EDGE_MOBILE = 720;
 
 function previewMaxEdge(): number {
   return isConstrainedClient() ? PREVIEW_MAX_EDGE_MOBILE : PREVIEW_MAX_EDGE_DESKTOP;

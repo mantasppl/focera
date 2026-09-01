@@ -10,11 +10,23 @@ export const UNBLUR_FIRST_RUN_HINT =
   "The first run downloads a 5 MB AI model, then caches it on this device.";
 
 const MODEL_READY_KEY = "focera-unblur-model-ready";
-const UNBLUR_SOURCE_MAX_EDGE_MOBILE = 384;
+
+function deviceMemoryGb(): number | null {
+  const memory = Number(
+    (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
+  );
+  return Number.isFinite(memory) && memory > 0 ? memory : null;
+}
+
+function isLowMemoryDevice(): boolean {
+  const memory = deviceMemoryGb();
+  return memory !== null && memory <= 3;
+}
 
 function tileConfig(): { size: number; overlap: number } {
-  if (isConstrainedClient()) return { size: 64, overlap: 12 };
-  return { size: 96, overlap: 16 };
+  if (isLowMemoryDevice()) return { size: 64, overlap: 12 };
+  if (isConstrainedClient()) return { size: 96, overlap: 16 };
+  return { size: 128, overlap: 16 };
 }
 
 type OrtModule = {
@@ -72,14 +84,26 @@ export function isConstrainedClient(): boolean {
   return false;
 }
 
-/** Phones use a smaller work size to keep WASM + tile buffers under the tab limit. */
+/** Balance quality vs tab memory; only low-RAM phones stay on a smaller pass. */
 function maxWorkSide(): number {
-  if (isConstrainedClient()) return 128;
-  const memory = Number(
-    (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
-  );
-  if (Number.isFinite(memory) && memory > 0 && memory <= 4) return 256;
-  return 320;
+  const memory = deviceMemoryGb();
+
+  if (!isConstrainedClient()) {
+    if (memory !== null && memory <= 4) return 448;
+    return 512;
+  }
+
+  if (memory !== null && memory <= 2) return 176;
+  if (memory !== null && memory <= 3) return 256;
+  return 384;
+}
+
+function unblurSourceMaxEdge(): number {
+  if (!isConstrainedClient()) return Number.POSITIVE_INFINITY;
+  const memory = deviceMemoryGb();
+  if (memory !== null && memory <= 2) return 896;
+  if (memory !== null && memory <= 3) return 1280;
+  return 2048;
 }
 
 async function yieldBetweenTiles(signal?: AbortSignal) {
@@ -229,7 +253,7 @@ export async function prepareUnblurSource(source: Blob): Promise<Blob> {
     return source;
   }
 
-  const maxEdge = UNBLUR_SOURCE_MAX_EDGE_MOBILE;
+  const maxEdge = unblurSourceMaxEdge();
   const bitmap = await createImageBitmap(source);
   const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
 
@@ -418,7 +442,7 @@ function canvasToResultBlob(canvas: HTMLCanvasElement): Promise<Blob> {
         resolve(blob);
       },
       "image/jpeg",
-      0.9,
+      0.95,
     );
   });
 }
@@ -558,18 +582,9 @@ export async function unblurWithAi(
     workCanvas.width = 0;
     workCanvas.height = 0;
 
-    const exportWidth = Math.min(width, outW);
-    const exportHeight = Math.min(height, outH);
-    let exportCanvas = enhanced;
-    if (exportWidth !== outW || exportHeight !== outH) {
-      exportCanvas = createCanvas(exportWidth, exportHeight);
-      const exportCtx = getContext(exportCanvas);
-      exportCtx.imageSmoothingEnabled = true;
-      exportCtx.imageSmoothingQuality = "high";
-      exportCtx.drawImage(enhanced, 0, 0, exportWidth, exportHeight);
-      enhanced.width = 0;
-      enhanced.height = 0;
-    }
+    const exportWidth = outW;
+    const exportHeight = outH;
+    const exportCanvas = enhanced;
 
     onProgress?.("Exporting…");
     const blob = await canvasToResultBlob(exportCanvas);
