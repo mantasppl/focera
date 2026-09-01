@@ -53,7 +53,7 @@ function markUnblurModelPrepared() {
   }
 }
 
-function isConstrainedClient(): boolean {
+export function isConstrainedClient(): boolean {
   if (typeof navigator === "undefined") return false;
   const ua = navigator.userAgent;
   if (/iPhone|iPod|Android.+Mobile|webOS|BlackBerry/i.test(ua)) return true;
@@ -64,36 +64,17 @@ function isConstrainedClient(): boolean {
   return false;
 }
 
+/** Phones cannot keep the Real-ESRGAN WASM heap without the tab being killed. */
+export function canUseUnblurAi(): boolean {
+  return !isConstrainedClient();
+}
+
 function maxWorkSide(): number {
-  if (isConstrainedClient()) return 192;
   const memory = Number(
     (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
   );
   if (Number.isFinite(memory) && memory > 0 && memory <= 4) return 256;
   return 320;
-}
-
-function disposeTensor(tensor: unknown) {
-  const disposable = tensor as { dispose?: () => void } | undefined;
-  try {
-    disposable?.dispose?.();
-  } catch {
-    // Already released, or this ORT build has no dispose().
-  }
-}
-
-let sessionGate: Promise<void> = Promise.resolve();
-
-async function releaseSession() {
-  const pending = sessionPromise;
-  sessionPromise = null;
-  if (!pending) return;
-  try {
-    const session = await pending;
-    await session.release?.();
-  } catch {
-    // Session may already be gone.
-  }
 }
 
 async function getOrt(): Promise<OrtModule> {
@@ -411,27 +392,20 @@ export async function unblurWithAi(
     }
   }
 
-  let unlockGate = () => {};
-  const previousGate = sessionGate;
-  sessionGate = new Promise<void>((resolve) => {
-    unlockGate = resolve;
-  });
-  await previousGate;
+  const session = await getSession(onProgress);
+  throwIfAborted(signal);
+  const ort = await getOrt();
+
+  const tiles = collectTiles(work.width, work.height);
+  const outW = work.width * UNBLUR_SCALE;
+  const outH = work.height * UNBLUR_SCALE;
+  const accR = new Float32Array(outW * outH);
+  const accG = new Float32Array(outW * outH);
+  const accB = new Float32Array(outW * outH);
+  const accW = new Float32Array(outW * outH);
+  const overlapOut = TILE_OVERLAP * UNBLUR_SCALE;
 
   try {
-    const session = await getSession(onProgress);
-    throwIfAborted(signal);
-    const ort = await getOrt();
-
-    const tiles = collectTiles(work.width, work.height);
-    const outW = work.width * UNBLUR_SCALE;
-    const outH = work.height * UNBLUR_SCALE;
-    let accR = new Float32Array(outW * outH);
-    let accG = new Float32Array(outW * outH);
-    let accB = new Float32Array(outW * outH);
-    let accW = new Float32Array(outW * outH);
-    const overlapOut = TILE_OVERLAP * UNBLUR_SCALE;
-
     for (let index = 0; index < tiles.length; index += 1) {
       throwIfAborted(signal);
       onProgress?.(
@@ -449,62 +423,48 @@ export async function unblurWithAi(
         [1, 3, tile.h, tile.w],
       );
       const inputName = session.inputNames[0] ?? "input";
-      let outputMap: Awaited<ReturnType<UnblurSession["run"]>> | undefined;
-      try {
-        outputMap = await session.run({ [inputName]: inputTensor });
-        throwIfAborted(signal);
-        const outputName = session.outputNames[0];
-        const output =
-          (outputName ? outputMap[outputName] : undefined) ??
-          outputMap.output ??
-          Object.values(outputMap)[0];
-        const raw = output?.data;
-        if (!output || raw == null) {
-          throw new Error("Unblur model returned an unexpected result.");
-        }
-
-        const dims = output.dims;
-        const tileOutH =
-          dims && dims.length === 4 ? Number(dims[2]) : tile.h * UNBLUR_SCALE;
-        const tileOutW =
-          dims && dims.length === 4 ? Number(dims[3]) : tile.w * UNBLUR_SCALE;
-        const floats =
-          raw instanceof Float32Array
-            ? raw.slice()
-            : Float32Array.from(raw as ArrayLike<number>);
-
-        disposeTensor(inputTensor);
-        for (const value of Object.values(outputMap)) {
-          disposeTensor(value);
-        }
-        outputMap = undefined;
-
-        accumulateTile(
-          accR,
-          accG,
-          accB,
-          accW,
-          outW,
-          outH,
-          floats,
-          tileOutW,
-          tileOutH,
-          tile.x * UNBLUR_SCALE,
-          tile.y * UNBLUR_SCALE,
-          overlapOut,
-          tile.x === 0,
-          tile.y === 0,
-          tile.x + tile.w >= work.width,
-          tile.y + tile.h >= work.height,
-        );
-      } finally {
-        disposeTensor(inputTensor);
-        if (outputMap) {
-          for (const value of Object.values(outputMap)) {
-            disposeTensor(value);
-          }
-        }
+      const outputMap = await session.run({ [inputName]: inputTensor });
+      throwIfAborted(signal);
+      const outputName = session.outputNames[0];
+      const output =
+        (outputName ? outputMap[outputName] : undefined) ??
+        outputMap.output ??
+        Object.values(outputMap)[0];
+      const raw = output?.data;
+      const floats =
+        raw instanceof Float32Array
+          ? raw
+          : raw
+            ? Float32Array.from(raw as ArrayLike<number>)
+            : null;
+      if (!output || !floats) {
+        throw new Error("Unblur model returned an unexpected result.");
       }
+
+      const dims = output.dims;
+      const tileOutH =
+        dims && dims.length === 4 ? Number(dims[2]) : tile.h * UNBLUR_SCALE;
+      const tileOutW =
+        dims && dims.length === 4 ? Number(dims[3]) : tile.w * UNBLUR_SCALE;
+
+      accumulateTile(
+        accR,
+        accG,
+        accB,
+        accW,
+        outW,
+        outH,
+        floats,
+        tileOutW,
+        tileOutH,
+        tile.x * UNBLUR_SCALE,
+        tile.y * UNBLUR_SCALE,
+        overlapOut,
+        tile.x === 0,
+        tile.y === 0,
+        tile.x + tile.w >= work.width,
+        tile.y + tile.h >= work.height,
+      );
     }
 
     throwIfAborted(signal);
@@ -517,11 +477,6 @@ export async function unblurWithAi(
       outW,
       outH,
     );
-    accR = new Float32Array(0);
-    accG = new Float32Array(0);
-    accB = new Float32Array(0);
-    accW = new Float32Array(0);
-    await yieldToMain(signal);
 
     const enhanced = createCanvas(outW, outH);
     const enhancedCtx = getContext(enhanced);
@@ -552,8 +507,5 @@ export async function unblurWithAi(
     workCanvas.width = 0;
     workCanvas.height = 0;
     throw error;
-  } finally {
-    await releaseSession();
-    unlockGate();
   }
 }

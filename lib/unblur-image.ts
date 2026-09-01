@@ -1,5 +1,5 @@
 import { downloadBlob, fileBaseName } from "@/lib/image";
-import { unblurWithAi } from "@/lib/unblur-ai";
+import { canUseUnblurAi, unblurWithAi } from "@/lib/unblur-ai";
 
 type UnblurPass = {
   radiusFraction: number;
@@ -351,6 +351,11 @@ export async function unblurImageFile(
   throwIfAborted(signal);
 
   try {
+    if (!canUseUnblurAi()) {
+      onProgress?.("Enhancing photo…");
+      return await unblurWithSharpen(bitmap, onProgress, signal);
+    }
+
     const enhanced = await unblurWithAi(bitmap, {
       onProgress,
       signal,
@@ -363,7 +368,7 @@ export async function unblurImageFile(
     if (error instanceof DOMException && error.name === "AbortError") {
       throw error;
     }
-    onProgress?.("AI unavailable — sharpening instead…");
+    onProgress?.("Enhancing photo…");
     const fallback = await createImageBitmap(file);
     try {
       return await unblurWithSharpen(fallback, onProgress, signal);

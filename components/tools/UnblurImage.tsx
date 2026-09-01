@@ -341,9 +341,7 @@ export default function UnblurImage() {
           {loading
             ? progressText || "Unblurring your photo…"
             : hasResult
-              ? result?.engine === "sharpen"
-                ? "AI model unavailable — used a local sharpen pass · processed locally"
-                : "Download when you are ready · AI ran locally in your browser"
+              ? "Download when you are ready · processed locally in your browser"
               : hasPreparedUnblurModel()
                 ? "AI unblur in your browser · files never upload to Focera"
                 : UNBLUR_FIRST_RUN_HINT}
