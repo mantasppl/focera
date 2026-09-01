@@ -26,6 +26,7 @@ declare module "onnxruntime-web" {
       feeds: Record<string, Tensor>,
       options?: Record<string, unknown>,
     ): Promise<Record<string, Tensor>>;
+    release?: () => Promise<void> | void;
   }
 
   export namespace InferenceSession {

@@ -6113,15 +6113,24 @@ a {
   .unblur-image .enhancing__frame {
     max-width: none;
     width: 100%;
+    height: auto;
     aspect-ratio: auto;
-    height: min(72dvh, 36rem);
     border-left: none;
     border-right: none;
   }
 
-  .unblur-image .compare__image,
+  .unblur-image .compare__image--after,
   .unblur-image .enhancing__image {
-    object-fit: cover;
+    position: relative;
+    inset: auto;
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .unblur-image .compare__image--before {
+    object-fit: contain;
   }
 
   .unblur-image .enhancing {

@@ -63,23 +63,6 @@ async function yieldToMain(signal?: AbortSignal) {
   throwIfAborted(signal);
 }
 
-function loadImage(file: File): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const image = new Image();
-    image.decoding = "async";
-    image.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve(image);
-    };
-    image.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("Could not read this image. Try another file."));
-    };
-    image.src = url;
-  });
-}
-
 function createCanvas(width: number, height: number): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -265,7 +248,7 @@ function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return canvasToBlob(canvas, "image/png");
 }
 
-const PREVIEW_MAX_EDGE = 1400;
+const PREVIEW_MAX_EDGE = 1024;
 
 /** Decode a blob/file into a display-sized JPEG so the slider does not OOM. */
 export async function createUnblurPreviewUrl(source: Blob): Promise<string> {
@@ -364,11 +347,11 @@ export async function unblurImageFile(
 
   throwIfAborted(signal);
   onProgress?.("Loading image…");
-  const image = await loadImage(file);
+  const bitmap = await createImageBitmap(file);
   throwIfAborted(signal);
 
   try {
-    const enhanced = await unblurWithAi(image, {
+    const enhanced = await unblurWithAi(bitmap, {
       onProgress,
       signal,
     });
@@ -381,21 +364,47 @@ export async function unblurImageFile(
       throw error;
     }
     onProgress?.("AI unavailable — sharpening instead…");
-    return unblurWithSharpen(image, onProgress, signal);
+    const fallback = await createImageBitmap(file);
+    try {
+      return await unblurWithSharpen(fallback, onProgress, signal);
+    } finally {
+      try {
+        fallback.close();
+      } catch {
+        // Already closed.
+      }
+    }
+  } finally {
+    try {
+      bitmap.close();
+    } catch {
+      // unblurWithAi closes the bitmap after drawing the work canvas.
+    }
   }
 }
 
 async function unblurWithSharpen(
-  image: HTMLImageElement,
+  image: HTMLImageElement | ImageBitmap,
   onProgress?: (message: string) => void,
   signal?: AbortSignal,
 ): Promise<UnblurImageResult> {
-  const width = image.naturalWidth || image.width;
-  const height = image.naturalHeight || image.height;
+  const sourceWidth =
+    "naturalWidth" in image && image.naturalWidth
+      ? image.naturalWidth
+      : image.width;
+  const sourceHeight =
+    "naturalHeight" in image && image.naturalHeight
+      ? image.naturalHeight
+      : image.height;
 
-  if (!width || !height) {
+  if (!sourceWidth || !sourceHeight) {
     throw new Error("Could not determine image dimensions.");
   }
+
+  const longest = Math.max(sourceWidth, sourceHeight);
+  const scale = longest > 1600 ? 1600 / longest : 1;
+  const width = Math.max(1, Math.round(sourceWidth * scale));
+  const height = Math.max(1, Math.round(sourceHeight * scale));
 
   onProgress?.("Preparing image…");
   await yieldToMain(signal);

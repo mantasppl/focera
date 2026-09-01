@@ -8,8 +8,8 @@ export const UNBLUR_FIRST_RUN_HINT =
   "The first run downloads a 5 MB AI model, then caches it on this device.";
 
 const MODEL_READY_KEY = "focera-unblur-model-ready";
-const TILE_SIZE = 128;
-const TILE_OVERLAP = 24;
+const TILE_SIZE = 96;
+const TILE_OVERLAP = 16;
 
 type OrtModule = {
   env?: {
@@ -65,12 +65,12 @@ function isConstrainedClient(): boolean {
 }
 
 function maxWorkSide(): number {
-  if (isConstrainedClient()) return 288;
+  if (isConstrainedClient()) return 192;
   const memory = Number(
     (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
   );
-  if (Number.isFinite(memory) && memory > 0 && memory <= 4) return 384;
-  return 512;
+  if (Number.isFinite(memory) && memory > 0 && memory <= 4) return 256;
+  return 320;
 }
 
 function disposeTensor(tensor: unknown) {
@@ -79,6 +79,20 @@ function disposeTensor(tensor: unknown) {
     disposable?.dispose?.();
   } catch {
     // Already released, or this ORT build has no dispose().
+  }
+}
+
+let sessionGate: Promise<void> = Promise.resolve();
+
+async function releaseSession() {
+  const pending = sessionPromise;
+  sessionPromise = null;
+  if (!pending) return;
+  try {
+    const session = await pending;
+    await session.release?.();
+  } catch {
+    // Session may already be gone.
   }
 }
 
@@ -365,14 +379,20 @@ export type UnblurAiOptions = {
 };
 
 export async function unblurWithAi(
-  image: HTMLImageElement,
+  image: HTMLImageElement | ImageBitmap,
   options: UnblurAiOptions = {},
 ): Promise<{ blob: Blob; width: number; height: number }> {
   const { onProgress, signal } = options;
   throwIfAborted(signal);
 
-  const width = image.naturalWidth || image.width;
-  const height = image.naturalHeight || image.height;
+  const width =
+    "naturalWidth" in image && image.naturalWidth
+      ? image.naturalWidth
+      : image.width;
+  const height =
+    "naturalHeight" in image && image.naturalHeight
+      ? image.naturalHeight
+      : image.height;
   if (!width || !height) {
     throw new Error("Could not determine image dimensions.");
   }
@@ -383,21 +403,35 @@ export async function unblurWithAi(
   workCtx.imageSmoothingEnabled = true;
   workCtx.imageSmoothingQuality = "high";
   workCtx.drawImage(image, 0, 0, work.width, work.height);
+  if ("close" in image) {
+    try {
+      image.close();
+    } catch {
+      // Already closed.
+    }
+  }
 
-  const session = await getSession(onProgress);
-  throwIfAborted(signal);
-  const ort = await getOrt();
-
-  const tiles = collectTiles(work.width, work.height);
-  const outW = work.width * UNBLUR_SCALE;
-  const outH = work.height * UNBLUR_SCALE;
-  let accR = new Float32Array(outW * outH);
-  let accG = new Float32Array(outW * outH);
-  let accB = new Float32Array(outW * outH);
-  let accW = new Float32Array(outW * outH);
-  const overlapOut = TILE_OVERLAP * UNBLUR_SCALE;
+  let unlockGate = () => {};
+  const previousGate = sessionGate;
+  sessionGate = new Promise<void>((resolve) => {
+    unlockGate = resolve;
+  });
+  await previousGate;
 
   try {
+    const session = await getSession(onProgress);
+    throwIfAborted(signal);
+    const ort = await getOrt();
+
+    const tiles = collectTiles(work.width, work.height);
+    const outW = work.width * UNBLUR_SCALE;
+    const outH = work.height * UNBLUR_SCALE;
+    let accR = new Float32Array(outW * outH);
+    let accG = new Float32Array(outW * outH);
+    let accB = new Float32Array(outW * outH);
+    let accW = new Float32Array(outW * outH);
+    const overlapOut = TILE_OVERLAP * UNBLUR_SCALE;
+
     for (let index = 0; index < tiles.length; index += 1) {
       throwIfAborted(signal);
       onProgress?.(
@@ -425,13 +459,7 @@ export async function unblurWithAi(
           outputMap.output ??
           Object.values(outputMap)[0];
         const raw = output?.data;
-        const floats =
-          raw instanceof Float32Array
-            ? raw
-            : raw
-              ? Float32Array.from(raw as ArrayLike<number>)
-              : null;
-        if (!output || !floats) {
+        if (!output || raw == null) {
           throw new Error("Unblur model returned an unexpected result.");
         }
 
@@ -440,6 +468,16 @@ export async function unblurWithAi(
           dims && dims.length === 4 ? Number(dims[2]) : tile.h * UNBLUR_SCALE;
         const tileOutW =
           dims && dims.length === 4 ? Number(dims[3]) : tile.w * UNBLUR_SCALE;
+        const floats =
+          raw instanceof Float32Array
+            ? raw.slice()
+            : Float32Array.from(raw as ArrayLike<number>);
+
+        disposeTensor(inputTensor);
+        for (const value of Object.values(outputMap)) {
+          disposeTensor(value);
+        }
+        outputMap = undefined;
 
         accumulateTile(
           accR,
@@ -483,6 +521,7 @@ export async function unblurWithAi(
     accG = new Float32Array(0);
     accB = new Float32Array(0);
     accW = new Float32Array(0);
+    await yieldToMain(signal);
 
     const enhanced = createCanvas(outW, outH);
     const enhancedCtx = getContext(enhanced);
@@ -490,9 +529,6 @@ export async function unblurWithAi(
     workCanvas.width = 0;
     workCanvas.height = 0;
 
-    // 4× AI output is the real detail. Stretching it onto a larger original
-    // (12MP phone photos) allocates a huge canvas and often OOMs the tab
-    // when the before/after preview decodes the PNG.
     const exportWidth = Math.min(width, outW);
     const exportHeight = Math.min(height, outH);
     let exportCanvas = enhanced;
@@ -516,5 +552,8 @@ export async function unblurWithAi(
     workCanvas.width = 0;
     workCanvas.height = 0;
     throw error;
+  } finally {
+    await releaseSession();
+    unlockGate();
   }
 }
