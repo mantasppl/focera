@@ -1,5 +1,13 @@
 import { downloadBlob, fileBaseName } from "@/lib/image";
-import { isConstrainedClient, unblurWithAi } from "@/lib/unblur-ai";
+import {
+  isConstrainedClient,
+  prepareUnblurSource,
+  preloadUnblurModel,
+  unblurWithAi,
+} from "@/lib/unblur-ai";
+import { waitForPreviewPrepare } from "@/lib/tool-preview-gate";
+
+export { preloadUnblurModel };
 
 type UnblurPass = {
   radiusFraction: number;
@@ -244,8 +252,8 @@ function canvasToBlob(
   });
 }
 
-const PREVIEW_MAX_EDGE_DESKTOP = 1024;
-const PREVIEW_MAX_EDGE_MOBILE = 720;
+const PREVIEW_MAX_EDGE_DESKTOP = 640;
+const PREVIEW_MAX_EDGE_MOBILE = 480;
 
 function previewMaxEdge(): number {
   return isConstrainedClient() ? PREVIEW_MAX_EDGE_MOBILE : PREVIEW_MAX_EDGE_DESKTOP;
@@ -350,7 +358,13 @@ export async function unblurImageFile(
 
   throwIfAborted(signal);
   onProgress?.("Loading image…");
-  const bitmap = await createImageBitmap(file);
+  await yieldToMain(signal);
+  await waitForPreviewPrepare();
+  await preloadUnblurModel();
+
+  const prepared = await prepareUnblurSource(file);
+  throwIfAborted(signal);
+  const bitmap = await createImageBitmap(prepared);
   throwIfAborted(signal);
 
   try {
@@ -367,7 +381,7 @@ export async function unblurImageFile(
       throw error;
     }
     onProgress?.("AI unavailable — sharpening instead…");
-    const fallback = await createImageBitmap(file);
+    const fallback = await createImageBitmap(prepared);
     try {
       return await unblurWithSharpen(fallback, onProgress, signal);
     } finally {

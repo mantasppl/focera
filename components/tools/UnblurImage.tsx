@@ -18,6 +18,7 @@ import {
 import {
   UNBLUR_FIRST_RUN_HINT,
   hasPreparedUnblurModel,
+  preloadUnblurModel,
 } from "@/lib/unblur-ai";
 import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn } from "@/lib/utils";
@@ -123,6 +124,10 @@ export default function UnblurImage() {
   }, []);
 
   useEffect(() => {
+    void preloadUnblurModel();
+  }, []);
+
+  useEffect(() => {
     return () => {
       if (originalUrl) URL.revokeObjectURL(originalUrl);
     };
@@ -157,9 +162,10 @@ export default function UnblurImage() {
     setError("");
     setProgressText("");
     setSourceFile(file);
-    setOriginalUrl("");
+    const loadingUrl = URL.createObjectURL(file);
+    setOriginalUrl(loadingUrl);
     setFormatOpen(false);
-    void runUnblur(file);
+    void runUnblur(file, loadingUrl);
   }
 
   function handleReset() {
@@ -175,7 +181,7 @@ export default function UnblurImage() {
     setDownloading(false);
   }
 
-  async function runUnblur(file: File) {
+  async function runUnblur(file: File, loadingUrl: string) {
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -186,13 +192,6 @@ export default function UnblurImage() {
     clearResult();
 
     try {
-      const beforePreview = await createUnblurPreviewUrl(file);
-      if (controller.signal.aborted) {
-        URL.revokeObjectURL(beforePreview);
-        return;
-      }
-      setOriginalUrl(beforePreview);
-
       const unblurred = await unblurImageFile(file, {
         signal: controller.signal,
         onProgress: setProgressText,
@@ -200,14 +199,23 @@ export default function UnblurImage() {
 
       if (controller.signal.aborted) return;
 
-      const afterPreview = await createUnblurPreviewUrl(unblurred.blob);
+      const beforePreview = await createUnblurPreviewUrl(file);
       if (controller.signal.aborted) {
-        URL.revokeObjectURL(afterPreview);
+        URL.revokeObjectURL(beforePreview);
         return;
       }
 
+      const afterUrl = URL.createObjectURL(unblurred.blob);
+      if (controller.signal.aborted) {
+        URL.revokeObjectURL(beforePreview);
+        URL.revokeObjectURL(afterUrl);
+        return;
+      }
+
+      URL.revokeObjectURL(loadingUrl);
+      setOriginalUrl(beforePreview);
       setResult(unblurred);
-      setResultUrl(afterPreview);
+      setResultUrl(afterUrl);
       setProgressText("");
       trackSuccess();
     } catch (err) {

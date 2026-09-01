@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import {
-  beginPreviewPrepare,
   isConstrainedClient,
   subscribeRemovalProgress,
 } from "@/lib/background-removal";
+import { beginPreviewPrepare } from "@/lib/tool-preview-gate";
 
 type EnhancingPreviewProps = {
   src: string;
@@ -76,7 +76,7 @@ export default function EnhancingPreview({
   useEffect(() => {
     let cancelled = false;
     let createdUrl = "";
-    const release = useRemovalFeed ? beginPreviewPrepare() : () => {};
+    const release = beginPreviewPrepare();
 
     void (async () => {
       try {

@@ -1,3 +1,5 @@
+import { ensureQuietOnnxRuntime } from "@/lib/onnx-runtime-quiet";
+
 export const UNBLUR_MODEL_URL =
   "https://huggingface.co/CoderViking/realesr-general-x4v3-onnx/resolve/main/realesr-general-x4v3.onnx";
 
@@ -8,6 +10,7 @@ export const UNBLUR_FIRST_RUN_HINT =
   "The first run downloads a 5 MB AI model, then caches it on this device.";
 
 const MODEL_READY_KEY = "focera-unblur-model-ready";
+const UNBLUR_SOURCE_MAX_EDGE_MOBILE = 384;
 
 function tileConfig(): { size: number; overlap: number } {
   if (isConstrainedClient()) return { size: 64, overlap: 12 };
@@ -71,7 +74,7 @@ export function isConstrainedClient(): boolean {
 
 /** Phones use a smaller work size to keep WASM + tile buffers under the tab limit. */
 function maxWorkSide(): number {
-  if (isConstrainedClient()) return 168;
+  if (isConstrainedClient()) return 128;
   const memory = Number(
     (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
   );
@@ -95,18 +98,11 @@ async function yieldBetweenTiles(signal?: AbortSignal) {
 
 async function getOrt(): Promise<OrtModule> {
   if (!ortModulePromise) {
-    ortModulePromise = import("onnxruntime-web").then((mod) => {
-      const ort = ("default" in mod && mod.default ? mod.default : mod) as OrtModule;
-      if (ort.env) {
-        ort.env.debug = false;
-        ort.env.logLevel = "error";
-      }
-      if (ort.env?.wasm) {
-        ort.env.wasm.numThreads = 1;
-        ort.env.wasm.proxy = false;
-      }
-      return ort;
-    });
+    ortModulePromise = (async () => {
+      await ensureQuietOnnxRuntime();
+      const mod = await import("onnxruntime-web");
+      return ("default" in mod && mod.default ? mod.default : mod) as OrtModule;
+    })();
   }
   return ortModulePromise;
 }
@@ -211,6 +207,51 @@ async function getSession(
   }
 
   return sessionPromise;
+}
+
+let preloadPromise: Promise<void> | null = null;
+
+/** Start downloading the unblur ONNX model as soon as the tool is open. */
+export function preloadUnblurModel(): Promise<void> {
+  if (!preloadPromise) {
+    preloadPromise = getSession()
+      .then(() => {})
+      .catch(() => {
+        preloadPromise = null;
+      });
+  }
+  return preloadPromise ?? Promise.resolve();
+}
+
+/** Downscale large uploads on phones before decoding into WASM memory. */
+export async function prepareUnblurSource(source: Blob): Promise<Blob> {
+  if (!isConstrainedClient() || typeof createImageBitmap !== "function") {
+    return source;
+  }
+
+  const maxEdge = UNBLUR_SOURCE_MAX_EDGE_MOBILE;
+  const bitmap = await createImageBitmap(source);
+  const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+
+  if (scale >= 1) {
+    bitmap.close();
+    return source;
+  }
+
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = createCanvas(width, height);
+  const context = getContext(canvas);
+  context.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+
+  const prepared = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, "image/jpeg", 0.92);
+  });
+  canvas.width = 0;
+  canvas.height = 0;
+
+  return prepared ?? source;
 }
 
 function createCanvas(width: number, height: number): HTMLCanvasElement {
@@ -535,6 +576,7 @@ export async function unblurWithAi(
     exportCanvas.width = 0;
     exportCanvas.height = 0;
 
+    await yieldBetweenTiles(signal);
     return { blob, width: exportWidth, height: exportHeight };
   } catch (error) {
     workCanvas.width = 0;
