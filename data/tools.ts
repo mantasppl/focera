@@ -2112,7 +2112,7 @@ export const tools: Tool[] = [
     name: "Add Text on Image Tool",
     shortName: "Add Text on Image",
     description:
-      "Add text on image online — overlay captions, labels, or stamps with font, size, color, opacity, position, and live preview. Free, private, and local in your browser.",
+      "Add text on image online — drag, resize, and rotate text with 28 fonts, a full color palette, opacity control, and live preview. Free, private, and local in your browser.",
     categories: ["image"],
     status: "ready",
     href: "/add-text-on-image",
@@ -2143,12 +2143,22 @@ export const tools: Tool[] = [
       {
         question: "Where can I place the text?",
         answer:
-          "Choose center, header, or footer positions (left, center, or right). You can also rotate text diagonally.",
+          "Drag the text on the live preview to move it. Use the corner handles to resize and the top handle to rotate to any angle.",
       },
       {
         question: "Can I preview before downloading?",
         answer:
           "Yes. The preview updates live as you type and change options. Download a full-resolution PNG when you are ready.",
+      },
+      {
+        question: "Which fonts are available?",
+        answer:
+          "Choose from 175+ system and Google fonts — sans serif, serif, monospace, display, and handwriting. Search the font list and preview each typeface before applying.",
+      },
+      {
+        question: "Can I use any text color?",
+        answer:
+          "Yes. Pick from the built-in palette or use the color wheel and hex field for any custom color.",
       },
       {
         question: "Which image formats are supported?",

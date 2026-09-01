@@ -8,9 +8,14 @@ const FEATURES = [
       "Type captions, labels, or stamps and see them update on your photo instantly — then download a PNG when it looks right.",
   },
   {
-    title: "Flexible placement",
+    title: "175+ fonts",
     description:
-      "Place text in the center, header, or footer. Adjust font, size, color, opacity, and optional diagonal rotation.",
+      "Search a huge library of system and Google fonts — sans, serif, mono, display, and handwriting styles for any look.",
+  },
+  {
+    title: "Full color control",
+    description:
+      "Pick from a complete palette or choose any custom color with the color wheel and hex input.",
   },
   {
     title: "Readable on any photo",
@@ -52,7 +57,8 @@ export default function AddTextOnImageLanding() {
           </li>
           <li>
             <strong>Enter text and options.</strong> Type your message, then
-            pick position, font, color, size, opacity, rotation, and outline.
+            drag, resize, and rotate it on the preview. Search 175+ fonts, pick any
+            color from the palette, and tune opacity and outline.
           </li>
           <li>
             <strong>Download the PNG.</strong> Preview updates live. When you

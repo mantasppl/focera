@@ -1,119 +1,108 @@
 import { downloadBlob, fileBaseName } from "@/lib/image";
+import {
+  TEXT_FONTS,
+  TEXT_FONT_CATEGORIES,
+  TEXT_FONT_COUNT,
+  ensureFontReady,
+  ensureTextFontsLoaded,
+  fontCss,
+  getFontOption,
+  type TextFontCategory,
+  type TextFontId,
+  type TextFontOption,
+  type TextFontSource,
+} from "@/lib/add-text-on-image-fonts";
 
-export type TextPosition =
-  | "center"
-  | "top-left"
-  | "top-center"
-  | "top-right"
-  | "bottom-left"
-  | "bottom-center"
-  | "bottom-right";
-
-export type TextPositionOption = {
-  value: TextPosition;
-  label: string;
-  hint: string;
+export {
+  TEXT_FONTS,
+  TEXT_FONT_CATEGORIES,
+  TEXT_FONT_COUNT,
+  ensureFontReady,
+  ensureTextFontsLoaded,
+  fontCss,
+  getFontOption,
+  type TextFontCategory,
+  type TextFontId,
+  type TextFontOption,
+  type TextFontSource,
 };
 
-export const TEXT_POSITIONS: TextPositionOption[] = [
-  { value: "center", label: "Center", hint: "Middle" },
-  { value: "top-left", label: "Top left", hint: "Header corner" },
-  { value: "top-center", label: "Top center", hint: "Header" },
-  { value: "top-right", label: "Top right", hint: "Header corner" },
-  { value: "bottom-left", label: "Bottom left", hint: "Footer corner" },
-  { value: "bottom-center", label: "Bottom center", hint: "Footer" },
-  { value: "bottom-right", label: "Bottom right", hint: "Footer corner" },
-];
+export const DEFAULT_TEXT_COLOR = "#ffffff";
 
-export type TextFontId =
-  | "sans"
-  | "sans-bold"
-  | "serif"
-  | "serif-bold"
-  | "mono";
+export const TEXT_COLOR_PRESETS = [
+  "#ffffff",
+  "#000000",
+  "#1f1f1f",
+  "#404040",
+  "#737373",
+  "#a3a3a3",
+  "#d4d4d4",
+  "#f5f5f5",
+  "#ef4444",
+  "#dc2626",
+  "#f97316",
+  "#f59e0b",
+  "#eab308",
+  "#84cc16",
+  "#22c55e",
+  "#14b8a6",
+  "#06b6d4",
+  "#0ea5e9",
+  "#3b82f6",
+  "#6366f1",
+  "#8b5cf6",
+  "#a855f7",
+  "#d946ef",
+  "#ec4899",
+  "#f43f5e",
+  "#c01e1e",
+  "#1f4799",
+  "#147352",
+  "#f5c518",
+  "#ffb3ba",
+  "#bae1ff",
+  "#0f172a",
+] as const;
 
-export type TextFontOption = {
-  value: TextFontId;
-  label: string;
-  hint: string;
-  css: string;
+export function normalizeHexColor(value: string): string {
+  const trimmed = value.trim();
+  if (/^#[0-9a-fA-F]{6}$/.test(trimmed)) {
+    return trimmed.toLowerCase();
+  }
+  if (/^#[0-9a-fA-F]{3}$/.test(trimmed)) {
+    const [, r, g, b] = trimmed;
+    return `#${r}${r}${g}${g}${b}${b}`.toLowerCase();
+  }
+  if (/^[0-9a-fA-F]{6}$/.test(trimmed)) {
+    return `#${trimmed.toLowerCase()}`;
+  }
+  return DEFAULT_TEXT_COLOR;
+}
+
+/** Top-left corner of the text block, as a fraction of image width/height (0–1). */
+export type TextPlacement = {
+  x: number;
+  y: number;
 };
 
-export const TEXT_FONTS: TextFontOption[] = [
-  {
-    value: "sans",
-    label: "Sans",
-    hint: "Clean",
-    css: 'system-ui, -apple-system, "Segoe UI", Arial, sans-serif',
-  },
-  {
-    value: "sans-bold",
-    label: "Sans Bold",
-    hint: "Strong",
-    css: 'system-ui, -apple-system, "Segoe UI", Arial, sans-serif',
-  },
-  {
-    value: "serif",
-    label: "Serif",
-    hint: "Classic",
-    css: 'Georgia, "Times New Roman", Times, serif',
-  },
-  {
-    value: "serif-bold",
-    label: "Serif Bold",
-    hint: "Strong",
-    css: 'Georgia, "Times New Roman", Times, serif',
-  },
-  {
-    value: "mono",
-    label: "Mono",
-    hint: "Fixed width",
-    css: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
-  },
-];
-
-export type TextColorId =
-  | "white"
-  | "black"
-  | "gray"
-  | "red"
-  | "blue"
-  | "green"
-  | "yellow";
-
-export type TextColorOption = {
-  value: TextColorId;
-  label: string;
-  hint: string;
-  hex: string;
+export type TextBlockBounds = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };
 
-export const TEXT_COLORS: TextColorOption[] = [
-  { value: "white", label: "White", hint: "Bright", hex: "#ffffff" },
-  { value: "black", label: "Black", hint: "Default", hex: "#1f1f1f" },
-  { value: "gray", label: "Gray", hint: "Subtle", hex: "#737373" },
-  { value: "red", label: "Red", hint: "Highlight", hex: "#c01e1e" },
-  { value: "blue", label: "Blue", hint: "Accent", hex: "#1f4799" },
-  { value: "green", label: "Green", hint: "Accent", hex: "#147352" },
-  { value: "yellow", label: "Yellow", hint: "Bright", hex: "#f5c518" },
-];
+export type TextRotation = number;
 
-export type TextRotation = 0 | 45 | -45;
+export function normalizeRotation(degrees: number): number {
+  if (!Number.isFinite(degrees)) return 0;
+  let value = degrees % 360;
+  if (value > 180) value -= 360;
+  if (value < -180) value += 360;
+  return Math.round(value * 10) / 10;
+}
 
-export type TextRotationOption = {
-  value: TextRotation;
-  label: string;
-  hint: string;
-};
-
-export const TEXT_ROTATIONS: TextRotationOption[] = [
-  { value: 0, label: "None", hint: "Upright" },
-  { value: 45, label: "45°", hint: "Diagonal" },
-  { value: -45, label: "-45°", hint: "Diagonal" },
-];
-
-export const MIN_FONT_SIZE = 12;
-export const MAX_FONT_SIZE = 240;
+export const MIN_FONT_SIZE = 1;
 export const DEFAULT_FONT_SIZE = 48;
 export const DEFAULT_OPACITY = 1;
 export const MAX_TEXT_LENGTH = 500;
@@ -122,9 +111,9 @@ const MARGIN_RATIO = 0.04;
 
 export type AddTextOnImageOptions = {
   text: string;
-  position?: TextPosition;
+  placement?: TextPlacement;
   fontId?: TextFontId;
-  colorId?: TextColorId;
+  color?: string;
   rotation?: TextRotation;
   fontSize?: number;
   /** 0–1 */
@@ -143,9 +132,9 @@ export type AddTextOnImageResult = {
 
 export type DrawTextOptions = {
   text: string;
-  position: TextPosition;
+  placement: TextPlacement;
   fontId: TextFontId;
-  colorId: TextColorId;
+  color: string;
   rotation: TextRotation;
   fontSize: number;
   opacity: number;
@@ -163,8 +152,8 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 export function clampFontSize(value: number): number {
-  if (!Number.isFinite(value)) return DEFAULT_FONT_SIZE;
-  return Math.round(clamp(value, MIN_FONT_SIZE, MAX_FONT_SIZE));
+  if (!Number.isFinite(value) || value <= 0) return DEFAULT_FONT_SIZE;
+  return Math.round(Math.max(MIN_FONT_SIZE, value));
 }
 
 export function defaultFontSizeForImage(
@@ -190,26 +179,6 @@ function loadImage(file: File): Promise<HTMLImageElement> {
     };
     image.src = url;
   });
-}
-
-function resolveFont(fontId: TextFontId): TextFontOption {
-  return TEXT_FONTS.find((option) => option.value === fontId) ?? TEXT_FONTS[0]!;
-}
-
-function resolveColor(colorId: TextColorId): string {
-  return (
-    TEXT_COLORS.find((option) => option.value === colorId)?.hex ?? "#1f1f1f"
-  );
-}
-
-function isBold(fontId: TextFontId): boolean {
-  return fontId === "sans-bold" || fontId === "serif-bold";
-}
-
-function fontCss(fontId: TextFontId, fontSize: number): string {
-  const weight = isBold(fontId) ? 700 : 400;
-  const family = resolveFont(fontId).css;
-  return `${weight} ${fontSize}px ${family}`;
 }
 
 function wrapLine(
@@ -273,57 +242,169 @@ function blockSize(
   return { width, height };
 }
 
-function positionBlock(
-  position: TextPosition,
+function marginPx(imageWidth: number, imageHeight: number): number {
+  return Math.max(8, Math.min(imageWidth, imageHeight) * MARGIN_RATIO);
+}
+
+export function clampTextPlacement(
+  placement: TextPlacement,
+  imageWidth: number,
+  imageHeight: number,
+  blockWidth: number,
+  blockHeight: number,
+): TextPlacement {
+  const margin = marginPx(imageWidth, imageHeight);
+  const minX = margin / imageWidth;
+  const minY = margin / imageHeight;
+  const maxX = Math.max(minX, (imageWidth - blockWidth - margin) / imageWidth);
+  const maxY = Math.max(
+    minY,
+    (imageHeight - blockHeight - margin) / imageHeight,
+  );
+
+  return {
+    x: clamp(placement.x, minX, maxX),
+    y: clamp(placement.y, minY, maxY),
+  };
+}
+
+function placementToOrigin(
+  placement: TextPlacement,
   imageWidth: number,
   imageHeight: number,
   blockWidth: number,
   blockHeight: number,
 ): { x: number; y: number } {
-  const margin = Math.max(8, Math.min(imageWidth, imageHeight) * MARGIN_RATIO);
-
-  switch (position) {
-    case "top-left":
-      return { x: margin, y: margin };
-    case "top-center":
-      return { x: (imageWidth - blockWidth) / 2, y: margin };
-    case "top-right":
-      return { x: imageWidth - blockWidth - margin, y: margin };
-    case "bottom-left":
-      return { x: margin, y: imageHeight - blockHeight - margin };
-    case "bottom-center":
-      return {
-        x: (imageWidth - blockWidth) / 2,
-        y: imageHeight - blockHeight - margin,
-      };
-    case "bottom-right":
-      return {
-        x: imageWidth - blockWidth - margin,
-        y: imageHeight - blockHeight - margin,
-      };
-    case "center":
-    default:
-      return {
-        x: (imageWidth - blockWidth) / 2,
-        y: (imageHeight - blockHeight) / 2,
-      };
-  }
+  const clamped = clampTextPlacement(
+    placement,
+    imageWidth,
+    imageHeight,
+    blockWidth,
+    blockHeight,
+  );
+  return {
+    x: clamped.x * imageWidth,
+    y: clamped.y * imageHeight,
+  };
 }
 
-function horizontalAlign(position: TextPosition): CanvasTextAlign {
-  if (position.endsWith("left")) return "left";
-  if (position.endsWith("right")) return "right";
-  return "center";
+type TextLayout = {
+  fontSize: number;
+  lines: string[];
+  size: { width: number; height: number };
+  lineHeight: number;
+};
+
+function computeTextLayout(
+  ctx: CanvasRenderingContext2D,
+  canvasWidth: number,
+  options: Pick<DrawTextOptions, "text" | "fontId" | "fontSize">,
+  scale: number,
+): TextLayout | null {
+  const text = options.text.trimEnd();
+  if (!text.trim()) return null;
+
+  const fontSize = clampFontSize(options.fontSize) * scale;
+  ctx.font = fontCss(options.fontId, fontSize);
+  const maxWidth = Math.max(16, canvasWidth * (1 - MARGIN_RATIO * 2));
+  const lines = layoutLines(ctx, text, maxWidth);
+  const size = blockSize(ctx, lines, fontSize);
+  return { fontSize, lines, size, lineHeight: fontSize * LINE_HEIGHT_RATIO };
 }
 
-function lineX(
-  originX: number,
+/** Measure the text block on a canvas-sized surface (preview or full export). */
+export function measureTextBlock(
+  sourceWidth: number,
+  sourceHeight: number,
+  canvasWidth: number,
+  canvasHeight: number,
+  options: DrawTextOptions,
+): TextBlockBounds | null {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  const scale = canvasWidth / sourceWidth;
+  const layout = computeTextLayout(ctx, canvasWidth, options, scale);
+  if (!layout) return null;
+
+  const origin = placementToOrigin(
+    options.placement,
+    canvasWidth,
+    canvasHeight,
+    layout.size.width,
+    layout.size.height,
+  );
+
+  return {
+    x: origin.x,
+    y: origin.y,
+    width: layout.size.width,
+    height: layout.size.height,
+  };
+}
+
+/** Measure text block size in full image coordinates. */
+export function measureTextBlockSize(
+  imageWidth: number,
+  options: Omit<DrawTextOptions, "placement">,
+): { width: number; height: number } | null {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  const layout = computeTextLayout(ctx, imageWidth, options, 1);
+  if (!layout) return null;
+  return layout.size;
+}
+
+/** Keep the text block centered on a point while updating placement. */
+export function placementForCenter(
+  centerX: number,
+  centerY: number,
   blockWidth: number,
-  align: CanvasTextAlign,
-): number {
-  if (align === "left") return originX;
-  if (align === "right") return originX + blockWidth;
-  return originX + blockWidth / 2;
+  blockHeight: number,
+  imageWidth: number,
+  imageHeight: number,
+): TextPlacement {
+  return clampTextPlacement(
+    {
+      x: (centerX - blockWidth / 2) / imageWidth,
+      y: (centerY - blockHeight / 2) / imageHeight,
+    },
+    imageWidth,
+    imageHeight,
+    blockWidth,
+    blockHeight,
+  );
+}
+
+export function textBlockCenter(
+  bounds: TextBlockBounds,
+): { x: number; y: number } {
+  return {
+    x: bounds.x + bounds.width / 2,
+    y: bounds.y + bounds.height / 2,
+  };
+}
+
+/** Center the text block on the image (full-resolution coordinates). */
+export function centeredPlacement(
+  sourceWidth: number,
+  sourceHeight: number,
+  options: Omit<DrawTextOptions, "placement">,
+): TextPlacement {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return { x: 0.5, y: 0.5 };
+
+  const layout = computeTextLayout(ctx, sourceWidth, options, 1);
+  if (!layout) return { x: 0.5, y: 0.5 };
+
+  return {
+    x: (sourceWidth - layout.size.width) / 2 / sourceWidth,
+    y: (sourceHeight - layout.size.height) / 2 / sourceHeight,
+  };
 }
 
 /** Draw the source image and text overlay onto an existing canvas (full or preview size). */
@@ -348,22 +429,15 @@ export function drawTextOnCanvas(
   const text = options.text.trimEnd();
   if (!text.trim()) return;
 
-  const fontSize = clampFontSize(options.fontSize) * scale;
   const opacity = clamp(options.opacity, 0.05, 1);
-  const color = resolveColor(options.colorId);
-  const align = horizontalAlign(options.position);
+  const color = normalizeHexColor(options.color);
 
-  ctx.save();
-  ctx.font = fontCss(options.fontId, fontSize);
-  ctx.textBaseline = "top";
-  ctx.textAlign = align;
-  ctx.globalAlpha = opacity;
+  const layout = computeTextLayout(ctx, canvasWidth, options, scale);
+  if (!layout) return;
 
-  const maxWidth = Math.max(16, canvasWidth * (1 - MARGIN_RATIO * 2));
-  const lines = layoutLines(ctx, text, maxWidth);
-  const size = blockSize(ctx, lines, fontSize);
-  const origin = positionBlock(
-    options.position,
+  const { fontSize, lines, size, lineHeight } = layout;
+  const origin = placementToOrigin(
+    options.placement,
     canvasWidth,
     canvasHeight,
     size.width,
@@ -372,11 +446,16 @@ export function drawTextOnCanvas(
 
   const centerX = origin.x + size.width / 2;
   const centerY = origin.y + size.height / 2;
-  const lineHeight = fontSize * LINE_HEIGHT_RATIO;
+
+  ctx.save();
+  ctx.font = fontCss(options.fontId, fontSize);
+  ctx.textBaseline = "top";
+  ctx.textAlign = "left";
+  ctx.globalAlpha = opacity;
 
   if (options.rotation !== 0) {
     ctx.translate(centerX, centerY);
-    ctx.rotate((options.rotation * Math.PI) / 180);
+    ctx.rotate((normalizeRotation(options.rotation) * Math.PI) / 180);
     ctx.translate(-centerX, -centerY);
   }
 
@@ -391,7 +470,7 @@ export function drawTextOnCanvas(
 
   lines.forEach((line, index) => {
     const y = origin.y + index * lineHeight;
-    const x = lineX(origin.x, size.width, align);
+    const x = origin.x;
     if (options.outline && line) {
       ctx.strokeText(line, x, y);
     }
@@ -403,20 +482,98 @@ export function drawTextOnCanvas(
   ctx.restore();
 }
 
-function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  mimeType: string,
+  quality?: number,
+): Promise<Blob> {
   return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        reject(new Error("Could not export the image with text."));
-        return;
-      }
-      resolve(blob);
-    }, "image/png");
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          reject(new Error("Could not export the image with text."));
+          return;
+        }
+        resolve(blob);
+      },
+      mimeType,
+      quality,
+    );
   });
 }
 
-export function downloadTextImage(blob: Blob, sourceFile: File) {
-  downloadBlob(blob, `${fileBaseName(sourceFile)}-with-text.png`);
+function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+  return canvasToBlob(canvas, "image/png");
+}
+
+export type TextDownloadFormat = "jpg" | "png" | "webp";
+
+export const TEXT_DOWNLOAD_FORMATS: Array<{
+  value: TextDownloadFormat;
+  label: string;
+  hint: string;
+}> = [
+  {
+    value: "jpg",
+    label: "JPG",
+    hint: "Smaller file size, great for photos",
+  },
+  {
+    value: "png",
+    label: "PNG",
+    hint: "Lossless quality, supports transparency",
+  },
+  {
+    value: "webp",
+    label: "WebP",
+    hint: "Modern format, best compression",
+  },
+];
+
+async function encodeTextImageDownload(
+  source: Blob,
+  format: TextDownloadFormat,
+): Promise<Blob> {
+  if (format === "jpg" && source.type === "image/jpeg") return source;
+  if (format === "png" && source.type === "image/png") return source;
+  if (format === "webp" && source.type === "image/webp") return source;
+
+  const bitmap = await createImageBitmap(source);
+  const canvas = document.createElement("canvas");
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const ctx = canvas.getContext("2d", { alpha: format !== "jpg" });
+  if (!ctx) {
+    bitmap.close();
+    throw new Error("Canvas is not supported in this browser.");
+  }
+
+  if (format === "jpg") {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  ctx.drawImage(bitmap, 0, 0);
+  bitmap.close();
+
+  const mimeType =
+    format === "jpg"
+      ? "image/jpeg"
+      : format === "webp"
+        ? "image/webp"
+        : "image/png";
+  const blob = await canvasToBlob(canvas, mimeType, 0.92);
+  canvas.width = 0;
+  canvas.height = 0;
+  return blob;
+}
+
+export async function downloadTextImage(
+  blob: Blob,
+  sourceFile: File,
+  format: TextDownloadFormat = "png",
+) {
+  const encoded = await encodeTextImageDownload(blob, format);
+  downloadBlob(encoded, `${fileBaseName(sourceFile)}-with-text.${format}`);
 }
 
 export async function readImageDimensions(
@@ -443,9 +600,9 @@ export async function addTextOnImage(
     onProgress,
     signal,
     text,
-    position = "center",
-    fontId = "sans",
-    colorId = "white",
+    placement,
+    fontId = "system-sans",
+    color = DEFAULT_TEXT_COLOR,
     rotation = 0,
     fontSize = DEFAULT_FONT_SIZE,
     opacity = DEFAULT_OPACITY,
@@ -473,6 +630,9 @@ export async function addTextOnImage(
   }
 
   onProgress?.("Drawing text…");
+  await ensureFontReady(fontId, clampFontSize(fontSize));
+  throwIfAborted(signal);
+
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -481,11 +641,23 @@ export async function addTextOnImage(
     throw new Error("Canvas is not supported in this browser.");
   }
 
+  const resolvedPlacement =
+    placement ??
+    centeredPlacement(width, height, {
+      text,
+      fontId,
+      color,
+      rotation,
+      fontSize: clampFontSize(fontSize),
+      opacity,
+      outline,
+    });
+
   drawTextOnCanvas(ctx, image, width, height, width, height, {
     text,
-    position,
+    placement: resolvedPlacement,
     fontId,
-    colorId,
+    color: normalizeHexColor(color),
     rotation,
     fontSize: clampFontSize(fontSize),
     opacity,
