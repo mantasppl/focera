@@ -16,6 +16,8 @@ function tileConfig(): { size: number; overlap: number } {
 
 type OrtModule = {
   env?: {
+    debug?: boolean;
+    logLevel?: "verbose" | "info" | "warning" | "error" | "fatal";
     wasm?: { numThreads?: number; proxy?: boolean };
   };
   Tensor: typeof import("onnxruntime-web").Tensor;
