@@ -79,7 +79,7 @@ export function normalizeHexColor(value: string): string {
   return DEFAULT_TEXT_COLOR;
 }
 
-/** Top-left corner of the text block, as a fraction of image width/height (0–1). */
+/** Top-left corner of the text block, as a fraction of image width/height. */
 export type TextPlacement = {
   x: number;
   y: number;
@@ -242,49 +242,14 @@ function blockSize(
   return { width, height };
 }
 
-function marginPx(imageWidth: number, imageHeight: number): number {
-  return Math.max(8, Math.min(imageWidth, imageHeight) * MARGIN_RATIO);
-}
-
-export function clampTextPlacement(
-  placement: TextPlacement,
-  imageWidth: number,
-  imageHeight: number,
-  blockWidth: number,
-  blockHeight: number,
-): TextPlacement {
-  const margin = marginPx(imageWidth, imageHeight);
-  const minX = margin / imageWidth;
-  const minY = margin / imageHeight;
-  const maxX = Math.max(minX, (imageWidth - blockWidth - margin) / imageWidth);
-  const maxY = Math.max(
-    minY,
-    (imageHeight - blockHeight - margin) / imageHeight,
-  );
-
-  return {
-    x: clamp(placement.x, minX, maxX),
-    y: clamp(placement.y, minY, maxY),
-  };
-}
-
 function placementToOrigin(
   placement: TextPlacement,
   imageWidth: number,
   imageHeight: number,
-  blockWidth: number,
-  blockHeight: number,
 ): { x: number; y: number } {
-  const clamped = clampTextPlacement(
-    placement,
-    imageWidth,
-    imageHeight,
-    blockWidth,
-    blockHeight,
-  );
   return {
-    x: clamped.x * imageWidth,
-    y: clamped.y * imageHeight,
+    x: placement.x * imageWidth,
+    y: placement.y * imageHeight,
   };
 }
 
@@ -332,8 +297,6 @@ export function measureTextBlock(
     options.placement,
     canvasWidth,
     canvasHeight,
-    layout.size.width,
-    layout.size.height,
   );
 
   return {
@@ -367,16 +330,10 @@ export function placementForCenter(
   imageWidth: number,
   imageHeight: number,
 ): TextPlacement {
-  return clampTextPlacement(
-    {
-      x: (centerX - blockWidth / 2) / imageWidth,
-      y: (centerY - blockHeight / 2) / imageHeight,
-    },
-    imageWidth,
-    imageHeight,
-    blockWidth,
-    blockHeight,
-  );
+  return {
+    x: (centerX - blockWidth / 2) / imageWidth,
+    y: (centerY - blockHeight / 2) / imageHeight,
+  };
 }
 
 export function textBlockCenter(
@@ -440,8 +397,6 @@ export function drawTextOnCanvas(
     options.placement,
     canvasWidth,
     canvasHeight,
-    size.width,
-    size.height,
   );
 
   const centerX = origin.x + size.width / 2;

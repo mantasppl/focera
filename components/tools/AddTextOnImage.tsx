@@ -21,7 +21,6 @@ import {
   addTextOnImage,
   centeredPlacement,
   clampFontSize,
-  clampTextPlacement,
   defaultFontSizeForImage,
   downloadTextImage,
   drawTextOnCanvas,
@@ -435,19 +434,12 @@ export default function AddTextOnImage() {
       const blockY = pointer.y - drag.offsetY;
       const sourceX = blockX / canvasScale;
       const sourceY = blockY / canvasScale;
-      const blockWidth = textBounds.width / canvasScale;
-      const blockHeight = textBounds.height / canvasScale;
 
       userPlacedRef.current = true;
-      setPlacement(
-        clampTextPlacement(
-          { x: sourceX / originalWidth, y: sourceY / originalHeight },
-          originalWidth,
-          originalHeight,
-          blockWidth,
-          blockHeight,
-        ),
-      );
+      setPlacement({
+        x: sourceX / originalWidth,
+        y: sourceY / originalHeight,
+      });
       return;
     }
 

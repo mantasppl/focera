@@ -6459,6 +6459,7 @@ a {
   display: inline-block;
   max-width: 100%;
   margin: 0 auto;
+  overflow: visible;
 }
 
 .add-text-on-image__transform {

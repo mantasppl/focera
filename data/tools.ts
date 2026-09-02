@@ -2112,7 +2112,7 @@ export const tools: Tool[] = [
     name: "Add Text on Image Tool",
     shortName: "Add Text on Image",
     description:
-      "Add text on image online — drag, resize, and rotate text with 28 fonts, a full color palette, opacity control, and live preview. Free, private, and local in your browser.",
+      "Add text on image online — drag, resize, and rotate text with 175+ fonts, a full color palette, opacity control, and live preview. Free, private, and local in your browser.",
     categories: ["image"],
     status: "ready",
     href: "/add-text-on-image",
