@@ -8,7 +8,9 @@ import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import RelatedTools from "@/components/RelatedTools";
+import ShareMenu from "@/components/ShareMenu";
 import ToolFeedbackPrompt from "@/components/ToolFeedbackPrompt";
+import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 type ToolLayoutProps = {
@@ -56,13 +58,24 @@ export default function ToolLayout({
           <p className="tool-hero__lede">{tool.description}</p>
         </section>
 
-        <section
-          id={workspaceId}
-          className="tool-workspace"
-          aria-label={tool.name}
-        >
-          {children}
-        </section>
+        <div className="tool-workspace-block">
+          <section
+            id={workspaceId}
+            className="tool-workspace"
+            aria-label={tool.name}
+          >
+            {children}
+          </section>
+          <div className="tool-share-row">
+            <ShareMenu
+              variant="labeled"
+              align="start"
+              title={`${tool.name} | ${SITE_NAME}`}
+              text={tool.description}
+              url={absoluteUrl(tool.href)}
+            />
+          </div>
+        </div>
 
         <div className="tool-after-workspace">
           {parentTool ? (
