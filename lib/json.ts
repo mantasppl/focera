@@ -1,4 +1,4 @@
-import { brandedDownloadFilename } from "@/lib/image";
+import { downloadBlob } from "@/lib/image";
 
 export type JsonParseError = {
   message: string;
@@ -142,11 +142,8 @@ export function countJsonLines(text: string): number {
 }
 
 export function downloadJson(text: string, filename = "formatted.json"): void {
-  const blob = new Blob([text], { type: "application/json;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = brandedDownloadFilename(filename);
-  link.click();
-  URL.revokeObjectURL(url);
+  downloadBlob(
+    new Blob([text], { type: "application/json;charset=utf-8" }),
+    filename,
+  );
 }

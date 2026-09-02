@@ -6,7 +6,8 @@ import * as schema from "@/lib/analytics/schema";
 
 let client: Client | null = null;
 let db: LibSQLDatabase<typeof schema> | null = null;
-let bootstrapped = false;
+let appliedSchemaVersion = 0;
+const ANALYTICS_SCHEMA_VERSION = 2;
 let resolvedUrl: string | null = null;
 
 function isServerlessRuntime(): boolean {
@@ -97,7 +98,7 @@ export function getDb(): LibSQLDatabase<typeof schema> {
 
 /** Create tables/indexes if missing (safe to call on every request once). */
 export async function ensureAnalyticsSchema(): Promise<void> {
-  if (bootstrapped) return;
+  if (appliedSchemaVersion >= ANALYTICS_SCHEMA_VERSION) return;
   const c = getAnalyticsClient();
   await c.executeMultiple(`
 CREATE TABLE IF NOT EXISTS tool_usage (
@@ -124,8 +125,21 @@ CREATE INDEX IF NOT EXISTS tool_usage_session_id_idx ON tool_usage (session_id);
 CREATE INDEX IF NOT EXISTS tool_usage_event_type_idx ON tool_usage (event_type);
 CREATE INDEX IF NOT EXISTS tool_usage_tool_time_idx ON tool_usage (tool_id, timestamp);
 CREATE INDEX IF NOT EXISTS tool_usage_success_time_idx ON tool_usage (success, timestamp);
+CREATE TABLE IF NOT EXISTS tool_ratings (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tool_id TEXT NOT NULL,
+  tool_name TEXT NOT NULL,
+  stars INTEGER NOT NULL,
+  comment TEXT,
+  created_at INTEGER NOT NULL,
+  session_id TEXT,
+  ip_hash TEXT
+);
+CREATE INDEX IF NOT EXISTS tool_ratings_tool_id_idx ON tool_ratings (tool_id);
+CREATE INDEX IF NOT EXISTS tool_ratings_created_at_idx ON tool_ratings (created_at);
+CREATE INDEX IF NOT EXISTS tool_ratings_tool_time_idx ON tool_ratings (tool_id, created_at);
 `);
-  bootstrapped = true;
+  appliedSchemaVersion = ANALYTICS_SCHEMA_VERSION;
 }
 
 export function isAnalyticsConfigured(): boolean {

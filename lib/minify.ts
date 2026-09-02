@@ -1,4 +1,4 @@
-import { brandedDownloadFilename } from "@/lib/image";
+import { downloadBlob } from "@/lib/image";
 
 export type MinifyMode = "html" | "css" | "js";
 
@@ -306,13 +306,8 @@ export function downloadMinified(
   filename?: string,
 ): void {
   const meta = getMinifyMode(mode);
-  const blob = new Blob([text], { type: meta.mime });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = brandedDownloadFilename(
+  downloadBlob(
+    new Blob([text], { type: meta.mime }),
     filename ?? `minified.${meta.extension}`,
   );
-  link.click();
-  URL.revokeObjectURL(url);
 }

@@ -4,6 +4,7 @@ import hljs from "highlight.js";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { brandedDownloadFilename, downloadBlob } from "@/lib/image";
+import { notifyProductDownload } from "@/lib/ratings/notify";
 import { sanitizeHtmlBasic } from "@/lib/security/sanitize-html";
 
 export const MARKDOWN_THEME_KEY = "markdown-editor-theme";
@@ -247,6 +248,7 @@ export async function downloadMarkdownPdf(
     }
 
     pdf.save(brandedDownloadFilename(filename));
+    notifyProductDownload();
   } finally {
     host.remove();
   }

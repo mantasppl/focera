@@ -17,6 +17,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { useToolAnalytics } from "@/lib/analytics/client";
 import { brandedDownloadFilename, downloadBlob } from "@/lib/image";
+import { notifyProductDownload } from "@/lib/ratings/notify";
 import {
   decodeQrFromImageFile,
   decodeQrFromVideoFrame,
@@ -368,6 +369,7 @@ function QRGeneratorInner() {
       doc.save(
         brandedDownloadFilename(`${qrDownloadBasename(content, payload)}.pdf`),
       );
+      notifyProductDownload();
       trackSuccess();
     } catch {
       setError("Could not create PDF. Try downloading PNG instead.");

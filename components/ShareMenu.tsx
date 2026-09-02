@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   SHARE_NETWORKS,
   canonicalShareUrl,
@@ -30,21 +31,34 @@ export default function ShareMenu({
 }: ShareMenuProps) {
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [canNativeShare, setCanNativeShare] = useState(false);
+  const [centerOnMobile, setCenterOnMobile] = useState(false);
 
   useEffect(() => {
     setCanNativeShare(typeof navigator !== "undefined" && "share" in navigator);
   }, []);
 
   useEffect(() => {
+    const media = window.matchMedia("(max-width: 959px)");
+    function sync() {
+      setCenterOnMobile(media.matches);
+    }
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
 
     function onPointerDown(event: MouseEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpen(false);
-      }
+      const target = event.target as Node;
+      if (rootRef.current?.contains(target)) return;
+      if (panelRef.current?.contains(target)) return;
+      setOpen(false);
     }
 
     function onKeyDown(event: KeyboardEvent) {
@@ -95,6 +109,68 @@ export default function ShareMenu({
     }
   }
 
+  const useCenteredPortal = variant === "icon" && centerOnMobile;
+
+  const panel = open ? (
+    <div
+      ref={panelRef}
+      id={panelId}
+      className="share-panel"
+      role="dialog"
+      aria-label="Share options"
+    >
+      <p className="share-panel__title">Share</p>
+      <button
+        type="button"
+        className={cn("share-copy", copied && "is-copied")}
+        onClick={() => void onCopy()}
+      >
+        {copied ? <CheckIcon /> : <LinkIcon />}
+        <span className="share-copy__text">
+          <span className="share-copy__label">
+            {copied ? "Address copied" : "Copy address"}
+          </span>
+          <span className="share-copy__url">{payload().url}</span>
+        </span>
+      </button>
+
+      <ul className="share-grid">
+        {SHARE_NETWORKS.map((network) => {
+          const share = payload();
+          const href = shareNetworkHref(network.id, share.url, share.text);
+          const isMail = network.id === "email";
+          return (
+            <li key={network.id}>
+              <a
+                className="share-network"
+                href={href}
+                target={isMail ? undefined : "_blank"}
+                rel={isMail ? undefined : "noopener noreferrer"}
+                onClick={() => setOpen(false)}
+              >
+                <span className="share-network__icon" aria-hidden="true">
+                  <NetworkIcon id={network.id} />
+                </span>
+                {network.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+
+      {canNativeShare ? (
+        <button
+          type="button"
+          className="share-native"
+          onClick={() => void onNativeShare()}
+        >
+          <ShareNodesIcon />
+          Share via device
+        </button>
+      ) : null}
+    </div>
+  ) : null;
+
   return (
     <div
       ref={rootRef}
@@ -122,64 +198,20 @@ export default function ShareMenu({
         {variant === "labeled" ? <span>Share</span> : null}
       </button>
 
-      {open ? (
-        <div
-          id={panelId}
-          className="share-panel"
-          role="dialog"
-          aria-label="Share options"
-        >
-          <p className="share-panel__title">Share</p>
-          <button
-            type="button"
-            className={cn("share-copy", copied && "is-copied")}
-            onClick={() => void onCopy()}
-          >
-            {copied ? <CheckIcon /> : <LinkIcon />}
-            <span className="share-copy__text">
-              <span className="share-copy__label">
-                {copied ? "Address copied" : "Copy address"}
-              </span>
-              <span className="share-copy__url">{payload().url}</span>
-            </span>
-          </button>
-
-          <ul className="share-grid">
-            {SHARE_NETWORKS.map((network) => {
-              const share = payload();
-              const href = shareNetworkHref(network.id, share.url, share.text);
-              const isMail = network.id === "email";
-              return (
-                <li key={network.id}>
-                  <a
-                    className="share-network"
-                    href={href}
-                    target={isMail ? undefined : "_blank"}
-                    rel={isMail ? undefined : "noopener noreferrer"}
-                    onClick={() => setOpen(false)}
-                  >
-                    <span className="share-network__icon" aria-hidden="true">
-                      <NetworkIcon id={network.id} />
-                    </span>
-                    {network.label}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-
-          {canNativeShare ? (
-            <button
-              type="button"
-              className="share-native"
-              onClick={() => void onNativeShare()}
-            >
-              <ShareNodesIcon />
-              Share via device
-            </button>
-          ) : null}
-        </div>
-      ) : null}
+      {useCenteredPortal && panel && typeof document !== "undefined"
+        ? createPortal(
+            <div className="share-portal">
+              <button
+                type="button"
+                className="share-portal__backdrop"
+                aria-label="Close share options"
+                onClick={() => setOpen(false)}
+              />
+              {panel}
+            </div>,
+            document.body,
+          )
+        : panel}
     </div>
   );
 }

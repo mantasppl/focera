@@ -52,3 +52,25 @@ export const toolUsage = sqliteTable(
 
 export type ToolUsageRow = typeof toolUsage.$inferSelect;
 export type NewToolUsageRow = typeof toolUsage.$inferInsert;
+
+export const toolRatings = sqliteTable(
+  "tool_ratings",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    toolId: text("tool_id").notNull(),
+    toolName: text("tool_name").notNull(),
+    stars: integer("stars").notNull(),
+    comment: text("comment"),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+    sessionId: text("session_id"),
+    ipHash: text("ip_hash"),
+  },
+  (table) => [
+    index("tool_ratings_tool_id_idx").on(table.toolId),
+    index("tool_ratings_created_at_idx").on(table.createdAt),
+    index("tool_ratings_tool_time_idx").on(table.toolId, table.createdAt),
+  ],
+);
+
+export type ToolRatingRow = typeof toolRatings.$inferSelect;
+export type NewToolRatingRow = typeof toolRatings.$inferInsert;

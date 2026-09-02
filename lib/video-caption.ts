@@ -1,4 +1,4 @@
-import { brandedDownloadFilename } from "@/lib/image";
+import { downloadBlob } from "@/lib/image";
 
 export const ACCEPTED_VIDEO_TYPES = [
   "video/mp4",
@@ -217,23 +217,10 @@ export function downloadTextFile(
   filename: string,
   mime = "text/plain;charset=utf-8",
 ): void {
-  const blob = new Blob([content], { type: mime });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = brandedDownloadFilename(filename);
-  link.click();
-  URL.revokeObjectURL(url);
+  downloadBlob(new Blob([content], { type: mime }), filename);
 }
 
-export function downloadBlob(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = brandedDownloadFilename(filename);
-  link.click();
-  URL.revokeObjectURL(url);
-}
+export { downloadBlob };
 
 export function cueAtTime(
   cues: CaptionCue[],

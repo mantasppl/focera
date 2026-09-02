@@ -10,6 +10,7 @@ import {
   type TikTokVideoResult,
 } from "@/lib/tiktok-video";
 import { useToolAnalytics } from "@/lib/analytics/client";
+import { downloadBlob } from "@/lib/image";
 import { cn } from "@/lib/utils";
 
 const EXAMPLE_URLS = [
@@ -105,12 +106,7 @@ export default function TikTokVideoDownloader() {
       }
 
       const blob = await response.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = objectUrl;
-      link.download = downloadFilename(result);
-      link.click();
-      URL.revokeObjectURL(objectUrl);
+      downloadBlob(blob, downloadFilename(result));
       trackSuccess();
     } catch (err) {
       trackFailure();

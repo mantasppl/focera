@@ -10,6 +10,7 @@ import {
   type TwitterVideoResult,
 } from "@/lib/twitter-video";
 import { useToolAnalytics } from "@/lib/analytics/client";
+import { downloadBlob } from "@/lib/image";
 import { cn } from "@/lib/utils";
 
 const EXAMPLE_URLS = [
@@ -113,16 +114,10 @@ export default function TwitterVideoDownloader() {
       }
 
       const blob = await response.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = objectUrl;
-      link.download = downloadFilename(
-        result,
-        selectedIndex,
-        result.videos.length,
+      downloadBlob(
+        blob,
+        downloadFilename(result, selectedIndex, result.videos.length),
       );
-      link.click();
-      URL.revokeObjectURL(objectUrl);
       trackSuccess();
     } catch (err) {
       trackFailure();

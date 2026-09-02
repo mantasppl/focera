@@ -1,3 +1,5 @@
+import { notifyProductDownload } from "@/lib/ratings/notify";
+
 export const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/png",
@@ -40,6 +42,7 @@ export function downloadBlob(blob: Blob, filename: string): void {
   link.download = brandedDownloadFilename(filename);
   link.click();
   URL.revokeObjectURL(url);
+  notifyProductDownload();
 }
 
 export function fileBaseName(file: File): string {

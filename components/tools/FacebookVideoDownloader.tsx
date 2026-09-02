@@ -10,6 +10,7 @@ import {
   type FacebookVideoResult,
 } from "@/lib/facebook-video";
 import { useToolAnalytics } from "@/lib/analytics/client";
+import { downloadBlob } from "@/lib/image";
 import { cn } from "@/lib/utils";
 
 const EXAMPLE_URLS = [
@@ -106,12 +107,7 @@ export default function FacebookVideoDownloader() {
       }
 
       const blob = await response.blob();
-      const objectUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = objectUrl;
-      link.download = downloadFilename(result);
-      link.click();
-      URL.revokeObjectURL(objectUrl);
+      downloadBlob(blob, downloadFilename(result));
       trackSuccess();
     } catch (err) {
       trackFailure();
