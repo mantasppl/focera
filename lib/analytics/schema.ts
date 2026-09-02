@@ -74,3 +74,47 @@ export const toolRatings = sqliteTable(
 
 export type ToolRatingRow = typeof toolRatings.$inferSelect;
 export type NewToolRatingRow = typeof toolRatings.$inferInsert;
+
+export const pageViews = sqliteTable(
+  "page_views",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    eventId: text("event_id").notNull().unique(),
+    sessionId: text("session_id").notNull(),
+    timestamp: integer("timestamp", { mode: "timestamp_ms" }).notNull(),
+    path: text("path").notNull(),
+    referrer: text("referrer"),
+    ipHash: text("ip_hash"),
+    country: text("country"),
+    browser: text("browser"),
+    os: text("os"),
+    device: text("device"),
+  },
+  (table) => [
+    index("page_views_timestamp_idx").on(table.timestamp),
+    index("page_views_session_id_idx").on(table.sessionId),
+    index("page_views_session_time_idx").on(table.sessionId, table.timestamp),
+  ],
+);
+
+export type PageViewRow = typeof pageViews.$inferSelect;
+export type NewPageViewRow = typeof pageViews.$inferInsert;
+
+export const visitorPresence = sqliteTable(
+  "visitor_presence",
+  {
+    sessionId: text("session_id").primaryKey(),
+    firstSeen: integer("first_seen", { mode: "timestamp_ms" }).notNull(),
+    lastSeen: integer("last_seen", { mode: "timestamp_ms" }).notNull(),
+    path: text("path"),
+    ipHash: text("ip_hash"),
+    country: text("country"),
+    browser: text("browser"),
+    os: text("os"),
+    device: text("device"),
+  },
+  (table) => [index("visitor_presence_last_seen_idx").on(table.lastSeen)],
+);
+
+export type VisitorPresenceRow = typeof visitorPresence.$inferSelect;
+export type NewVisitorPresenceRow = typeof visitorPresence.$inferInsert;

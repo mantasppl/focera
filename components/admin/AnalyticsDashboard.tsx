@@ -6,6 +6,7 @@ import { useAdminPath } from "@/components/admin/AdminPathContext";
 import DateRangeFilter from "@/components/admin/DateRangeFilter";
 import StatCards from "@/components/admin/StatCards";
 import ToolsTable from "@/components/admin/ToolsTable";
+import TrafficCards from "@/components/admin/TrafficCards";
 import Button from "@/components/Button";
 import { adminFetch } from "@/lib/admin/csrf-client";
 import { todayZonedIso } from "@/lib/analytics/timezone";
@@ -13,6 +14,7 @@ import type {
   DatePreset,
   NamedCount,
   OverviewStats,
+  SiteTrafficStats,
   TimeBucket,
   ToolStatsRow,
 } from "@/lib/analytics/types";
@@ -32,6 +34,11 @@ type OverviewResponse = {
   };
 };
 
+type TrafficResponse = {
+  ok: boolean;
+  traffic: SiteTrafficStats;
+};
+
 function todayIso(): string {
   return todayZonedIso();
 }
@@ -46,6 +53,9 @@ export default function AnalyticsDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [data, setData] = useState<OverviewResponse | null>(null);
+  const [traffic, setTraffic] = useState<SiteTrafficStats | null>(null);
+  const [trafficLoading, setTrafficLoading] = useState(true);
+  const [trafficError, setTrafficError] = useState("");
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDebouncedSearch(search.trim()), 250);
@@ -98,6 +108,46 @@ export default function AnalyticsDashboard() {
     };
   }, [preset, start, end, debouncedSearch, api]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
+
+    async function loadTraffic() {
+      try {
+        const response = await adminFetch(api("/analytics/traffic"), {
+          signal: controller.signal,
+        });
+        if (!active || controller.signal.aborted) return;
+        if (!response.ok) {
+          const body = (await response.json().catch(() => null)) as {
+            error?: string;
+          } | null;
+          throw new Error(body?.error || "Failed to load traffic.");
+        }
+        const json = (await response.json()) as TrafficResponse;
+        if (!active) return;
+        setTraffic(json.traffic);
+        setTrafficError("");
+      } catch (err) {
+        if (!active || controller.signal.aborted) return;
+        if (err instanceof Error && err.name === "AbortError") return;
+        setTrafficError(
+          err instanceof Error ? err.message : "Failed to load traffic.",
+        );
+      } finally {
+        if (active) setTrafficLoading(false);
+      }
+    }
+
+    void loadTraffic();
+    const interval = window.setInterval(() => void loadTraffic(), 20_000);
+    return () => {
+      active = false;
+      controller.abort();
+      window.clearInterval(interval);
+    };
+  }, [api]);
+
   async function downloadExport(format: "csv" | "xlsx") {
     const response = await adminFetch(api("/analytics/export"), {
       method: "POST",
@@ -129,6 +179,9 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="admin-dashboard">
+      {trafficError ? <div className="admin-error">{trafficError}</div> : null}
+      <TrafficCards stats={traffic} loading={trafficLoading && !traffic} />
+
       <div className="admin-toolbar">
         <DateRangeFilter
           preset={preset}
@@ -164,6 +217,14 @@ export default function AnalyticsDashboard() {
           {data.warning}
         </div>
       ) : null}
+
+      <div className="admin-table-card__head">
+        <h2>Tool usage</h2>
+        <p>
+          Completions for the selected range, with today, last 7 days, and last
+          30 days alongside.
+        </p>
+      </div>
 
       <StatCards stats={data?.stats ?? null} loading={loading && !data} />
 

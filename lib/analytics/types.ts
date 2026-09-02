@@ -38,6 +38,23 @@ export type OverviewStats = {
   successRate: number;
 };
 
+/** Visitors with a heartbeat newer than this are counted as online. */
+export const ONLINE_WINDOW_MS = 5 * 60 * 1000;
+
+export type TrafficPeriodStats = {
+  views: number;
+  unique: number;
+};
+
+export type SiteTrafficStats = {
+  onlineNow: number;
+  onlineWindowSeconds: number;
+  today: TrafficPeriodStats;
+  week: TrafficPeriodStats;
+  month: TrafficPeriodStats;
+  allTime: TrafficPeriodStats;
+};
+
 export type ToolStatsRow = {
   toolId: string;
   toolName: string;

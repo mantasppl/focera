@@ -99,6 +99,22 @@ export function startOfZonedYear(date: Date = new Date()): Date {
   return zonedTimeToUtc(parts.year, 1, 1, 0, 0, 0, 0);
 }
 
+export function startOfZonedMonth(date: Date = new Date()): Date {
+  const parts = getZonedParts(date);
+  return zonedTimeToUtc(parts.year, parts.month, 1, 0, 0, 0, 0);
+}
+
+/** Monday 00:00 in Europe/Vilnius for the ISO week containing `date`. */
+export function startOfZonedIsoWeek(date: Date = new Date()): Date {
+  const parts = getZonedParts(date);
+  const utcNoon = new Date(
+    Date.UTC(parts.year, parts.month - 1, parts.day, 12, 0, 0),
+  );
+  const isoDow = utcNoon.getUTCDay() || 7;
+  utcNoon.setUTCDate(utcNoon.getUTCDate() - (isoDow - 1));
+  return startOfZonedDay(utcNoon);
+}
+
 /** Parse YYYY-MM-DD as a calendar day in Europe/Vilnius. */
 export function parseZonedDateInput(value: string): Date | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());

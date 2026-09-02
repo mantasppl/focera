@@ -7,7 +7,7 @@ import * as schema from "@/lib/analytics/schema";
 let client: Client | null = null;
 let db: LibSQLDatabase<typeof schema> | null = null;
 let appliedSchemaVersion = 0;
-const ANALYTICS_SCHEMA_VERSION = 2;
+const ANALYTICS_SCHEMA_VERSION = 3;
 let resolvedUrl: string | null = null;
 
 function isServerlessRuntime(): boolean {
@@ -138,6 +138,34 @@ CREATE TABLE IF NOT EXISTS tool_ratings (
 CREATE INDEX IF NOT EXISTS tool_ratings_tool_id_idx ON tool_ratings (tool_id);
 CREATE INDEX IF NOT EXISTS tool_ratings_created_at_idx ON tool_ratings (created_at);
 CREATE INDEX IF NOT EXISTS tool_ratings_tool_time_idx ON tool_ratings (tool_id, created_at);
+CREATE TABLE IF NOT EXISTS page_views (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  event_id TEXT NOT NULL UNIQUE,
+  session_id TEXT NOT NULL,
+  timestamp INTEGER NOT NULL,
+  path TEXT NOT NULL,
+  referrer TEXT,
+  ip_hash TEXT,
+  country TEXT,
+  browser TEXT,
+  os TEXT,
+  device TEXT
+);
+CREATE INDEX IF NOT EXISTS page_views_timestamp_idx ON page_views (timestamp);
+CREATE INDEX IF NOT EXISTS page_views_session_id_idx ON page_views (session_id);
+CREATE INDEX IF NOT EXISTS page_views_session_time_idx ON page_views (session_id, timestamp);
+CREATE TABLE IF NOT EXISTS visitor_presence (
+  session_id TEXT PRIMARY KEY,
+  first_seen INTEGER NOT NULL,
+  last_seen INTEGER NOT NULL,
+  path TEXT,
+  ip_hash TEXT,
+  country TEXT,
+  browser TEXT,
+  os TEXT,
+  device TEXT
+);
+CREATE INDEX IF NOT EXISTS visitor_presence_last_seen_idx ON visitor_presence (last_seen);
 `);
   appliedSchemaVersion = ANALYTICS_SCHEMA_VERSION;
 }

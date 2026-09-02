@@ -1,43 +1,12 @@
-import { createHash } from "node:crypto";
 import { ensureAnalyticsSchema, getDb } from "@/lib/analytics/db";
 import { parseUserAgent } from "@/lib/analytics/parse-ua";
+import {
+  extractRequestCountry,
+  extractRequestIp,
+  hashVisitorIp,
+} from "@/lib/analytics/request-meta";
 import { toolUsage } from "@/lib/analytics/schema";
 import type { TrackToolUsagePayload } from "@/lib/analytics/types";
-
-function hashIp(ip: string): string {
-  const salt =
-    process.env.ANALYTICS_IP_SALT?.trim() ||
-    process.env.ADMIN_SESSION_SECRET?.trim() ||
-    (process.env.NODE_ENV === "production" ? null : "focera-analytics-dev");
-  if (!salt) {
-    // Still hash — without a stable salt reuse across deploys is avoided by random salt per process.
-    return createHash("sha256")
-      .update(`ephemeral:${ip}:${process.pid}`)
-      .digest("hex")
-      .slice(0, 32);
-  }
-  return createHash("sha256").update(`${salt}:${ip}`).digest("hex").slice(0, 32);
-}
-
-function extractIp(request: Request): string | null {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  return realIp || null;
-}
-
-function extractCountry(request: Request): string | null {
-  // Vercel / Cloudflare common headers
-  return (
-    request.headers.get("x-vercel-ip-country") ||
-    request.headers.get("cf-ipcountry") ||
-    request.headers.get("x-country-code") ||
-    null
-  );
-}
 
 export async function recordToolUsageEvent(
   payload: TrackToolUsagePayload & { toolName: string },
@@ -45,9 +14,9 @@ export async function recordToolUsageEvent(
 ): Promise<{ inserted: boolean }> {
   await ensureAnalyticsSchema();
 
-  const ip = extractIp(request);
+  const ip = extractRequestIp(request);
   const ua = parseUserAgent(request.headers.get("user-agent"));
-  const country = extractCountry(request);
+  const country = extractRequestCountry(request);
 
   try {
     await getDb().insert(toolUsage).values({
@@ -57,7 +26,7 @@ export async function recordToolUsageEvent(
       toolName: payload.toolName,
       timestamp: new Date(),
       sessionId: payload.sessionId,
-      ipHash: ip ? hashIp(ip) : null,
+      ipHash: ip ? hashVisitorIp(ip) : null,
       country: country && country !== "XX" ? country.toUpperCase() : null,
       browser: ua.browser,
       os: ua.os,

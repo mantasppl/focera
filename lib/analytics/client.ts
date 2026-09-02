@@ -12,6 +12,8 @@ import {
 
 const SESSION_KEY = "focera_analytics_session";
 const ENDPOINT = "/api/analytics/event";
+const PAGEVIEW_ENDPOINT = "/api/analytics/pageview";
+const HEARTBEAT_MS = 25_000;
 
 function randomId(): string {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -35,6 +37,70 @@ export function getAnalyticsSessionId(): string {
   } catch {
     return randomId();
   }
+}
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+let lastView = { path: "", at: 0 };
+
+function postPresence(kind: "view" | "heartbeat", path: string) {
+  if (typeof window === "undefined") return;
+  const sessionId = getAnalyticsSessionId();
+  if (!UUID_RE.test(sessionId)) return;
+
+  const body = JSON.stringify({
+    sessionId,
+    path,
+    referrer: document.referrer || undefined,
+    kind,
+  });
+
+  void fetch(PAGEVIEW_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {
+    // best-effort
+  });
+}
+
+export function trackSitePageView(path: string) {
+  if (typeof window === "undefined") return;
+  const now = Date.now();
+  if (lastView.path === path && now - lastView.at < 1500) return;
+  lastView = { path, at: now };
+  postPresence("view", path);
+}
+
+export function trackSiteHeartbeat(path: string) {
+  if (typeof window === "undefined") return;
+  if (document.visibilityState !== "visible") return;
+  postPresence("heartbeat", path);
+}
+
+export function useSiteTrafficTracker(path: string | null) {
+  const pathRef = useRef(path);
+  pathRef.current = path;
+
+  useEffect(() => {
+    if (!path) return;
+
+    trackSitePageView(path);
+
+    const tick = () => {
+      const current = pathRef.current;
+      if (current) trackSiteHeartbeat(current);
+    };
+
+    const interval = window.setInterval(tick, HEARTBEAT_MS);
+    document.addEventListener("visibilitychange", tick);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", tick);
+    };
+  }, [path]);
 }
 
 type TrackOptions = {

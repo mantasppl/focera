@@ -3,6 +3,8 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 import { Suspense, useEffect } from "react";
+import { useSiteTrafficTracker } from "@/lib/analytics/client";
+import { isAdminClientPath } from "@/lib/analytics/paths";
 
 const MEASUREMENT_ID =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "G-9RZ4VQ21XV";
@@ -32,6 +34,14 @@ function AnalyticsPageViews() {
   return null;
 }
 
+function SiteTrafficTracker() {
+  const pathname = usePathname();
+  const trackedPath =
+    pathname && !isAdminClientPath(pathname) ? pathname : null;
+  useSiteTrafficTracker(trackedPath);
+  return null;
+}
+
 /**
  * Google Analytics 4 (gtag.js).
  * Override with NEXT_PUBLIC_GA_MEASUREMENT_ID if needed.
@@ -53,6 +63,7 @@ export default function Analytics() {
       </Script>
       <Suspense fallback={null}>
         <AnalyticsPageViews />
+        <SiteTrafficTracker />
       </Suspense>
     </>
   );
