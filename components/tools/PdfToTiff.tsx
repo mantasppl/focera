@@ -2,13 +2,15 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
 import PdfDropzone from "@/components/tools/PdfDropzone";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
 import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   convertPdfToTiffPages,
   downloadAllPagesZip,
   downloadMultipageTiff,
-  downloadPageTiff,
   revokeConvertedPages,
   type ConvertedTiffPage,
   type PdfScale,
@@ -41,6 +43,21 @@ export default function PdfToTiff() {
   const hasPages = pages.length > 0;
   const activePage =
     pages.find((page) => page.pageNumber === selectedPage) ?? pages[0] ?? null;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading: formatDownloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => activePage?.blob ?? null,
+    getFilename: () =>
+      sourceFile && activePage
+        ? `${fileBaseName(sourceFile)}-page-${activePage.pageNumber}`
+        : null,
+  });
 
   useEffect(() => {
     pagesRef.current = pages;
@@ -130,11 +147,6 @@ export default function PdfToTiff() {
     }
   }
 
-  function handleDownloadPage() {
-    if (!sourceFile || !activePage) return;
-    downloadPageTiff(activePage, fileBaseName(sourceFile));
-  }
-
   function handleDownloadMultipage() {
     if (!sourceFile || !hasPages) return;
     setError("");
@@ -159,174 +171,183 @@ export default function PdfToTiff() {
   }
 
   return (
-    <div className="tool-grid pdf-to-tiff">
-      <div className="tool-panel">
-        <PdfDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="pdf-to-tiff__options">
-          <div className="ui-field">
-            <span className="ui-label" id={scaleId}>
-              Resolution
-            </span>
-            <div
-              className="pdf-to-tiff__chips"
-              role="radiogroup"
-              aria-labelledby={scaleId}
-            >
-              {SCALE_OPTIONS.map((option) => {
-                const selected = scale === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "pdf-to-tiff__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => setScale(option.value)}
-                  >
-                    <span className="pdf-to-tiff__chip-label">{option.label}</span>
-                    <span className="pdf-to-tiff__chip-hint">{option.hint}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button onClick={() => void handleConvert()} disabled={!hasSource || loading}>
-            {loading ? "Converting…" : "Convert to TIFF"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasPages) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasPages ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadPage} disabled={!activePage || zipping}>
-              Download page
-            </Button>
-            {pages.length > 1 ? (
-              <Button
-                onClick={handleDownloadMultipage}
-                disabled={zipping}
-              >
-                Download multipage TIFF
-              </Button>
-            ) : null}
-            <Button
-              variant="ghost"
-              onClick={() => void handleDownloadAll()}
-              disabled={zipping}
-            >
-              {zipping ? "Preparing ZIP…" : "Download all (ZIP)"}
-            </Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasPages ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Converting PDF…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Pages are rendered locally in your browser.
-              </span>
-            </div>
-          ) : activePage ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={activePage.url}
-                alt={`Converted page ${activePage.pageNumber}`}
-                className="preview-single__image pdf-to-tiff__preview-image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Page {activePage.pageNumber} of {pages.length} ·{" "}
-                {activePage.width}×{activePage.height}px ·{" "}
-                {formatFileSize(activePage.blob.size)} TIFF
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a PDF and convert it to preview TIFF pages here
-            </p>
-          )}
-        </div>
-
-        {hasPages ? (
-          <div className="pdf-to-tiff__thumbs" role="list" aria-label="Converted pages">
-            {pages.map((page) => {
-              const selected = page.pageNumber === activePage?.pageNumber;
-              return (
-                <button
-                  key={page.pageNumber}
-                  type="button"
-                  role="listitem"
-                  className={cn(
-                    "pdf-to-tiff__thumb",
-                    selected && "is-active",
-                  )}
-                  onClick={() => setSelectedPage(page.pageNumber)}
-                  aria-pressed={selected}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={page.url}
-                    alt=""
-                    className="pdf-to-tiff__thumb-image"
-                  />
-                  <span className="pdf-to-tiff__thumb-label">
-                    Page {page.pageNumber}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        ) : null}
-
-        <p className="tool-hint">
-          {hasPages
+    <>
+      <ImageEditorShell
+        className="pdf-to-tiff"
+        hasSource={hasSource}
+        stageReady={hasPages}
+        loading={loading}
+        loadingText={progressText || "Converting PDF…"}
+        loadingSubtext="Pages are rendered locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasPages && activePage
+            ? `Page ${activePage.pageNumber} of ${pages.length} · ${activePage.width}×${activePage.height}px`
+            : hasSource
+              ? sourceFile?.name
+              : "Upload a PDF to start"
+        }
+        previewHint={
+          hasSource && !hasPages ? "Click Convert to TIFF" : undefined
+        }
+        privacyHint={
+          hasPages
             ? pages.length > 1
               ? "Download one page, a multipage TIFF, or a ZIP · processed locally"
               : "Download the TIFF page · processed locally"
-            : "PDF to TIFF conversion runs in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+            : "PDF to TIFF conversion runs in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            <PdfDropzone
+              onFile={handleFile}
+              onError={setError}
+              disabled={loading}
+            />
+
+            {hasSource ? (
+              <div className="upload-meta">
+                <p className="upload-meta__name">{sourceFile?.name}</p>
+                <p className="upload-meta__size">
+                  {sourceFile ? formatFileSize(sourceFile.size) : ""}
+                </p>
+              </div>
+            ) : null}
+
+            <div className="pdf-to-tiff__options">
+              <div className="ui-field">
+                <span className="ui-label" id={scaleId}>
+                  Resolution
+                </span>
+                <div
+                  className="pdf-to-tiff__chips"
+                  role="radiogroup"
+                  aria-labelledby={scaleId}
+                >
+                  {SCALE_OPTIONS.map((option) => {
+                    const selected = scale === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        className={cn(
+                          "pdf-to-tiff__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading}
+                        onClick={() => setScale(option.value)}
+                      >
+                        <span className="pdf-to-tiff__chip-label">{option.label}</span>
+                        <span className="pdf-to-tiff__chip-hint">{option.hint}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button onClick={() => void handleConvert()} disabled={!hasSource || loading}>
+                {loading ? "Converting…" : "Convert to TIFF"}
+              </Button>
+              {hasPages ? (
+                <>
+                  <Button
+                    onClick={openDownload}
+                    disabled={!activePage || zipping || formatDownloading}
+                  >
+                    Download
+                  </Button>
+                  {pages.length > 1 ? (
+                    <Button
+                      onClick={handleDownloadMultipage}
+                      disabled={zipping}
+                    >
+                      Download multipage TIFF
+                    </Button>
+                  ) : null}
+                  <Button
+                    variant="ghost"
+                    onClick={() => void handleDownloadAll()}
+                    disabled={zipping}
+                  >
+                    {zipping ? "Preparing ZIP…" : "Download all (ZIP)"}
+                  </Button>
+                </>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasPages) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasPages && activePage ? (
+          <div className="image-editor-shell__result pdf-to-tiff__preview">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activePage.url}
+              alt={`Converted page ${activePage.pageNumber}`}
+              className="preview-single__image pdf-to-tiff__preview-image"
+            />
+            <p className="image-editor-shell__result-meta">
+              {formatFileSize(activePage.blob.size)} TIFF
+            </p>
+            {pages.length > 1 ? (
+              <div className="pdf-to-tiff__thumbs" role="list" aria-label="Converted pages">
+                {pages.map((page) => {
+                  const selected = page.pageNumber === activePage.pageNumber;
+                  return (
+                    <button
+                      key={page.pageNumber}
+                      type="button"
+                      role="listitem"
+                      className={cn(
+                        "pdf-to-tiff__thumb",
+                        selected && "is-active",
+                      )}
+                      onClick={() => setSelectedPage(page.pageNumber)}
+                      aria-pressed={selected}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={page.url}
+                        alt=""
+                        className="pdf-to-tiff__thumb-image"
+                      />
+                      <span className="pdf-to-tiff__thumb-label">
+                        Page {page.pageNumber}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={formatDownloading}
+        error={downloadError}
+      />
+    </>
   );
 }

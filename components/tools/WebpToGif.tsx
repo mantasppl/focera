@@ -3,11 +3,13 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import WebpToGifDropzone from "@/components/tools/WebpToGifDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   convertWebpToGif,
   describeWebpGifOutput,
-  downloadWebpGif,
   revokeWebpToGifResult,
   WEBP_TO_GIF_QUALITY_PRESETS,
   WEBP_TO_GIF_SIZE_PRESETS,
@@ -36,6 +38,19 @@ export default function WebpToGif() {
 
   const hasSource = Boolean(sourceFile);
   const hasResult = Boolean(result);
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading: formatDownloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile ? `${fileBaseName(sourceFile)}-webp-to-gif` : null,
+  });
 
   useEffect(() => {
     resultRef.current = result;
@@ -111,7 +126,6 @@ export default function WebpToGif() {
       }
 
       setResult(converted);
-      downloadWebpGif(converted, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -132,213 +146,216 @@ export default function WebpToGif() {
     }
   }
 
-  function handleDownloadAgain() {
-    if (!sourceFile || !result) return;
-    downloadWebpGif(result, sourceFile);
-  }
-
   return (
-    <div className="tool-grid video-to-gif">
-      <div className="tool-panel">
-        <WebpToGifDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
+    <>
+      <ImageEditorShell
+        className="video-to-gif"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Converting WebP…"}
+        loadingSubtext="Conversion runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult && result
+            ? describeWebpGifOutput(result)
+            : hasSource
+              ? sourceFile?.name
+              : "Upload a WebP to start"
+        }
+        previewHint={
+          hasSource && !hasResult ? "Click Convert to GIF" : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Animated or still WebP · conversion runs in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            <WebpToGifDropzone
+              onFile={handleFile}
+              onError={setError}
+              disabled={loading}
+            />
 
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
+            {hasSource ? (
+              <div className="upload-meta">
+                <p className="upload-meta__name">{sourceFile?.name}</p>
+                <p className="upload-meta__size">
+                  {sourceFile ? formatFileSize(sourceFile.size) : ""}
+                </p>
+              </div>
+            ) : null}
+
+            <div className="video-to-gif__options">
+              <div className="ui-field">
+                <span className="ui-label" id={sizeId}>
+                  Output size
+                </span>
+                <div
+                  className="video-to-gif__chips"
+                  role="radiogroup"
+                  aria-labelledby={sizeId}
+                >
+                  {WEBP_TO_GIF_SIZE_PRESETS.map((preset) => {
+                    const selected = size === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        className={cn(
+                          "video-to-gif__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading}
+                        onClick={() => {
+                          setSize(preset.id);
+                          clearResult();
+                        }}
+                      >
+                        <span className="video-to-gif__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="video-to-gif__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="ui-field">
+                <span className="ui-label" id={qualityId}>
+                  Color quality
+                </span>
+                <div
+                  className="video-to-gif__chips"
+                  role="radiogroup"
+                  aria-labelledby={qualityId}
+                >
+                  {WEBP_TO_GIF_QUALITY_PRESETS.map((preset) => {
+                    const selected = quality === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        className={cn(
+                          "video-to-gif__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading}
+                        onClick={() => {
+                          setQuality(preset.id);
+                          clearResult();
+                        }}
+                      >
+                        <span className="video-to-gif__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="video-to-gif__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleConvert()}
+                disabled={!hasSource || loading}
+              >
+                {loading ? "Converting…" : "Convert to GIF"}
+              </Button>
+              {hasResult ? (
+                <Button
+                  onClick={openDownload}
+                  disabled={loading || formatDownloading}
+                >
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && result ? (
+          <div className="image-editor-shell__result video-to-gif__success">
+            <p className="image-editor-shell__result-meta video-to-gif__success-meta">
+              {describeWebpGifOutput(result)}
+            </p>
+            <ul className="video-to-gif__stats" aria-label="Conversion summary">
+              <li>
+                <span className="video-to-gif__stat-label">Frames</span>
+                <span className="video-to-gif__stat-value">
+                  {result.frameCount}
+                </span>
+              </li>
+              <li>
+                <span className="video-to-gif__stat-label">WebP</span>
+                <span className="video-to-gif__stat-value">
+                  {formatFileSize(result.originalSize)}
+                </span>
+              </li>
+              <li>
+                <span className="video-to-gif__stat-label">GIF</span>
+                <span className="video-to-gif__stat-value">
+                  {formatFileSize(result.gifSize)}
+                </span>
+              </li>
+            </ul>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="video-to-gif__preview"
+              src={result.url}
+              alt="Converted GIF preview"
+            />
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="video-to-gif__preview"
+              src={originalUrl}
+              alt="Uploaded WebP preview"
+            />
+            <p className="tool-placeholder preview-single__hint">
+              Choose options and click Convert to GIF.
             </p>
           </div>
         ) : null}
+      </ImageEditorShell>
 
-        <div className="video-to-gif__options">
-          <div className="ui-field">
-            <span className="ui-label" id={sizeId}>
-              Output size
-            </span>
-            <div
-              className="video-to-gif__chips"
-              role="radiogroup"
-              aria-labelledby={sizeId}
-            >
-              {WEBP_TO_GIF_SIZE_PRESETS.map((preset) => {
-                const selected = size === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "video-to-gif__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => {
-                      setSize(preset.id);
-                      clearResult();
-                    }}
-                  >
-                    <span className="video-to-gif__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="video-to-gif__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="ui-field">
-            <span className="ui-label" id={qualityId}>
-              Color quality
-            </span>
-            <div
-              className="video-to-gif__chips"
-              role="radiogroup"
-              aria-labelledby={qualityId}
-            >
-              {WEBP_TO_GIF_QUALITY_PRESETS.map((preset) => {
-                const selected = quality === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "video-to-gif__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => {
-                      setQuality(preset.id);
-                      clearResult();
-                    }}
-                  >
-                    <span className="video-to-gif__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="video-to-gif__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleConvert()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Converting…" : "Convert to GIF"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Converting WebP…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Conversion runs locally in your browser.
-              </span>
-            </div>
-          ) : result ? (
-            <div className="video-to-gif__success">
-              <p className="video-to-gif__success-title">GIF ready</p>
-              <p className="video-to-gif__success-meta">
-                {describeWebpGifOutput(result)}
-              </p>
-              <ul className="video-to-gif__stats" aria-label="Conversion summary">
-                <li>
-                  <span className="video-to-gif__stat-label">Frames</span>
-                  <span className="video-to-gif__stat-value">
-                    {result.frameCount}
-                  </span>
-                </li>
-                <li>
-                  <span className="video-to-gif__stat-label">WebP</span>
-                  <span className="video-to-gif__stat-value">
-                    {formatFileSize(result.originalSize)}
-                  </span>
-                </li>
-                <li>
-                  <span className="video-to-gif__stat-label">GIF</span>
-                  <span className="video-to-gif__stat-value">
-                    {formatFileSize(result.gifSize)}
-                  </span>
-                </li>
-              </ul>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className="video-to-gif__preview"
-                src={result.url}
-                alt="Converted GIF preview"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Convert again anytime.
-              </p>
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className="video-to-gif__preview"
-                src={originalUrl}
-                alt="Uploaded WebP preview"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Choose options and click Convert to GIF.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a WebP image to convert it to GIF
-            </p>
-          )}
-        </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Animated or still WebP · conversion runs in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={formatDownloading}
+        error={downloadError}
+      />
+    </>
   );
 }

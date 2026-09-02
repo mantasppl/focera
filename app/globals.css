@@ -6678,6 +6678,271 @@ a {
   }
 }
 
+/* -- Shared image editor shell (sticky preview layout) -- */
+.image-editor-shell__sidebar-footer {
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.image-editor-shell__canvas-panel {
+  overflow: hidden;
+}
+
+.image-editor-shell__canvas-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+}
+
+.image-editor-shell__canvas-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.image-editor-shell__canvas-meta,
+.image-editor-shell__canvas-hint {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.image-editor-shell__canvas-hint {
+  margin: 0;
+  text-align: right;
+  max-width: 16rem;
+}
+
+.image-editor-shell__stage.tool-stage {
+  flex: 1;
+  min-height: 280px;
+  border: none;
+  border-radius: 0;
+  background-color: #ececec;
+  background-image:
+    linear-gradient(45deg, #dcdcdc 25%, transparent 25%),
+    linear-gradient(-45deg, #dcdcdc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #dcdcdc 75%),
+    linear-gradient(-45deg, transparent 75%, #dcdcdc 75%);
+  background-size: 18px 18px;
+  background-position:
+    0 0,
+    0 9px,
+    9px -9px,
+    -9px 0;
+  padding: 1.25rem;
+}
+
+.image-editor-shell__stage.tool-stage.is-ready {
+  background-color: #e8e8e8;
+}
+
+.image-editor-shell__empty-canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 12rem;
+  text-align: center;
+}
+
+.image-editor-shell__empty-hint {
+  margin: 0;
+  max-width: 18rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.image-editor-shell__privacy-hint {
+  padding: 0.65rem 1rem 0.85rem;
+}
+
+.image-editor-shell__file-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 88%, var(--accent-soft));
+}
+
+.image-editor-shell__file-bar .upload-meta {
+  min-width: 0;
+}
+
+.image-editor-shell__replace-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease;
+}
+
+.image-editor-shell__replace-btn:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+}
+
+.image-editor-shell__replace-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.image-editor-shell__result,
+.image-editor-shell__preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.image-editor-shell__result-meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.image-editor-shell__result .preview-single__image,
+.image-editor-shell__preview-content .preview-single__image {
+  display: block;
+  max-width: 100%;
+  max-height: min(72vh, 920px);
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.08),
+    0 12px 40px rgba(15, 23, 42, 0.14);
+}
+
+@media (min-width: 860px) {
+  .image-editor-shell.tool-grid {
+    grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 1rem;
+    min-height: calc(100vh - 11rem);
+  }
+
+  .image-editor-shell.is-preview-first > .tool-panel--preview,
+  .image-editor-shell.is-preview-first > .image-editor-shell__canvas-panel {
+    order: 0;
+  }
+
+  .image-editor-shell__sidebar {
+    position: sticky;
+    top: 5rem;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    max-height: calc(100vh - 5.5rem);
+    overflow: auto;
+    padding: 1rem;
+  }
+
+  .image-editor-shell__canvas-panel {
+    position: sticky;
+    top: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    min-height: calc(100vh - 5.5rem);
+    max-height: calc(100vh - 5.5rem);
+    padding: 0;
+  }
+
+  .image-editor-shell__stage.tool-stage {
+    min-height: 0;
+    height: 100%;
+    padding: 1.5rem;
+  }
+
+  .image-editor-shell__result,
+  .image-editor-shell__preview-content {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-editor-shell__canvas-hint {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 859px) {
+  .image-editor-shell__canvas-panel {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .image-editor-shell__canvas-header {
+    padding: 0.7rem 0.85rem;
+  }
+
+  .image-editor-shell__canvas-hint {
+    flex-basis: 100%;
+    max-width: none;
+    text-align: left;
+  }
+
+  .image-editor-shell__privacy-hint {
+    padding-inline: 0.85rem;
+  }
+
+  .image-editor-shell.is-preview-first > .image-editor-shell__canvas-panel {
+    position: sticky;
+    top: 3.6rem;
+    z-index: 20;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .image-editor-shell.is-preview-first .image-editor-shell__stage {
+    min-height: 0;
+    max-height: min(42dvh, 20rem);
+    padding: 0.75rem;
+  }
+
+  .image-editor-shell.is-preview-first .preview-single__image {
+    max-height: min(38dvh, 18rem);
+    width: auto;
+  }
+}
+
 .upscale-image__result,
 .unblur-image__result,
 .resize-image__result,

@@ -3,7 +3,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
 import {
   OCR_LANGUAGES,
   TRANSLATE_LANGUAGES,
@@ -152,149 +153,122 @@ export default function TranslateYourImage() {
   }
 
   return (
-    <div className="tool-grid translate-your-image">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="translate-your-image__options">
-          <div className="ui-field">
-            <span className="ui-label" id={ocrLanguageId}>
-              Text in image
-            </span>
-            <div
-              className="translate-your-image__chips"
-              role="radiogroup"
-              aria-labelledby={ocrLanguageId}
-            >
-              {OCR_LANGUAGES.map((preset) => {
-                const selected = ocrLanguage === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "translate-your-image__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => {
-                      setOcrLanguage(preset.id);
-                      const nextSource = ocrLanguageToTranslateSource(
-                        preset.id,
-                      );
-                      if (nextSource === targetLang) {
-                        setTargetLang(nextSource === "en" ? "es" : "en");
-                      }
-                    }}
-                  >
-                    <span className="translate-your-image__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="translate-your-image__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="ui-field">
-            <label className="ui-label" htmlFor={targetLangId}>
-              Translate to
-            </label>
-            <select
-              id={targetLangId}
-              className="ui-input ui-input--select"
-              value={targetLang}
+    <ImageEditorShell
+      className="translate-your-image"
+      hasSource={hasSource}
+      stageReady={hasResult}
+      loading={loading}
+      loadingText={progressText || "Translating image…"}
+      loadingSubtext="OCR runs locally, then only the text is translated."
+      previewTitle="Preview"
+      previewMeta={
+        hasResult
+          ? describeTranslateYourImageResult(result!, text)
+          : hasSource
+            ? sourceFile?.name
+            : "Upload an image to start"
+      }
+      previewHint={
+        hasSource && !hasResult
+          ? "Choose languages and click Translate image"
+          : undefined
+      }
+      privacyHint={
+        hasResult
+          ? "Edit the translation if needed, then copy or download · OCR stayed on your device"
+          : "OCR runs in your browser · only extracted text is sent for translation"
+      }
+      sidebar={
+        <>
+          {!hasSource ? (
+            <ImageDropzone
+              onFile={handleFile}
+              onError={setError}
               disabled={loading}
-              onChange={(event) =>
-                setTargetLang(
-                  event.target.value as Exclude<TranslateLanguageId, "auto">,
-                )
-              }
-            >
-              {TRANSLATE_LANGUAGES.map((language) => (
-                <option
-                  key={language.id}
-                  value={language.id}
-                  disabled={language.id === sourceTranslateLang}
-                >
-                  {language.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+            />
+          ) : (
+            <ImageSourceBar
+              file={sourceFile!}
+              disabled={loading}
+              onReplace={handleFile}
+            />
+          )}
 
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleTranslate()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Translating…" : "Translate image"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult && text.trim() ? (
-          <div className="tool-actions">
-            <Button onClick={() => void handleCopy()}>
-              {copied ? "Copied" : "Copy text"}
-            </Button>
-            <Button variant="ghost" onClick={handleDownload}>
-              Download .txt
-            </Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Translating image…"}
+          <div className="translate-your-image__options">
+            <div className="ui-field">
+              <span className="ui-label" id={ocrLanguageId}>
+                Text in image
               </span>
-              <span className="tool-loading__subtext">
-                OCR runs locally, then only the text is translated.
-              </span>
+              <div
+                className="translate-your-image__chips"
+                role="radiogroup"
+                aria-labelledby={ocrLanguageId}
+              >
+                {OCR_LANGUAGES.map((preset) => {
+                  const selected = ocrLanguage === preset.id;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      className={cn(
+                        "translate-your-image__chip",
+                        selected && "is-active",
+                      )}
+                      disabled={loading}
+                      onClick={() => {
+                        setOcrLanguage(preset.id);
+                        const nextSource = ocrLanguageToTranslateSource(
+                          preset.id,
+                        );
+                        if (nextSource === targetLang) {
+                          setTargetLang(nextSource === "en" ? "es" : "en");
+                        }
+                      }}
+                    >
+                      <span className="translate-your-image__chip-label">
+                        {preset.label}
+                      </span>
+                      <span className="translate-your-image__chip-hint">
+                        {preset.hint}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          ) : hasResult ? (
+
+            <div className="ui-field">
+              <label className="ui-label" htmlFor={targetLangId}>
+                Translate to
+              </label>
+              <select
+                id={targetLangId}
+                className="ui-input ui-input--select"
+                value={targetLang}
+                disabled={loading}
+                onChange={(event) =>
+                  setTargetLang(
+                    event.target.value as Exclude<TranslateLanguageId, "auto">,
+                  )
+                }
+              >
+                {TRANSLATE_LANGUAGES.map((language) => (
+                  <option
+                    key={language.id}
+                    value={language.id}
+                    disabled={language.id === sourceTranslateLang}
+                  >
+                    {language.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {hasResult ? (
             <div className="translate-your-image__result">
-              <p className="translate-your-image__result-meta">
-                {describeTranslateYourImageResult(result!, text)}
-              </p>
               <label className="ui-label" htmlFor={outputId}>
                 Translated text
               </label>
@@ -311,31 +285,54 @@ export default function TranslateYourImage() {
                 placeholder="Translation will appear here."
               />
             </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Uploaded preview"
-                className="preview-single__image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Choose languages and click Translate image.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to translate text here
+          ) : null}
+        </>
+      }
+      sidebarFooter={
+        <>
+          <div className="tool-actions">
+            <Button
+              onClick={() => void handleTranslate()}
+              disabled={!hasSource || loading}
+            >
+              {loading ? "Translating…" : "Translate image"}
+            </Button>
+            {hasResult && text.trim() ? (
+              <>
+                <Button onClick={() => void handleCopy()}>
+                  {copied ? "Copied" : "Copy text"}
+                </Button>
+                <Button variant="ghost" onClick={handleDownload}>
+                  Download .txt
+                </Button>
+              </>
+            ) : null}
+            <Button
+              variant="ghost"
+              onClick={handleReset}
+              disabled={(!hasSource && !hasResult) || loading}
+            >
+              Start over
+            </Button>
+          </div>
+          {error ? (
+            <p className="tool-error" role="alert">
+              {error}
             </p>
-          )}
+          ) : null}
+        </>
+      }
+    >
+      {hasSource && originalUrl ? (
+        <div className="image-editor-shell__preview-content preview-single">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={originalUrl}
+            alt="Uploaded preview"
+            className="preview-single__image"
+          />
         </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Edit the translation if needed, then copy or download · OCR stayed on your device"
-            : "OCR runs in your browser · only extracted text is sent for translation"}
-        </p>
-      </div>
-    </div>
+      ) : null}
+    </ImageEditorShell>
   );
 }

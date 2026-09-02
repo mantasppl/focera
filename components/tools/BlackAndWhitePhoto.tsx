@@ -4,12 +4,15 @@ import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName } from "@/lib/image";
 import {
   BW_PRESETS,
   convertToBlackAndWhite,
   describeBwResult,
-  downloadBlackAndWhiteImage,
   type BlackAndWhitePhotoResult,
   type BwStyle,
 } from "@/lib/black-and-white-photo";
@@ -32,6 +35,21 @@ export default function BlackAndWhitePhoto() {
 
   const hasSource = Boolean(sourceFile && originalUrl);
   const hasResult = Boolean(result && resultUrl);
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile
+        ? `${fileBaseName(sourceFile) || "photo"}-black-and-white`
+        : null,
+  });
 
   useEffect(() => {
     return () => {
@@ -95,7 +113,6 @@ export default function BlackAndWhitePhoto() {
       const url = URL.createObjectURL(converted.blob);
       setResult(converted);
       setResultUrl(url);
-      downloadBlackAndWhiteImage(converted.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -116,153 +133,160 @@ export default function BlackAndWhitePhoto() {
     }
   }
 
-  function handleDownloadAgain() {
-    if (!sourceFile || !result) return;
-    downloadBlackAndWhiteImage(result.blob, sourceFile);
-  }
-
   return (
-    <div className="tool-grid black-and-white-photo">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="black-and-white-photo__options">
-          <div className="ui-field">
-            <span className="ui-label" id={styleId}>
-              Black &amp; white style
-            </span>
-            <div
-              className="black-and-white-photo__chips"
-              role="radiogroup"
-              aria-labelledby={styleId}
-            >
-              {BW_PRESETS.map((preset) => {
-                const selected = style === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "black-and-white-photo__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => setStyle(preset.id)}
-                  >
-                    <span className="black-and-white-photo__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="black-and-white-photo__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleConvert()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Converting…" : "Make black & white"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Converting photo…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Conversion runs locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && originalUrl && resultUrl ? (
-            <div className="black-and-white-photo__result">
-              <p className="black-and-white-photo__result-meta">
-                {describeBwResult(
-                  result!.width,
-                  result!.height,
-                  result!.style,
-                  result!.blob.size,
-                )}
-              </p>
-              <BeforeAfterPreview
-                beforeSrc={originalUrl}
-                afterSrc={resultUrl}
-                beforeAlt="Original photo"
-                afterAlt="Black and white photo"
-                hint="Drag the slider to compare the original and black & white photo."
+    <>
+      <ImageEditorShell
+        className="black-and-white-photo"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Converting photo…"}
+        loadingSubtext="Conversion runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult
+            ? describeBwResult(
+                result!.width,
+                result!.height,
+                result!.style,
+                result!.blob.size,
+              )
+            : hasSource
+              ? sourceFile!.name
+              : "Upload a photo to start"
+        }
+        previewHint={
+          hasSource && !hasResult
+            ? "Choose a style and click Make black & white"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Black & white conversion in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={handleFile}
+                onError={setError}
+                disabled={loading}
               />
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Uploaded preview"
-                className="preview-single__image"
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                disabled={loading}
+                onReplace={handleFile}
               />
-              <p className="tool-placeholder preview-single__hint">
-                Choose a style and click Make black &amp; white.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a color photo to convert to black &amp; white here
-            </p>
-          )}
-        </div>
+            )}
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Black & white conversion in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+            <div className="black-and-white-photo__options">
+              <div className="ui-field">
+                <span className="ui-label" id={styleId}>
+                  Black &amp; white style
+                </span>
+                <div
+                  className="black-and-white-photo__chips"
+                  role="radiogroup"
+                  aria-labelledby={styleId}
+                >
+                  {BW_PRESETS.map((preset) => {
+                    const selected = style === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        className={cn(
+                          "black-and-white-photo__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading}
+                        onClick={() => setStyle(preset.id)}
+                      >
+                        <span className="black-and-white-photo__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="black-and-white-photo__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleConvert()}
+                disabled={!hasSource || loading}
+              >
+                {loading ? "Converting…" : "Make black & white"}
+              </Button>
+              {hasResult ? (
+                <Button onClick={openDownload} disabled={loading}>
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && originalUrl && resultUrl ? (
+          <div className="image-editor-shell__result black-and-white-photo__result">
+            <p className="image-editor-shell__result-meta black-and-white-photo__result-meta">
+              {describeBwResult(
+                result!.width,
+                result!.height,
+                result!.style,
+                result!.blob.size,
+              )}
+            </p>
+            <BeforeAfterPreview
+              beforeSrc={originalUrl}
+              afterSrc={resultUrl}
+              beforeAlt="Original photo"
+              afterAlt="Black and white photo"
+              hint="Drag the slider to compare the original and black & white photo."
+            />
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-editor-shell__preview-content preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={originalUrl}
+              alt="Uploaded preview"
+              className="preview-single__image"
+            />
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

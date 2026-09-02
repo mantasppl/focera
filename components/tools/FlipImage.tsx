@@ -4,11 +4,14 @@ import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   FLIP_DIRECTION_PRESETS,
   describeFlip,
-  downloadFlippedImage,
   flipImageFile,
   flipScale,
   readImageDimensions,
@@ -40,6 +43,21 @@ export default function FlipImage() {
   const previewStyle = {
     transform: `scaleX(${previewScale.scaleX}) scaleY(${previewScale.scaleY})`,
   } satisfies CSSProperties;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile && result
+        ? `${fileBaseName(sourceFile)}-flipped-${result.direction}`
+        : null,
+  });
 
   useEffect(() => {
     return () => {
@@ -125,7 +143,6 @@ export default function FlipImage() {
       const url = URL.createObjectURL(flipped.blob);
       setResult(flipped);
       setResultUrl(url);
-      downloadFlippedImage(flipped.blob, sourceFile, flipped.direction);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -146,158 +163,159 @@ export default function FlipImage() {
     }
   }
 
-  function handleDownloadAgain() {
-    if (!sourceFile || !result) return;
-    downloadFlippedImage(result.blob, sourceFile, result.direction);
-  }
-
   return (
-    <div className="tool-grid flip-image">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={(file) => void handleFile(file)}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-              {originalWidth
-                ? ` · ${originalWidth}×${originalHeight} px`
-                : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="flip-image__options">
-          <div className="ui-field">
-            <span className="ui-label" id={directionGroupId}>
-              Flip direction
-            </span>
-            <div
-              className="flip-image__chips"
-              role="group"
-              aria-labelledby={directionGroupId}
-            >
-              {FLIP_DIRECTION_PRESETS.map((preset) => {
-                const selected = direction === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    className={cn(
-                      "flip-image__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading || !hasSource}
-                    onClick={() => handleDirection(preset.id)}
-                  >
-                    <span className="flip-image__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="flip-image__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <p className="ui-hint">
-              Preview updates instantly. Export writes a PNG with pixels
-              flipped.
-            </p>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleFlip()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Flipping…" : "Flip image"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Flipping image…"}
-              </span>
-              <span className="tool-loading__subtext">
-                The flip runs locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && originalUrl && resultUrl ? (
-            <div className="flip-image__result">
-              <p className="flip-image__result-meta">
-                {describeFlip(result!.direction)}
-                {" · "}
-                {result!.width}×{result!.height}
-                {" · "}
-                {formatFileSize(result!.blob.size)}
-              </p>
-              <BeforeAfterPreview
-                beforeSrc={originalUrl}
-                afterSrc={resultUrl}
-                beforeAlt="Original image"
-                afterAlt="Flipped image"
-                hint="Drag the slider to compare the original and flipped image."
+    <>
+      <ImageEditorShell
+        className="flip-image"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Flipping image…"}
+        loadingSubtext="The flip runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult
+            ? `${describeFlip(result!.direction)} · ${result!.width}×${result!.height} px`
+            : hasSource
+              ? `${originalWidth}×${originalHeight} px`
+              : "Upload an image to start"
+        }
+        previewHint={
+          hasSource && !hasResult
+            ? "Choose direction and click Flip image"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Mirror photos in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={(file) => void handleFile(file)}
+                onError={setError}
+                disabled={loading}
               />
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Live flip preview"
-                className="preview-single__image flip-image__preview-image"
-                style={previewStyle}
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                width={originalWidth}
+                height={originalHeight}
+                disabled={loading}
+                onReplace={(file) => void handleFile(file)}
               />
-              <p className="tool-placeholder preview-single__hint">
-                {describeFlip(direction)}. Click Flip image to download a PNG.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to flip it here
-            </p>
-          )}
-        </div>
+            )}
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Mirror photos in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+            <div className="flip-image__options">
+              <div className="ui-field">
+                <span className="ui-label" id={directionGroupId}>
+                  Flip direction
+                </span>
+                <div
+                  className="flip-image__chips"
+                  role="group"
+                  aria-labelledby={directionGroupId}
+                >
+                  {FLIP_DIRECTION_PRESETS.map((preset) => {
+                    const selected = direction === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        className={cn(
+                          "flip-image__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading || !hasSource}
+                        onClick={() => handleDirection(preset.id)}
+                      >
+                        <span className="flip-image__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="flip-image__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="ui-hint">
+                  Preview updates instantly. Export writes a PNG with pixels
+                  flipped.
+                </p>
+              </div>
+            </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleFlip()}
+                disabled={!hasSource || loading}
+              >
+                {loading ? "Flipping…" : "Flip image"}
+              </Button>
+              {hasResult ? (
+                <Button onClick={openDownload} disabled={loading}>
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && originalUrl && resultUrl ? (
+          <div className="image-editor-shell__result flip-image__result">
+            <p className="image-editor-shell__result-meta flip-image__result-meta">
+              {describeFlip(result!.direction)}
+              {" · "}
+              {result!.width}×{result!.height}
+              {" · "}
+              {formatFileSize(result!.blob.size)}
+            </p>
+            <BeforeAfterPreview
+              beforeSrc={originalUrl}
+              afterSrc={resultUrl}
+              beforeAlt="Original image"
+              afterAlt="Flipped image"
+              hint="Drag the slider to compare the original and flipped image."
+            />
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-editor-shell__preview-content preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={originalUrl}
+              alt="Live flip preview"
+              className="preview-single__image flip-image__preview-image"
+              style={previewStyle}
+            />
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

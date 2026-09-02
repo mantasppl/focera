@@ -4,11 +4,14 @@ import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   BRUSH_SIZE,
   cleanupPicture,
-  downloadCleanedImage,
   type CleanupPictureResult,
 } from "@/lib/cleanup-picture";
 import { useToolAnalytics } from "@/lib/analytics/client";
@@ -29,6 +32,8 @@ export default function CleanupPicture() {
 
   const [sourceFile, setSourceFile] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState("");
+  const [originalWidth, setOriginalWidth] = useState(0);
+  const [originalHeight, setOriginalHeight] = useState(0);
   const [brushSize, setBrushSize] = useState<number>(BRUSH_SIZE.default);
   const [brushMode, setBrushMode] = useState<BrushMode>("paint");
   const [hasMask, setHasMask] = useState(false);
@@ -42,6 +47,19 @@ export default function CleanupPicture() {
   const hasSource = Boolean(sourceFile && originalUrl);
   const hasResult = Boolean(result && resultUrl);
   const canCleanup = hasSource && hasMask && imageReady && !loading && !hasResult;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile ? `${fileBaseName(sourceFile)}-cleaned` : null,
+  });
 
   useEffect(() => {
     return () => {
@@ -82,6 +100,8 @@ export default function CleanupPicture() {
       hasMaskRef.current = false;
       setHasMask(false);
     }
+    setOriginalWidth(width);
+    setOriginalHeight(height);
     setImageReady(true);
   }
 
@@ -92,6 +112,8 @@ export default function CleanupPicture() {
     setError("");
     setProgressText("");
     setImageReady(false);
+    setOriginalWidth(0);
+    setOriginalHeight(0);
     hasMaskRef.current = false;
     setHasMask(false);
     setBrushMode("paint");
@@ -109,6 +131,8 @@ export default function CleanupPicture() {
     setProgressText("");
     setLoading(false);
     setImageReady(false);
+    setOriginalWidth(0);
+    setOriginalHeight(0);
     hasMaskRef.current = false;
     setHasMask(false);
   }
@@ -246,7 +270,6 @@ export default function CleanupPicture() {
       const url = URL.createObjectURL(cleaned.blob);
       setResult(cleaned);
       setResultUrl(url);
-      downloadCleanedImage(cleaned.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -267,210 +290,216 @@ export default function CleanupPicture() {
     }
   }
 
-  function handleDownloadAgain() {
-    if (!sourceFile || !result) return;
-    downloadCleanedImage(result.blob, sourceFile);
-  }
-
   return (
-    <div className="tool-grid remove-objects">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        {hasSource && !hasResult ? (
-          <div className="remove-objects__options">
-            <div className="ui-field">
-              <span className="ui-label" id={modeId}>
-                Brush mode
-              </span>
-              <div
-                className="remove-objects__chips"
-                role="radiogroup"
-                aria-labelledby={modeId}
-              >
-                {(
-                  [
-                    { id: "paint", label: "Paint", hint: "Mark area" },
-                    { id: "erase", label: "Erase", hint: "Fix mask" },
-                  ] as const
-                ).map((mode) => {
-                  const selected = brushMode === mode.id;
-                  return (
-                    <button
-                      key={mode.id}
-                      type="button"
-                      role="radio"
-                      aria-checked={selected}
-                      className={cn(
-                        "remove-objects__chip",
-                        selected && "is-active",
-                      )}
-                      disabled={loading}
-                      onClick={() => setBrushMode(mode.id)}
-                    >
-                      <span className="remove-objects__chip-label">
-                        {mode.label}
-                      </span>
-                      <span className="remove-objects__chip-hint">
-                        {mode.hint}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="export-slider">
-              <div className="export-slider__label">
-                <label htmlFor={brushId}>Brush size</label>
-                <span className="export-slider__value">{brushSize}px</span>
-              </div>
-              <input
-                id={brushId}
-                className="export-slider__input"
-                type="range"
-                min={BRUSH_SIZE.min}
-                max={BRUSH_SIZE.max}
-                step={1}
-                value={brushSize}
+    <>
+      <ImageEditorShell
+        className="remove-objects"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Cleaning picture…"}
+        loadingSubtext="Restoration runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult
+            ? `${result!.width}×${result!.height} px`
+            : hasSource && originalWidth
+              ? `${originalWidth}×${originalHeight} px`
+              : "Upload an image to start"
+        }
+        previewHint={
+          hasSource && !hasResult
+            ? "Paint areas to clean, then click Cleanup picture"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Paint and restore in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={handleFile}
+                onError={setError}
                 disabled={loading}
-                onChange={(event) =>
-                  setBrushSize(Number(event.target.value))
-                }
+              />
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                width={originalWidth || undefined}
+                height={originalHeight || undefined}
+                disabled={loading}
+                onReplace={handleFile}
+              />
+            )}
+
+            {hasSource && !hasResult ? (
+              <div className="remove-objects__options">
+                <div className="ui-field">
+                  <span className="ui-label" id={modeId}>
+                    Brush mode
+                  </span>
+                  <div
+                    className="remove-objects__chips"
+                    role="radiogroup"
+                    aria-labelledby={modeId}
+                  >
+                    {(
+                      [
+                        { id: "paint", label: "Paint", hint: "Mark area" },
+                        { id: "erase", label: "Erase", hint: "Fix mask" },
+                      ] as const
+                    ).map((mode) => {
+                      const selected = brushMode === mode.id;
+                      return (
+                        <button
+                          key={mode.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={selected}
+                          className={cn(
+                            "remove-objects__chip",
+                            selected && "is-active",
+                          )}
+                          disabled={loading}
+                          onClick={() => setBrushMode(mode.id)}
+                        >
+                          <span className="remove-objects__chip-label">
+                            {mode.label}
+                          </span>
+                          <span className="remove-objects__chip-hint">
+                            {mode.hint}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="export-slider">
+                  <div className="export-slider__label">
+                    <label htmlFor={brushId}>Brush size</label>
+                    <span className="export-slider__value">{brushSize}px</span>
+                  </div>
+                  <input
+                    id={brushId}
+                    className="export-slider__input"
+                    type="range"
+                    min={BRUSH_SIZE.min}
+                    max={BRUSH_SIZE.max}
+                    step={1}
+                    value={brushSize}
+                    disabled={loading}
+                    onChange={(event) =>
+                      setBrushSize(Number(event.target.value))
+                    }
+                  />
+                </div>
+              </div>
+            ) : null}
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              {hasResult ? (
+                <>
+                  <Button onClick={openDownload} disabled={loading}>
+                    Download
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={handleEditAgain}
+                    disabled={loading}
+                  >
+                    Edit mask
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => void handleCleanup()}
+                    disabled={!canCleanup}
+                  >
+                    {loading ? "Cleaning…" : "Cleanup picture"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={clearMask}
+                    disabled={!hasSource || !hasMask || loading}
+                  >
+                    Clear mask
+                  </Button>
+                </>
+              )}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && originalUrl && resultUrl ? (
+          <div className="image-editor-shell__result remove-objects__result">
+            <p className="image-editor-shell__result-meta remove-objects__result-meta">
+              {result!.width}×{result!.height}
+              {" · "}
+              {formatFileSize(result!.blob.size)}
+            </p>
+            <BeforeAfterPreview
+              beforeSrc={originalUrl}
+              afterSrc={resultUrl}
+              beforeAlt="Original photo before cleanup"
+              afterAlt="Cleaned photo"
+              hint="Drag the slider to compare the original and cleaned photo."
+            />
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="remove-objects__paint">
+            <div className="remove-objects__paint-frame">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                ref={imageRef}
+                src={originalUrl}
+                alt="Uploaded photo — paint over areas to clean"
+                className="remove-objects__image"
+                draggable={false}
+                onLoad={syncMaskCanvasSize}
+              />
+              <canvas
+                ref={maskCanvasRef}
+                className={cn(
+                  "remove-objects__mask",
+                  brushMode === "erase" && "is-erase",
+                )}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerUp}
               />
             </div>
           </div>
         ) : null}
+      </ImageEditorShell>
 
-        <div className="tool-actions">
-          {hasResult ? (
-            <>
-              <Button onClick={handleDownloadAgain}>Download again</Button>
-              <Button
-                variant="ghost"
-                onClick={handleEditAgain}
-                disabled={loading}
-              >
-                Edit mask
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                onClick={() => void handleCleanup()}
-                disabled={!canCleanup}
-              >
-                {loading ? "Cleaning…" : "Cleanup picture"}
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={clearMask}
-                disabled={!hasSource || !hasMask || loading}
-              >
-                Clear mask
-              </Button>
-            </>
-          )}
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult || hasSource ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Cleaning picture…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Restoration runs locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && originalUrl && resultUrl ? (
-            <div className="remove-objects__result">
-              <p className="remove-objects__result-meta">
-                {result!.width}×{result!.height}
-                {" · "}
-                {formatFileSize(result!.blob.size)}
-              </p>
-              <BeforeAfterPreview
-                beforeSrc={originalUrl}
-                afterSrc={resultUrl}
-                beforeAlt="Original photo before cleanup"
-                afterAlt="Cleaned photo"
-                hint="Drag the slider to compare the original and cleaned photo."
-              />
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="remove-objects__paint">
-              <div className="remove-objects__paint-frame">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  ref={imageRef}
-                  src={originalUrl}
-                  alt="Uploaded photo — paint over areas to clean"
-                  className="remove-objects__image"
-                  draggable={false}
-                  onLoad={syncMaskCanvasSize}
-                />
-                <canvas
-                  ref={maskCanvasRef}
-                  className={cn(
-                    "remove-objects__mask",
-                    brushMode === "erase" && "is-erase",
-                  )}
-                  onPointerDown={handlePointerDown}
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={handlePointerUp}
-                  onPointerCancel={handlePointerUp}
-                />
-              </div>
-              <p className="tool-placeholder preview-single__hint">
-                Brush over clutter, people, stamps, or distractions, then click
-                Cleanup picture.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a photo to mark and clean unwanted areas
-            </p>
-          )}
-        </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Paint the area, restore it in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

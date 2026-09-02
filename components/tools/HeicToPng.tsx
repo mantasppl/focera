@@ -3,11 +3,13 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import HeicToPngDropzone from "@/components/tools/HeicToPngDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   convertHeicToPng,
   describeHeicPngOutput,
-  downloadConvertedPng,
   downloadHeicPngResult,
   MAX_HEIC_FILES,
   revokeHeicToPngResult,
@@ -51,6 +53,19 @@ export default function HeicToPng() {
     result?.images.find((image) => image.id === selectedId) ??
     result?.images[0] ??
     null;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading: formatDownloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => activeImage?.blob ?? null,
+    getFilename: () =>
+      activeImage ? (activeImage.sourceName.replace(/\.[^.]+$/, "") || "image") : null,
+  });
 
   useEffect(() => {
     resultRef.current = result;
@@ -124,7 +139,6 @@ export default function HeicToPng() {
 
       setResult(converted);
       setSelectedId(converted.images[0]?.id ?? null);
-      await downloadHeicPngResult(converted, files);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -145,7 +159,7 @@ export default function HeicToPng() {
     }
   }
 
-  async function handleDownloadAgain() {
+  async function handleDownloadZip() {
     if (!result || fileCount === 0) return;
     setZipping(true);
     setError("");
@@ -158,216 +172,212 @@ export default function HeicToPng() {
     }
   }
 
-  function handleDownloadSelected() {
-    if (!activeImage) return;
-    downloadConvertedPng(activeImage);
-  }
-
   return (
-    <div className="tool-grid heic-to-jpg">
-      <div className="tool-panel">
-        <HeicToPngDropzone
-          existingFiles={files}
-          onFiles={handleAddFiles}
-          onError={setError}
-          disabled={loading || fileCount >= MAX_HEIC_FILES}
-        />
+    <>
+      <ImageEditorShell
+        className="heic-to-jpg"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Converting HEIC…"}
+        loadingSubtext="Conversion runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult && result
+            ? describeHeicPngOutput(result)
+            : hasSource
+              ? `${fileCount} file${fileCount === 1 ? "" : "s"} queued`
+              : "Upload images to start"
+        }
+        previewHint={
+          hasSource && !hasResult ? "Click Convert to PNG" : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "HEIC to PNG runs in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            <HeicToPngDropzone
+              existingFiles={files}
+              onFiles={handleAddFiles}
+              onError={setError}
+              disabled={loading || fileCount >= MAX_HEIC_FILES}
+            />
 
-        {fileCount > 0 ? (
-          <div className="png-to-pdf__list-wrap">
-            <div className="png-to-pdf__list-header">
-              <p className="png-to-pdf__list-title" id={listId}>
-                Queued files ({fileCount})
-              </p>
-              <p className="png-to-pdf__list-meta">
-                {formatFileSize(totalBytes)} total
-              </p>
-            </div>
-            <ol className="png-to-pdf__list" aria-labelledby={listId}>
-              {entries.map((entry) => (
-                <li key={entry.id} className="png-to-pdf__item">
-                  <div className="png-to-pdf__file">
-                    <p className="png-to-pdf__name">{entry.file.name}</p>
-                    <p className="png-to-pdf__size">
-                      {formatFileSize(entry.file.size)}
-                    </p>
-                  </div>
-                  <div className="png-to-pdf__item-actions">
-                    <button
-                      type="button"
-                      className={cn(
-                        "png-to-pdf__icon-btn",
-                        "png-to-pdf__icon-btn--danger",
-                      )}
-                      aria-label={`Remove ${entry.file.name}`}
-                      disabled={loading}
-                      onClick={() => handleRemove(entry.id)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ) : null}
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleConvert()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Converting…" : "Convert to PNG"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button
-              onClick={() => void handleDownloadAgain()}
-              disabled={zipping}
-            >
-              {zipping
-                ? "Preparing…"
-                : result && result.images.length > 1
-                  ? "Download ZIP again"
-                  : "Download again"}
-            </Button>
-            {result && result.images.length > 1 && activeImage ? (
-              <Button variant="ghost" onClick={handleDownloadSelected}>
-                Download selected
-              </Button>
-            ) : null}
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Converting HEIC…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Conversion runs locally in your browser.
-              </span>
-            </div>
-          ) : result && activeImage ? (
-            <div className="png-to-pdf__success">
-              <p className="png-to-pdf__success-title">PNG ready</p>
-              <p className="png-to-pdf__success-meta">
-                {describeHeicPngOutput(result)}
-              </p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={activeImage.url}
-                alt={`Converted ${activeImage.sourceName}`}
-                className="pdf-to-jpg__preview-image"
-              />
-              {result.images.length > 1 ? (
-                <div
-                  className="pdf-to-jpg__thumbs"
-                  role="radiogroup"
-                  aria-label="Converted images"
-                >
-                  {result.images.map((image, index) => {
-                    const selected = image.id === activeImage.id;
-                    return (
-                      <button
-                        key={image.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={selected}
-                        className={cn(
-                          "pdf-to-jpg__thumb",
-                          selected && "is-active",
-                        )}
-                        aria-label={`Show ${image.sourceName}`}
-                        onClick={() => setSelectedId(image.id)}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={image.url}
-                          alt=""
-                          className="pdf-to-jpg__thumb-image"
-                        />
-                        <span className="pdf-to-jpg__thumb-label">
-                          {index + 1}
-                        </span>
-                      </button>
-                    );
-                  })}
+            {fileCount > 0 ? (
+              <div className="png-to-pdf__list-wrap">
+                <div className="png-to-pdf__list-header">
+                  <p className="png-to-pdf__list-title" id={listId}>
+                    Queued files ({fileCount})
+                  </p>
+                  <p className="png-to-pdf__list-meta">
+                    {formatFileSize(totalBytes)} total
+                  </p>
                 </div>
-              ) : null}
-              <ul className="png-to-pdf__stats" aria-label="Conversion summary">
-                <li>
-                  <span className="png-to-pdf__stat-label">HEIC files</span>
-                  <span className="png-to-pdf__stat-value">
-                    {result.images.length}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">Original</span>
-                  <span className="png-to-pdf__stat-value">
-                    {formatFileSize(result.originalSize)}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">PNG size</span>
-                  <span className="png-to-pdf__stat-value">
-                    {formatFileSize(result.outputSize)}
-                  </span>
-                </li>
-              </ul>
-              <p className="tool-placeholder preview-single__hint">
-                {result.images.length > 1
-                  ? "Your ZIP download should start automatically. Select a thumbnail to preview or download one image."
-                  : "Your download should start automatically. Convert another batch anytime."}
-              </p>
-            </div>
-          ) : (
-            <div className="png-to-pdf__empty">
-              <p className="tool-placeholder">
-                {fileCount === 0
-                  ? "Upload a HEIC photo to convert it to PNG"
-                  : `${fileCount} HEIC file${fileCount === 1 ? "" : "s"} queued · click Convert to PNG`}
-              </p>
-              {fileCount > 0 ? (
-                <ul className="png-to-pdf__summary" aria-label="Queued HEIC files">
-                  {entries.map((entry, index) => (
-                    <li key={entry.id}>
-                      {index + 1}. {entry.file.name}
+                <ol className="png-to-pdf__list" aria-labelledby={listId}>
+                  {entries.map((entry) => (
+                    <li key={entry.id} className="png-to-pdf__item">
+                      <div className="png-to-pdf__file">
+                        <p className="png-to-pdf__name">{entry.file.name}</p>
+                        <p className="png-to-pdf__size">
+                          {formatFileSize(entry.file.size)}
+                        </p>
+                      </div>
+                      <div className="png-to-pdf__item-actions">
+                        <button
+                          type="button"
+                          className={cn(
+                            "png-to-pdf__icon-btn",
+                            "png-to-pdf__icon-btn--danger",
+                          )}
+                          aria-label={`Remove ${entry.file.name}`}
+                          disabled={loading}
+                          onClick={() => handleRemove(entry.id)}
+                        >
+                          ×
+                        </button>
+                      </div>
                     </li>
                   ))}
-                </ul>
+                </ol>
+              </div>
+            ) : null}
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleConvert()}
+                disabled={!hasSource || loading}
+              >
+                {loading ? "Converting…" : "Convert to PNG"}
+              </Button>
+              {hasResult ? (
+                <Button
+                  onClick={openDownload}
+                  disabled={loading || !activeImage || formatDownloading}
+                >
+                  Download
+                </Button>
               ) : null}
+              {hasResult && result && result.images.length > 1 ? (
+                <Button
+                  variant="ghost"
+                  onClick={() => void handleDownloadZip()}
+                  disabled={zipping || loading}
+                >
+                  {zipping ? "Preparing…" : "Download all as ZIP"}
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
             </div>
-          )}
-        </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && result && activeImage ? (
+          <div className="image-editor-shell__result png-to-pdf__success">
+            <p className="image-editor-shell__result-meta png-to-pdf__success-meta">
+              {describeHeicPngOutput(result)}
+            </p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activeImage.url}
+              alt={`Converted ${activeImage.sourceName}`}
+              className="pdf-to-jpg__preview-image"
+            />
+            {result.images.length > 1 ? (
+              <div
+                className="pdf-to-jpg__thumbs"
+                role="radiogroup"
+                aria-label="Converted images"
+              >
+                {result.images.map((image, index) => {
+                  const selected = image.id === activeImage.id;
+                  return (
+                    <button
+                      key={image.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      className={cn(
+                        "pdf-to-jpg__thumb",
+                        selected && "is-active",
+                      )}
+                      aria-label={`Show ${image.sourceName}`}
+                      onClick={() => setSelectedId(image.id)}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={image.url}
+                        alt=""
+                        className="pdf-to-jpg__thumb-image"
+                      />
+                      <span className="pdf-to-jpg__thumb-label">
+                        {index + 1}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+            <ul className="png-to-pdf__stats" aria-label="Conversion summary">
+              <li>
+                <span className="png-to-pdf__stat-label">HEIC files</span>
+                <span className="png-to-pdf__stat-value">
+                  {result.images.length}
+                </span>
+              </li>
+              <li>
+                <span className="png-to-pdf__stat-label">Original</span>
+                <span className="png-to-pdf__stat-value">
+                  {formatFileSize(result.originalSize)}
+                </span>
+              </li>
+              <li>
+                <span className="png-to-pdf__stat-label">PNG size</span>
+                <span className="png-to-pdf__stat-value">
+                  {formatFileSize(result.outputSize)}
+                </span>
+              </li>
+            </ul>
+          </div>
+        ) : hasSource ? (
+          <div className="png-to-pdf__empty">
+            <p className="tool-placeholder">
+              {`${fileCount} HEIC file${fileCount === 1 ? "" : "s"} queued · click Convert to PNG`}
+            </p>
+            <ul className="png-to-pdf__summary" aria-label="Queued HEIC files">
+              {entries.map((entry, index) => (
+                <li key={entry.id}>
+                  {index + 1}. {entry.file.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </ImageEditorShell>
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "HEIC to PNG runs in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={formatDownloading}
+        error={downloadError}
+      />
+    </>
   );
 }

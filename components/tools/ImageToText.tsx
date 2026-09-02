@@ -3,7 +3,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
 import {
   OCR_LANGUAGES,
   describeOcrResult,
@@ -145,114 +146,85 @@ export default function ImageToText() {
   }
 
   return (
-    <div className="tool-grid image-to-text">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
+    <ImageEditorShell
+      className="image-to-text"
+      hasSource={hasSource}
+      stageReady={hasResult}
+      loading={loading}
+      loadingText={progressText || "Extracting text…"}
+      loadingSubtext="OCR runs locally in your browser."
+      previewTitle="Preview"
+      previewMeta={
+        hasResult
+          ? describeOcrResult(result!, text)
+          : hasSource
+            ? sourceFile?.name
+            : "Upload an image to start"
+      }
+      previewHint={
+        hasSource && !hasResult ? "Choose a language and click Extract text" : undefined
+      }
+      privacyHint={
+        hasResult
+          ? "Edit the text if needed, then copy or download · processed locally"
+          : "Image to text OCR in your browser · files never upload to Focera"
+      }
+      sidebar={
+        <>
+          {!hasSource ? (
+            <ImageDropzone
+              onFile={handleFile}
+              onError={setError}
+              disabled={loading}
+            />
+          ) : (
+            <ImageSourceBar
+              file={sourceFile!}
+              disabled={loading}
+              onReplace={handleFile}
+            />
+          )}
 
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="image-to-text__options">
-          <div className="ui-field">
-            <span className="ui-label" id={languageId}>
-              Text language
-            </span>
-            <div
-              className="image-to-text__chips"
-              role="radiogroup"
-              aria-labelledby={languageId}
-            >
-              {OCR_LANGUAGES.map((preset) => {
-                const selected = language === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "image-to-text__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => setLanguage(preset.id)}
-                  >
-                    <span className="image-to-text__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="image-to-text__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
+          <div className="image-to-text__options">
+            <div className="ui-field">
+              <span className="ui-label" id={languageId}>
+                Text language
+              </span>
+              <div
+                className="image-to-text__chips"
+                role="radiogroup"
+                aria-labelledby={languageId}
+              >
+                {OCR_LANGUAGES.map((preset) => {
+                  const selected = language === preset.id;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      className={cn(
+                        "image-to-text__chip",
+                        selected && "is-active",
+                      )}
+                      disabled={loading}
+                      onClick={() => setLanguage(preset.id)}
+                    >
+                      <span className="image-to-text__chip-label">
+                        {preset.label}
+                      </span>
+                      <span className="image-to-text__chip-hint">
+                        {preset.hint}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleExtract()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Extracting…" : "Extract text"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult && text.trim() ? (
-          <div className="tool-actions">
-            <Button onClick={() => void handleCopy()}>
-              {copied ? "Copied" : "Copy text"}
-            </Button>
-            <Button variant="ghost" onClick={handleDownload}>
-              Download .txt
-            </Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Extracting text…"}
-              </span>
-              <span className="tool-loading__subtext">
-                OCR runs locally in your browser.
-              </span>
-            </div>
-          ) : hasResult ? (
+          {hasResult ? (
             <div className="image-to-text__result">
-              <p className="image-to-text__result-meta">
-                {describeOcrResult(result!, text)}
-              </p>
               <label className="ui-label" htmlFor={outputId}>
                 Extracted text
               </label>
@@ -269,31 +241,54 @@ export default function ImageToText() {
                 placeholder="No text was detected in this image."
               />
             </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Uploaded preview"
-                className="preview-single__image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Choose a language and click Extract text.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to extract text here
+          ) : null}
+        </>
+      }
+      sidebarFooter={
+        <>
+          <div className="tool-actions">
+            <Button
+              onClick={() => void handleExtract()}
+              disabled={!hasSource || loading}
+            >
+              {loading ? "Extracting…" : "Extract text"}
+            </Button>
+            {hasResult && text.trim() ? (
+              <>
+                <Button onClick={() => void handleCopy()}>
+                  {copied ? "Copied" : "Copy text"}
+                </Button>
+                <Button variant="ghost" onClick={handleDownload}>
+                  Download .txt
+                </Button>
+              </>
+            ) : null}
+            <Button
+              variant="ghost"
+              onClick={handleReset}
+              disabled={(!hasSource && !hasResult) || loading}
+            >
+              Start over
+            </Button>
+          </div>
+          {error ? (
+            <p className="tool-error" role="alert">
+              {error}
             </p>
-          )}
+          ) : null}
+        </>
+      }
+    >
+      {hasSource && originalUrl ? (
+        <div className="image-editor-shell__preview-content preview-single">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={originalUrl}
+            alt="Uploaded preview"
+            className="preview-single__image"
+          />
         </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Edit the text if needed, then copy or download · processed locally"
-            : "Image to text OCR in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      ) : null}
+    </ImageEditorShell>
   );
 }

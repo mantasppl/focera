@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
 import {
   describeMetadata,
   downloadMetadataJson,
@@ -128,83 +129,46 @@ export default function ViewMetadataForYourImage() {
   }
 
   return (
-    <div className="tool-grid view-image-metadata">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
+    <ImageEditorShell
+      className="view-image-metadata"
+      hasSource={hasSource}
+      stageReady={hasResult}
+      loading={loading}
+      loadingText={progressText || "Reading metadata…"}
+      loadingSubtext="EXIF and tags are read locally in your browser."
+      previewTitle="Preview"
+      previewMeta={
+        hasResult
+          ? describeMetadata(result!)
+          : hasSource
+            ? sourceFile?.name
+            : "Upload an image to start"
+      }
+      privacyHint={
+        hasResult
+          ? "Copy or download JSON anytime · processed locally"
+          : "Read EXIF, camera, and GPS tags in your browser · files never upload to Focera"
+      }
+      sidebar={
+        <>
+          {!hasSource ? (
+            <ImageDropzone
+              onFile={handleFile}
+              onError={setError}
+              disabled={loading}
+            />
+          ) : (
+            <ImageSourceBar
+              file={sourceFile!}
+              width={result?.width}
+              height={result?.height}
+              disabled={loading}
+              onReplace={handleFile}
+            />
+          )}
 
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-              {result ? ` · ${result.width}×${result.height} px` : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleCopy()}
-            disabled={!hasResult || loading}
-          >
-            {copied ? "Copied" : "Copy JSON"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleDownload}
-            disabled={!hasResult || loading}
-          >
-            Download JSON
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Reading metadata…"}
-              </span>
-              <span className="tool-loading__subtext">
-                EXIF and tags are read locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && result ? (
+          {hasResult && result ? (
             <div className="view-image-metadata__result">
-              {originalUrl ? (
-                <div className="view-image-metadata__preview">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={originalUrl}
-                    alt="Uploaded preview"
-                    className="preview-single__image"
-                  />
-                </div>
-              ) : null}
-              <p className="view-image-metadata__result-meta">
-                {describeMetadata(result)}
-              </p>
               {result.gps ? (
                 <p className="view-image-metadata__gps">
                   <a
@@ -242,19 +206,52 @@ export default function ViewMetadataForYourImage() {
                 </section>
               ))}
             </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to view its metadata here
+          ) : null}
+        </>
+      }
+      sidebarFooter={
+        <>
+          <div className="tool-actions">
+            {hasResult ? (
+              <>
+                <Button onClick={() => void handleCopy()} disabled={loading}>
+                  {copied ? "Copied" : "Copy JSON"}
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleDownload}
+                  disabled={loading}
+                >
+                  Download JSON
+                </Button>
+              </>
+            ) : null}
+            <Button
+              variant="ghost"
+              onClick={handleReset}
+              disabled={(!hasSource && !hasResult) || loading}
+            >
+              Start over
+            </Button>
+          </div>
+          {error ? (
+            <p className="tool-error" role="alert">
+              {error}
             </p>
-          )}
+          ) : null}
+        </>
+      }
+    >
+      {hasSource && originalUrl ? (
+        <div className="image-editor-shell__preview-content preview-single">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={originalUrl}
+            alt="Uploaded preview"
+            className="preview-single__image"
+          />
         </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Copy or download JSON anytime · processed locally"
-            : "Read EXIF, camera, and GPS tags in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      ) : null}
+    </ImageEditorShell>
   );
 }

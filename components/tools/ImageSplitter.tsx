@@ -9,7 +9,11 @@ import {
 } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   MAX_GRID,
   MIN_GRID,
@@ -17,7 +21,6 @@ import {
   clampGridValue,
   describeSplit,
   downloadAllPiecesZip,
-  downloadPiece,
   pieceCount,
   readImageDimensions,
   revokePieces,
@@ -66,6 +69,22 @@ export default function ImageSplitter() {
     : (SPLIT_GRID_PRESETS.find(
         (preset) => preset.rows === rows && preset.cols === cols,
       )?.id ?? "custom");
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => activePiece?.blob ?? null,
+    getFilename: () => {
+      if (!sourceFile || !result || !activePiece) return null;
+      const padded = String(activePiece.index + 1).padStart(2, "0");
+      return `${fileBaseName(sourceFile)}-piece-${padded}-r${activePiece.row + 1}c${activePiece.col + 1}-${result.rows}x${result.cols}`;
+    },
+  });
 
   useEffect(() => {
     return () => {
@@ -182,13 +201,6 @@ export default function ImageSplitter() {
       setSelectedIndex(0);
       setProgressText("");
       trackSuccess();
-
-      await downloadAllPiecesZip(
-        split.pieces,
-        sourceFile,
-        split.rows,
-        split.cols,
-      );
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
         return;
@@ -208,12 +220,15 @@ export default function ImageSplitter() {
   }
 
   function handleDownloadPiece() {
-    if (!sourceFile || !result || !activePiece) return;
-    downloadPiece(activePiece, sourceFile, result.rows, result.cols);
+    openDownload();
   }
 
   async function handleDownloadAll() {
     if (!sourceFile || !result) return;
+    if (result.pieces.length === 1) {
+      openDownload();
+      return;
+    }
     setZipping(true);
     setError("");
     try {
@@ -233,184 +248,200 @@ export default function ImageSplitter() {
   }
 
   return (
-    <div className="tool-grid image-splitter">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={(file) => void handleFile(file)}
-          onError={setError}
-          disabled={loading}
-        />
+    <>
+      <ImageEditorShell
+        className="image-splitter"
+        hasSource={hasSource}
+        stageReady={hasPieces}
+        loading={loading}
+        loadingText={progressText || "Splitting image…"}
+        loadingSubtext="Pieces are cut locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasPieces && activePiece
+            ? `Piece ${activePiece.index + 1} of ${result!.pieces.length} · ${activePiece.width}×${activePiece.height} px`
+            : hasSource
+              ? describeSplit(originalWidth, originalHeight, rows, cols)
+              : "Upload an image to start"
+        }
+        previewHint={
+          hasSource && !hasPieces
+            ? "Click Split image to cut pieces"
+            : undefined
+        }
+        privacyHint={
+          hasPieces
+            ? "Processed locally on your device"
+            : "Cut into a grid in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={(file) => void handleFile(file)}
+                onError={setError}
+                disabled={loading}
+              />
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                width={originalWidth}
+                height={originalHeight}
+                disabled={loading}
+                onReplace={(file) => void handleFile(file)}
+              />
+            )}
 
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-              {originalWidth
-                ? ` · ${originalWidth}×${originalHeight} px`
-                : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="image-splitter__options">
-          <div className="ui-field">
-            <span className="ui-label" id={gridId}>
-              Split grid
-            </span>
-            <div
-              className="image-splitter__chips"
-              role="group"
-              aria-labelledby={gridId}
-            >
-              {SPLIT_GRID_PRESETS.map((preset) => {
-                const selected = activePresetId === preset.id;
-                return (
+            <div className="image-splitter__options">
+              <div className="ui-field">
+                <span className="ui-label" id={gridId}>
+                  Split grid
+                </span>
+                <div
+                  className="image-splitter__chips"
+                  role="group"
+                  aria-labelledby={gridId}
+                >
+                  {SPLIT_GRID_PRESETS.map((preset) => {
+                    const selected = activePresetId === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        className={cn(
+                          "image-splitter__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading}
+                        onClick={() => handlePreset(preset.id)}
+                      >
+                        <span className="image-splitter__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="image-splitter__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
                   <button
-                    key={preset.id}
                     type="button"
                     className={cn(
                       "image-splitter__chip",
-                      selected && "is-active",
+                      activePresetId === "custom" && "is-active",
                     )}
                     disabled={loading}
-                    onClick={() => handlePreset(preset.id)}
+                    onClick={() => handlePreset("custom")}
                   >
-                    <span className="image-splitter__chip-label">
-                      {preset.label}
-                    </span>
+                    <span className="image-splitter__chip-label">Custom</span>
                     <span className="image-splitter__chip-hint">
-                      {preset.hint}
+                      Set rows & cols
                     </span>
                   </button>
-                );
-              })}
-              <button
-                type="button"
-                className={cn(
-                  "image-splitter__chip",
-                  activePresetId === "custom" && "is-active",
-                )}
-                disabled={loading}
-                onClick={() => handlePreset("custom")}
+                </div>
+                <p className="ui-hint">
+                  Cuts into {pieceCount(rows, cols)} PNG pieces (max {MAX_GRID}×
+                  {MAX_GRID}).
+                </p>
+              </div>
+
+              {customMode || activePresetId === "custom" ? (
+                <div className="image-splitter__dims">
+                  <div className="ui-field">
+                    <label className="ui-label" htmlFor={rowsId}>
+                      Rows
+                    </label>
+                    <input
+                      id={rowsId}
+                      className="ui-input"
+                      type="number"
+                      min={MIN_GRID}
+                      max={MAX_GRID}
+                      step={1}
+                      inputMode="numeric"
+                      value={rows}
+                      disabled={loading}
+                      onChange={(event) => {
+                        setCustomMode(true);
+                        setRows(clampGridValue(Number(event.target.value)));
+                        clearResult();
+                      }}
+                    />
+                  </div>
+                  <div className="ui-field">
+                    <label className="ui-label" htmlFor={colsId}>
+                      Columns
+                    </label>
+                    <input
+                      id={colsId}
+                      className="ui-input"
+                      type="number"
+                      min={MIN_GRID}
+                      max={MAX_GRID}
+                      step={1}
+                      inputMode="numeric"
+                      value={cols}
+                      disabled={loading}
+                      onChange={(event) => {
+                        setCustomMode(true);
+                        setCols(clampGridValue(Number(event.target.value)));
+                        clearResult();
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleSplit()}
+                disabled={!hasSource || loading || !gridValid}
               >
-                <span className="image-splitter__chip-label">Custom</span>
-                <span className="image-splitter__chip-hint">
-                  Set rows & cols
-                </span>
-              </button>
+                {loading ? "Splitting…" : "Split image"}
+              </Button>
+              {hasPieces ? (
+                <>
+                  <Button
+                    onClick={handleDownloadPiece}
+                    disabled={!activePiece || zipping || downloading}
+                  >
+                    Download piece
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => void handleDownloadAll()}
+                    disabled={zipping || downloading}
+                  >
+                    {zipping
+                      ? "Preparing ZIP…"
+                      : result!.pieces.length === 1
+                        ? "Download"
+                        : "Download all (ZIP)"}
+                  </Button>
+                </>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasPieces) || loading}
+              >
+                Start over
+              </Button>
             </div>
-            <p className="ui-hint">
-              Cuts into {pieceCount(rows, cols)} PNG pieces (max {MAX_GRID}×
-              {MAX_GRID}).
-            </p>
-          </div>
-
-          {customMode || activePresetId === "custom" ? (
-            <div className="image-splitter__dims">
-              <div className="ui-field">
-                <label className="ui-label" htmlFor={rowsId}>
-                  Rows
-                </label>
-                <input
-                  id={rowsId}
-                  className="ui-input"
-                  type="number"
-                  min={MIN_GRID}
-                  max={MAX_GRID}
-                  step={1}
-                  inputMode="numeric"
-                  value={rows}
-                  disabled={loading}
-                  onChange={(event) => {
-                    setCustomMode(true);
-                    setRows(clampGridValue(Number(event.target.value)));
-                    clearResult();
-                  }}
-                />
-              </div>
-              <div className="ui-field">
-                <label className="ui-label" htmlFor={colsId}>
-                  Columns
-                </label>
-                <input
-                  id={colsId}
-                  className="ui-input"
-                  type="number"
-                  min={MIN_GRID}
-                  max={MAX_GRID}
-                  step={1}
-                  inputMode="numeric"
-                  value={cols}
-                  disabled={loading}
-                  onChange={(event) => {
-                    setCustomMode(true);
-                    setCols(clampGridValue(Number(event.target.value)));
-                    clearResult();
-                  }}
-                />
-              </div>
-            </div>
-          ) : null}
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleSplit()}
-            disabled={!hasSource || loading || !gridValid}
-          >
-            {loading ? "Splitting…" : "Split image"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasPieces) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasPieces ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadPiece} disabled={!activePiece || zipping}>
-              Download piece
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => void handleDownloadAll()}
-              disabled={zipping}
-            >
-              {zipping
-                ? "Preparing ZIP…"
-                : result!.pieces.length === 1
-                  ? "Download PNG"
-                  : "Download all (ZIP)"}
-            </Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasPieces ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Splitting image…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Pieces are cut locally in your browser.
-              </span>
-            </div>
-          ) : activePiece ? (
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {activePiece ? (
+          <div className="image-splitter__result image-editor-shell__preview-content">
             <div className="preview-single">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -418,89 +449,80 @@ export default function ImageSplitter() {
                 alt={`Piece ${activePiece.index + 1}`}
                 className="preview-single__image image-splitter__preview-image"
               />
-              <p className="tool-placeholder preview-single__hint">
+              <p className="image-editor-shell__result-meta image-splitter__piece-meta">
                 Piece {activePiece.index + 1} of {result!.pieces.length} · row{" "}
                 {activePiece.row + 1}, col {activePiece.col + 1} ·{" "}
                 {activePiece.width}×{activePiece.height}px ·{" "}
                 {formatFileSize(activePiece.blob.size)}
               </p>
             </div>
-          ) : hasSource && originalUrl ? (
-            <div className="image-splitter__preview">
-              <div
-                className="image-splitter__stage"
-                style={
-                  {
-                    "--split-rows": rows,
-                    "--split-cols": cols,
-                  } as CSSProperties
-                }
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={originalUrl}
-                  alt="Uploaded preview"
-                  className="image-splitter__image"
-                />
-                <div className="image-splitter__overlay" aria-hidden="true">
-                  {Array.from({ length: rows * cols }, (_, index) => (
-                    <span key={index} className="image-splitter__cell" />
-                  ))}
-                </div>
-              </div>
-              <p className="tool-placeholder preview-single__hint">
-                {describeSplit(originalWidth, originalHeight, rows, cols)}.
-                Click Split image to cut pieces.
-              </p>
+            <div
+              className="image-splitter__thumbs"
+              role="list"
+              aria-label="Image pieces"
+            >
+              {result!.pieces.map((piece) => {
+                const selected = piece.index === activePiece?.index;
+                return (
+                  <button
+                    key={piece.index}
+                    type="button"
+                    role="listitem"
+                    className={cn(
+                      "image-splitter__thumb",
+                      selected && "is-active",
+                    )}
+                    onClick={() => setSelectedIndex(piece.index)}
+                    aria-pressed={selected}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={piece.url}
+                      alt=""
+                      className="image-splitter__thumb-image"
+                    />
+                    <span className="image-splitter__thumb-label">
+                      {piece.index + 1}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to preview the split grid here
-            </p>
-          )}
-        </div>
-
-        {hasPieces ? (
-          <div
-            className="image-splitter__thumbs"
-            role="list"
-            aria-label="Image pieces"
-          >
-            {result!.pieces.map((piece) => {
-              const selected = piece.index === activePiece?.index;
-              return (
-                <button
-                  key={piece.index}
-                  type="button"
-                  role="listitem"
-                  className={cn(
-                    "image-splitter__thumb",
-                    selected && "is-active",
-                  )}
-                  onClick={() => setSelectedIndex(piece.index)}
-                  aria-pressed={selected}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={piece.url}
-                    alt=""
-                    className="image-splitter__thumb-image"
-                  />
-                  <span className="image-splitter__thumb-label">
-                    {piece.index + 1}
-                  </span>
-                </button>
-              );
-            })}
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-splitter__preview image-editor-shell__preview-content">
+            <div
+              className="image-splitter__stage"
+              style={
+                {
+                  "--split-rows": rows,
+                  "--split-cols": cols,
+                } as CSSProperties
+              }
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={originalUrl}
+                alt="Uploaded preview"
+                className="image-splitter__image"
+              />
+              <div className="image-splitter__overlay" aria-hidden="true">
+                {Array.from({ length: rows * cols }, (_, index) => (
+                  <span key={index} className="image-splitter__cell" />
+                ))}
+              </div>
+            </div>
           </div>
         ) : null}
+      </ImageEditorShell>
 
-        <p className="tool-hint">
-          {hasPieces
-            ? "Download one piece or a ZIP of every PNG · processed locally"
-            : "Cut into a grid in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

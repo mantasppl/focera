@@ -5,15 +5,19 @@ import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { useMobilePreviewReveal } from "@/components/tools/useMobilePreviewReveal";
-import { removeImageBackground, preloadBackgroundRemoval, BACKGROUND_FIRST_RUN_HINT, hasPreparedBackgroundModel } from "@/lib/background-removal";
-import { compositeWithBlur, BLUR_RADIUS } from "@/lib/composite-image";
-import { useToolAnalytics } from "@/lib/analytics/client";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
 import {
-  downloadBlob,
-  fileBaseName,
-  formatFileSize,
-} from "@/lib/image";
+  BACKGROUND_FIRST_RUN_HINT,
+  hasPreparedBackgroundModel,
+  preloadBackgroundRemoval,
+  removeImageBackground,
+} from "@/lib/background-removal";
+import { BLUR_RADIUS, compositeWithBlur } from "@/lib/composite-image";
+import { useToolAnalytics } from "@/lib/analytics/client";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -53,6 +57,19 @@ export default function BlurBackground() {
   const hasCutout = Boolean(cutoutBlob);
   const hasResult = Boolean(resultBlob && resultUrl);
   const canProcess = hasSource && !loading;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => resultBlob,
+    getFilename: () =>
+      sourceFile ? `${fileBaseName(sourceFile)}-blur-bg` : null,
+  });
 
   useEffect(() => {
     resultUrlRef.current = resultUrl;
@@ -161,12 +178,7 @@ export default function BlurBackground() {
     return () => {
       cancelled = true;
     };
-  }, [cutoutBlob, debouncedBlurRadius, sourceFile]);
-
-  function handleDownload() {
-    if (!sourceFile || !resultBlob) return;
-    downloadBlob(resultBlob, `${fileBaseName(sourceFile)}-blur-bg.png`);
-  }
+  }, [cutoutBlob, debouncedBlurRadius, sourceFile, trackFailure]);
 
   function handleReset() {
     processIdRef.current += 1;
@@ -179,138 +191,167 @@ export default function BlurBackground() {
     setShowFirstRunHint(false);
   }
 
-  const previewRef = useMobilePreviewReveal(loading || hasResult || compositing);
+  const previewMeta = hasResult
+    ? resultBlob
+      ? `Blurred background · ${formatFileSize(resultBlob.size)}`
+      : "Applying blur…"
+    : hasCutout
+      ? "Cutout ready — adjust blur intensity"
+      : hasSource
+        ? sourceFile!.name
+        : "Upload an image to start";
 
   return (
-    <div className={`tool-grid${loading || hasResult || compositing ? " is-preview-first" : ""}`}>
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
+    <>
+      <ImageEditorShell
+        className="blur-background"
+        hasSource={hasSource}
+        stageReady={hasResult || hasCutout}
+        loading={false}
+        previewTitle="Preview"
+        previewMeta={previewMeta}
+        previewHint={
+          hasSource && !hasCutout && !loading
+            ? "Click Blur background to start"
+            : undefined
+        }
+        privacyHint={
+          loading && showFirstRunHint
+            ? BACKGROUND_FIRST_RUN_HINT
+            : hasCutout
+              ? "Processed locally on your device"
+              : "AI cutout + portrait blur in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={handleFile}
+                onError={setError}
+                disabled={loading}
+              />
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                disabled={loading}
+                onReplace={handleFile}
+              />
+            )}
 
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="tool-actions">
-          <Button onClick={() => void blurBackground()} disabled={!canProcess}>
-            Blur background
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasCutout) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasCutout ? (
-          <section
-            className="export-options"
-            aria-labelledby="blur-bg-options-heading"
-          >
-            <h2 id="blur-bg-options-heading" className="export-options__heading">
-              Blur intensity
-            </h2>
-            <p className="export-options__lede">
-              Keep your subject sharp while softly blurring the original scene.
-            </p>
-
-            <div className="export-option__panel">
-              <div className="export-slider">
-                <label className="export-slider__label" htmlFor={blurInputId}>
-                  Softness
-                  <span className="export-slider__value">{blurRadius}px</span>
-                </label>
-                <input
-                  id={blurInputId}
-                  type="range"
-                  min={BLUR_RADIUS.min}
-                  max={BLUR_RADIUS.max}
-                  step={BLUR_RADIUS.step}
-                  value={blurRadius}
-                  disabled={loading}
-                  className="export-slider__input"
-                  onChange={(event) =>
-                    setBlurRadius(Number.parseInt(event.target.value, 10))
-                  }
-                />
-                <p className="ui-hint">
-                  Portrait-style depth effect — drag to fine-tune the background
-                  softness.
-                </p>
-              </div>
-            </div>
-
-            <div className="export-options__actions">
-              <Button
-                onClick={handleDownload}
-                disabled={compositing || !hasResult || loading}
+            {hasCutout ? (
+              <section
+                className="export-options"
+                aria-labelledby="blur-bg-options-heading"
               >
-                {compositing ? "Preparing…" : "Download PNG"}
+                <h2
+                  id="blur-bg-options-heading"
+                  className="export-options__heading"
+                >
+                  Blur intensity
+                </h2>
+                <p className="export-options__lede">
+                  Keep your subject sharp while softly blurring the original
+                  scene.
+                </p>
+
+                <div className="export-option__panel">
+                  <div className="export-slider">
+                    <label className="export-slider__label" htmlFor={blurInputId}>
+                      Softness
+                      <span className="export-slider__value">{blurRadius}px</span>
+                    </label>
+                    <input
+                      id={blurInputId}
+                      type="range"
+                      min={BLUR_RADIUS.min}
+                      max={BLUR_RADIUS.max}
+                      step={BLUR_RADIUS.step}
+                      value={blurRadius}
+                      disabled={loading}
+                      className="export-slider__input"
+                      onChange={(event) =>
+                        setBlurRadius(Number.parseInt(event.target.value, 10))
+                      }
+                    />
+                    <p className="ui-hint">
+                      Portrait-style depth effect — drag to fine-tune the
+                      background softness.
+                    </p>
+                  </div>
+                </div>
+              </section>
+            ) : null}
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void blurBackground()}
+                disabled={!canProcess}
+              >
+                {loading ? "Processing…" : "Blur background"}
+              </Button>
+              {hasCutout ? (
+                <Button
+                  onClick={openDownload}
+                  disabled={loading || compositing || !hasResult}
+                >
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasCutout) || loading}
+              >
+                Start over
               </Button>
             </div>
-          </section>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview" ref={previewRef}>
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading && originalUrl ? (
-            <EnhancingPreview src={originalUrl} />
-          ) : hasResult && originalUrl ? (
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {loading && originalUrl ? (
+          <EnhancingPreview src={originalUrl} />
+        ) : hasResult && originalUrl ? (
+          <div className="image-editor-shell__result blur-background__result">
             <BeforeAfterPreview
               beforeSrc={originalUrl}
               afterSrc={resultUrl}
+              beforeAlt="Original image"
+              afterAlt="Blurred background"
               hint="Preview with portrait-style background blur."
             />
-          ) : hasCutout && compositing ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">Applying blur…</span>
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Uploaded preview"
-                className="preview-single__image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Upload another image to blur a new background.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to preview and blur its background
-            </p>
-          )}
-        </div>
-        <p className="tool-hint">
-          {loading && showFirstRunHint
-            ? BACKGROUND_FIRST_RUN_HINT
-            : hasCutout
-              ? "Adjust blur intensity · processed locally"
-              : "AI cutout + portrait blur · processed locally in your browser · no upload to our servers"}
-        </p>
-      </div>
-    </div>
+          </div>
+        ) : hasCutout && compositing ? (
+          <div className="tool-loading" role="status" aria-live="polite">
+            <span className="tool-loading__spinner" aria-hidden="true" />
+            <span className="tool-loading__text">Applying blur…</span>
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-editor-shell__preview-content preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={originalUrl}
+              alt="Uploaded preview"
+              className="preview-single__image"
+            />
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

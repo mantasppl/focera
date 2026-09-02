@@ -5,8 +5,11 @@ import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
 import TransparentCutoutOptions from "@/components/tools/TransparentCutoutOptions";
-import { useMobilePreviewReveal } from "@/components/tools/useMobilePreviewReveal";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
 import {
   BACKGROUND_FIRST_RUN_HINT,
   hasPreparedBackgroundModel,
@@ -14,14 +17,9 @@ import {
   removeImageBackground,
 } from "@/lib/background-removal";
 import { useToolAnalytics } from "@/lib/analytics/client";
-import {
-  downloadBlob,
-  fileBaseName,
-  formatFileSize,
-} from "@/lib/image";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   applyTransparentCutoutOptions,
-  cutoutExtension,
   hasVisualCutoutOptions,
   type CutoutFormat,
   type CutoutOutline,
@@ -80,6 +78,19 @@ export default function MakeBackgroundTransparent() {
   });
   const needsExportPass = visualOptions || format === "webp";
   const downloadBlobReady = needsExportPass ? exportBlob : resultBlob;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => downloadBlobReady,
+    getFilename: () =>
+      sourceFile ? `${fileBaseName(sourceFile)}-transparent` : null,
+  });
 
   useEffect(() => {
     resultUrlRef.current = resultUrl;
@@ -222,15 +233,6 @@ export default function MakeBackgroundTransparent() {
     format,
   ]);
 
-  function handleDownload() {
-    if (!sourceFile || !downloadBlobReady) return;
-    const ext = cutoutExtension(format, downloadBlobReady.type);
-    downloadBlob(
-      downloadBlobReady,
-      `${fileBaseName(sourceFile)}-transparent.${ext}`,
-    );
-  }
-
   function handleReset() {
     processIdRef.current += 1;
     if (originalUrl) URL.revokeObjectURL(originalUrl);
@@ -242,120 +244,152 @@ export default function MakeBackgroundTransparent() {
     setShowFirstRunHint(false);
   }
 
-  const previewRef = useMobilePreviewReveal(loading || hasResult || compositing);
   const previewSrc = visualOptions && exportUrl ? exportUrl : resultUrl;
 
+  const previewMeta = hasResult
+    ? downloadBlobReady
+      ? `Transparent cutout · ${formatFileSize(downloadBlobReady.size)}`
+      : compositing
+        ? "Applying cutout options…"
+        : "Background removed"
+    : hasSource
+      ? sourceFile!.name
+      : "Upload an image to start";
+
   return (
-    <div className={`tool-grid${loading || hasResult || compositing ? " is-preview-first" : ""}`}>
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="tool-actions">
-          <Button onClick={() => void makeTransparent()} disabled={!canProcess}>
-            Make background transparent
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <TransparentCutoutOptions
-            crop={crop}
-            onCropChange={setCrop}
-            padding={padding}
-            onPaddingChange={setPadding}
-            shadow={shadow}
-            onShadowChange={setShadow}
-            outline={outline}
-            onOutlineChange={setOutline}
-            outlineColor={outlineColor}
-            onOutlineColorChange={setOutlineColor}
-            format={format}
-            onFormatChange={setFormat}
-            onDownload={handleDownload}
-            downloadDisabled={compositing || !downloadBlobReady}
-            compositing={compositing}
-            disabled={loading}
-          />
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview" ref={previewRef}>
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading && originalUrl ? (
-            <EnhancingPreview src={originalUrl} />
-          ) : hasResult && visualOptions && exportUrl ? (
-            <div className="preview-checker">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={previewSrc}
-                alt="Transparent cutout preview"
-                className="preview-checker__image"
+    <>
+      <ImageEditorShell
+        className="make-background-transparent"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={false}
+        previewTitle="Preview"
+        previewMeta={previewMeta}
+        previewHint={
+          hasSource && !hasResult && !loading
+            ? "Click Make background transparent to start"
+            : undefined
+        }
+        privacyHint={
+          loading && showFirstRunHint
+            ? BACKGROUND_FIRST_RUN_HINT
+            : hasResult
+              ? "Processed locally on your device"
+              : "Transparent cutout in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={handleFile}
+                onError={setError}
+                disabled={loading}
               />
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                disabled={loading}
+                onReplace={handleFile}
+              />
+            )}
+
+            {hasResult ? (
+              <TransparentCutoutOptions
+                crop={crop}
+                onCropChange={setCrop}
+                padding={padding}
+                onPaddingChange={setPadding}
+                shadow={shadow}
+                onShadowChange={setShadow}
+                outline={outline}
+                onOutlineChange={setOutline}
+                outlineColor={outlineColor}
+                onOutlineColorChange={setOutlineColor}
+                format={format}
+                onFormatChange={setFormat}
+                disabled={loading}
+              />
+            ) : null}
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void makeTransparent()}
+                disabled={!canProcess}
+              >
+                {loading ? "Processing…" : "Make background transparent"}
+              </Button>
+              {hasResult ? (
+                <Button
+                  onClick={openDownload}
+                  disabled={loading || compositing || !downloadBlobReady}
+                >
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
             </div>
-          ) : hasResult && visualOptions ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">Applying cutout options…</span>
-            </div>
-          ) : hasResult && originalUrl ? (
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {loading && originalUrl ? (
+          <EnhancingPreview src={originalUrl} />
+        ) : hasResult && visualOptions && exportUrl ? (
+          <div className="image-editor-shell__preview-content preview-checker">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewSrc}
+              alt="Transparent cutout preview"
+              className="preview-checker__image"
+            />
+          </div>
+        ) : hasResult && visualOptions ? (
+          <div className="tool-loading" role="status" aria-live="polite">
+            <span className="tool-loading__spinner" aria-hidden="true" />
+            <span className="tool-loading__text">Applying cutout options…</span>
+          </div>
+        ) : hasResult && originalUrl ? (
+          <div className="image-editor-shell__result make-background-transparent__result">
             <BeforeAfterPreview
               beforeSrc={originalUrl}
               afterSrc={resultUrl}
+              beforeAlt="Original image"
+              afterAlt="Transparent cutout"
               hint="Drag the slider to compare the original and transparent cutout."
             />
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Uploaded preview"
-                className="preview-single__image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Upload another image to make a new transparent cutout.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to preview and make its background transparent
-            </p>
-          )}
-        </div>
-        <p className="tool-hint">
-          {loading && showFirstRunHint
-            ? BACKGROUND_FIRST_RUN_HINT
-            : hasResult
-              ? "Crop, padding, shadow, and sticker outline stay transparent · processed locally"
-              : "Transparent PNG or WebP · processed locally in your browser · no upload to our servers"}
-        </p>
-      </div>
-    </div>
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-editor-shell__preview-content preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={originalUrl}
+              alt="Uploaded preview"
+              className="preview-single__image"
+            />
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

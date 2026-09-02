@@ -3,11 +3,13 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import PhotoCollageDropzone from "@/components/tools/PhotoCollageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   createPhotoCollage,
   describeCollageOutput,
-  downloadPhotoCollage,
   getCollageTemplate,
   MAX_COLLAGE_FILES,
   MIN_COLLAGE_FILES,
@@ -121,7 +123,25 @@ export default function PhotoCollage() {
   const fileCount = entries.length;
   const canCreate = fileCount >= MIN_COLLAGE_FILES && !loading;
   const hasResult = Boolean(result);
+  const hasSource = fileCount > 0;
   const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () => {
+      if (!result || fileCount === 0) return null;
+      return files.length === 1
+        ? fileBaseName(files[0])
+        : `${fileBaseName(files[0])}-collage`;
+    },
+  });
 
   const availableTemplates = templatesForCount(fileCount);
 
@@ -227,7 +247,6 @@ export default function PhotoCollage() {
       }
 
       setResult(collage);
-      downloadPhotoCollage(collage.blob, files);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -248,347 +267,363 @@ export default function PhotoCollage() {
     }
   }
 
-  function handleDownloadAgain() {
-    if (!result || fileCount === 0) return;
-    downloadPhotoCollage(result.blob, files);
-  }
-
   const resultTemplateLabel = result
     ? getCollageTemplate(result.templateId, result.imageCount).label
     : "";
 
   return (
-    <div className="tool-grid photo-collage">
-      <div className="tool-panel">
-        <PhotoCollageDropzone
-          existingFiles={files}
-          onFiles={handleAddFiles}
-          onError={setError}
-          disabled={loading || fileCount >= MAX_COLLAGE_FILES}
-        />
+    <>
+      <ImageEditorShell
+        className="photo-collage"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Creating collage…"}
+        loadingSubtext="Collage is built locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult && result
+            ? describeCollageOutput(result)
+            : hasSource
+              ? `${fileCount} photo${fileCount === 1 ? "" : "s"} selected`
+              : "Add photos to start"
+        }
+        previewHint={
+          hasSource && !hasResult
+            ? "Pick a template and click Create collage"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Build collages in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            <PhotoCollageDropzone
+              existingFiles={files}
+              onFiles={handleAddFiles}
+              onError={setError}
+              disabled={loading || fileCount >= MAX_COLLAGE_FILES}
+            />
 
-        {fileCount > 0 ? (
-          <div className="photo-collage__list-wrap">
-            <div className="photo-collage__list-header">
-              <p className="photo-collage__list-title" id={listId}>
-                Photo order ({fileCount})
-              </p>
-              <p className="photo-collage__list-meta">
-                {formatFileSize(totalBytes)} total
-              </p>
-            </div>
-            <ol className="photo-collage__list" aria-labelledby={listId}>
-              {entries.map((entry, index) => (
-                <li key={entry.id} className="photo-collage__item">
-                  <span className="photo-collage__index" aria-hidden="true">
-                    {index + 1}
+            {fileCount > 0 ? (
+              <div className="photo-collage__list-wrap">
+                <div className="photo-collage__list-header">
+                  <p className="photo-collage__list-title" id={listId}>
+                    Photo order ({fileCount})
+                  </p>
+                  <p className="photo-collage__list-meta">
+                    {formatFileSize(totalBytes)} total
+                  </p>
+                </div>
+                <ol className="photo-collage__list" aria-labelledby={listId}>
+                  {entries.map((entry, index) => (
+                    <li key={entry.id} className="photo-collage__item">
+                      <span className="photo-collage__index" aria-hidden="true">
+                        {index + 1}
+                      </span>
+                      <div className="photo-collage__file">
+                        <p className="photo-collage__name">{entry.file.name}</p>
+                        <p className="photo-collage__size">
+                          {formatFileSize(entry.file.size)}
+                        </p>
+                      </div>
+                      <div className="photo-collage__item-actions">
+                        <button
+                          type="button"
+                          className="photo-collage__icon-btn"
+                          aria-label={`Move ${entry.file.name} up`}
+                          disabled={loading || index === 0}
+                          onClick={() => handleMove(entry.id, -1)}
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          className="photo-collage__icon-btn"
+                          aria-label={`Move ${entry.file.name} down`}
+                          disabled={loading || index === fileCount - 1}
+                          onClick={() => handleMove(entry.id, 1)}
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          className={cn(
+                            "photo-collage__icon-btn",
+                            "photo-collage__icon-btn--danger",
+                          )}
+                          aria-label={`Remove ${entry.file.name}`}
+                          disabled={loading}
+                          onClick={() => handleRemove(entry.id)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ) : null}
+
+            <div className="photo-collage__options">
+              {availableTemplates.length > 0 ? (
+                <div className="ui-field">
+                  <span className="ui-label" id={templateIdAttr}>
+                    Collage template
                   </span>
-                  <div className="photo-collage__file">
-                    <p className="photo-collage__name">{entry.file.name}</p>
-                    <p className="photo-collage__size">
-                      {formatFileSize(entry.file.size)}
-                    </p>
-                  </div>
-                  <div className="photo-collage__item-actions">
-                    <button
-                      type="button"
-                      className="photo-collage__icon-btn"
-                      aria-label={`Move ${entry.file.name} up`}
-                      disabled={loading || index === 0}
-                      onClick={() => handleMove(entry.id, -1)}
-                    >
-                      ↑
-                    </button>
-                    <button
-                      type="button"
-                      className="photo-collage__icon-btn"
-                      aria-label={`Move ${entry.file.name} down`}
-                      disabled={loading || index === fileCount - 1}
-                      onClick={() => handleMove(entry.id, 1)}
-                    >
-                      ↓
-                    </button>
-                    <button
-                      type="button"
-                      className={cn(
-                        "photo-collage__icon-btn",
-                        "photo-collage__icon-btn--danger",
-                      )}
-                      aria-label={`Remove ${entry.file.name}`}
-                      disabled={loading}
-                      onClick={() => handleRemove(entry.id)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ) : null}
-
-        <div className="photo-collage__options">
-          {availableTemplates.length > 0 ? (
-            <div className="ui-field">
-              <span className="ui-label" id={templateIdAttr}>
-                Collage template
-              </span>
-              <div
-                className="photo-collage__templates"
-                role="radiogroup"
-                aria-labelledby={templateIdAttr}
-              >
-                {availableTemplates.map((template) => (
-                  <button
-                    key={template.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={activeTemplateId === template.id}
-                    className={cn(
-                      "photo-collage__template",
-                      activeTemplateId === template.id && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => {
-                      clearResult();
-                      setTemplateId(template.id);
-                    }}
+                  <div
+                    className="photo-collage__templates"
+                    role="radiogroup"
+                    aria-labelledby={templateIdAttr}
                   >
-                    <TemplateThumb template={template} />
-                    <span className="photo-collage__chip-label">
-                      {template.label}
-                    </span>
-                    <span className="photo-collage__chip-hint">
-                      {template.hint}
-                    </span>
-                  </button>
-                ))}
+                    {availableTemplates.map((template) => (
+                      <button
+                        key={template.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={activeTemplateId === template.id}
+                        className={cn(
+                          "photo-collage__template",
+                          activeTemplateId === template.id && "is-active",
+                        )}
+                        disabled={loading}
+                        onClick={() => {
+                          clearResult();
+                          setTemplateId(template.id);
+                        }}
+                      >
+                        <TemplateThumb template={template} />
+                        <span className="photo-collage__chip-label">
+                          {template.label}
+                        </span>
+                        <span className="photo-collage__chip-hint">
+                          {template.hint}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="ui-hint">
+                  Add {MIN_COLLAGE_FILES}–{MAX_COLLAGE_FILES} photos to unlock
+                  collage templates.
+                </p>
+              )}
+
+              <div className="ui-field">
+                <span className="ui-label" id={ratioId}>
+                  Canvas ratio
+                </span>
+                <div
+                  className="photo-collage__chips"
+                  role="radiogroup"
+                  aria-labelledby={ratioId}
+                >
+                  {RATIO_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={ratio === option.value}
+                      className={cn(
+                        "photo-collage__chip",
+                        ratio === option.value && "is-active",
+                      )}
+                      disabled={loading}
+                      onClick={() => {
+                        clearResult();
+                        setRatio(option.value);
+                      }}
+                    >
+                      <span className="photo-collage__chip-label">
+                        {option.label}
+                      </span>
+                      <span className="photo-collage__chip-hint">
+                        {option.hint}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="ui-field">
+                <span className="ui-label" id={fitId}>
+                  Photo fit
+                </span>
+                <div
+                  className="photo-collage__chips"
+                  role="radiogroup"
+                  aria-labelledby={fitId}
+                >
+                  {FIT_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={fit === option.value}
+                      className={cn(
+                        "photo-collage__chip",
+                        fit === option.value && "is-active",
+                      )}
+                      disabled={loading}
+                      onClick={() => {
+                        clearResult();
+                        setFit(option.value);
+                      }}
+                    >
+                      <span className="photo-collage__chip-label">
+                        {option.label}
+                      </span>
+                      <span className="photo-collage__chip-hint">
+                        {option.hint}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="ui-field">
+                <span className="ui-label" id={gapId}>
+                  Gap
+                </span>
+                <div
+                  className="photo-collage__chips"
+                  role="radiogroup"
+                  aria-labelledby={gapId}
+                >
+                  {GAP_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={gap === option.value}
+                      className={cn(
+                        "photo-collage__chip",
+                        gap === option.value && "is-active",
+                      )}
+                      disabled={loading}
+                      onClick={() => {
+                        clearResult();
+                        setGap(option.value);
+                      }}
+                    >
+                      <span className="photo-collage__chip-label">
+                        {option.label}
+                      </span>
+                      <span className="photo-collage__chip-hint">
+                        {option.hint}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="ui-field">
+                <span className="ui-label" id={backgroundId}>
+                  Background
+                </span>
+                <div
+                  className="photo-collage__chips"
+                  role="radiogroup"
+                  aria-labelledby={backgroundId}
+                >
+                  {BACKGROUND_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      role="radio"
+                      aria-checked={background === option.value}
+                      className={cn(
+                        "photo-collage__chip",
+                        background === option.value && "is-active",
+                      )}
+                      disabled={loading}
+                      onClick={() => {
+                        clearResult();
+                        setBackground(option.value);
+                      }}
+                    >
+                      <span className="photo-collage__chip-label">
+                        {option.label}
+                      </span>
+                      <span className="photo-collage__chip-hint">
+                        {option.hint}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                <p className="ui-hint">
+                  Templates unlock for {MIN_COLLAGE_FILES}–{MAX_COLLAGE_FILES}{" "}
+                  photos.
+                </p>
               </div>
             </div>
-          ) : (
-            <p className="ui-hint">
-              Add {MIN_COLLAGE_FILES}–{MAX_COLLAGE_FILES} photos to unlock
-              collage templates.
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button onClick={() => void handleCreate()} disabled={!canCreate}>
+                {loading ? "Creating…" : "Create collage"}
+              </Button>
+              {hasResult ? (
+                <Button onClick={openDownload} disabled={loading}>
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={fileCount === 0 || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && result ? (
+          <div className="image-editor-shell__result photo-collage__success">
+            <p className="image-editor-shell__result-meta photo-collage__success-meta">
+              {describeCollageOutput(result)}
             </p>
-          )}
-
-          <div className="ui-field">
-            <span className="ui-label" id={ratioId}>
-              Canvas ratio
-            </span>
-            <div
-              className="photo-collage__chips"
-              role="radiogroup"
-              aria-labelledby={ratioId}
-            >
-              {RATIO_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={ratio === option.value}
-                  className={cn(
-                    "photo-collage__chip",
-                    ratio === option.value && "is-active",
-                  )}
-                  disabled={loading}
-                  onClick={() => {
-                    clearResult();
-                    setRatio(option.value);
-                  }}
-                >
-                  <span className="photo-collage__chip-label">
-                    {option.label}
-                  </span>
-                  <span className="photo-collage__chip-hint">
-                    {option.hint}
-                  </span>
-                </button>
-              ))}
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={result.url}
+              alt={`${resultTemplateLabel} collage of ${result.imageCount} photos, ${ratioLabel(result.ratio)}`}
+              className="photo-collage__preview"
+            />
           </div>
-
-          <div className="ui-field">
-            <span className="ui-label" id={fitId}>
-              Photo fit
-            </span>
-            <div
-              className="photo-collage__chips"
-              role="radiogroup"
-              aria-labelledby={fitId}
-            >
-              {FIT_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={fit === option.value}
-                  className={cn(
-                    "photo-collage__chip",
-                    fit === option.value && "is-active",
-                  )}
-                  disabled={loading}
-                  onClick={() => {
-                    clearResult();
-                    setFit(option.value);
-                  }}
-                >
-                  <span className="photo-collage__chip-label">
-                    {option.label}
-                  </span>
-                  <span className="photo-collage__chip-hint">
-                    {option.hint}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="ui-field">
-            <span className="ui-label" id={gapId}>
-              Gap
-            </span>
-            <div
-              className="photo-collage__chips"
-              role="radiogroup"
-              aria-labelledby={gapId}
-            >
-              {GAP_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={gap === option.value}
-                  className={cn(
-                    "photo-collage__chip",
-                    gap === option.value && "is-active",
-                  )}
-                  disabled={loading}
-                  onClick={() => {
-                    clearResult();
-                    setGap(option.value);
-                  }}
-                >
-                  <span className="photo-collage__chip-label">
-                    {option.label}
-                  </span>
-                  <span className="photo-collage__chip-hint">
-                    {option.hint}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="ui-field">
-            <span className="ui-label" id={backgroundId}>
-              Background
-            </span>
-            <div
-              className="photo-collage__chips"
-              role="radiogroup"
-              aria-labelledby={backgroundId}
-            >
-              {BACKGROUND_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={background === option.value}
-                  className={cn(
-                    "photo-collage__chip",
-                    background === option.value && "is-active",
-                  )}
-                  disabled={loading}
-                  onClick={() => {
-                    clearResult();
-                    setBackground(option.value);
-                  }}
-                >
-                  <span className="photo-collage__chip-label">
-                    {option.label}
-                  </span>
-                  <span className="photo-collage__chip-hint">
-                    {option.hint}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <p className="ui-hint">
-              Templates unlock for {MIN_COLLAGE_FILES}–{MAX_COLLAGE_FILES}{" "}
-              photos. Export a PNG collage when you are ready.
+        ) : hasSource ? (
+          <div className="photo-collage__empty">
+            <p className="photo-collage__success-title">Your collage preview</p>
+            <p className="photo-collage__success-meta">
+              Upload {MIN_COLLAGE_FILES}–{MAX_COLLAGE_FILES} photos, pick a
+              template and ratio, then create your collage.
             </p>
+            <ul className="photo-collage__summary">
+              <li>Template layouts with mixed cell sizes</li>
+              <li>Square, landscape, portrait, and story ratios</li>
+              <li>Private — nothing leaves your device</li>
+            </ul>
           </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button onClick={() => void handleCreate()} disabled={!canCreate}>
-            {loading ? "Creating…" : "Create collage"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={fileCount === 0 || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
         ) : null}
-      </div>
+      </ImageEditorShell>
 
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Creating collage…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Collage is built locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && result ? (
-            <div className="photo-collage__success">
-              <p className="photo-collage__success-title">Collage ready</p>
-              <p className="photo-collage__success-meta">
-                {describeCollageOutput(result)}
-              </p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={result.url}
-                alt={`${resultTemplateLabel} collage of ${result.imageCount} photos, ${ratioLabel(result.ratio)}`}
-                className="photo-collage__preview"
-              />
-              <div className="tool-actions">
-                <Button onClick={handleDownloadAgain}>Download again</Button>
-              </div>
-            </div>
-          ) : (
-            <div className="photo-collage__empty">
-              <p className="photo-collage__success-title">
-                Your collage preview
-              </p>
-              <p className="photo-collage__success-meta">
-                Upload {MIN_COLLAGE_FILES}–{MAX_COLLAGE_FILES} photos, pick a
-                template and ratio, then create your collage.
-              </p>
-              <ul className="photo-collage__summary">
-                <li>Template layouts with mixed cell sizes</li>
-                <li>Square, landscape, portrait, and story ratios</li>
-                <li>Private — nothing leaves your device</li>
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

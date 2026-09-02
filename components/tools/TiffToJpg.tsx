@@ -3,16 +3,18 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import TiffToJpgDropzone from "@/components/tools/TiffToJpgDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   convertTiffToJpg,
   describeTiffJpgOutput,
-  downloadConvertedJpg,
   downloadTiffJpgResult,
-  MAX_TIFF_FILES,
   qualityLabel,
-  revokeTiffToJpgResult,
   type TiffJpgQuality,
+  MAX_TIFF_FILES,
+  revokeTiffToJpgResult,
   type TiffToJpgResult,
 } from "@/lib/tiff-to-jpg";
 import { useToolAnalytics } from "@/lib/analytics/client";
@@ -40,13 +42,6 @@ function createEntries(files: File[]): ImageEntry[] {
   }));
 }
 
-function thumbLabel(image: TiffToJpgResult["images"][number], index: number) {
-  if (image.pageCount > 1) {
-    return `${image.pageNumber}`;
-  }
-  return `${index + 1}`;
-}
-
 export default function TiffToJpg() {
   const { trackSuccess, trackFailure } = useToolAnalytics();
   const listId = useId();
@@ -72,6 +67,19 @@ export default function TiffToJpg() {
     result?.images.find((image) => image.id === selectedId) ??
     result?.images[0] ??
     null;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading: formatDownloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => activeImage?.blob ?? null,
+    getFilename: () =>
+      activeImage ? (activeImage.sourceName.replace(/\.[^.]+$/, "") || "image") : null,
+  });
 
   useEffect(() => {
     resultRef.current = result;
@@ -117,7 +125,7 @@ export default function TiffToJpg() {
 
   async function handleConvert() {
     if (fileCount === 0) {
-      setError("Upload at least one TIFF (.tif or .tiff) to get started.");
+      setError("Upload at least one TIFF to get started.");
       return;
     }
 
@@ -135,11 +143,7 @@ export default function TiffToJpg() {
         quality,
         signal: controller.signal,
         onProgress: (current, total, fileName) => {
-          if (total > 0) {
-            setProgressText(`Converting ${current} of ${total}: ${fileName}`);
-            return;
-          }
-          setProgressText(`Reading ${fileName}`);
+          setProgressText(`Converting ${current} of ${total}: ${fileName}`);
         },
       });
 
@@ -150,7 +154,6 @@ export default function TiffToJpg() {
 
       setResult(converted);
       setSelectedId(converted.images[0]?.id ?? null);
-      await downloadTiffJpgResult(converted, files);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -171,7 +174,7 @@ export default function TiffToJpg() {
     }
   }
 
-  async function handleDownloadAgain() {
+  async function handleDownloadZip() {
     if (!result || fileCount === 0) return;
     setZipping(true);
     setError("");
@@ -184,265 +187,253 @@ export default function TiffToJpg() {
     }
   }
 
-  function handleDownloadSelected() {
-    if (!activeImage) return;
-    downloadConvertedJpg(activeImage);
-  }
-
   return (
-    <div className="tool-grid heic-to-jpg">
-      <div className="tool-panel">
-        <TiffToJpgDropzone
-          existingFiles={files}
-          onFiles={handleAddFiles}
-          onError={setError}
-          disabled={loading || fileCount >= MAX_TIFF_FILES}
-        />
+    <>
+      <ImageEditorShell
+        className="heic-to-jpg"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Converting TIFF…"}
+        loadingSubtext="Conversion runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult && result
+            ? `${describeTiffJpgOutput(result)} · ${qualityLabel(result.quality)}`
+            : hasSource
+              ? `${fileCount} file${fileCount === 1 ? "" : "s"} queued`
+              : "Upload images to start"
+        }
+        previewHint={
+          hasSource && !hasResult ? "Click Convert to JPG" : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "TIFF to JPG runs in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            <TiffToJpgDropzone
+              existingFiles={files}
+              onFiles={handleAddFiles}
+              onError={setError}
+              disabled={loading || fileCount >= MAX_TIFF_FILES}
+            />
 
-        {fileCount > 0 ? (
-          <div className="png-to-pdf__list-wrap">
-            <div className="png-to-pdf__list-header">
-              <p className="png-to-pdf__list-title" id={listId}>
-                Queued files ({fileCount})
-              </p>
-              <p className="png-to-pdf__list-meta">
-                {formatFileSize(totalBytes)} total
-              </p>
-            </div>
-            <ol className="png-to-pdf__list" aria-labelledby={listId}>
-              {entries.map((entry) => (
-                <li key={entry.id} className="png-to-pdf__item">
-                  <div className="png-to-pdf__file">
-                    <p className="png-to-pdf__name">{entry.file.name}</p>
-                    <p className="png-to-pdf__size">
-                      {formatFileSize(entry.file.size)}
-                    </p>
-                  </div>
-                  <div className="png-to-pdf__item-actions">
-                    <button
-                      type="button"
-                      className={cn(
-                        "png-to-pdf__icon-btn",
-                        "png-to-pdf__icon-btn--danger",
-                      )}
-                      aria-label={`Remove ${entry.file.name}`}
-                      disabled={loading}
-                      onClick={() => handleRemove(entry.id)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ) : null}
-
-        <div className="heic-to-jpg__options">
-          <div className="ui-field">
-            <span className="ui-label" id={qualityId}>
-              JPEG quality
-            </span>
-            <div
-              className="heic-to-jpg__chips"
-              role="radiogroup"
-              aria-labelledby={qualityId}
-            >
-              {QUALITY_OPTIONS.map((option) => {
-                const selected = quality === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "heic-to-jpg__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => {
-                      setQuality(option.value);
-                      clearResult();
-                    }}
-                  >
-                    <span className="heic-to-jpg__chip-label">
-                      {option.label}
-                    </span>
-                    <span className="heic-to-jpg__chip-hint">
-                      {option.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleConvert()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Converting…" : "Convert to JPG"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button
-              onClick={() => void handleDownloadAgain()}
-              disabled={zipping}
-            >
-              {zipping
-                ? "Preparing…"
-                : result && result.images.length > 1
-                  ? "Download ZIP again"
-                  : "Download again"}
-            </Button>
-            {result && result.images.length > 1 && activeImage ? (
-              <Button variant="ghost" onClick={handleDownloadSelected}>
-                Download selected
-              </Button>
+            {fileCount > 0 ? (
+              <div className="png-to-pdf__list-wrap">
+                <div className="png-to-pdf__list-header">
+                  <p className="png-to-pdf__list-title" id={listId}>
+                    Queued files ({fileCount})
+                  </p>
+                  <p className="png-to-pdf__list-meta">
+                    {formatFileSize(totalBytes)} total
+                  </p>
+                </div>
+                <ol className="png-to-pdf__list" aria-labelledby={listId}>
+                  {entries.map((entry) => (
+                    <li key={entry.id} className="png-to-pdf__item">
+                      <div className="png-to-pdf__file">
+                        <p className="png-to-pdf__name">{entry.file.name}</p>
+                        <p className="png-to-pdf__size">
+                          {formatFileSize(entry.file.size)}
+                        </p>
+                      </div>
+                      <div className="png-to-pdf__item-actions">
+                        <button
+                          type="button"
+                          className={cn(
+                            "png-to-pdf__icon-btn",
+                            "png-to-pdf__icon-btn--danger",
+                          )}
+                          aria-label={`Remove ${entry.file.name}`}
+                          disabled={loading}
+                          onClick={() => handleRemove(entry.id)}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
             ) : null}
-          </div>
-        ) : null}
 
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Converting TIFF…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Conversion runs locally in your browser.
-              </span>
-            </div>
-          ) : result && activeImage ? (
-            <div className="png-to-pdf__success">
-              <p className="png-to-pdf__success-title">JPG ready</p>
-              <p className="png-to-pdf__success-meta">
-                {describeTiffJpgOutput(result)} · {qualityLabel(result.quality)}
-              </p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={activeImage.url}
-                alt={`Converted ${activeImage.sourceName}${
-                  activeImage.pageCount > 1
-                    ? ` page ${activeImage.pageNumber}`
-                    : ""
-                }`}
-                className="pdf-to-jpg__preview-image"
-              />
-              {result.images.length > 1 ? (
+            <div className="heic-to-jpg__options">
+              <div className="ui-field">
+                <span className="ui-label" id={qualityId}>
+                  JPEG quality
+                </span>
                 <div
-                  className="pdf-to-jpg__thumbs"
+                  className="heic-to-jpg__chips"
                   role="radiogroup"
-                  aria-label="Converted images"
+                  aria-labelledby={qualityId}
                 >
-                  {result.images.map((image, index) => {
-                    const selected = image.id === activeImage.id;
+                  {QUALITY_OPTIONS.map((option) => {
+                    const selected = quality === option.value;
                     return (
                       <button
-                        key={image.id}
+                        key={option.value}
                         type="button"
                         role="radio"
                         aria-checked={selected}
                         className={cn(
-                          "pdf-to-jpg__thumb",
+                          "heic-to-jpg__chip",
                           selected && "is-active",
                         )}
-                        aria-label={
-                          image.pageCount > 1
-                            ? `Show ${image.sourceName} page ${image.pageNumber}`
-                            : `Show ${image.sourceName}`
-                        }
-                        onClick={() => setSelectedId(image.id)}
+                        disabled={loading}
+                        onClick={() => {
+                          setQuality(option.value);
+                          clearResult();
+                        }}
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={image.url}
-                          alt=""
-                          className="pdf-to-jpg__thumb-image"
-                        />
-                        <span className="pdf-to-jpg__thumb-label">
-                          {thumbLabel(image, index)}
+                        <span className="heic-to-jpg__chip-label">
+                          {option.label}
+                        </span>
+                        <span className="heic-to-jpg__chip-hint">
+                          {option.hint}
                         </span>
                       </button>
                     );
                   })}
                 </div>
-              ) : null}
-              <ul className="png-to-pdf__stats" aria-label="Conversion summary">
-                <li>
-                  <span className="png-to-pdf__stat-label">TIFF files</span>
-                  <span className="png-to-pdf__stat-value">
-                    {result.fileCount}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">Original</span>
-                  <span className="png-to-pdf__stat-value">
-                    {formatFileSize(result.originalSize)}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">JPG size</span>
-                  <span className="png-to-pdf__stat-value">
-                    {formatFileSize(result.outputSize)}
-                  </span>
-                </li>
-              </ul>
-              <p className="tool-placeholder preview-single__hint">
-                {result.images.length > 1
-                  ? "Your ZIP download should start automatically. Select a thumbnail to preview or download one image."
-                  : "Your download should start automatically. Change quality and convert again anytime."}
-              </p>
+              </div>
             </div>
-          ) : (
-            <div className="png-to-pdf__empty">
-              <p className="tool-placeholder">
-                {fileCount === 0
-                  ? "Upload a TIFF image to convert it to JPG"
-                  : `${fileCount} TIFF file${fileCount === 1 ? "" : "s"} queued · click Convert to JPG`}
-              </p>
-              {fileCount > 0 ? (
-                <ul className="png-to-pdf__summary" aria-label="Queued TIFF files">
-                  {entries.map((entry, index) => (
-                    <li key={entry.id}>
-                      {index + 1}. {entry.file.name}
-                    </li>
-                  ))}
-                </ul>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleConvert()}
+                disabled={!hasSource || loading}
+              >
+                {loading ? "Converting…" : "Convert to JPG"}
+              </Button>
+              {hasResult ? (
+                <Button
+                  onClick={openDownload}
+                  disabled={loading || !activeImage || formatDownloading}
+                >
+                  Download
+                </Button>
               ) : null}
+              {hasResult && result && result.images.length > 1 ? (
+                <Button
+                  variant="ghost"
+                  onClick={() => void handleDownloadZip()}
+                  disabled={zipping || loading}
+                >
+                  {zipping ? "Preparing…" : "Download all as ZIP"}
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
             </div>
-          )}
-        </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && result && activeImage ? (
+          <div className="image-editor-shell__result png-to-pdf__success">
+            <p className="image-editor-shell__result-meta png-to-pdf__success-meta">
+              {describeTiffJpgOutput(result)} · {qualityLabel(result.quality)}
+            </p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activeImage.url}
+              alt={`Converted ${activeImage.sourceName}`}
+              className="pdf-to-jpg__preview-image"
+            />
+            {result.images.length > 1 ? (
+              <div
+                className="pdf-to-jpg__thumbs"
+                role="radiogroup"
+                aria-label="Converted images"
+              >
+                {result.images.map((image, index) => {
+                  const selected = image.id === activeImage.id;
+                  return (
+                    <button
+                      key={image.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      className={cn(
+                        "pdf-to-jpg__thumb",
+                        selected && "is-active",
+                      )}
+                      aria-label={`Show ${image.sourceName}`}
+                      onClick={() => setSelectedId(image.id)}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={image.url}
+                        alt=""
+                        className="pdf-to-jpg__thumb-image"
+                      />
+                      <span className="pdf-to-jpg__thumb-label">
+                        {index + 1}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+            <ul className="png-to-pdf__stats" aria-label="Conversion summary">
+              <li>
+                <span className="png-to-pdf__stat-label">TIFF files</span>
+                <span className="png-to-pdf__stat-value">
+                  {result.images.length}
+                </span>
+              </li>
+              <li>
+                <span className="png-to-pdf__stat-label">Original</span>
+                <span className="png-to-pdf__stat-value">
+                  {formatFileSize(result.originalSize)}
+                </span>
+              </li>
+              <li>
+                <span className="png-to-pdf__stat-label">JPG size</span>
+                <span className="png-to-pdf__stat-value">
+                  {formatFileSize(result.outputSize)}
+                </span>
+              </li>
+            </ul>
+          </div>
+        ) : hasSource ? (
+          <div className="png-to-pdf__empty">
+            <p className="tool-placeholder">
+              {`${fileCount} TIFF file${fileCount === 1 ? "" : "s"} queued · click Convert to JPG`}
+            </p>
+            <ul className="png-to-pdf__summary" aria-label={`Queued TIFF files`}>
+              {entries.map((entry, index) => (
+                <li key={entry.id}>
+                  {index + 1}. {entry.file.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </ImageEditorShell>
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "TIFF to JPG runs in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={formatDownloading}
+        error={downloadError}
+      />
+    </>
   );
 }

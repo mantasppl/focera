@@ -10,7 +10,11 @@ import {
 } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   MAX_OUTPUT_SIZE,
   MAX_ZOOM,
@@ -22,7 +26,6 @@ import {
   clampZoom,
   createProfilePhoto,
   defaultCropState,
-  downloadProfilePhoto,
   readImageDimensions,
   type CropState,
   type ProfilePhotoResult,
@@ -68,6 +71,21 @@ export default function ProfilePhotoMaker() {
     Number.isFinite(sizeNum) &&
     sizeNum >= MIN_OUTPUT_SIZE &&
     sizeNum <= MAX_OUTPUT_SIZE;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile && result
+        ? `${fileBaseName(sourceFile)}-profile-${result.shape}-${result.size}x${result.size}`
+        : null,
+  });
 
   useEffect(() => {
     return () => {
@@ -215,12 +233,6 @@ export default function ProfilePhotoMaker() {
       const url = URL.createObjectURL(created.blob);
       setResult(created);
       setResultUrl(url);
-      downloadProfilePhoto(
-        created.blob,
-        sourceFile,
-        created.size,
-        created.shape,
-      );
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -239,11 +251,6 @@ export default function ProfilePhotoMaker() {
         setLoading(false);
       }
     }
-  }
-
-  function handleDownloadAgain() {
-    if (!sourceFile || !result) return;
-    downloadProfilePhoto(result.blob, sourceFile, result.size, result.shape);
   }
 
   // Cover-style placement for the crop preview frame.
@@ -269,250 +276,255 @@ export default function ProfilePhotoMaker() {
   })();
 
   return (
-    <div className="tool-grid profile-photo-maker">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={(file) => void handleFile(file)}
-          onError={setError}
-          disabled={loading}
-        />
+    <>
+      <ImageEditorShell
+        className="profile-photo-maker"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Creating profile photo…"}
+        loadingSubtext="Cropping runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult
+            ? `${result!.size}×${result!.size} · ${result!.shape}`
+            : hasSource
+              ? `${originalWidth}×${originalHeight} px`
+              : "Upload an image to start"
+        }
+        previewHint={
+          hasSource && !hasResult
+            ? "Drag to reframe, then click Create profile photo"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Square or circle crop in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={(file) => void handleFile(file)}
+                onError={setError}
+                disabled={loading}
+              />
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                width={originalWidth}
+                height={originalHeight}
+                disabled={loading}
+                onReplace={(file) => void handleFile(file)}
+              />
+            )}
 
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-              {originalWidth
-                ? ` · ${originalWidth}×${originalHeight} px`
-                : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="profile-photo-maker__options">
-          <div className="ui-field">
-            <span className="ui-label" id={shapeId}>
-              Shape
-            </span>
-            <div
-              className="profile-photo-maker__chips profile-photo-maker__chips--shape"
-              role="group"
-              aria-labelledby={shapeId}
-            >
-              {(
-                [
-                  { id: "circle", label: "Circle", hint: "Transparent PNG" },
-                  { id: "square", label: "Square", hint: "Full square" },
-                ] as const
-              ).map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  className={cn(
-                    "profile-photo-maker__chip",
-                    shape === option.id && "is-active",
-                  )}
-                  disabled={loading || !hasSource}
-                  onClick={() => setShape(option.id)}
+            <div className="profile-photo-maker__options">
+              <div className="ui-field">
+                <span className="ui-label" id={shapeId}>
+                  Shape
+                </span>
+                <div
+                  className="profile-photo-maker__chips profile-photo-maker__chips--shape"
+                  role="group"
+                  aria-labelledby={shapeId}
                 >
-                  <span className="profile-photo-maker__chip-label">
-                    {option.label}
-                  </span>
-                  <span className="profile-photo-maker__chip-hint">
-                    {option.hint}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+                  {(
+                    [
+                      { id: "circle", label: "Circle", hint: "Transparent PNG" },
+                      { id: "square", label: "Square", hint: "Full square" },
+                    ] as const
+                  ).map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      className={cn(
+                        "profile-photo-maker__chip",
+                        shape === option.id && "is-active",
+                      )}
+                      disabled={loading || !hasSource}
+                      onClick={() => setShape(option.id)}
+                    >
+                      <span className="profile-photo-maker__chip-label">
+                        {option.label}
+                      </span>
+                      <span className="profile-photo-maker__chip-hint">
+                        {option.hint}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-          <div className="ui-field">
-            <span className="ui-label" id={presetGroupId}>
-              Platform size
-            </span>
+              <div className="ui-field">
+                <span className="ui-label" id={presetGroupId}>
+                  Platform size
+                </span>
+                <div
+                  className="profile-photo-maker__chips"
+                  role="group"
+                  aria-labelledby={presetGroupId}
+                >
+                  {PROFILE_SIZE_PRESETS.map((preset) => {
+                    const selected = selectedPresetId === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        className={cn(
+                          "profile-photo-maker__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading || !hasSource}
+                        onClick={() => handlePreset(preset.id, preset.size)}
+                      >
+                        <span className="profile-photo-maker__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="profile-photo-maker__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="ui-field">
+                <label className="ui-label" htmlFor={sizeId}>
+                  Custom size (px)
+                </label>
+                <input
+                  id={sizeId}
+                  className="ui-input"
+                  type="number"
+                  min={MIN_OUTPUT_SIZE}
+                  max={MAX_OUTPUT_SIZE}
+                  step={1}
+                  inputMode="numeric"
+                  value={size}
+                  disabled={loading || !hasSource}
+                  onChange={(event) => {
+                    setSelectedPresetId("");
+                    setSize(event.target.value);
+                  }}
+                />
+                <p className="ui-hint">
+                  Square output from {MIN_OUTPUT_SIZE} to {MAX_OUTPUT_SIZE} px.
+                </p>
+              </div>
+
+              <div className="ui-field">
+                <label className="ui-label" htmlFor={zoomId}>
+                  Zoom {crop.zoom.toFixed(1)}×
+                </label>
+                <input
+                  id={zoomId}
+                  className="profile-photo-maker__zoom"
+                  type="range"
+                  min={MIN_ZOOM}
+                  max={MAX_ZOOM}
+                  step={0.05}
+                  value={crop.zoom}
+                  disabled={loading || !hasSource}
+                  onChange={(event) =>
+                    handleZoomChange(Number(event.target.value))
+                  }
+                />
+                <p className="ui-hint">
+                  Drag the preview to reframe. Zoom in to tighten the crop.
+                </p>
+              </div>
+            </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleCreate()}
+                disabled={!hasSource || loading || !sizeValid}
+              >
+                {loading ? "Creating…" : "Create profile photo"}
+              </Button>
+              {hasResult ? (
+                <Button onClick={openDownload} disabled={loading}>
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && resultUrl ? (
+          <div className="image-editor-shell__result profile-photo-maker__result">
+            <p className="image-editor-shell__result-meta profile-photo-maker__result-meta">
+              {result!.size}×{result!.size} · {result!.shape}
+              {" · "}
+              {formatFileSize(result!.blob.size)}
+            </p>
             <div
-              className="profile-photo-maker__chips"
-              role="group"
-              aria-labelledby={presetGroupId}
+              className={cn(
+                "profile-photo-maker__result-frame",
+                result!.shape === "circle" && "is-circle",
+              )}
             >
-              {PROFILE_SIZE_PRESETS.map((preset) => {
-                const selected = selectedPresetId === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    className={cn(
-                      "profile-photo-maker__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading || !hasSource}
-                    onClick={() => handlePreset(preset.id, preset.size)}
-                  >
-                    <span className="profile-photo-maker__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="profile-photo-maker__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={resultUrl}
+                alt="Profile photo result"
+                className="profile-photo-maker__result-image"
+              />
             </div>
           </div>
-
-          <div className="ui-field">
-            <label className="ui-label" htmlFor={sizeId}>
-              Custom size (px)
-            </label>
-            <input
-              id={sizeId}
-              className="ui-input"
-              type="number"
-              min={MIN_OUTPUT_SIZE}
-              max={MAX_OUTPUT_SIZE}
-              step={1}
-              inputMode="numeric"
-              value={size}
-              disabled={loading || !hasSource}
-              onChange={(event) => {
-                setSelectedPresetId("");
-                setSize(event.target.value);
-              }}
-            />
-            <p className="ui-hint">
-              Square output from {MIN_OUTPUT_SIZE} to {MAX_OUTPUT_SIZE} px.
-            </p>
-          </div>
-
-          <div className="ui-field">
-            <label className="ui-label" htmlFor={zoomId}>
-              Zoom {crop.zoom.toFixed(1)}×
-            </label>
-            <input
-              id={zoomId}
-              className="profile-photo-maker__zoom"
-              type="range"
-              min={MIN_ZOOM}
-              max={MAX_ZOOM}
-              step={0.05}
-              value={crop.zoom}
-              disabled={loading || !hasSource}
-              onChange={(event) =>
-                handleZoomChange(Number(event.target.value))
-              }
-            />
-            <p className="ui-hint">
-              Drag the preview to reframe. Zoom in to tighten the crop.
-            </p>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleCreate()}
-            disabled={!hasSource || loading || !sizeValid}
-          >
-            {loading ? "Creating…" : "Create profile photo"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+        ) : hasSource && originalUrl ? (
+          <div className="profile-photo-maker__editor">
+            <div
+              ref={frameRef}
+              className={cn(
+                "profile-photo-maker__frame",
+                shape === "circle" && "is-circle",
+              )}
+              onPointerDown={onFramePointerDown}
+              onPointerMove={onFramePointerMove}
+              onPointerUp={onFramePointerUp}
+              onPointerCancel={onFramePointerUp}
+              role="img"
+              aria-label="Profile photo crop preview. Drag to reframe."
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={originalUrl}
+                alt=""
+                draggable={false}
+                className="profile-photo-maker__frame-image"
+                style={previewStyle}
+              />
+            </div>
           </div>
         ) : null}
+      </ImageEditorShell>
 
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Creating profile photo…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Cropping runs locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && resultUrl ? (
-            <div className="profile-photo-maker__result">
-              <p className="profile-photo-maker__result-meta">
-                {result!.size}×{result!.size} · {result!.shape}
-                {" · "}
-                {formatFileSize(result!.blob.size)}
-              </p>
-              <div
-                className={cn(
-                  "profile-photo-maker__result-frame",
-                  result!.shape === "circle" && "is-circle",
-                )}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={resultUrl}
-                  alt="Profile photo result"
-                  className="profile-photo-maker__result-image"
-                />
-              </div>
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="profile-photo-maker__editor">
-              <div
-                ref={frameRef}
-                className={cn(
-                  "profile-photo-maker__frame",
-                  shape === "circle" && "is-circle",
-                )}
-                onPointerDown={onFramePointerDown}
-                onPointerMove={onFramePointerMove}
-                onPointerUp={onFramePointerUp}
-                onPointerCancel={onFramePointerUp}
-                role="img"
-                aria-label="Profile photo crop preview. Drag to reframe."
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={originalUrl}
-                  alt=""
-                  draggable={false}
-                  className="profile-photo-maker__frame-image"
-                  style={previewStyle}
-                />
-              </div>
-              <p className="tool-placeholder preview-single__hint">
-                Drag to reframe, then create your {sizeNum || "—"}×
-                {sizeNum || "—"} {shape} photo.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to create a profile photo here
-            </p>
-          )}
-        </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Square or circle crop in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
 import PdfDropzone from "@/components/tools/PdfDropzone";
 import PngToPdfDropzone from "@/components/tools/PngToPdfDropzone";
 import { formatFileSize } from "@/lib/image";
@@ -202,7 +203,6 @@ export default function AddImagesToPdf() {
       resultUrlRef.current = url;
       setPreviewUrl(url);
       setResult(updated);
-      downloadPdfWithImages(updated.blob, pdfFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -223,14 +223,35 @@ export default function AddImagesToPdf() {
     }
   }
 
-  function handleDownloadAgain() {
+  function handleDownload() {
     if (!pdfFile || !result) return;
     downloadPdfWithImages(result.blob, pdfFile);
   }
 
   return (
-    <div className="tool-grid add-images-to-pdf">
-      <div className="tool-panel">
+    <ImageEditorShell
+      className="add-images-to-pdf"
+      hasSource={canApply}
+      stageReady={hasResult}
+      loading={loading}
+      loadingText={progressText || "Adding images…"}
+      loadingSubtext="Your PDF and images stay on this device."
+      previewTitle="Preview"
+      previewMeta={
+        hasResult && result
+          ? `${describeAddImagesResult(result)} · ${pageSizeLabel(result.pageSize)}`
+          : canApply
+            ? `${pdfFile!.name} · ${fileCount} image${fileCount === 1 ? "" : "s"}`
+            : "Upload a PDF and images to start"
+      }
+      previewHint={canApply && !hasResult ? "Click Add images" : undefined}
+      privacyHint={
+        hasResult
+          ? "Processed locally on your device"
+          : "Images become new PDF pages · files never upload to Focera"
+      }
+      sidebar={
+        <>
         <div className="ui-field">
           <span className="ui-label">PDF document</span>
           <PdfDropzone
@@ -471,84 +492,52 @@ export default function AddImagesToPdf() {
             </div>
           ) : null}
         </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleApply()}
-            disabled={!canApply || loading}
-          >
-            {loading ? "Adding…" : "Add images"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!pdfFile && fileCount === 0 && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
+        </>
+      }
+      sidebarFooter={
+        <>
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button
+              onClick={() => void handleApply()}
+              disabled={!canApply || loading}
+            >
+              {loading ? "Adding…" : "Add images"}
+            </Button>
+            {hasResult ? (
+              <Button onClick={handleDownload} disabled={loading}>
+                Download PDF
+              </Button>
+            ) : null}
+            <Button
+              variant="ghost"
+              onClick={handleReset}
+              disabled={(!pdfFile && fileCount === 0 && !hasResult) || loading}
+            >
+              Start over
+            </Button>
           </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Adding images…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Your PDF and images stay on this device.
-              </span>
-            </div>
-          ) : result ? (
-            <div className="add-images-to-pdf__success">
-              <p className="add-images-to-pdf__success-title">
-                PDF with images ready
-              </p>
-              <p className="add-images-to-pdf__success-meta">
-                {describeAddImagesResult(result)} ·{" "}
-                {pageSizeLabel(result.pageSize)}
-              </p>
-              {previewUrl ? (
-                <iframe
-                  title="PDF with images preview"
-                  src={previewUrl}
-                  className="add-images-to-pdf__preview"
-                />
-              ) : null}
-              <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Reorder images or
-                change placement and run again anytime.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a PDF and images to preview the updated file here
+          {error ? (
+            <p className="tool-error" role="alert">
+              {error}
             </p>
-          )}
+          ) : null}
+        </>
+      }
+    >
+      {hasResult && result ? (
+        <div className="image-editor-shell__result add-images-to-pdf__success">
+          <p className="image-editor-shell__result-meta add-images-to-pdf__success-meta">
+            {describeAddImagesResult(result)} · {pageSizeLabel(result.pageSize)}
+          </p>
+          {previewUrl ? (
+            <iframe
+              title="PDF with images preview"
+              src={previewUrl}
+              className="add-images-to-pdf__preview"
+            />
+          ) : null}
         </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Images become new PDF pages · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      ) : null}
+    </ImageEditorShell>
   );
 }

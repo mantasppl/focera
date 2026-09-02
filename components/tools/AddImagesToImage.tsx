@@ -4,7 +4,11 @@ import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
 import AddImagesToImageDropzone from "@/components/tools/AddImagesToImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   DEFAULT_OPACITY,
   DEFAULT_SCALE,
@@ -19,7 +23,6 @@ import {
   clampOpacity,
   clampScale,
   defaultPlacement,
-  downloadComposedImage,
   drawOverlaysOnCanvas,
   loadImageElement,
   type AddImagesToImageResult,
@@ -78,6 +81,18 @@ export default function AddImagesToImage() {
   const hasResult = Boolean(result && resultUrl);
   const canCompose = hasBase && hasOverlays && !loading;
   const totalOverlayBytes = overlayFiles.reduce((sum, file) => sum + file.size, 0);
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () => (baseFile ? `${fileBaseName(baseFile)}-overlay` : null),
+  });
 
   useEffect(() => {
     return () => {
@@ -324,7 +339,6 @@ export default function AddImagesToImage() {
       const url = URL.createObjectURL(composed.blob);
       setResult(composed);
       setResultUrl(url);
-      downloadComposedImage(composed.blob, baseFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -345,11 +359,6 @@ export default function AddImagesToImage() {
     }
   }
 
-  function handleDownloadAgain() {
-    if (!baseFile || !result) return;
-    downloadComposedImage(result.blob, baseFile);
-  }
-
   function handleEditAgain() {
     clearResult();
   }
@@ -362,344 +371,360 @@ export default function AddImagesToImage() {
   );
 
   return (
-    <div className="tool-grid add-images-to-image">
-      <div className="tool-panel">
-        <div className="ui-field">
-          <span className="ui-label">Base image</span>
-          <ImageDropzone
-            onFile={(file) => void handleBaseFile(file)}
-            onError={setError}
-            disabled={loading}
-          />
-        </div>
+    <>
+      <ImageEditorShell
+        className="add-images-to-image"
+        hasSource={hasBase}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Composing image…"}
+        loadingSubtext="Your images stay on this device."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult
+            ? `${result!.width}×${result!.height} px · ${result!.overlayCount} overlay${result!.overlayCount === 1 ? "" : "s"}`
+            : hasBase
+              ? `${originalWidth}×${originalHeight} px`
+              : "Upload a base image to start"
+        }
+        previewHint={
+          hasBase && !hasResult
+            ? hasOverlays
+              ? "Live preview — click Compose image when ready"
+              : "Add overlay images to place them on the base photo"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Overlays are stamped in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasBase ? (
+              <div className="ui-field">
+                <span className="ui-label">Base image</span>
+                <ImageDropzone
+                  onFile={(file) => void handleBaseFile(file)}
+                  onError={setError}
+                  disabled={loading}
+                />
+              </div>
+            ) : (
+              <div className="ui-field">
+                <span className="ui-label">Base image</span>
+                <ImageSourceBar
+                  file={baseFile!}
+                  width={originalWidth}
+                  height={originalHeight}
+                  disabled={loading}
+                  onReplace={(file) => void handleBaseFile(file)}
+                />
+              </div>
+            )}
 
-        {hasBase ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{baseFile?.name}</p>
-            <p className="upload-meta__size">
-              {baseFile ? formatFileSize(baseFile.size) : ""}
-              {originalWidth
-                ? ` · ${originalWidth}×${originalHeight} px`
-                : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="ui-field">
-          <span className="ui-label">Overlay images</span>
-          <AddImagesToImageDropzone
-            existingFiles={overlayFiles}
-            onFiles={handleAddOverlays}
-            onError={setError}
-            disabled={loading || overlays.length >= MAX_OVERLAY_FILES}
-          />
-        </div>
-
-        {hasOverlays ? (
-          <div className="add-images-to-image__list-wrap">
-            <div className="add-images-to-image__list-header">
-              <p className="add-images-to-image__list-title" id={listId}>
-                Overlays ({overlays.length})
-              </p>
-              <p className="add-images-to-image__list-meta">
-                {formatFileSize(totalOverlayBytes)} total
-              </p>
+            <div className="ui-field">
+              <span className="ui-label">Overlay images</span>
+              <AddImagesToImageDropzone
+                existingFiles={overlayFiles}
+                onFiles={handleAddOverlays}
+                onError={setError}
+                disabled={loading || overlays.length >= MAX_OVERLAY_FILES}
+              />
             </div>
-            <ol className="add-images-to-image__list" aria-labelledby={listId}>
-              {overlays.map((entry, index) => {
-                const selected = entry.id === activeOverlay?.id;
-                return (
-                  <li
-                    key={entry.id}
-                    className={cn(
-                      "add-images-to-image__item",
-                      selected && "is-active",
-                    )}
+
+            {hasOverlays ? (
+              <div className="add-images-to-image__list-wrap">
+                <div className="add-images-to-image__list-header">
+                  <p className="add-images-to-image__list-title" id={listId}>
+                    Overlays ({overlays.length})
+                  </p>
+                  <p className="add-images-to-image__list-meta">
+                    {formatFileSize(totalOverlayBytes)} total
+                  </p>
+                </div>
+                <ol
+                  className="add-images-to-image__list"
+                  aria-labelledby={listId}
+                >
+                  {overlays.map((entry, index) => {
+                    const selected = entry.id === activeOverlay?.id;
+                    return (
+                      <li
+                        key={entry.id}
+                        className={cn(
+                          "add-images-to-image__item",
+                          selected && "is-active",
+                        )}
+                      >
+                        <button
+                          type="button"
+                          className="add-images-to-image__select"
+                          aria-pressed={selected}
+                          onClick={() => {
+                            setActiveOverlayId(entry.id);
+                          }}
+                        >
+                          <span
+                            className="add-images-to-image__index"
+                            aria-hidden="true"
+                          >
+                            {index + 1}
+                          </span>
+                          <span className="add-images-to-image__file">
+                            <span className="add-images-to-image__name">
+                              {entry.file.name}
+                            </span>
+                            <span className="add-images-to-image__size">
+                              {formatFileSize(entry.file.size)}
+                            </span>
+                          </span>
+                        </button>
+                        <div className="add-images-to-image__item-actions">
+                          <button
+                            type="button"
+                            className="add-images-to-image__icon-btn"
+                            aria-label={`Move ${entry.file.name} up`}
+                            disabled={loading || index === 0}
+                            onClick={() => handleMoveOverlay(entry.id, -1)}
+                          >
+                            ↑
+                          </button>
+                          <button
+                            type="button"
+                            className="add-images-to-image__icon-btn"
+                            aria-label={`Move ${entry.file.name} down`}
+                            disabled={
+                              loading || index === overlays.length - 1
+                            }
+                            onClick={() => handleMoveOverlay(entry.id, 1)}
+                          >
+                            ↓
+                          </button>
+                          <button
+                            type="button"
+                            className="add-images-to-image__icon-btn"
+                            aria-label={`Remove ${entry.file.name}`}
+                            disabled={loading}
+                            onClick={() => handleRemoveOverlay(entry.id)}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+                <p className="ui-hint">
+                  Select an overlay to set its position, size, opacity, and
+                  rotation. Order is bottom to top.
+                </p>
+              </div>
+            ) : null}
+
+            {activeOverlay ? (
+              <div className="add-images-to-image__options">
+                <div className="ui-field">
+                  <span className="ui-label" id={positionId}>
+                    Position
+                  </span>
+                  <div
+                    className="add-images-to-image__chips add-images-to-image__chips--positions"
+                    role="radiogroup"
+                    aria-labelledby={positionId}
                   >
-                    <button
-                      type="button"
-                      className="add-images-to-image__select"
-                      aria-pressed={selected}
-                      onClick={() => {
-                        setActiveOverlayId(entry.id);
-                      }}
-                    >
-                      <span
-                        className="add-images-to-image__index"
-                        aria-hidden="true"
-                      >
-                        {index + 1}
-                      </span>
-                      <span className="add-images-to-image__file">
-                        <span className="add-images-to-image__name">
-                          {entry.file.name}
-                        </span>
-                        <span className="add-images-to-image__size">
-                          {formatFileSize(entry.file.size)}
-                        </span>
-                      </span>
-                    </button>
-                    <div className="add-images-to-image__item-actions">
-                      <button
-                        type="button"
-                        className="add-images-to-image__icon-btn"
-                        aria-label={`Move ${entry.file.name} up`}
-                        disabled={loading || index === 0}
-                        onClick={() => handleMoveOverlay(entry.id, -1)}
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        className="add-images-to-image__icon-btn"
-                        aria-label={`Move ${entry.file.name} down`}
-                        disabled={loading || index === overlays.length - 1}
-                        onClick={() => handleMoveOverlay(entry.id, 1)}
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        className="add-images-to-image__icon-btn"
-                        aria-label={`Remove ${entry.file.name}`}
-                        disabled={loading}
-                        onClick={() => handleRemoveOverlay(entry.id)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
-            <p className="ui-hint">
-              Select an overlay to set its position, size, opacity, and
-              rotation. Order is bottom to top.
-            </p>
-          </div>
-        ) : null}
+                    {OVERLAY_POSITIONS.map((option) => {
+                      const selected =
+                        activeOverlay.placement.position === option.value;
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          role="radio"
+                          aria-checked={selected}
+                          className={cn(
+                            "add-images-to-image__chip",
+                            selected && "is-active",
+                          )}
+                          disabled={loading}
+                          onClick={() =>
+                            updateActivePlacement({
+                              position: option.value as OverlayPosition,
+                            })
+                          }
+                        >
+                          <span className="add-images-to-image__chip-label">
+                            {option.label}
+                          </span>
+                          <span className="add-images-to-image__chip-hint">
+                            {option.hint}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
-        {activeOverlay ? (
-          <div className="add-images-to-image__options">
-            <div className="ui-field">
-              <span className="ui-label" id={positionId}>
-                Position
-              </span>
-              <div
-                className="add-images-to-image__chips add-images-to-image__chips--positions"
-                role="radiogroup"
-                aria-labelledby={positionId}
+                <div className="ui-field">
+                  <span className="ui-label" id={rotationId}>
+                    Rotation
+                  </span>
+                  <div
+                    className="add-images-to-image__chips add-images-to-image__chips--rotation"
+                    role="radiogroup"
+                    aria-labelledby={rotationId}
+                  >
+                    {OVERLAY_ROTATIONS.map((option) => {
+                      const selected =
+                        activeOverlay.placement.rotation === option.value;
+                      return (
+                        <button
+                          key={option.value}
+                          type="button"
+                          role="radio"
+                          aria-checked={selected}
+                          className={cn(
+                            "add-images-to-image__chip",
+                            selected && "is-active",
+                          )}
+                          disabled={loading}
+                          onClick={() =>
+                            updateActivePlacement({
+                              rotation: option.value as OverlayRotation,
+                            })
+                          }
+                        >
+                          <span className="add-images-to-image__chip-label">
+                            {option.label}
+                          </span>
+                          <span className="add-images-to-image__chip-hint">
+                            {option.hint}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="export-slider">
+                  <div className="export-slider__label">
+                    <label htmlFor={scaleId}>Size</label>
+                    <span className="export-slider__value">{scalePercent}%</span>
+                  </div>
+                  <input
+                    id={scaleId}
+                    className="export-slider__input"
+                    type="range"
+                    min={Math.round(MIN_SCALE * 100)}
+                    max={Math.round(MAX_SCALE * 100)}
+                    step={1}
+                    value={scalePercent}
+                    disabled={loading}
+                    onChange={(event) => {
+                      updateActivePlacement({
+                        scale: clampScale(Number(event.target.value) / 100),
+                      });
+                    }}
+                  />
+                  <p className="ui-hint">Width relative to the base image.</p>
+                </div>
+
+                <div className="export-slider">
+                  <div className="export-slider__label">
+                    <label htmlFor={opacityId}>Opacity</label>
+                    <span className="export-slider__value">
+                      {opacityPercent}%
+                    </span>
+                  </div>
+                  <input
+                    id={opacityId}
+                    className="export-slider__input"
+                    type="range"
+                    min={Math.round(MIN_OPACITY * 100)}
+                    max={Math.round(MAX_OPACITY * 100)}
+                    step={1}
+                    value={opacityPercent}
+                    disabled={loading}
+                    onChange={(event) => {
+                      updateActivePlacement({
+                        opacity: clampOpacity(Number(event.target.value) / 100),
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            ) : null}
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button onClick={() => void handleCompose()} disabled={!canCompose}>
+                {loading ? "Composing…" : "Compose image"}
+              </Button>
+              {hasResult ? (
+                <>
+                  <Button
+                    onClick={openDownload}
+                    disabled={loading || downloading}
+                  >
+                    Download
+                  </Button>
+                  <Button variant="ghost" onClick={handleEditAgain}>
+                    Edit overlays
+                  </Button>
+                </>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={
+                  (!hasBase && !hasOverlays && !hasResult) || loading
+                }
               >
-                {OVERLAY_POSITIONS.map((option) => {
-                  const selected =
-                    activeOverlay.placement.position === option.value;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      role="radio"
-                      aria-checked={selected}
-                      className={cn(
-                        "add-images-to-image__chip",
-                        selected && "is-active",
-                      )}
-                      disabled={loading}
-                      onClick={() =>
-                        updateActivePlacement({
-                          position: option.value as OverlayPosition,
-                        })
-                      }
-                    >
-                      <span className="add-images-to-image__chip-label">
-                        {option.label}
-                      </span>
-                      <span className="add-images-to-image__chip-hint">
-                        {option.hint}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+                Start over
+              </Button>
             </div>
-
-            <div className="ui-field">
-              <span className="ui-label" id={rotationId}>
-                Rotation
-              </span>
-              <div
-                className="add-images-to-image__chips add-images-to-image__chips--rotation"
-                role="radiogroup"
-                aria-labelledby={rotationId}
-              >
-                {OVERLAY_ROTATIONS.map((option) => {
-                  const selected =
-                    activeOverlay.placement.rotation === option.value;
-                  return (
-                    <button
-                      key={option.value}
-                      type="button"
-                      role="radio"
-                      aria-checked={selected}
-                      className={cn(
-                        "add-images-to-image__chip",
-                        selected && "is-active",
-                      )}
-                      disabled={loading}
-                      onClick={() =>
-                        updateActivePlacement({
-                          rotation: option.value as OverlayRotation,
-                        })
-                      }
-                    >
-                      <span className="add-images-to-image__chip-label">
-                        {option.label}
-                      </span>
-                      <span className="add-images-to-image__chip-hint">
-                        {option.hint}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="export-slider">
-              <div className="export-slider__label">
-                <label htmlFor={scaleId}>Size</label>
-                <span className="export-slider__value">{scalePercent}%</span>
-              </div>
-              <input
-                id={scaleId}
-                className="export-slider__input"
-                type="range"
-                min={Math.round(MIN_SCALE * 100)}
-                max={Math.round(MAX_SCALE * 100)}
-                step={1}
-                value={scalePercent}
-                disabled={loading}
-                onChange={(event) => {
-                  updateActivePlacement({
-                    scale: clampScale(Number(event.target.value) / 100),
-                  });
-                }}
-              />
-              <p className="ui-hint">Width relative to the base image.</p>
-            </div>
-
-            <div className="export-slider">
-              <div className="export-slider__label">
-                <label htmlFor={opacityId}>Opacity</label>
-                <span className="export-slider__value">{opacityPercent}%</span>
-              </div>
-              <input
-                id={opacityId}
-                className="export-slider__input"
-                type="range"
-                min={Math.round(MIN_OPACITY * 100)}
-                max={Math.round(MAX_OPACITY * 100)}
-                step={1}
-                value={opacityPercent}
-                disabled={loading}
-                onChange={(event) => {
-                  updateActivePlacement({
-                    opacity: clampOpacity(Number(event.target.value) / 100),
-                  });
-                }}
-              />
-            </div>
-          </div>
-        ) : null}
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleCompose()}
-            disabled={!canCompose}
-          >
-            {loading ? "Composing…" : "Add images & download"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasBase && !hasOverlays && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
-            <Button variant="ghost" onClick={handleEditAgain}>
-              Edit overlays
-            </Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult || hasBase ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Composing image…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Your images stay on this device.
-              </span>
-            </div>
-          ) : hasResult && resultUrl ? (
-            <div className="add-images-to-image__result">
-              <p className="add-images-to-image__result-meta">
-                {result!.width}×{result!.height} px ·{" "}
-                {formatFileSize(result!.blob.size)} · {result!.overlayCount}{" "}
-                overlay{result!.overlayCount === 1 ? "" : "s"}
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
               </p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={resultUrl}
-                alt="Image with overlays"
-                className="preview-single__image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Change overlays and
-                compose again anytime.
-              </p>
-            </div>
-          ) : hasBase ? (
-            <div className="add-images-to-image__preview">
-              <canvas
-                ref={previewCanvasRef}
-                className="add-images-to-image__canvas"
-                aria-label="Live preview of images on image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                {hasOverlays
-                  ? "Live preview — click Add images & download when ready."
-                  : "Add overlay images to place them on the base photo."}
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a base image and overlays to preview the result here
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && resultUrl ? (
+          <div className="image-editor-shell__result add-images-to-image__result">
+            <p className="image-editor-shell__result-meta add-images-to-image__result-meta">
+              {result!.width}×{result!.height} px ·{" "}
+              {formatFileSize(result!.blob.size)} · {result!.overlayCount}{" "}
+              overlay{result!.overlayCount === 1 ? "" : "s"}
             </p>
-          )}
-        </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={resultUrl}
+              alt="Image with overlays"
+              className="preview-single__image"
+            />
+          </div>
+        ) : hasBase ? (
+          <div className="add-images-to-image__preview image-editor-shell__preview-content">
+            <canvas
+              ref={previewCanvasRef}
+              className="add-images-to-image__canvas"
+              aria-label="Live preview of images on image"
+            />
+          </div>
+        ) : null}
+      </ImageEditorShell>
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Overlays are stamped in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

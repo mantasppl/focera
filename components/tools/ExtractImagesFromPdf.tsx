@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import Button from "@/components/Button";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
 import PdfDropzone from "@/components/tools/PdfDropzone";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
 import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   downloadAllExtractedImagesZip,
-  downloadExtractedImage,
   extractImagesFromPdf,
   extractImagesFromPdfLimitsHint,
   revokeExtractedImages,
@@ -32,6 +34,21 @@ export default function ExtractImagesFromPdf() {
   const hasImages = images.length > 0;
   const activeImage =
     images.find((image) => image.index === selectedIndex) ?? images[0] ?? null;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading: formatDownloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => activeImage?.blob ?? null,
+    getFilename: () =>
+      sourceFile && activeImage
+        ? `${fileBaseName(sourceFile)}-image-${activeImage.index}`
+        : null,
+  });
 
   useEffect(() => {
     imagesRef.current = images;
@@ -120,11 +137,6 @@ export default function ExtractImagesFromPdf() {
     }
   }
 
-  function handleDownloadImage() {
-    if (!sourceFile || !activeImage) return;
-    downloadExtractedImage(activeImage, fileBaseName(sourceFile));
-  }
-
   async function handleDownloadAll() {
     if (!sourceFile || !hasImages) return;
     setZipping(true);
@@ -141,140 +153,146 @@ export default function ExtractImagesFromPdf() {
   }
 
   return (
-    <div className="tool-grid extract-images-from-pdf">
-      <div className="tool-panel">
-        <PdfDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleExtract()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Extracting…" : "Extract images"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasImages) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasImages ? (
-          <div className="tool-actions">
-            <Button
-              onClick={handleDownloadImage}
-              disabled={!activeImage || zipping}
-            >
-              Download image
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => void handleDownloadAll()}
-              disabled={zipping}
-            >
-              {zipping ? "Preparing ZIP…" : "Download all (ZIP)"}
-            </Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasImages ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Extracting images…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Embedded images are pulled locally in your browser.
-              </span>
-            </div>
-          ) : activeImage ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={activeImage.url}
-                alt={`Extracted image ${activeImage.index}`}
-                className="preview-single__image extract-images-from-pdf__preview-image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Image {activeImage.index} of {images.length} · page{" "}
-                {activeImage.pageNumber} · {activeImage.width}×
-                {activeImage.height}px · {formatFileSize(activeImage.blob.size)}
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a PDF and extract to preview embedded images here
-            </p>
-          )}
-        </div>
-
-        {hasImages ? (
-          <div
-            className="extract-images-from-pdf__thumbs"
-            role="list"
-            aria-label="Extracted images"
-          >
-            {images.map((image) => {
-              const selected = image.index === activeImage?.index;
-              return (
-                <button
-                  key={image.id}
-                  type="button"
-                  role="listitem"
-                  className={cn(
-                    "extract-images-from-pdf__thumb",
-                    selected && "is-active",
-                  )}
-                  onClick={() => setSelectedIndex(image.index)}
-                  aria-pressed={selected}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={image.url}
-                    alt=""
-                    className="extract-images-from-pdf__thumb-image"
-                  />
-                  <span className="extract-images-from-pdf__thumb-label">
-                    #{image.index}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        ) : null}
-
-        <p className="tool-hint">
-          {hasImages
+    <>
+      <ImageEditorShell
+        className="extract-images-from-pdf"
+        hasSource={hasSource}
+        stageReady={hasImages}
+        loading={loading}
+        loadingText={progressText || "Extracting images…"}
+        loadingSubtext="Embedded images are pulled locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasImages && activeImage
+            ? `Image ${activeImage.index} of ${images.length} · page ${activeImage.pageNumber} · ${activeImage.width}×${activeImage.height}px`
+            : hasSource
+              ? sourceFile?.name
+              : "Upload a PDF to start"
+        }
+        previewHint={
+          hasSource && !hasImages ? "Click Extract images" : undefined
+        }
+        privacyHint={
+          hasImages
             ? `${images.length} image${images.length === 1 ? "" : "s"} found · download one or a ZIP · processed locally`
-            : `${extractImagesFromPdfLimitsHint()} · private & local`}
-        </p>
-      </div>
-    </div>
+            : `${extractImagesFromPdfLimitsHint()} · private & local`
+        }
+        sidebar={
+          <>
+            <PdfDropzone
+              onFile={handleFile}
+              onError={setError}
+              disabled={loading}
+            />
+
+            {hasSource ? (
+              <div className="upload-meta">
+                <p className="upload-meta__name">{sourceFile?.name}</p>
+                <p className="upload-meta__size">
+                  {sourceFile ? formatFileSize(sourceFile.size) : ""}
+                </p>
+              </div>
+            ) : null}
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleExtract()}
+                disabled={!hasSource || loading}
+              >
+                {loading ? "Extracting…" : "Extract images"}
+              </Button>
+              {hasImages ? (
+                <>
+                  <Button
+                    onClick={openDownload}
+                    disabled={!activeImage || zipping || formatDownloading}
+                  >
+                    Download
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => void handleDownloadAll()}
+                    disabled={zipping}
+                  >
+                    {zipping ? "Preparing ZIP…" : "Download all (ZIP)"}
+                  </Button>
+                </>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasImages) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasImages && activeImage ? (
+          <div className="image-editor-shell__result extract-images-from-pdf__preview">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activeImage.url}
+              alt={`Extracted image ${activeImage.index}`}
+              className="preview-single__image extract-images-from-pdf__preview-image"
+            />
+            <p className="image-editor-shell__result-meta">
+              {formatFileSize(activeImage.blob.size)}
+            </p>
+            {images.length > 1 ? (
+              <div
+                className="extract-images-from-pdf__thumbs"
+                role="list"
+                aria-label="Extracted images"
+              >
+                {images.map((image) => {
+                  const selected = image.index === activeImage.index;
+                  return (
+                    <button
+                      key={image.id}
+                      type="button"
+                      role="listitem"
+                      className={cn(
+                        "extract-images-from-pdf__thumb",
+                        selected && "is-active",
+                      )}
+                      onClick={() => setSelectedIndex(image.index)}
+                      aria-pressed={selected}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={image.url}
+                        alt=""
+                        className="extract-images-from-pdf__thumb-image"
+                      />
+                      <span className="extract-images-from-pdf__thumb-label">
+                        #{image.index}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={formatDownloading}
+        error={downloadError}
+      />
+    </>
   );
 }

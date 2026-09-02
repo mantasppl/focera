@@ -8,20 +8,24 @@ import ChangeBackgroundOptions, {
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { useMobilePreviewReveal } from "@/components/tools/useMobilePreviewReveal";
-import { removeImageBackground, preloadBackgroundRemoval, BACKGROUND_FIRST_RUN_HINT, hasPreparedBackgroundModel } from "@/lib/background-removal";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
 import {
+  BACKGROUND_FIRST_RUN_HINT,
+  hasPreparedBackgroundModel,
+  preloadBackgroundRemoval,
+  removeImageBackground,
+} from "@/lib/background-removal";
+import {
+  BLUR_RADIUS,
   compositeOnColor,
   compositeOnImage,
   compositeWithBlur,
-  BLUR_RADIUS,
 } from "@/lib/composite-image";
 import { useToolAnalytics } from "@/lib/analytics/client";
-import {
-  downloadBlob,
-  fileBaseName,
-  formatFileSize,
-} from "@/lib/image";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -73,6 +77,28 @@ export default function ChangeBackground() {
     const normalized = color.toLowerCase();
     setBgColor((current) => (current === normalized ? current : normalized));
   }, []);
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => resultBlob,
+    getFilename: () => {
+      if (!sourceFile) return null;
+      const baseName = fileBaseName(sourceFile);
+      const suffix =
+        bgMode === "color"
+          ? "bg-color"
+          : bgMode === "blur"
+            ? "blur-bg"
+            : "new-bg";
+      return `${baseName}-${suffix}`;
+    },
+  });
 
   useEffect(() => {
     resultUrlRef.current = resultUrl;
@@ -214,20 +240,8 @@ export default function ChangeBackground() {
     debouncedBlurRadius,
     bgImageFile,
     sourceFile,
+    trackFailure,
   ]);
-
-  function handleDownload() {
-    if (!sourceFile || !resultBlob) return;
-
-    const baseName = fileBaseName(sourceFile);
-    const suffix =
-      bgMode === "color"
-        ? "bg-color"
-        : bgMode === "blur"
-          ? "blur-bg"
-          : "new-bg";
-    downloadBlob(resultBlob, `${baseName}-${suffix}.png`);
-  }
 
   function handleReset() {
     processIdRef.current += 1;
@@ -247,111 +261,142 @@ export default function ChangeBackground() {
         ? "Preview with portrait-style background blur."
         : "Preview with your uploaded background image.";
 
-  const previewRef = useMobilePreviewReveal(loading || hasResult || compositing);
+  const previewMeta = hasResult
+    ? resultBlob
+      ? `${bgMode === "color" ? "Solid color" : bgMode === "blur" ? "Blurred background" : "Custom background"} · ${formatFileSize(resultBlob.size)}`
+      : "Applying background…"
+    : hasCutout
+      ? "Cutout ready — choose a background"
+      : hasSource
+        ? sourceFile!.name
+        : "Upload an image to start";
 
   return (
-    <div className={`tool-grid${loading || hasResult || compositing ? " is-preview-first" : ""}`}>
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
+    <>
+      <ImageEditorShell
+        className="change-background"
+        hasSource={hasSource}
+        stageReady={hasResult || hasCutout}
+        loading={false}
+        previewTitle="Preview"
+        previewMeta={previewMeta}
+        previewHint={
+          hasSource && !hasCutout && !loading
+            ? "Click Change background to start"
+            : undefined
+        }
+        privacyHint={
+          loading && showFirstRunHint
+            ? BACKGROUND_FIRST_RUN_HINT
+            : hasCutout
+              ? "Processed locally on your device"
+              : "AI cutout + new background in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={handleFile}
+                onError={setError}
+                disabled={loading}
+              />
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                disabled={loading}
+                onReplace={handleFile}
+              />
+            )}
 
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="tool-actions">
-          <Button onClick={() => void changeBackground()} disabled={!canProcess}>
-            Change background
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasCutout) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasCutout ? (
-          <ChangeBackgroundOptions
-            mode={bgMode}
-            onModeChange={setBgMode}
-            bgColor={bgColor}
-            onBgColorChange={handleBgColorChange}
-            blurRadius={blurRadius}
-            onBlurRadiusChange={setBlurRadius}
-            bgImageName={bgImageFile?.name}
-            onBgImageSelect={setBgImageFile}
-            onBgImageError={setError}
-            onDownload={handleDownload}
-            downloadDisabled={compositing || !canDownload}
-            compositing={compositing}
-            disabled={loading}
-          />
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview" ref={previewRef}>
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading && originalUrl ? (
-            <EnhancingPreview src={originalUrl} />
-          ) : hasResult && originalUrl ? (
+            {hasCutout ? (
+              <ChangeBackgroundOptions
+                mode={bgMode}
+                onModeChange={setBgMode}
+                bgColor={bgColor}
+                onBgColorChange={handleBgColorChange}
+                blurRadius={blurRadius}
+                onBlurRadiusChange={setBlurRadius}
+                bgImageName={bgImageFile?.name}
+                onBgImageSelect={setBgImageFile}
+                onBgImageError={setError}
+                disabled={loading}
+              />
+            ) : null}
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void changeBackground()}
+                disabled={!canProcess}
+              >
+                {loading ? "Processing…" : "Change background"}
+              </Button>
+              {hasCutout ? (
+                <Button
+                  onClick={openDownload}
+                  disabled={loading || compositing || !canDownload}
+                >
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasCutout) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {loading && originalUrl ? (
+          <EnhancingPreview src={originalUrl} />
+        ) : hasResult && originalUrl ? (
+          <div className="image-editor-shell__result change-background__result">
             <BeforeAfterPreview
               beforeSrc={originalUrl}
               afterSrc={resultUrl}
+              beforeAlt="Original image"
+              afterAlt="New background"
               hint={previewHint}
             />
-          ) : hasCutout && bgMode === "image" && !bgImageFile ? (
-            <p className="tool-placeholder">
-              Choose a background image to preview the new scene.
-            </p>
-          ) : hasCutout && compositing ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">Applying background…</span>
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Uploaded preview"
-                className="preview-single__image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Upload another image to change a new background.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to preview and change its background
-            </p>
-          )}
-        </div>
-        <p className="tool-hint">
-          {loading && showFirstRunHint
-            ? BACKGROUND_FIRST_RUN_HINT
-            : hasCutout
-              ? "Solid color, blurred background, or custom photo · processed locally"
-              : "AI cutout + new background · processed locally in your browser · no upload to our servers"}
-        </p>
-      </div>
-    </div>
+          </div>
+        ) : hasCutout && bgMode === "image" && !bgImageFile ? (
+          <p className="tool-placeholder">
+            Choose a background image to preview the new scene.
+          </p>
+        ) : hasCutout && compositing ? (
+          <div className="tool-loading" role="status" aria-live="polite">
+            <span className="tool-loading__spinner" aria-hidden="true" />
+            <span className="tool-loading__text">Applying background…</span>
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-editor-shell__preview-content preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={originalUrl}
+              alt="Uploaded preview"
+              className="preview-single__image"
+            />
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

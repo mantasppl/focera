@@ -3,13 +3,15 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import PsdToAiDropzone from "@/components/tools/PsdToAiDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   convertPsdToAi,
   colorLabel,
   describePsdAiOutput,
   dpiLabel,
-  downloadConvertedAi,
   downloadPsdAiResult,
   MAX_PSD_FILES,
   revokePsdToAiResult,
@@ -24,6 +26,21 @@ type ImageEntry = {
   id: string;
   file: File;
 };
+
+
+function createEntries(files: File[]): ImageEntry[] {
+  return files.map((file) => ({
+    id: `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 9)}`,
+    file,
+  }));
+}
+
+export default function PsdToAi() {
+  const { trackSuccess, trackFailure } = useToolAnalytics();
+  const listId = useId();
+  const colorId = useId();
+  const dpiId = useId();
+
 
 const COLOR_OPTIONS: {
   value: PsdAiColor;
@@ -44,24 +61,12 @@ const DPI_OPTIONS: {
   { value: 300, label: "Print", hint: "300 DPI" },
 ];
 
-function createEntries(files: File[]): ImageEntry[] {
-  return files.map((file) => ({
-    id: `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 9)}`,
-    file,
-  }));
-}
-
-export default function PsdToAi() {
-  const { trackSuccess, trackFailure } = useToolAnalytics();
-  const listId = useId();
-  const colorId = useId();
-  const dpiId = useId();
   const abortRef = useRef<AbortController | null>(null);
   const resultRef = useRef<PsdToAiResult | null>(null);
 
-  const [entries, setEntries] = useState<ImageEntry[]>([]);
   const [color, setColor] = useState<PsdAiColor>("rgb");
   const [dpi, setDpi] = useState<PsdAiDpi>(72);
+  const [entries, setEntries] = useState<ImageEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [progressText, setProgressText] = useState("");
   const [error, setError] = useState("");
@@ -78,6 +83,19 @@ export default function PsdToAi() {
     result?.images.find((image) => image.id === selectedId) ??
     result?.images[0] ??
     null;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading: formatDownloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => activeImage?.blob ?? null,
+    getFilename: () =>
+      activeImage ? (activeImage.sourceName.replace(/\.[^.]+$/, "") || "image") : null,
+  });
 
   useEffect(() => {
     resultRef.current = result;
@@ -153,7 +171,6 @@ export default function PsdToAi() {
 
       setResult(converted);
       setSelectedId(converted.images[0]?.id ?? null);
-      await downloadPsdAiResult(converted, files);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -164,7 +181,7 @@ export default function PsdToAi() {
       const message =
         err instanceof Error
           ? err.message
-          : "Could not convert these PSD files. Try fewer or smaller files.";
+          : "Could not convert these PSD files. Try fewer or smaller images.";
       setError(message);
       setProgressText("");
     } finally {
@@ -174,315 +191,232 @@ export default function PsdToAi() {
     }
   }
 
-  async function handleDownloadAgain() {
+  async function handleDownloadZip() {
     if (!result || fileCount === 0) return;
     setZipping(true);
     setError("");
     try {
       await downloadPsdAiResult(result, files);
     } catch {
-      setError("Could not create the download. Try downloading files one by one.");
+      setError("Could not create the download. Try downloading images one by one.");
     } finally {
       setZipping(false);
     }
   }
 
-  function handleDownloadSelected() {
-    if (!activeImage) return;
-    downloadConvertedAi(activeImage);
-  }
-
   return (
-    <div className="tool-grid heic-to-jpg">
-      <div className="tool-panel">
-        <PsdToAiDropzone
-          existingFiles={files}
-          onFiles={handleAddFiles}
-          onError={setError}
-          disabled={loading || fileCount >= MAX_PSD_FILES}
-        />
+    <>
+      <ImageEditorShell
+        className="heic-to-jpg"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Converting PSD……"}
+        loadingSubtext="Conversion runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult && result
+            ? `${describePsdAiOutput(result)} · {dpiLabel(result.dpi)} · {colorLabel(result.color)}`
+            : hasSource
+              ? `${fileCount} file${fileCount === 1 ? "" : "s"} queued`
+              : "Upload images to start"
+        }
+        previewHint={
+          hasSource && !hasResult ? "Click Convert to AI" : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "PSD to PNG runs in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            <PsdToAiDropzone
+              existingFiles={files}
+              onFiles={handleAddFiles}
+              onError={setError}
+              disabled={loading || fileCount >= MAX_PSD_FILES}
+            />
 
-        {fileCount > 0 ? (
-          <div className="png-to-pdf__list-wrap">
-            <div className="png-to-pdf__list-header">
-              <p className="png-to-pdf__list-title" id={listId}>
-                Queued files ({fileCount})
-              </p>
-              <p className="png-to-pdf__list-meta">
-                {formatFileSize(totalBytes)} total
-              </p>
-            </div>
-            <ol className="png-to-pdf__list" aria-labelledby={listId}>
-              {entries.map((entry) => (
-                <li key={entry.id} className="png-to-pdf__item">
-                  <div className="png-to-pdf__file">
-                    <p className="png-to-pdf__name">{entry.file.name}</p>
-                    <p className="png-to-pdf__size">
-                      {formatFileSize(entry.file.size)}
-                    </p>
-                  </div>
-                  <div className="png-to-pdf__item-actions">
-                    <button
-                      type="button"
-                      className={cn(
-                        "png-to-pdf__icon-btn",
-                        "png-to-pdf__icon-btn--danger",
-                      )}
-                      aria-label={`Remove ${entry.file.name}`}
-                      disabled={loading}
-                      onClick={() => handleRemove(entry.id)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        ) : null}
-
-        <div className="heic-to-jpg__options">
-          <div className="ui-field">
-            <span className="ui-label" id={colorId}>
-              Color
-            </span>
-            <div
-              className="heic-to-jpg__chips"
-              role="radiogroup"
-              aria-labelledby={colorId}
-            >
-              {COLOR_OPTIONS.map((option) => {
-                const selected = color === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "heic-to-jpg__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => {
-                      setColor(option.value);
-                      clearResult();
-                    }}
-                  >
-                    <span className="heic-to-jpg__chip-label">
-                      {option.label}
-                    </span>
-                    <span className="heic-to-jpg__chip-hint">
-                      {option.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="ui-field">
-            <span className="ui-label" id={dpiId}>
-              Artboard size
-            </span>
-            <div
-              className="heic-to-jpg__chips"
-              role="radiogroup"
-              aria-labelledby={dpiId}
-            >
-              {DPI_OPTIONS.map((option) => {
-                const selected = dpi === option.value;
-                return (
-                  <button
-                    key={option.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "heic-to-jpg__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => {
-                      setDpi(option.value);
-                      clearResult();
-                    }}
-                  >
-                    <span className="heic-to-jpg__chip-label">
-                      {option.label}
-                    </span>
-                    <span className="heic-to-jpg__chip-hint">
-                      {option.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleConvert()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Converting…" : "Convert to AI"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button
-              onClick={() => void handleDownloadAgain()}
-              disabled={zipping}
-            >
-              {zipping
-                ? "Preparing…"
-                : result && result.images.length > 1
-                  ? "Download ZIP again"
-                  : "Download again"}
-            </Button>
-            {result && result.images.length > 1 && activeImage ? (
-              <Button variant="ghost" onClick={handleDownloadSelected}>
-                Download selected
-              </Button>
-            ) : null}
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Converting PSD…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Conversion runs locally in your browser.
-              </span>
-            </div>
-          ) : result && activeImage ? (
-            <div className="png-to-pdf__success">
-              <p className="png-to-pdf__success-title">AI ready</p>
-              <p className="png-to-pdf__success-meta">
-                {describePsdAiOutput(result)} · {colorLabel(result.color)} ·{" "}
-                {dpiLabel(result.dpi)}
-              </p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={activeImage.url}
-                alt={`Preview of ${activeImage.sourceName}`}
-                className="pdf-to-jpg__preview-image"
-              />
-              {result.images.length > 1 ? (
-                <div
-                  className="pdf-to-jpg__thumbs"
-                  role="radiogroup"
-                  aria-label="Converted files"
-                >
-                  {result.images.map((image, index) => {
-                    const selected = image.id === activeImage.id;
-                    return (
-                      <button
-                        key={image.id}
-                        type="button"
-                        role="radio"
-                        aria-checked={selected}
-                        className={cn(
-                          "pdf-to-jpg__thumb",
-                          selected && "is-active",
-                        )}
-                        aria-label={`Show ${image.sourceName}`}
-                        onClick={() => setSelectedId(image.id)}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={image.url}
-                          alt=""
-                          className="pdf-to-jpg__thumb-image"
-                        />
-                        <span className="pdf-to-jpg__thumb-label">
-                          {index + 1}
-                        </span>
-                      </button>
-                    );
-                  })}
+            {fileCount > 0 ? (
+              <div className="png-to-pdf__list-wrap">
+                <div className="png-to-pdf__list-header">
+                  <p className="png-to-pdf__list-title" id={listId}>
+                    Queued files ({fileCount})
+                  </p>
+                  <p className="png-to-pdf__list-meta">
+                    {formatFileSize(totalBytes)} total
+                  </p>
                 </div>
-              ) : null}
-              <ul className="png-to-pdf__stats" aria-label="Conversion summary">
-                <li>
-                  <span className="png-to-pdf__stat-label">PSD files</span>
-                  <span className="png-to-pdf__stat-value">
-                    {result.images.length}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">Layers</span>
-                  <span className="png-to-pdf__stat-value">
-                    {activeImage.layerCount || "—"}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">Original</span>
-                  <span className="png-to-pdf__stat-value">
-                    {formatFileSize(result.originalSize)}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">AI size</span>
-                  <span className="png-to-pdf__stat-value">
-                    {formatFileSize(result.outputSize)}
-                  </span>
-                </li>
-              </ul>
-              <p className="tool-placeholder preview-single__hint">
-                {result.images.length > 1
-                  ? "Your ZIP download should start automatically. Select a thumbnail to preview or download one AI file."
-                  : "Your download should start automatically. Change color or DPI and convert again anytime."}
-              </p>
-            </div>
-          ) : (
-            <div className="png-to-pdf__empty">
-              <p className="tool-placeholder">
-                {fileCount === 0
-                  ? "Upload a Photoshop PSD to convert it to AI"
-                  : `${fileCount} PSD file${fileCount === 1 ? "" : "s"} queued · click Convert to AI`}
-              </p>
-              {fileCount > 0 ? (
-                <ul className="png-to-pdf__summary" aria-label="Queued PSD files">
-                  {entries.map((entry, index) => (
-                    <li key={entry.id}>
-                      {index + 1}. {entry.file.name}
+                <ol className="png-to-pdf__list" aria-labelledby={listId}>
+                  {entries.map((entry) => (
+                    <li key={entry.id} className="png-to-pdf__item">
+                      <div className="png-to-pdf__file">
+                        <p className="png-to-pdf__name">{entry.file.name}</p>
+                        <p className="png-to-pdf__size">
+                          {formatFileSize(entry.file.size)}
+                        </p>
+                      </div>
+                      <div className="png-to-pdf__item-actions">
+                        <button
+                          type="button"
+                          className={cn(
+                            "png-to-pdf__icon-btn",
+                            "png-to-pdf__icon-btn--danger",
+                          )}
+                          aria-label={`Remove ${entry.file.name}`}
+                          disabled={loading}
+                          onClick={() => handleRemove(entry.id)}
+                        >
+                          ×
+                        </button>
+                      </div>
                     </li>
                   ))}
-                </ul>
-              ) : null}
-            </div>
-          )}
-        </div>
+                </ol>
+              </div>
+            ) : null}
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "PSD to AI runs in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleConvert()}
+                disabled={!hasSource || loading}
+              >
+                {loading ? "Converting…" : "Convert to AI"}
+              </Button>
+              {hasResult ? (
+                <Button
+                  onClick={openDownload}
+                  disabled={loading || !activeImage || formatDownloading}
+                >
+                  Download
+                </Button>
+              ) : null}
+              {hasResult && result && result.images.length > 1 ? (
+                <Button
+                  variant="ghost"
+                  onClick={() => void handleDownloadZip()}
+                  disabled={zipping || loading}
+                >
+                  {zipping ? "Preparing…" : "Download all as ZIP"}
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && result && activeImage ? (
+          <div className="image-editor-shell__result png-to-pdf__success">
+            <p className="image-editor-shell__result-meta png-to-pdf__success-meta">
+              {describePsdAiOutput(result)}
+            </p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activeImage.url}
+              alt={`Converted ${activeImage.sourceName}`}
+              className="pdf-to-jpg__preview-image"
+            />
+            {result.images.length > 1 ? (
+              <div
+                className="pdf-to-jpg__thumbs"
+                role="radiogroup"
+                aria-label="Converted images"
+              >
+                {result.images.map((image, index) => {
+                  const selected = image.id === activeImage.id;
+                  return (
+                    <button
+                      key={image.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      className={cn(
+                        "pdf-to-jpg__thumb",
+                        selected && "is-active",
+                      )}
+                      aria-label={`Show ${image.sourceName}`}
+                      onClick={() => setSelectedId(image.id)}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={image.url}
+                        alt=""
+                        className="pdf-to-jpg__thumb-image"
+                      />
+                      <span className="pdf-to-jpg__thumb-label">
+                        {index + 1}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+            <ul className="png-to-pdf__stats" aria-label="Conversion summary">
+              <li>
+                <span className="png-to-pdf__stat-label">PSD files</span>
+                <span className="png-to-pdf__stat-value">
+                  {result.images.length}
+                </span>
+              </li>
+              <li>
+                <span className="png-to-pdf__stat-label">Original</span>
+                <span className="png-to-pdf__stat-value">
+                  {formatFileSize(result.originalSize)}
+                </span>
+              </li>
+              <li>
+                <span className="png-to-pdf__stat-label">DPI</span>
+                <span className="png-to-pdf__stat-value">
+                  {dpiLabel(result.dpi)}
+                </span>
+              </li>
+              <li>
+                <span className="png-to-pdf__stat-label">AI size</span>
+                <span className="png-to-pdf__stat-value">
+                  {formatFileSize(result.outputSize)}
+                </span>
+              </li>
+            </ul>
+          </div>
+        ) : hasSource ? (
+          <div className="png-to-pdf__empty">
+            <p className="tool-placeholder">
+              {`${fileCount} PSD file${fileCount === 1 ? "" : "s"} queued · click Convert to AI`}
+            </p>
+            <ul className="png-to-pdf__summary" aria-label={`Queued PSD files`}>
+              {entries.map((entry, index) => (
+                <li key={entry.id}>
+                  {index + 1}. {entry.file.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={formatDownloading}
+        error={downloadError}
+      />
+    </>
   );
 }

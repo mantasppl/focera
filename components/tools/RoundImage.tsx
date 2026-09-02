@@ -10,7 +10,11 @@ import {
 } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   MAX_OUTPUT_SIZE,
   MAX_ZOOM,
@@ -22,7 +26,6 @@ import {
   clampZoom,
   createRoundImage,
   defaultCropState,
-  downloadRoundImage,
   readImageDimensions,
   type CropState,
   type RoundImageResult,
@@ -65,6 +68,21 @@ export default function RoundImage() {
     Number.isFinite(sizeNum) &&
     sizeNum >= MIN_OUTPUT_SIZE &&
     sizeNum <= MAX_OUTPUT_SIZE;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile && result
+        ? `${fileBaseName(sourceFile)}-round-${result.size}x${result.size}`
+        : null,
+  });
 
   useEffect(() => {
     return () => {
@@ -210,7 +228,6 @@ export default function RoundImage() {
       const url = URL.createObjectURL(created.blob);
       setResult(created);
       setResultUrl(url);
-      downloadRoundImage(created.blob, sourceFile, created.size);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -229,11 +246,6 @@ export default function RoundImage() {
         setLoading(false);
       }
     }
-  }
-
-  function handleDownloadAgain() {
-    if (!sourceFile || !result) return;
-    downloadRoundImage(result.blob, sourceFile, result.size);
   }
 
   const previewStyle = (() => {
@@ -257,206 +269,211 @@ export default function RoundImage() {
   })();
 
   return (
-    <div className="tool-grid round-image">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={(file) => void handleFile(file)}
-          onError={setError}
-          disabled={loading}
-        />
+    <>
+      <ImageEditorShell
+        className="round-image"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Creating round image…"}
+        loadingSubtext="Cropping runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult
+            ? `${result!.size}×${result!.size} · circle · ${formatFileSize(result!.blob.size)}`
+            : hasSource
+              ? `${originalWidth}×${originalHeight} px`
+              : "Upload an image to start"
+        }
+        previewHint={
+          hasSource && !hasResult
+            ? "Drag to reframe, then click Make round image"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Circle crop with transparent edges · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={(file) => void handleFile(file)}
+                onError={setError}
+                disabled={loading}
+              />
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                width={originalWidth}
+                height={originalHeight}
+                disabled={loading}
+                onReplace={(file) => void handleFile(file)}
+              />
+            )}
 
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-              {originalWidth
-                ? ` · ${originalWidth}×${originalHeight} px`
-                : ""}
-            </p>
-          </div>
-        ) : null}
+            <div className="round-image__options">
+              <div className="ui-field">
+                <span className="ui-label" id={presetGroupId}>
+                  Output size
+                </span>
+                <div
+                  className="round-image__chips"
+                  role="group"
+                  aria-labelledby={presetGroupId}
+                >
+                  {ROUND_SIZE_PRESETS.map((preset) => {
+                    const selected = selectedPresetId === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        className={cn(
+                          "round-image__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading || !hasSource}
+                        onClick={() => handlePreset(preset.id, preset.size)}
+                      >
+                        <span className="round-image__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="round-image__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-        <div className="round-image__options">
-          <div className="ui-field">
-            <span className="ui-label" id={presetGroupId}>
-              Output size
-            </span>
-            <div
-              className="round-image__chips"
-              role="group"
-              aria-labelledby={presetGroupId}
-            >
-              {ROUND_SIZE_PRESETS.map((preset) => {
-                const selected = selectedPresetId === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    className={cn(
-                      "round-image__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading || !hasSource}
-                    onClick={() => handlePreset(preset.id, preset.size)}
-                  >
-                    <span className="round-image__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="round-image__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="ui-field">
-            <label className="ui-label" htmlFor={sizeId}>
-              Custom size (px)
-            </label>
-            <input
-              id={sizeId}
-              className="ui-input"
-              type="number"
-              min={MIN_OUTPUT_SIZE}
-              max={MAX_OUTPUT_SIZE}
-              step={1}
-              inputMode="numeric"
-              value={size}
-              disabled={loading || !hasSource}
-              onChange={(event) => {
-                setSelectedPresetId("");
-                setSize(event.target.value);
-              }}
-            />
-            <p className="ui-hint">
-              Circular PNG from {MIN_OUTPUT_SIZE} to {MAX_OUTPUT_SIZE} px.
-            </p>
-          </div>
-
-          <div className="ui-field">
-            <label className="ui-label" htmlFor={zoomId}>
-              Zoom {crop.zoom.toFixed(1)}×
-            </label>
-            <input
-              id={zoomId}
-              className="round-image__zoom"
-              type="range"
-              min={MIN_ZOOM}
-              max={MAX_ZOOM}
-              step={0.05}
-              value={crop.zoom}
-              disabled={loading || !hasSource}
-              onChange={(event) =>
-                handleZoomChange(Number(event.target.value))
-              }
-            />
-            <p className="ui-hint">
-              Drag the preview to reframe. Zoom in to tighten the crop.
-            </p>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleCreate()}
-            disabled={!hasSource || loading || !sizeValid}
-          >
-            {loading ? "Creating…" : "Make round image"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Creating round image…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Cropping runs locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && resultUrl ? (
-            <div className="round-image__result">
-              <p className="round-image__result-meta">
-                {result!.size}×{result!.size} · circle
-                {" · "}
-                {formatFileSize(result!.blob.size)}
-              </p>
-              <div className="round-image__result-frame is-circle">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={resultUrl}
-                  alt="Round image result"
-                  className="round-image__result-image"
+              <div className="ui-field">
+                <label className="ui-label" htmlFor={sizeId}>
+                  Custom size (px)
+                </label>
+                <input
+                  id={sizeId}
+                  className="ui-input"
+                  type="number"
+                  min={MIN_OUTPUT_SIZE}
+                  max={MAX_OUTPUT_SIZE}
+                  step={1}
+                  inputMode="numeric"
+                  value={size}
+                  disabled={loading || !hasSource}
+                  onChange={(event) => {
+                    setSelectedPresetId("");
+                    setSize(event.target.value);
+                  }}
                 />
+                <p className="ui-hint">
+                  Circular PNG from {MIN_OUTPUT_SIZE} to {MAX_OUTPUT_SIZE} px.
+                </p>
+              </div>
+
+              <div className="ui-field">
+                <label className="ui-label" htmlFor={zoomId}>
+                  Zoom {crop.zoom.toFixed(1)}×
+                </label>
+                <input
+                  id={zoomId}
+                  className="round-image__zoom"
+                  type="range"
+                  min={MIN_ZOOM}
+                  max={MAX_ZOOM}
+                  step={0.05}
+                  value={crop.zoom}
+                  disabled={loading || !hasSource}
+                  onChange={(event) =>
+                    handleZoomChange(Number(event.target.value))
+                  }
+                />
+                <p className="ui-hint">
+                  Drag the preview to reframe. Zoom in to tighten the crop.
+                </p>
               </div>
             </div>
-          ) : hasSource && originalUrl ? (
-            <div className="round-image__editor">
-              <div
-                ref={frameRef}
-                className="round-image__frame is-circle"
-                onPointerDown={onFramePointerDown}
-                onPointerMove={onFramePointerMove}
-                onPointerUp={onFramePointerUp}
-                onPointerCancel={onFramePointerUp}
-                role="img"
-                aria-label="Round image crop preview. Drag to reframe."
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleCreate()}
+                disabled={!hasSource || loading || !sizeValid}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={originalUrl}
-                  alt=""
-                  draggable={false}
-                  className="round-image__frame-image"
-                  style={previewStyle}
-                />
-              </div>
-              <p className="tool-placeholder preview-single__hint">
-                Drag to reframe, then create your {sizeNum || "—"}×
-                {sizeNum || "—"} round image.
-              </p>
+                {loading ? "Creating…" : "Make round image"}
+              </Button>
+              {hasResult ? (
+                <Button onClick={openDownload} disabled={loading}>
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
             </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to make it round here
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && resultUrl ? (
+          <div className="image-editor-shell__result round-image__result">
+            <p className="image-editor-shell__result-meta round-image__result-meta">
+              {result!.size}×{result!.size} · circle
+              {" · "}
+              {formatFileSize(result!.blob.size)}
             </p>
-          )}
-        </div>
+            <div className="round-image__result-frame is-circle">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={resultUrl}
+                alt="Round image result"
+                className="round-image__result-image"
+              />
+            </div>
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-editor-shell__preview-content round-image__editor">
+            <div
+              ref={frameRef}
+              className="round-image__frame is-circle"
+              onPointerDown={onFramePointerDown}
+              onPointerMove={onFramePointerMove}
+              onPointerUp={onFramePointerUp}
+              onPointerCancel={onFramePointerUp}
+              role="img"
+              aria-label="Round image crop preview. Drag to reframe."
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={originalUrl}
+                alt=""
+                draggable={false}
+                className="round-image__frame-image"
+                style={previewStyle}
+              />
+            </div>
+          </div>
+        ) : null}
+      </ImageEditorShell>
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Circle crop with transparent edges · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

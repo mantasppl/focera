@@ -10,7 +10,11 @@ import {
 import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   ASPECT_RATIO_PRESETS,
   MIN_CROP_SIZE,
@@ -19,7 +23,6 @@ import {
   cropImageFile,
   defaultCropRect,
   describeCrop,
-  downloadCroppedImage,
   readImageDimensions,
   type CropImageResult,
   type CropRect,
@@ -124,6 +127,21 @@ export default function CropImage() {
     crop.height >= MIN_CROP_SIZE &&
     crop.width <= originalWidth &&
     crop.height <= originalHeight;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile && result
+        ? `${fileBaseName(sourceFile)}-cropped-${result.width}x${result.height}`
+        : null,
+  });
 
   useEffect(() => {
     cropRef.current = crop;
@@ -391,12 +409,6 @@ export default function CropImage() {
       const url = URL.createObjectURL(cropped.blob);
       setResult(cropped);
       setResultUrl(url);
-      downloadCroppedImage(
-        cropped.blob,
-        sourceFile,
-        cropped.width,
-        cropped.height,
-      );
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -415,16 +427,6 @@ export default function CropImage() {
         setLoading(false);
       }
     }
-  }
-
-  function handleDownloadAgain() {
-    if (!sourceFile || !result) return;
-    downloadCroppedImage(
-      result.blob,
-      sourceFile,
-      result.width,
-      result.height,
-    );
   }
 
   const metrics =
@@ -459,254 +461,259 @@ export default function CropImage() {
   const handles: DragMode[] = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];
 
   return (
-    <div className="tool-grid crop-image">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={(file) => void handleFile(file)}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-              {originalWidth
-                ? ` · ${originalWidth}×${originalHeight} px`
-                : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="crop-image__options">
-          <div className="ui-field">
-            <span className="ui-label" id={aspectId}>
-              Aspect ratio
-            </span>
-            <div
-              className="crop-image__chips"
-              role="group"
-              aria-labelledby={aspectId}
-            >
-              {ASPECT_RATIO_PRESETS.map((preset) => {
-                const selected = aspectIdSelected === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    className={cn(
-                      "crop-image__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading || !hasSource}
-                    onClick={() =>
-                      handleAspectPreset(preset.id, preset.ratio)
-                    }
-                  >
-                    <span className="crop-image__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="crop-image__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <p className="ui-hint">
-              Drag the box to move it. Use the handles to resize
-              {activeRatio != null ? " (ratio locked)" : ""}.
-            </p>
-          </div>
-
-          {hasSource ? (
-            <p className="crop-image__dims-meta" aria-live="polite">
-              Crop size: {crop.width}×{crop.height} px
-            </p>
-          ) : null}
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleCrop()}
-            disabled={!hasSource || loading || !cropValid}
-          >
-            {loading ? "Cropping…" : "Crop image"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Cropping image…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Cropping runs locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && originalUrl && resultUrl ? (
-            <div className="crop-image__result">
-              <p className="crop-image__result-meta">
-                {describeCrop(
-                  result!.originalWidth,
-                  result!.originalHeight,
-                  result!.width,
-                  result!.height,
-                )}
-                {" · "}
-                {formatFileSize(result!.blob.size)}
-              </p>
-              <BeforeAfterPreview
-                beforeSrc={originalUrl}
-                afterSrc={resultUrl}
-                beforeAlt="Original image"
-                afterAlt="Cropped image"
-                hint="Drag the slider to compare the original and cropped image."
+    <>
+      <ImageEditorShell
+        className="crop-image"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Cropping image…"}
+        loadingSubtext="Cropping runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult
+            ? describeCrop(
+                result!.originalWidth,
+                result!.originalHeight,
+                result!.width,
+                result!.height,
+              )
+            : hasSource
+              ? `${originalWidth}×${originalHeight} px · crop ${crop.width}×${crop.height} px`
+              : "Upload an image to start"
+        }
+        previewHint={
+          hasSource && !hasResult
+            ? "Adjust the crop, then click Crop image"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "Crop in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={(file) => void handleFile(file)}
+                onError={setError}
+                disabled={loading}
               />
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="crop-image__editor">
-              <div
-                ref={stageRef}
-                className="crop-image__stage"
-                onPointerMove={onPointerMove}
-                onPointerUp={onPointerUp}
-                onPointerCancel={onPointerUp}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={originalUrl}
-                  alt="Uploaded preview"
-                  draggable={false}
-                  className="crop-image__image"
-                  style={
-                    metrics
-                      ? {
-                          left: metrics.offsetX,
-                          top: metrics.offsetY,
-                          width: metrics.displayWidth,
-                          height: metrics.displayHeight,
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                width={originalWidth}
+                height={originalHeight}
+                disabled={loading}
+                onReplace={(file) => void handleFile(file)}
+              />
+            )}
+
+            <div className="crop-image__options">
+              <div className="ui-field">
+                <span className="ui-label" id={aspectId}>
+                  Aspect ratio
+                </span>
+                <div
+                  className="crop-image__chips"
+                  role="group"
+                  aria-labelledby={aspectId}
+                >
+                  {ASPECT_RATIO_PRESETS.map((preset) => {
+                    const selected = aspectIdSelected === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        className={cn(
+                          "crop-image__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading || !hasSource}
+                        onClick={() =>
+                          handleAspectPreset(preset.id, preset.ratio)
                         }
-                      : undefined
-                  }
-                />
-                {metrics && selectionStyle ? (
-                  <>
-                    <div
-                      className="crop-image__shade"
-                      style={{
+                      >
+                        <span className="crop-image__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="crop-image__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="ui-hint">
+                  Drag the box to move it. Use the handles to resize
+                  {activeRatio != null ? " (ratio locked)" : ""}.
+                </p>
+              </div>
+            </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleCrop()}
+                disabled={!hasSource || loading || !cropValid}
+              >
+                {loading ? "Cropping…" : "Crop image"}
+              </Button>
+              {hasResult ? (
+                <Button onClick={openDownload} disabled={loading || downloading}>
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && originalUrl && resultUrl ? (
+          <div className="image-editor-shell__result crop-image__result">
+            <p className="image-editor-shell__result-meta crop-image__result-meta">
+              {describeCrop(
+                result!.originalWidth,
+                result!.originalHeight,
+                result!.width,
+                result!.height,
+              )}
+              {" · "}
+              {formatFileSize(result!.blob.size)}
+            </p>
+            <BeforeAfterPreview
+              beforeSrc={originalUrl}
+              afterSrc={resultUrl}
+              beforeAlt="Original image"
+              afterAlt="Cropped image"
+              hint="Drag the slider to compare the original and cropped image."
+            />
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="crop-image__editor image-editor-shell__preview-content">
+            <div
+              ref={stageRef}
+              className="crop-image__stage"
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              onPointerCancel={onPointerUp}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={originalUrl}
+                alt="Uploaded preview"
+                draggable={false}
+                className="crop-image__image"
+                style={
+                  metrics
+                    ? {
                         left: metrics.offsetX,
                         top: metrics.offsetY,
                         width: metrics.displayWidth,
-                        height: Math.max(0, selectionStyle.top - metrics.offsetY),
-                      }}
-                    />
-                    <div
-                      className="crop-image__shade"
-                      style={{
-                        left: metrics.offsetX,
-                        top: selectionStyle.top + selectionStyle.height,
-                        width: metrics.displayWidth,
-                        height: Math.max(
-                          0,
-                          metrics.offsetY +
-                            metrics.displayHeight -
-                            (selectionStyle.top + selectionStyle.height),
-                        ),
-                      }}
-                    />
-                    <div
-                      className="crop-image__shade"
-                      style={{
-                        left: metrics.offsetX,
-                        top: selectionStyle.top,
-                        width: Math.max(
-                          0,
-                          selectionStyle.left - metrics.offsetX,
-                        ),
-                        height: selectionStyle.height,
-                      }}
-                    />
-                    <div
-                      className="crop-image__shade"
-                      style={{
-                        left: selectionStyle.left + selectionStyle.width,
-                        top: selectionStyle.top,
-                        width: Math.max(
-                          0,
-                          metrics.offsetX +
-                            metrics.displayWidth -
-                            (selectionStyle.left + selectionStyle.width),
-                        ),
-                        height: selectionStyle.height,
-                      }}
-                    />
-                    <div
-                      className="crop-image__selection"
-                      style={selectionStyle}
-                      onPointerDown={(event) => onPointerDown(event, "move")}
-                      role="img"
-                      aria-label={`Crop selection ${crop.width} by ${crop.height} pixels. Drag to move.`}
-                    >
-                      {handles.map((handle) => (
-                        <span
-                          key={handle}
-                          className={cn(
-                            "crop-image__handle",
-                            `crop-image__handle--${handle}`,
-                          )}
-                          onPointerDown={(event) =>
-                            onPointerDown(event, handle)
-                          }
-                        />
-                      ))}
-                    </div>
-                  </>
-                ) : null}
-              </div>
-              <p className="tool-placeholder preview-single__hint">
-                Adjust the crop, then click Crop image.
-              </p>
+                        height: metrics.displayHeight,
+                      }
+                    : undefined
+                }
+              />
+              {metrics && selectionStyle ? (
+                <>
+                  <div
+                    className="crop-image__shade"
+                    style={{
+                      left: metrics.offsetX,
+                      top: metrics.offsetY,
+                      width: metrics.displayWidth,
+                      height: Math.max(0, selectionStyle.top - metrics.offsetY),
+                    }}
+                  />
+                  <div
+                    className="crop-image__shade"
+                    style={{
+                      left: metrics.offsetX,
+                      top: selectionStyle.top + selectionStyle.height,
+                      width: metrics.displayWidth,
+                      height: Math.max(
+                        0,
+                        metrics.offsetY +
+                          metrics.displayHeight -
+                          (selectionStyle.top + selectionStyle.height),
+                      ),
+                    }}
+                  />
+                  <div
+                    className="crop-image__shade"
+                    style={{
+                      left: metrics.offsetX,
+                      top: selectionStyle.top,
+                      width: Math.max(
+                        0,
+                        selectionStyle.left - metrics.offsetX,
+                      ),
+                      height: selectionStyle.height,
+                    }}
+                  />
+                  <div
+                    className="crop-image__shade"
+                    style={{
+                      left: selectionStyle.left + selectionStyle.width,
+                      top: selectionStyle.top,
+                      width: Math.max(
+                        0,
+                        metrics.offsetX +
+                          metrics.displayWidth -
+                          (selectionStyle.left + selectionStyle.width),
+                      ),
+                      height: selectionStyle.height,
+                    }}
+                  />
+                  <div
+                    className="crop-image__selection"
+                    style={selectionStyle}
+                    onPointerDown={(event) => onPointerDown(event, "move")}
+                    role="img"
+                    aria-label={`Crop selection ${crop.width} by ${crop.height} pixels. Drag to move.`}
+                  >
+                    {handles.map((handle) => (
+                      <span
+                        key={handle}
+                        className={cn(
+                          "crop-image__handle",
+                          `crop-image__handle--${handle}`,
+                        )}
+                        onPointerDown={(event) =>
+                          onPointerDown(event, handle)
+                        }
+                      />
+                    ))}
+                  </div>
+                </>
+              ) : null}
             </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to crop it here
-            </p>
-          )}
-        </div>
+          </div>
+        ) : null}
+      </ImageEditorShell>
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Crop in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

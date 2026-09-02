@@ -9,20 +9,20 @@ import {
 } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
 import AddTextOnImageColorPicker from "@/components/tools/AddTextOnImageColorPicker";
 import AddTextOnImageFontPicker from "@/components/tools/AddTextOnImageFontPicker";
-import { formatFileSize, validateImageFile } from "@/lib/image";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize, validateImageFile } from "@/lib/image";
 import {
   DEFAULT_FONT_SIZE,
   DEFAULT_OPACITY,
   DEFAULT_TEXT_COLOR,
   MAX_TEXT_LENGTH,
-  TEXT_DOWNLOAD_FORMATS,
   addTextOnImage,
   centeredPlacement,
   clampFontSize,
   defaultFontSizeForImage,
-  downloadTextImage,
   drawTextOnCanvas,
   ensureFontReady,
   ensureTextFontsLoaded,
@@ -34,7 +34,6 @@ import {
   textBlockCenter,
   type AddTextOnImageResult,
   type TextBlockBounds,
-  type TextDownloadFormat,
   type TextFontId,
   type TextPlacement,
 } from "@/lib/add-text-on-image";
@@ -50,52 +49,6 @@ type TransformMode =
   | "rotate";
 
 const RESIZE_HANDLES = ["nw", "ne", "sw", "se"] as const;
-
-function FormatIcon({ format }: { format: TextDownloadFormat }) {
-  const stroke = {
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.7,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-
-  if (format === "jpg") {
-    return (
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <rect x="3" y="5" width="18" height="14" rx="2.5" {...stroke} />
-        <circle cx="8.5" cy="10" r="1.45" {...stroke} />
-        <path d="M5.5 16.5 9 13l2.5 2.5L14.5 12l4.5 4.5" {...stroke} />
-      </svg>
-    );
-  }
-
-  if (format === "png") {
-    return (
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <rect x="3" y="5" width="18" height="14" rx="2.5" {...stroke} />
-        <path
-          d="M3 12h6v7H5.5A2.5 2.5 0 0 1 3 16.5V12Zm6-7h6v7H9V5Zm6 7h6v5.5A2.5 2.5 0 0 1 18.5 20H15v-8Z"
-          fill="currentColor"
-          opacity="0.18"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-      <path
-        d="M12 3.5 13.35 8.1 18 9.5 13.35 10.9 12 15.5 10.65 10.9 6 9.5l4.65-1.4L12 3.5Z"
-        {...stroke}
-      />
-      <path
-        d="M18.6 15.2 19.15 17 21 17.55 19.15 18.1 18.6 19.9 18.05 18.1 16.2 17.55 18.05 17Z"
-        {...stroke}
-      />
-    </svg>
-  );
-}
 
 function canvasPointer(
   event: ReactPointerEvent | PointerEvent,
@@ -120,7 +73,6 @@ export default function AddTextOnImage() {
   const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const previewStageRef = useRef<HTMLDivElement | null>(null);
   const transformRef = useRef<HTMLDivElement | null>(null);
-  const formatDialogRef = useRef<HTMLDialogElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const userPlacedRef = useRef(false);
   const transformDragRef = useRef<{
@@ -158,8 +110,6 @@ export default function AddTextOnImage() {
   const [result, setResult] = useState<AddTextOnImageResult | null>(null);
   const [resultUrl, setResultUrl] = useState("");
   const [transforming, setTransforming] = useState(false);
-  const [formatOpen, setFormatOpen] = useState(false);
-  const [downloading, setDownloading] = useState(false);
   const [textBounds, setTextBounds] = useState<TextBlockBounds | null>(null);
   const [previewSize, setPreviewSize] = useState({ width: 0, height: 0 });
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
@@ -167,6 +117,19 @@ export default function AddTextOnImage() {
   const hasSource = Boolean(sourceFile && originalUrl && originalWidth);
   const hasResult = Boolean(result && resultUrl);
   const canApply = hasSource && text.trim().length > 0;
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile ? `${fileBaseName(sourceFile)}-with-text` : null,
+  });
 
   const drawOptions = {
     text,
@@ -216,16 +179,6 @@ export default function AddTextOnImage() {
   useEffect(() => {
     void ensureTextFontsLoaded();
   }, []);
-
-  useEffect(() => {
-    const node = formatDialogRef.current;
-    if (!node) return;
-    if (formatOpen) {
-      if (!node.open) node.showModal();
-    } else if (node.open) {
-      node.close();
-    }
-  }, [formatOpen]);
 
   useEffect(() => {
     const stage = previewStageRef.current;
@@ -378,7 +331,6 @@ export default function AddTextOnImage() {
     setLoading(false);
     setTextBounds(null);
     setFormatOpen(false);
-    setDownloading(false);
   }
 
   function startTransform(
@@ -543,7 +495,6 @@ export default function AddTextOnImage() {
       setResult(stamped);
       setResultUrl(url);
       setProgressText("");
-      setFormatOpen(true);
       trackSuccess();
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") {
@@ -560,25 +511,6 @@ export default function AddTextOnImage() {
       if (abortRef.current === controller) {
         setLoading(false);
       }
-    }
-  }
-
-  function handleDownload() {
-    if (!sourceFile || !result) return;
-    setFormatOpen(true);
-  }
-
-  async function handleFormat(format: TextDownloadFormat) {
-    if (!sourceFile || !result || downloading) return;
-    setDownloading(true);
-    setError("");
-    try {
-      await downloadTextImage(result.blob, sourceFile, format);
-      setFormatOpen(false);
-    } catch {
-      setError("Could not export this format. Try PNG instead.");
-    } finally {
-      setDownloading(false);
     }
   }
 
@@ -753,8 +685,13 @@ export default function AddTextOnImage() {
               onClick={() => void handleApply()}
               disabled={!canApply || loading}
             >
-              {loading ? "Preparing…" : "Download"}
+              {loading ? "Applying…" : hasResult ? "Apply again" : "Apply"}
             </Button>
+            {hasResult ? (
+              <Button onClick={openDownload} disabled={loading}>
+                Download
+              </Button>
+            ) : null}
             <Button
               variant="ghost"
               onClick={handleReset}
@@ -766,7 +703,6 @@ export default function AddTextOnImage() {
 
           {hasResult ? (
             <div className="tool-actions add-text-on-image__actions">
-              <Button onClick={handleDownload}>Download again</Button>
               <Button variant="ghost" onClick={handleEditAgain}>
                 Keep editing
               </Button>
@@ -776,6 +712,11 @@ export default function AddTextOnImage() {
           {error ? (
             <p className="tool-error" role="alert">
               {error}
+            </p>
+          ) : null}
+          {downloadError ? (
+            <p className="tool-error" role="alert">
+              {downloadError}
             </p>
           ) : null}
         </div>
@@ -832,8 +773,7 @@ export default function AddTextOnImage() {
                 className="preview-single__image"
               />
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Change options and
-                apply again anytime.
+                Click Download to choose JPG, PNG, or WebP.
               </p>
             </div>
           ) : hasSource ? (
@@ -915,61 +855,13 @@ export default function AddTextOnImage() {
       </div>
     </div>
 
-    <dialog
-      ref={formatDialogRef}
-      className="unblur-download"
-      aria-labelledby="text-download-title"
-      aria-busy={downloading}
-      onClose={() => {
-        setFormatOpen(false);
-        setDownloading(false);
-      }}
-      onClick={(event) => {
-        if (event.target === formatDialogRef.current) {
-          setFormatOpen(false);
-        }
-      }}
-    >
-      <h2 id="text-download-title" className="unblur-download__title">
-        Select Download Format
-      </h2>
-      <div className="unblur-download__options">
-        {TEXT_DOWNLOAD_FORMATS.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            className="unblur-download__option"
-            disabled={downloading}
-            onClick={() => void handleFormat(option.value)}
-          >
-            <span className="unblur-download__option-icon" aria-hidden="true">
-              <FormatIcon format={option.value} />
-            </span>
-            <span className="unblur-download__option-copy">
-              <span className="unblur-download__option-label">
-                {option.label}
-              </span>
-              <span className="unblur-download__option-hint">
-                {option.hint}
-              </span>
-            </span>
-          </button>
-        ))}
-      </div>
-      {error && formatOpen ? (
-        <p className="tool-error unblur-download__error" role="alert">
-          {error}
-        </p>
-      ) : null}
-      <Button
-        variant="ghost"
-        className="unblur-download__cancel"
-        onClick={() => setFormatOpen(false)}
-        disabled={downloading}
-      >
-        Cancel
-      </Button>
-    </dialog>
+    <ImageFormatDownloadDialog
+      open={formatOpen}
+      onOpenChange={setFormatOpen}
+      onSelect={handleFormat}
+      downloading={downloading}
+      error={downloadError}
+    />
     </>
   );
 }

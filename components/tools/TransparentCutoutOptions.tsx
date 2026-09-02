@@ -1,7 +1,6 @@
 "use client";
 
 import { useId } from "react";
-import Button from "@/components/Button";
 import { cn } from "@/lib/utils";
 import {
   CUTOUT_FORMAT_PRESETS,
@@ -35,9 +34,6 @@ type TransparentCutoutOptionsProps = {
   onOutlineColorChange: (color: string) => void;
   format: CutoutFormat;
   onFormatChange: (format: CutoutFormat) => void;
-  onDownload: () => void;
-  downloadDisabled?: boolean;
-  compositing?: boolean;
   disabled?: boolean;
 };
 
@@ -54,9 +50,6 @@ export default function TransparentCutoutOptions({
   onOutlineColorChange,
   format,
   onFormatChange,
-  onDownload,
-  downloadDisabled = false,
-  compositing = false,
   disabled = false,
 }: TransparentCutoutOptionsProps) {
   const paddingId = useId();
@@ -260,16 +253,6 @@ export default function TransparentCutoutOptions({
             </button>
           ))}
         </div>
-      </div>
-
-      <div className="export-options__actions">
-        <Button onClick={onDownload} disabled={downloadDisabled || disabled}>
-          {compositing
-            ? "Preparing…"
-            : format === "webp"
-              ? "Download transparent WebP"
-              : "Download transparent PNG"}
-        </Button>
       </div>
     </section>
   );

@@ -4,12 +4,15 @@ import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { formatFileSize } from "@/lib/image";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 import {
   COLORIZE_PRESETS,
   colorizePhotoFile,
   describeColorizeResult,
-  downloadColorizedImage,
   type ColorizePhotoResult,
   type ColorizeStrength,
 } from "@/lib/colorize-photo";
@@ -32,6 +35,19 @@ export default function ColorizePhoto() {
 
   const hasSource = Boolean(sourceFile && originalUrl);
   const hasResult = Boolean(result && resultUrl);
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => result?.blob ?? null,
+    getFilename: () =>
+      sourceFile ? `${fileBaseName(sourceFile)}-colorized` : null,
+  });
 
   useEffect(() => {
     return () => {
@@ -95,7 +111,6 @@ export default function ColorizePhoto() {
       const url = URL.createObjectURL(colorized.blob);
       setResult(colorized);
       setResultUrl(url);
-      downloadColorizedImage(colorized.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -116,154 +131,160 @@ export default function ColorizePhoto() {
     }
   }
 
-  function handleDownloadAgain() {
-    if (!sourceFile || !result) return;
-    downloadColorizedImage(result.blob, sourceFile);
-  }
-
   return (
-    <div className="tool-grid colorize-photo">
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="colorize-photo__options">
-          <div className="ui-field">
-            <span className="ui-label" id={strengthId}>
-              Color strength
-            </span>
-            <div
-              className="colorize-photo__chips"
-              role="radiogroup"
-              aria-labelledby={strengthId}
-            >
-              {COLORIZE_PRESETS.map((preset) => {
-                const selected = strength === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    className={cn(
-                      "colorize-photo__chip",
-                      selected && "is-active",
-                    )}
-                    disabled={loading}
-                    onClick={() => setStrength(preset.id)}
-                  >
-                    <span className="colorize-photo__chip-label">
-                      {preset.label}
-                    </span>
-                    <span className="colorize-photo__chip-hint">
-                      {preset.hint}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleColorize()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Colorizing…" : "Colorize photo"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
-          </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Colorizing photo…"}
-              </span>
-              <span className="tool-loading__subtext">
-                AI colorization runs locally in your browser.
-              </span>
-            </div>
-          ) : hasResult && originalUrl && resultUrl ? (
-            <div className="colorize-photo__result">
-              <p className="colorize-photo__result-meta">
-                {describeColorizeResult(
-                  result!.width,
-                  result!.height,
-                  result!.strength,
-                )}
-                {" · "}
-                {formatFileSize(result!.blob.size)}
-              </p>
-              <BeforeAfterPreview
-                beforeSrc={originalUrl}
-                afterSrc={resultUrl}
-                beforeAlt="Original photo"
-                afterAlt="Colorized photo"
-                hint="Drag the slider to compare the original and colorized photo."
+    <>
+      <ImageEditorShell
+        className="colorize-photo"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={loading}
+        loadingText={progressText || "Colorizing photo…"}
+        loadingSubtext="AI colorization runs locally in your browser."
+        previewTitle="Preview"
+        previewMeta={
+          hasResult
+            ? `${describeColorizeResult(
+                result!.width,
+                result!.height,
+                result!.strength,
+              )} · ${formatFileSize(result!.blob.size)}`
+            : hasSource
+              ? sourceFile!.name
+              : "Upload a photo to start"
+        }
+        previewHint={
+          hasSource && !hasResult
+            ? "Choose a strength and click Colorize photo"
+            : undefined
+        }
+        privacyHint={
+          hasResult
+            ? "Processed locally on your device"
+            : "AI colorization in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={handleFile}
+                onError={setError}
+                disabled={loading}
               />
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Uploaded preview"
-                className="preview-single__image"
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                disabled={loading}
+                onReplace={handleFile}
               />
-              <p className="tool-placeholder preview-single__hint">
-                Choose a strength and click Colorize photo.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a black &amp; white photo to add color here
-            </p>
-          )}
-        </div>
+            )}
 
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "AI colorization in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+            <div className="colorize-photo__options">
+              <div className="ui-field">
+                <span className="ui-label" id={strengthId}>
+                  Color strength
+                </span>
+                <div
+                  className="colorize-photo__chips"
+                  role="radiogroup"
+                  aria-labelledby={strengthId}
+                >
+                  {COLORIZE_PRESETS.map((preset) => {
+                    const selected = strength === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        className={cn(
+                          "colorize-photo__chip",
+                          selected && "is-active",
+                        )}
+                        disabled={loading}
+                        onClick={() => setStrength(preset.id)}
+                      >
+                        <span className="colorize-photo__chip-label">
+                          {preset.label}
+                        </span>
+                        <span className="colorize-photo__chip-hint">
+                          {preset.hint}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void handleColorize()}
+                disabled={!hasSource || loading}
+              >
+                {loading ? "Colorizing…" : "Colorize photo"}
+              </Button>
+              {hasResult ? (
+                <Button onClick={openDownload} disabled={loading}>
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {hasResult && originalUrl && resultUrl ? (
+          <div className="image-editor-shell__result colorize-photo__result">
+            <p className="image-editor-shell__result-meta colorize-photo__result-meta">
+              {describeColorizeResult(
+                result!.width,
+                result!.height,
+                result!.strength,
+              )}
+              {" · "}
+              {formatFileSize(result!.blob.size)}
+            </p>
+            <BeforeAfterPreview
+              beforeSrc={originalUrl}
+              afterSrc={resultUrl}
+              beforeAlt="Original photo"
+              afterAlt="Colorized photo"
+              hint="Drag the slider to compare the original and colorized photo."
+            />
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-editor-shell__preview-content preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={originalUrl}
+              alt="Uploaded preview"
+              className="preview-single__image"
+            />
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

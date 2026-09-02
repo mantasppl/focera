@@ -8,15 +8,24 @@ import BackgroundExportOptions, {
 import BeforeAfterPreview from "@/components/tools/BeforeAfterPreview";
 import EnhancingPreview from "@/components/tools/EnhancingPreview";
 import ImageDropzone from "@/components/tools/ImageDropzone";
-import { useMobilePreviewReveal } from "@/components/tools/useMobilePreviewReveal";
-import { removeImageBackground, preloadBackgroundRemoval, BACKGROUND_FIRST_RUN_HINT, hasPreparedBackgroundModel } from "@/lib/background-removal";
-import { compositeOnColor, compositeOnImage, compositeWithBlur, BLUR_RADIUS } from "@/lib/composite-image";
-import { useToolAnalytics } from "@/lib/analytics/client";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
+import ImageFormatDownloadDialog from "@/components/tools/ImageFormatDownloadDialog";
+import ImageSourceBar from "@/components/tools/ImageSourceBar";
+import { useImageFormatDownload } from "@/components/tools/useImageFormatDownload";
 import {
-  downloadBlob,
-  fileBaseName,
-  formatFileSize,
-} from "@/lib/image";
+  BACKGROUND_FIRST_RUN_HINT,
+  hasPreparedBackgroundModel,
+  preloadBackgroundRemoval,
+  removeImageBackground,
+} from "@/lib/background-removal";
+import {
+  BLUR_RADIUS,
+  compositeOnColor,
+  compositeOnImage,
+  compositeWithBlur,
+} from "@/lib/composite-image";
+import { useToolAnalytics } from "@/lib/analytics/client";
+import { fileBaseName, formatFileSize } from "@/lib/image";
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -63,11 +72,40 @@ export default function BackgroundRemover() {
     exportMode === "color" ||
     exportMode === "blur" ||
     (exportMode === "image" && Boolean(bgImageFile && compositeBlob));
+  const canDownload =
+    exportMode === "transparent" ? Boolean(resultBlob) : canDownloadComposite;
 
   const handleBgColorChange = useCallback((color: string) => {
     const normalized = color.toLowerCase();
     setBgColor((current) => (current === normalized ? current : normalized));
   }, []);
+
+  const {
+    formatOpen,
+    setFormatOpen,
+    downloading,
+    downloadError,
+    openDownload,
+    handleFormat,
+  } = useImageFormatDownload({
+    getBlob: () => {
+      if (!sourceFile) return null;
+      if (exportMode === "transparent") return resultBlob;
+      return compositeBlob;
+    },
+    getFilename: () => {
+      if (!sourceFile) return null;
+      const baseName = fileBaseName(sourceFile);
+      if (exportMode === "transparent") return `${baseName}-no-bg`;
+      const suffix =
+        exportMode === "color"
+          ? "bg-color"
+          : exportMode === "blur"
+            ? "blur-bg"
+            : "with-bg";
+      return `${baseName}-${suffix}`;
+    },
+  });
 
   useEffect(() => {
     compositeUrlRef.current = compositeUrl;
@@ -207,29 +245,16 @@ export default function BackgroundRemover() {
     return () => {
       cancelled = true;
     };
-  }, [resultBlob, hasResult, exportMode, debouncedBgColor, debouncedBlurRadius, bgImageFile, sourceFile]);
-
-  function handleDownload() {
-    if (!sourceFile) return;
-
-    const baseName = fileBaseName(sourceFile);
-
-    if (exportMode === "transparent") {
-      if (!resultBlob) return;
-      downloadBlob(resultBlob, `${baseName}-no-bg.png`);
-      return;
-    }
-
-    if (!compositeBlob) return;
-
-    const suffix =
-      exportMode === "color"
-        ? "bg-color"
-        : exportMode === "blur"
-          ? "blur-bg"
-          : "with-bg";
-    downloadBlob(compositeBlob, `${baseName}-${suffix}.png`);
-  }
+  }, [
+    resultBlob,
+    hasResult,
+    exportMode,
+    debouncedBgColor,
+    debouncedBlurRadius,
+    bgImageFile,
+    sourceFile,
+    trackFailure,
+  ]);
 
   function handleReset() {
     processIdRef.current += 1;
@@ -251,129 +276,163 @@ export default function BackgroundRemover() {
           ? "Preview with portrait-style background blur."
           : "Preview with your uploaded background image.";
 
-  const previewRef = useMobilePreviewReveal(loading || hasResult || compositing);
+  const previewMeta = hasResult
+    ? exportMode === "transparent" && resultBlob
+      ? `Transparent cutout · ${formatFileSize(resultBlob.size)}`
+      : compositeBlob
+        ? `Export preview · ${formatFileSize(compositeBlob.size)}`
+        : compositing
+          ? "Applying background…"
+          : "Background removed"
+    : hasSource
+      ? sourceFile!.name
+      : "Upload an image to start";
 
   return (
-    <div className={`tool-grid${loading || hasResult || compositing ? " is-preview-first" : ""}`}>
-      <div className="tool-panel">
-        <ImageDropzone
-          onFile={handleFile}
-          onError={setError}
-          disabled={loading}
-        />
-
-        {hasSource ? (
-          <div className="upload-meta">
-            <p className="upload-meta__name">{sourceFile?.name}</p>
-            <p className="upload-meta__size">
-              {sourceFile ? formatFileSize(sourceFile.size) : ""}
-            </p>
-          </div>
-        ) : null}
-
-        <div className="tool-actions">
-          <Button onClick={() => void removeBackground()} disabled={!canProcess}>
-            Remove background
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
-          <BackgroundExportOptions
-            mode={exportMode}
-            onModeChange={setExportMode}
-            bgColor={bgColor}
-            onBgColorChange={handleBgColorChange}
-            blurRadius={blurRadius}
-            onBlurRadiusChange={setBlurRadius}
-            bgImageName={bgImageFile?.name}
-            onBgImageSelect={setBgImageFile}
-            onBgImageError={setError}
-            onDownload={handleDownload}
-            downloadDisabled={
-              compositing ||
-              (exportMode === "transparent" ? !resultBlob : !canDownloadComposite)
-            }
-            compositing={compositing}
-            disabled={loading}
-          />
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview" ref={previewRef}>
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading && originalUrl ? (
-            <EnhancingPreview src={originalUrl} />
-          ) : hasResult && exportMode === "transparent" && originalUrl ? (
-            <BeforeAfterPreview
-              beforeSrc={originalUrl}
-              afterSrc={resultUrl}
-              hint={previewHint}
-            />
-          ) : hasResult && compositeUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={compositeUrl}
-                alt="Export preview"
-                className="preview-single__image"
-              />
-            </div>
-          ) : hasResult && exportMode === "image" && !bgImageFile ? (
-            <p className="tool-placeholder">
-              Choose a background image to preview the composite export.
-            </p>
-          ) : hasResult && compositing ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">Applying background…</span>
-            </div>
-          ) : hasResult && originalUrl ? (
-            <BeforeAfterPreview
-              beforeSrc={originalUrl}
-              afterSrc={resultUrl}
-              hint={previewHint}
-            />
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={originalUrl}
-                alt="Uploaded preview"
-                className="preview-single__image"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Upload another image to remove a new background.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an image to preview and remove its background
-            </p>
-          )}
-        </div>
-        <p className="tool-hint">
-          {loading && showFirstRunHint
+    <>
+      <ImageEditorShell
+        className="background-remover"
+        hasSource={hasSource}
+        stageReady={hasResult}
+        loading={false}
+        previewTitle="Preview"
+        previewMeta={previewMeta}
+        previewHint={
+          hasSource && !hasResult && !loading
+            ? "Click Remove background to start"
+            : undefined
+        }
+        privacyHint={
+          loading && showFirstRunHint
             ? BACKGROUND_FIRST_RUN_HINT
             : hasResult
-              ? "Export as transparent PNG, blurred background, solid color, or custom photo · processed locally"
-              : "Transparent PNG output · processed locally in your browser · no upload to our servers"}
-        </p>
-      </div>
-    </div>
+              ? "Processed locally on your device"
+              : "AI background removal in your browser · files never upload to Focera"
+        }
+        sidebar={
+          <>
+            {!hasSource ? (
+              <ImageDropzone
+                onFile={handleFile}
+                onError={setError}
+                disabled={loading}
+              />
+            ) : (
+              <ImageSourceBar
+                file={sourceFile!}
+                disabled={loading}
+                onReplace={handleFile}
+              />
+            )}
+
+            {hasResult ? (
+              <BackgroundExportOptions
+                mode={exportMode}
+                onModeChange={setExportMode}
+                bgColor={bgColor}
+                onBgColorChange={handleBgColorChange}
+                blurRadius={blurRadius}
+                onBlurRadiusChange={setBlurRadius}
+                bgImageName={bgImageFile?.name}
+                onBgImageSelect={setBgImageFile}
+                onBgImageError={setError}
+                disabled={loading}
+              />
+            ) : null}
+          </>
+        }
+        sidebarFooter={
+          <>
+            <div className="tool-actions">
+              <Button
+                onClick={() => void removeBackground()}
+                disabled={!canProcess}
+              >
+                {loading ? "Removing…" : "Remove background"}
+              </Button>
+              {hasResult ? (
+                <Button
+                  onClick={openDownload}
+                  disabled={loading || compositing || !canDownload}
+                >
+                  Download
+                </Button>
+              ) : null}
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                disabled={(!hasSource && !hasResult) || loading}
+              >
+                Start over
+              </Button>
+            </div>
+            {error ? (
+              <p className="tool-error" role="alert">
+                {error}
+              </p>
+            ) : null}
+          </>
+        }
+      >
+        {loading && originalUrl ? (
+          <EnhancingPreview src={originalUrl} />
+        ) : hasResult && exportMode === "transparent" && originalUrl ? (
+          <div className="image-editor-shell__result background-remover__result">
+            <BeforeAfterPreview
+              beforeSrc={originalUrl}
+              afterSrc={resultUrl}
+              beforeAlt="Original image"
+              afterAlt="Background removed"
+              hint={previewHint}
+            />
+          </div>
+        ) : hasResult && compositeUrl ? (
+          <div className="image-editor-shell__preview-content preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={compositeUrl}
+              alt="Export preview"
+              className="preview-single__image"
+            />
+          </div>
+        ) : hasResult && exportMode === "image" && !bgImageFile ? (
+          <p className="tool-placeholder">
+            Choose a background image to preview the composite export.
+          </p>
+        ) : hasResult && compositing ? (
+          <div className="tool-loading" role="status" aria-live="polite">
+            <span className="tool-loading__spinner" aria-hidden="true" />
+            <span className="tool-loading__text">Applying background…</span>
+          </div>
+        ) : hasResult && originalUrl ? (
+          <div className="image-editor-shell__result background-remover__result">
+            <BeforeAfterPreview
+              beforeSrc={originalUrl}
+              afterSrc={resultUrl}
+              beforeAlt="Original image"
+              afterAlt="Background removed"
+              hint={previewHint}
+            />
+          </div>
+        ) : hasSource && originalUrl ? (
+          <div className="image-editor-shell__preview-content preview-single">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={originalUrl}
+              alt="Uploaded preview"
+              className="preview-single__image"
+            />
+          </div>
+        ) : null}
+      </ImageEditorShell>
+
+      <ImageFormatDownloadDialog
+        open={formatOpen}
+        onOpenChange={setFormatOpen}
+        onSelect={handleFormat}
+        downloading={downloading}
+        error={downloadError}
+      />
+    </>
   );
 }

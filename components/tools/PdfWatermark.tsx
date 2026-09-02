@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import ImageDropzone from "@/components/tools/ImageDropzone";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
 import PdfDropzone from "@/components/tools/PdfDropzone";
 import { formatFileSize } from "@/lib/image";
 import {
@@ -144,7 +145,6 @@ export default function PdfWatermark() {
       resultUrlRef.current = url;
       setPreviewUrl(url);
       setResult(stamped);
-      downloadWatermarkedPdf(stamped.blob, pdfFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -165,14 +165,37 @@ export default function PdfWatermark() {
     }
   }
 
-  function handleDownloadAgain() {
+  function handleDownload() {
     if (!pdfFile || !result) return;
     downloadWatermarkedPdf(result.blob, pdfFile);
   }
 
   return (
-    <div className="tool-grid pdf-watermark">
-      <div className="tool-panel">
+    <ImageEditorShell
+      className="pdf-watermark"
+      hasSource={canApply}
+      stageReady={hasResult}
+      loading={loading}
+      loadingText={progressText || "Adding watermark…"}
+      loadingSubtext="Your PDF and stamp stay on this device."
+      previewTitle="Preview"
+      previewMeta={
+        hasResult && result
+          ? describeWatermarkResult(result.pageCount, result.outputSize)
+          : canApply
+            ? `${pdfFile!.name} · ${stampFile!.name}`
+            : "Upload a PDF and stamp to start"
+      }
+      previewHint={
+        canApply && !hasResult ? "Click Add watermark" : undefined
+      }
+      privacyHint={
+        hasResult
+          ? "Processed locally on your device"
+          : "PNG stamps keep transparency · files never upload to Focera"
+      }
+      sidebar={
+        <>
         <div className="ui-field">
           <span className="ui-label">PDF document</span>
           <PdfDropzone
@@ -330,84 +353,52 @@ export default function PdfWatermark() {
             />
           </div>
         </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleApply()}
-            disabled={!canApply || loading}
-          >
-            {loading ? "Stamping…" : "Add watermark"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!pdfFile && !stampFile && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
+        </>
+      }
+      sidebarFooter={
+        <>
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button
+              onClick={() => void handleApply()}
+              disabled={!canApply || loading}
+            >
+              {loading ? "Stamping…" : "Add watermark"}
+            </Button>
+            {hasResult ? (
+              <Button onClick={handleDownload} disabled={loading}>
+                Download PDF
+              </Button>
+            ) : null}
+            <Button
+              variant="ghost"
+              onClick={handleReset}
+              disabled={(!pdfFile && !stampFile && !hasResult) || loading}
+            >
+              Start over
+            </Button>
           </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Adding watermark…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Your PDF and stamp stay on this device.
-              </span>
-            </div>
-          ) : result ? (
-            <div className="pdf-watermark__success">
-              <p className="pdf-watermark__success-title">
-                Watermarked PDF ready
-              </p>
-              <p className="pdf-watermark__success-meta">
-                {describeWatermarkResult(result.pageCount, result.outputSize)}
-              </p>
-              {previewUrl ? (
-                <iframe
-                  title="Watermarked PDF preview"
-                  src={previewUrl}
-                  className="pdf-watermark__preview"
-                />
-              ) : null}
-              <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Adjust position, size,
-                or opacity and stamp again anytime.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload a PDF and an image stamp to preview the watermarked result
-              here
+          {error ? (
+            <p className="tool-error" role="alert">
+              {error}
             </p>
-          )}
+          ) : null}
+        </>
+      }
+    >
+      {hasResult && result ? (
+        <div className="image-editor-shell__result pdf-watermark__success">
+          <p className="image-editor-shell__result-meta pdf-watermark__success-meta">
+            {describeWatermarkResult(result.pageCount, result.outputSize)}
+          </p>
+          {previewUrl ? (
+            <iframe
+              title="Watermarked PDF preview"
+              src={previewUrl}
+              className="pdf-watermark__preview"
+            />
+          ) : null}
         </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "PNG stamps keep transparency · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      ) : null}
+    </ImageEditorShell>
   );
 }

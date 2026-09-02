@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
 import GifToMp4Dropzone from "@/components/tools/GifToMp4Dropzone";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
 import { formatFileSize } from "@/lib/image";
 import {
   convertGifToMp4,
@@ -100,7 +101,6 @@ export default function GifToMp4() {
       const url = URL.createObjectURL(converted.blob);
       setResult(converted);
       setResultUrl(url);
-      downloadGifVideo(converted.blob, sourceFile, converted.extension);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -121,14 +121,48 @@ export default function GifToMp4() {
     }
   }
 
-  function handleDownloadAgain() {
+  function handleDownload() {
     if (!sourceFile || !result) return;
     downloadGifVideo(result.blob, sourceFile, result.extension);
   }
 
+  const downloadLabel =
+    result?.extension === "mp4" ? "Download MP4" : "Download video";
+
   return (
-    <div className="tool-grid gif-to-mp4">
-      <div className="tool-panel">
+    <ImageEditorShell
+      className="gif-to-mp4"
+      hasSource={hasSource}
+      stageReady={hasResult}
+      loading={loading}
+      loadingText={progressText || "Converting GIF to video…"}
+      loadingSubtext="Conversion runs locally in your browser. Keep this tab open."
+      previewTitle="Preview"
+      previewMeta={
+        hasResult && result
+          ? `${describeGifVideoMeta(
+              result.width,
+              result.height,
+              result.originalWidth,
+              result.originalHeight,
+              result.durationSec,
+              result.frameCount,
+              result.extension,
+            )} · ${describeGifVideoSize(result.originalSize, result.videoSize)}`
+          : hasSource
+            ? sourceFile?.name
+            : "Upload a GIF to start"
+      }
+      previewHint={
+        hasSource && !hasResult ? "Click Convert to video" : undefined
+      }
+      privacyHint={
+        hasResult
+          ? "Processed locally on your device"
+          : "GIFs up to 60 seconds · conversion runs in your browser · files never upload"
+      }
+      sidebar={
+        <>
         <GifToMp4Dropzone
           onFile={handleFile}
           onError={setError}
@@ -217,124 +251,92 @@ export default function GifToMp4() {
             </div>
           </div>
         </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleConvert()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Converting…" : "Convert to video"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
+        </>
+      }
+      sidebarFooter={
+        <>
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button
+              onClick={() => void handleConvert()}
+              disabled={!hasSource || loading}
+            >
+              {loading ? "Converting…" : "Convert to video"}
+            </Button>
+            {hasResult ? (
+              <Button onClick={handleDownload} disabled={loading}>
+                {downloadLabel}
+              </Button>
+            ) : null}
+            <Button
+              variant="ghost"
+              onClick={handleReset}
+              disabled={(!hasSource && !hasResult) || loading}
+            >
+              Start over
+            </Button>
           </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Converting GIF to video…"}
-              </span>
-              <span className="tool-loading__subtext">
-                Conversion runs locally in your browser. Keep this tab open.
-              </span>
-            </div>
-          ) : hasResult && resultUrl ? (
-            <div className="gif-to-mp4__success">
-              <p className="gif-to-mp4__success-title">
-                {result!.extension === "mp4" ? "MP4 ready" : "Video ready"}
-              </p>
-              <p className="gif-to-mp4__success-meta">
-                {describeGifVideoMeta(
-                  result!.width,
-                  result!.height,
-                  result!.originalWidth,
-                  result!.originalHeight,
-                  result!.durationSec,
-                  result!.frameCount,
-                  result!.extension,
-                )}{" "}
-                · {describeGifVideoSize(result!.originalSize, result!.videoSize)}
-              </p>
-              <ul className="gif-to-mp4__stats" aria-label="File sizes">
-                <li>
-                  <span className="gif-to-mp4__stat-label">GIF</span>
-                  <span className="gif-to-mp4__stat-value">
-                    {formatFileSize(result!.originalSize)}
-                  </span>
-                </li>
-                <li>
-                  <span className="gif-to-mp4__stat-label">
-                    {result!.extension.toUpperCase()}
-                  </span>
-                  <span className="gif-to-mp4__stat-value">
-                    {formatFileSize(result!.videoSize)}
-                  </span>
-                </li>
-                <li>
-                  <span className="gif-to-mp4__stat-label">Frames</span>
-                  <span className="gif-to-mp4__stat-value">
-                    {result!.frameCount}
-                  </span>
-                </li>
-              </ul>
-              <video
-                className="gif-to-mp4__preview"
-                src={resultUrl}
-                controls
-                playsInline
-                loop
-                autoPlay
-                muted
-              />
-            </div>
-          ) : hasSource && originalUrl ? (
-            <div className="preview-single">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className="gif-to-mp4__preview"
-                src={originalUrl}
-                alt="Uploaded GIF preview"
-              />
-              <p className="tool-placeholder preview-single__hint">
-                Choose options and click Convert to video.
-              </p>
-            </div>
-          ) : (
-            <p className="tool-placeholder">
-              Upload an animated GIF to convert it to video here
+          {error ? (
+            <p className="tool-error" role="alert">
+              {error}
             </p>
-          )}
+          ) : null}
+        </>
+      }
+    >
+      {hasResult && result && resultUrl ? (
+        <div className="image-editor-shell__result gif-to-mp4__success">
+          <p className="image-editor-shell__result-meta gif-to-mp4__success-meta">
+            {describeGifVideoMeta(
+              result.width,
+              result.height,
+              result.originalWidth,
+              result.originalHeight,
+              result.durationSec,
+              result.frameCount,
+              result.extension,
+            )}{" "}
+            · {describeGifVideoSize(result.originalSize, result.videoSize)}
+          </p>
+          <ul className="gif-to-mp4__stats" aria-label="File sizes">
+            <li>
+              <span className="gif-to-mp4__stat-label">GIF</span>
+              <span className="gif-to-mp4__stat-value">
+                {formatFileSize(result.originalSize)}
+              </span>
+            </li>
+            <li>
+              <span className="gif-to-mp4__stat-label">
+                {result.extension.toUpperCase()}
+              </span>
+              <span className="gif-to-mp4__stat-value">
+                {formatFileSize(result.videoSize)}
+              </span>
+            </li>
+            <li>
+              <span className="gif-to-mp4__stat-label">Frames</span>
+              <span className="gif-to-mp4__stat-value">{result.frameCount}</span>
+            </li>
+          </ul>
+          <video
+            className="gif-to-mp4__preview"
+            src={resultUrl}
+            controls
+            playsInline
+            loop
+            autoPlay
+            muted
+          />
         </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "GIFs up to 60 seconds · conversion runs in your browser · files never upload"}
-        </p>
-      </div>
-    </div>
+      ) : hasSource && originalUrl ? (
+        <div className="image-editor-shell__preview-content preview-single">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="gif-to-mp4__preview preview-single__image"
+            src={originalUrl}
+            alt="Uploaded GIF preview"
+          />
+        </div>
+      ) : null}
+    </ImageEditorShell>
   );
 }

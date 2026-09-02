@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Button from "@/components/Button";
+import ImageEditorShell from "@/components/tools/ImageEditorShell";
 import PngToPdfDropzone from "@/components/tools/PngToPdfDropzone";
 import { formatFileSize } from "@/lib/image";
 import {
@@ -172,7 +173,6 @@ export default function PngToPdf() {
       }
 
       setResult(converted);
-      downloadPngPdf(converted.blob, files);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -193,14 +193,37 @@ export default function PngToPdf() {
     }
   }
 
-  function handleDownloadAgain() {
+  function handleDownload() {
     if (!result || fileCount === 0) return;
     downloadPngPdf(result.blob, files);
   }
 
   return (
-    <div className="tool-grid png-to-pdf">
-      <div className="tool-panel">
+    <ImageEditorShell
+      className="png-to-pdf"
+      hasSource={hasSource}
+      stageReady={hasResult}
+      loading={loading}
+      loadingText={progressText || "Building PDF…"}
+      loadingSubtext="Conversion runs locally in your browser."
+      previewTitle="Preview"
+      previewMeta={
+        hasResult && result
+          ? `${describePngPdfOutput(result)} · ${pageSizeLabel(result.pageSize)}`
+          : hasSource
+            ? `${fileCount} image${fileCount === 1 ? "" : "s"} queued`
+            : "Upload images to start"
+      }
+      previewHint={
+        hasSource && !hasResult ? "Click Convert to PDF" : undefined
+      }
+      privacyHint={
+        hasResult
+          ? "Processed locally on your device"
+          : "Image to PDF runs in your browser · files never upload to Focera"
+      }
+      sidebar={
+        <>
         <PngToPdfDropzone
           existingFiles={files}
           onFiles={handleAddFiles}
@@ -349,115 +372,82 @@ export default function PngToPdf() {
             </div>
           ) : null}
         </div>
-
-        <div className="tool-actions">
-          <Button
-            onClick={() => void handleConvert()}
-            disabled={!hasSource || loading}
-          >
-            {loading ? "Converting…" : "Convert to PDF"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={(!hasSource && !hasResult) || loading}
-          >
-            Start over
-          </Button>
-        </div>
-
-        {hasResult ? (
+        </>
+      }
+      sidebarFooter={
+        <>
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button
+              onClick={() => void handleConvert()}
+              disabled={!hasSource || loading}
+            >
+              {loading ? "Converting…" : "Convert to PDF"}
+            </Button>
+            {hasResult ? (
+              <Button onClick={handleDownload} disabled={loading}>
+                Download PDF
+              </Button>
+            ) : null}
+            <Button
+              variant="ghost"
+              onClick={handleReset}
+              disabled={(!hasSource && !hasResult) || loading}
+            >
+              Start over
+            </Button>
           </div>
-        ) : null}
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
+          {error ? (
+            <p className="tool-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+        </>
+      }
+    >
+      {hasResult && result ? (
+        <div className="image-editor-shell__result png-to-pdf__success">
+          <p className="image-editor-shell__result-meta png-to-pdf__success-meta">
+            {describePngPdfOutput(result)} · {pageSizeLabel(result.pageSize)}
           </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={`tool-stage${hasResult ? " is-ready" : ""}${loading ? " is-loading" : ""}`}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">
-                {progressText || "Building PDF…"}
+          {result.previewUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={result.previewUrl}
+              alt="First page preview"
+              className="png-to-pdf__preview-image"
+            />
+          ) : null}
+          <ul className="png-to-pdf__stats" aria-label="Conversion summary">
+            <li>
+              <span className="png-to-pdf__stat-label">Images</span>
+              <span className="png-to-pdf__stat-value">{result.imageCount}</span>
+            </li>
+            <li>
+              <span className="png-to-pdf__stat-label">Pages</span>
+              <span className="png-to-pdf__stat-value">{result.pageCount}</span>
+            </li>
+            <li>
+              <span className="png-to-pdf__stat-label">PDF size</span>
+              <span className="png-to-pdf__stat-value">
+                {formatFileSize(result.outputSize)}
               </span>
-              <span className="tool-loading__subtext">
-                Conversion runs locally in your browser.
-              </span>
-            </div>
-          ) : result ? (
-            <div className="png-to-pdf__success">
-              <p className="png-to-pdf__success-title">PDF ready</p>
-              <p className="png-to-pdf__success-meta">
-                {describePngPdfOutput(result)} · {pageSizeLabel(result.pageSize)}
-              </p>
-              {result.previewUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={result.previewUrl}
-                  alt="First page preview"
-                  className="png-to-pdf__preview-image"
-                />
-              ) : null}
-              <ul className="png-to-pdf__stats" aria-label="Conversion summary">
-                <li>
-                  <span className="png-to-pdf__stat-label">Images</span>
-                  <span className="png-to-pdf__stat-value">
-                    {result.imageCount}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">Pages</span>
-                  <span className="png-to-pdf__stat-value">
-                    {result.pageCount}
-                  </span>
-                </li>
-                <li>
-                  <span className="png-to-pdf__stat-label">PDF size</span>
-                  <span className="png-to-pdf__stat-value">
-                    {formatFileSize(result.outputSize)}
-                  </span>
-                </li>
-              </ul>
-              <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Reorder images or
-                change page size and convert again anytime.
-              </p>
-            </div>
-          ) : (
-            <div className="png-to-pdf__empty">
-              <p className="tool-placeholder">
-                {fileCount === 0
-                  ? "Upload images to turn them into a PDF"
-                  : `${fileCount} image${fileCount === 1 ? "" : "s"} queued · click Convert to PDF`}
-              </p>
-              {fileCount > 0 ? (
-                <ul className="png-to-pdf__summary" aria-label="Queued images">
-                  {entries.map((entry, index) => (
-                    <li key={entry.id}>
-                      {index + 1}. {entry.file.name}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          )}
+            </li>
+          </ul>
         </div>
-
-        <p className="tool-hint">
-          {hasResult
-            ? "Download again anytime · processed locally"
-            : "Image to PDF runs in your browser · files never upload to Focera"}
-        </p>
-      </div>
-    </div>
+      ) : hasSource ? (
+        <div className="png-to-pdf__empty">
+          <p className="tool-placeholder">
+            {`${fileCount} image${fileCount === 1 ? "" : "s"} queued · click Convert to PDF`}
+          </p>
+          <ul className="png-to-pdf__summary" aria-label="Queued images">
+            {entries.map((entry, index) => (
+              <li key={entry.id}>
+                {index + 1}. {entry.file.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </ImageEditorShell>
   );
 }

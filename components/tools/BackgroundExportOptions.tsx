@@ -1,7 +1,6 @@
 "use client";
 
 import { useId } from "react";
-import Button from "@/components/Button";
 import { ACCEPTED_IMAGE_TYPES, validateImageFile } from "@/lib/image";
 import { cn } from "@/lib/utils";
 import { BLUR_RADIUS } from "@/lib/composite-image";
@@ -27,9 +26,6 @@ type BackgroundExportOptionsProps = {
   bgImageName?: string;
   onBgImageSelect: (file: File) => void;
   onBgImageError: (message: string) => void;
-  onDownload: () => void;
-  downloadDisabled?: boolean;
-  compositing?: boolean;
   disabled?: boolean;
 };
 
@@ -43,9 +39,6 @@ export default function BackgroundExportOptions({
   bgImageName,
   onBgImageSelect,
   onBgImageError,
-  onDownload,
-  downloadDisabled = false,
-  compositing = false,
   disabled = false,
 }: BackgroundExportOptionsProps) {
   const colorInputId = useId();
@@ -235,18 +228,6 @@ export default function BackgroundExportOptions({
             <p className="ui-hint">JPG, PNG, or WebP · up to 10 MB</p>
           </div>
         ) : null}
-      </div>
-
-      <div className="export-options__actions">
-        <Button onClick={onDownload} disabled={downloadDisabled || disabled}>
-          {compositing
-            ? "Preparing…"
-            : mode === "transparent"
-              ? "Download transparent PNG"
-              : mode === "blur"
-                ? "Download blurred PNG"
-                : "Download PNG"}
-        </Button>
       </div>
     </section>
   );
