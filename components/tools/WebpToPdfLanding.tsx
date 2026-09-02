@@ -175,8 +175,8 @@ export default function WebpToPdfLanding() {
             images before building a PDF.
           </li>
           <li>
-            <Link href="/image-converter">Image Converter</Link> — Convert WebP
-            to PNG or JPG before other workflows.
+            <Link href="/webp-to-jpg">WebP to JPG Converter</Link> — Convert WebP
+            to JPEG before other workflows.
           </li>
         </ul>
       </section>

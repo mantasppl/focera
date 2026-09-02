@@ -65,8 +65,7 @@ function iconKindForSlug(slug: string): IconKind {
   )
     return "crop";
   if (slug.includes("unlock")) return "unlock";
-  if (slug.includes("protect") || slug.includes("password-checker"))
-    return "lock";
+  if (slug.includes("protect")) return "lock";
   if (slug.includes("password")) return "password";
   if (slug.includes("esign")) return "sign";
   if (slug.includes("annotate") || slug.includes("add-text")) return "annotate";
@@ -103,7 +102,6 @@ function iconKindForSlug(slug: string): IconKind {
   if (slug.includes("image-to-text") || slug.includes("ocr")) return "ocr";
   if (
     slug.includes("image-compressor") ||
-    slug.includes("image-converter") ||
     slug.includes("heic-to-jpg") ||
     slug.includes("heic-to-png") ||
     slug.includes("png-to-jpg") ||

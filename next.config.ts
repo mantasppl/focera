@@ -34,6 +34,20 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  async redirects() {
+    return [
+      {
+        source: "/image-converter",
+        destination: "/png-to-jpg",
+        permanent: true,
+      },
+      {
+        source: "/password-checker",
+        destination: "/password-generator",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

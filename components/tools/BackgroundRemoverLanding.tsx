@@ -143,9 +143,9 @@ export default function BackgroundRemoverLanding() {
               file size before or after exporting transparent PNGs.
             </li>
             <li>
-              <Link href="/image-converter">Image Converter</Link> — Convert
-              between PNG, JPG, and WebP when your destination requires a
-              specific format.
+              <Link href="/png-to-jpg">PNG to JPG Converter</Link> — Convert
+              PNG images to JPEG when your destination needs a smaller photo
+              format.
             </li>
             <li>
               <Link href="/tools">All tools</Link> — Browse every free utility

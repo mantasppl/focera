@@ -220,8 +220,7 @@ export default function QRGeneratorLanding() {
         </p>
         <p>
           If security is a priority elsewhere in your stack, explore our{" "}
-          <Link href="/password-generator">password generator</Link> and{" "}
-          <Link href="/password-checker">password strength checker</Link> for
+          <Link href="/password-generator">password generator</Link> for
           complementary tools that help teams adopt stronger authentication habits
           alongside smarter marketing assets.
         </p>

@@ -38,7 +38,7 @@ export const categoryLabels: Record<ToolCategory, string> = {
 export const categoryDescriptions: Record<ToolCategory, string> = {
   pdf: "PDF tools like Merge PDF, Compress PDF, PDF to Word, and much more.",
   image:
-    "Image tools like Background Remover, Image Compressor, Resize Image, Upscale Image, and much more.",
+    "Edit photos, adjust size, color, and text, or convert formats — background remover, compressors, converters, and more.",
   video:
     "Video tools like Compress Video, Video to GIF, Trim Video, and much more.",
   ai: "AI tools like AI Image Generator, Background Remover, YouTube Summarizer, and much more.",
@@ -4309,22 +4309,6 @@ export const tools: Tool[] = [
     ],
   },
   {
-    slug: "image-converter",
-    name: "Image Converter",
-    shortName: "Converter",
-    description: "Convert images between PNG, JPG, WebP, and more.",
-    categories: ["image"],
-    status: "soon",
-    href: "/image-converter",
-    keywords: ["convert", "png", "jpg", "webp"],
-    faq: [
-      {
-        question: "Which formats will be supported?",
-        answer: "PNG, JPG, and WebP are planned for the first release.",
-      },
-    ],
-  },
-  {
     slug: "heic-to-jpg",
     name: "HEIC to JPG Converter",
     shortName: "HEIC to JPG",
@@ -7277,23 +7261,6 @@ export const tools: Tool[] = [
         question: "Are the passwords cryptographically random?",
         answer:
           "Yes. The generator uses crypto.getRandomValues for secure randomness rather than Math.random.",
-      },
-    ],
-  },
-  {
-    slug: "password-checker",
-    name: "Password Checker",
-    shortName: "Strength Check",
-    description: "Estimate password strength and spot weak patterns.",
-    categories: ["file"],
-    status: "soon",
-    href: "/password-checker",
-    keywords: ["password", "strength", "security"],
-    faq: [
-      {
-        question: "Do you check my password against breaches?",
-        answer:
-          "The first version estimates strength locally. Breach checks may come later.",
       },
     ],
   },

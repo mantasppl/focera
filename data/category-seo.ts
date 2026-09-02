@@ -73,7 +73,7 @@ export const categorySeo: Record<ToolCategory, CategorySeoContent> = {
   image: {
     metaDescription:
       "Free image tools online — add text on photos, crop, resize, remove backgrounds, compress, upscale, colorize, convert, and more in your browser. Private image utilities on Focera.",
-    lede: "Add text on images, crop, resize, remove backgrounds, compress photos, upscale, colorize, and convert — free image tools in your browser.",
+    lede: "Browse by Edit image, Size, color, text, or Change image format — free photo tools in your browser.",
     keywords: [
       "image tools",
       "free image tools online",
@@ -84,18 +84,21 @@ export const categorySeo: Record<ToolCategory, CategorySeoContent> = {
       "image to PDF",
       "remove watermark",
       "AI image tools",
+      "edit image",
+      "change image format",
+      "image converter",
       "colorize photo",
     ],
     heading: "Free image tools online — edit, compress, and transform photos in your browser",
     intro: [
-      "Focera’s Image Tools category covers free online utilities for photos and graphics: cropping and resizing, background removal and replacement, AI image generation, compression, upscaling, colorization, watermark removal, OCR (image to text), color palettes, and converting between images and PDFs.",
+      "Focera’s Image Tools category is grouped into three niches so you can find the right utility fast: Edit image for backgrounds and cleanup, Size, color, text for finishing work like resize, compress, color, and captions, and Change image format for conversions.",
       "Use these tools for product shots, social posts, scanned documents, and design assets — process images in your browser with a privacy-first workflow whenever the tool can run locally.",
     ],
     toolsHeading: "What image tools you’ll find here",
     tools: [
-      "Background & AI — Background Remover, Change Background, AI Image Generator, Colorize Photo, Cleanup Picture, and Remove Watermark for cleanup and creative edits.",
-      "Quality & size — Crop Image and Resize Image for framing and dimensions, Image Compressor for lighter uploads, Upscale Image for clearer enlargements, and Color Palette Generator for brand-ready swatches.",
-      "Text & conversion — Add Text on Image for captions and stamps, Image to Text (OCR), JPG to TIFF / TIFF to JPG, PNG to EPS / GIF, EPS to PNG, WebP to GIF / JPG / PNG, Image / PNG / TIFF to PDF, PDF to JPG / PNG / TIFF, Extract Images from PDF, Add Images to PDF, and PDF Watermark when your workflow spans documents.",
+      "Edit image — Background Remover, Change Background, Blur Background, Make Background Transparent, Cleanup Picture, Remove Objects, Remove Person, Remove Watermark, Unblur Image, Add Images to Image, Add Border to Image, and Round Image.",
+      "Size, color, text — Resize, Crop, Compress, Upscale, Flip, Split, Combine, Collage, Profile Photo Maker, Color Palette, Black & White, Colorize, Pixelate, Add Text on Image, Image to Text, Translate Image, View Metadata, and AI Image Generator.",
+      "Change image format — GIF to MP4, HEIC to JPG / PNG, PDF to JPG / PNG / TIFF, Extract Images from PDF, Image / PNG / TIFF to PDF, PNG to JPG / WebP / SVG / EPS / GIF, EPS to PNG, PSD to JPG / PNG / AI, JPG to PNG / WebP / GIF / TIFF / SVG, SVG to PNG, WebP to JPG / PNG / GIF / PDF, and GIF to PDF.",
     ],
     useCasesHeading: "Where you can use these image tools",
     useCases: [

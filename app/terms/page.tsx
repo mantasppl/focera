@@ -27,8 +27,7 @@ export default function TermsPage() {
             <p>
               {SITE_NAME} provides free online tools and AI utilities for
               personal and commercial use, including generators, converters,
-              calculators, and developer helpers. Features may change, and
-              “coming soon” tools may be incomplete.
+              calculators, and developer helpers. Features may change.
             </p>
           </section>
 

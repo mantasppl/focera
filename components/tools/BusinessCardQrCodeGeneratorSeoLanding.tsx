@@ -151,8 +151,7 @@ export default function BusinessCardQrCodeGeneratorSeoLanding() {
         </p>
         <p>
           Nearby utilities:{" "}
-          <Link href="/password-generator">password generator</Link> and{" "}
-          <Link href="/password-checker">password strength checker</Link>.
+          <Link href="/password-generator">password generator</Link>.
         </p>
       </section>
 

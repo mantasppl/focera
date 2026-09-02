@@ -175,8 +175,7 @@ export default function CreateQrCodeSeoLanding() {
         </p>
         <p>
           For passwords and strength checks elsewhere in your stack, use the{" "}
-          <Link href="/password-generator">password generator</Link> and{" "}
-          <Link href="/password-checker">password strength checker</Link>.
+          <Link href="/password-generator">password generator</Link>.
         </p>
       </section>
 

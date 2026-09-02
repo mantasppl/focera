@@ -128,8 +128,8 @@ export default function UpscaleImageLanding() {
             file size after exporting a larger PNG.
           </li>
           <li>
-            <Link href="/image-converter">Image Converter</Link> — Convert
-            between PNG, JPG, and WebP when your destination needs a specific
+            <Link href="/png-to-jpg">PNG to JPG Converter</Link> — Convert
+            PNG images to JPEG when your destination needs a smaller photo
             format.
           </li>
           <li>

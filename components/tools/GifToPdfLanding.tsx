@@ -180,8 +180,8 @@ export default function GifToPdfLanding() {
             email and uploads when you need a smaller document.
           </li>
           <li>
-            <Link href="/image-converter">Image Converter</Link> — Convert GIF
-            to PNG or JPG before other workflows.
+            <Link href="/gif-to-mp4">GIF to MP4 Converter</Link> — Convert GIF
+            to video when you need a smaller animated file.
           </li>
         </ul>
       </section>

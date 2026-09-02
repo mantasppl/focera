@@ -144,8 +144,7 @@ export default function CustomQrCodeGeneratorSeoLanding() {
         </p>
         <p>
           Also in the hub:{" "}
-          <Link href="/password-generator">password generator</Link> and{" "}
-          <Link href="/password-checker">password strength checker</Link>.
+          <Link href="/password-generator">password generator</Link>.
         </p>
       </section>
 

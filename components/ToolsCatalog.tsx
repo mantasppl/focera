@@ -2,6 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import ImageToolsNiches from "@/components/ImageToolsNiches";
 import ToolChip from "@/components/ToolChip";
 import ToolSearch from "@/components/ToolSearch";
 import {
@@ -36,7 +37,23 @@ function ToolChipGrid({ tools }: { tools: Tool[] }) {
   );
 }
 
-function CategoryToolGrid({ category }: { category: ToolCategory }) {
+function CategoryToolGrid({
+  category,
+  grouped,
+}: {
+  category: ToolCategory;
+  grouped?: boolean;
+}) {
+  if (category === "image") {
+    return (
+      <ImageToolsNiches
+        tools={getToolsByCategory("image")}
+        stickyNav={grouped}
+        headingLevel={grouped ? "h2" : "h3"}
+      />
+    );
+  }
+
   return <ToolChipGrid tools={getToolsByCategory(category)} />;
 }
 
@@ -125,16 +142,24 @@ function ToolsCatalogInner({ category }: ToolsCatalogProps) {
         </section>
       ) : category ? (
         <section
-          className="page-section"
+          className={
+            category === "image"
+              ? "page-section page-section--static"
+              : "page-section"
+          }
           aria-label={categoryLabels[category]}
         >
-          <CategoryToolGrid category={category} />
+          <CategoryToolGrid category={category} grouped />
         </section>
       ) : (
         categoryOrder.map((cat) => (
           <section
             key={cat}
-            className="page-section"
+            className={
+              cat === "image"
+                ? "page-section page-section--static"
+                : "page-section"
+            }
             aria-labelledby={`cat-${cat}-heading`}
             id={`cat-${cat}`}
           >

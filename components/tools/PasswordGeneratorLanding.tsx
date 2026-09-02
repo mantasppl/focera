@@ -58,10 +58,7 @@ export default function PasswordGeneratorLanding() {
         </p>
         <p>
           After you generate a password, store it in a reputable password manager
-          rather than a notes app or spreadsheet. If you want a second opinion on
-          an existing passphrase, try our{" "}
-          <Link href="/password-checker">password strength checker</Link> when it
-          is available, or browse the full{" "}
+          rather than a notes app or spreadsheet. Browse the full{" "}
           <Link href="/tools">Focera catalog</Link> for related security and
           developer utilities.
         </p>
@@ -232,8 +229,8 @@ export default function PasswordGeneratorLanding() {
         </h2>
         <ul className="tool-content__list">
           <li>
-            <Link href="/password-checker">Password Checker</Link> — Estimate
-            strength and spot weak patterns in passwords you already use.
+            <Link href="/protect-pdf">Protect PDF Tool</Link> — Lock PDFs with a
+            password before you share sensitive documents.
           </li>
           <li>
             <Link href="/qr-generator">QR Code Generator</Link> — Encode links

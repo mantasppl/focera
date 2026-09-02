@@ -173,8 +173,7 @@ export default function GenerateQrCodeSeoLanding() {
         </p>
         <p>
           Complementary tools:{" "}
-          <Link href="/password-generator">password generator</Link> and{" "}
-          <Link href="/password-checker">password strength checker</Link>.
+          <Link href="/password-generator">password generator</Link>.
         </p>
       </section>
 

@@ -154,12 +154,6 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "add-text-on-image",
     "image-compressor",
   ],
-  "image-converter": [
-    "heic-to-jpg",
-    "heic-to-png",
-    "image-compressor",
-    "image-to-pdf",
-  ],
   "heic-to-jpg": [
     "heic-to-png",
     "image-compressor",
@@ -190,11 +184,6 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "image-to-text",
     "crop-image",
     "image-compressor",
-  ],
-  "password-checker": [
-    "password-generator",
-    "qr-generator",
-    "utm-builder",
   ],
   "instagram-video-downloader": [
     "facebook-video-downloader",

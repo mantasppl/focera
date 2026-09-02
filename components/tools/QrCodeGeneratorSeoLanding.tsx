@@ -197,8 +197,7 @@ export default function QrCodeGeneratorSeoLanding() {
         </p>
         <p>
           For stronger account hygiene elsewhere, use the{" "}
-          <Link href="/password-generator">password generator</Link> and{" "}
-          <Link href="/password-checker">password strength checker</Link>{" "}
+          <Link href="/password-generator">password generator</Link>{" "}
           alongside the marketing assets you create here.
         </p>
       </section>
