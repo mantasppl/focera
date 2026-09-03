@@ -5,6 +5,10 @@ import {
   isContentImproverStrengthId,
   validateContentImproverText,
 } from "@/lib/content-improver";
+import {
+  AiTextGenerateError,
+  generateAiText,
+} from "@/lib/ai-text-server";
 import { trackToolUsageServer } from "@/lib/analytics/track";
 import { getToolBySlug } from "@/data/tools";
 import { guardApiRequest } from "@/lib/security/request";
@@ -33,46 +37,6 @@ function track(request: Request, success: boolean) {
       request,
     );
   }
-}
-
-function extractImprovedText(payload: unknown): string | null {
-  if (typeof payload === "string") {
-    const trimmed = payload.trim();
-    return trimmed || null;
-  }
-
-  if (!payload || typeof payload !== "object") return null;
-
-  const record = payload as Record<string, unknown>;
-
-  if (typeof record.improved === "string" && record.improved.trim()) {
-    return record.improved.trim();
-  }
-
-  if (typeof record.text === "string" && record.text.trim()) {
-    return record.text.trim();
-  }
-
-  if (typeof record.content === "string" && record.content.trim()) {
-    return record.content.trim();
-  }
-
-  const choices = record.choices;
-  if (Array.isArray(choices) && choices[0] && typeof choices[0] === "object") {
-    const choice = choices[0] as Record<string, unknown>;
-    const message = choice.message;
-    if (message && typeof message === "object") {
-      const content = (message as Record<string, unknown>).content;
-      if (typeof content === "string" && content.trim()) {
-        return content.trim();
-      }
-    }
-    if (typeof choice.text === "string" && choice.text.trim()) {
-      return choice.text.trim();
-    }
-  }
-
-  return null;
 }
 
 export async function POST(request: Request) {
@@ -119,11 +83,10 @@ export async function POST(request: Request) {
     body.strength,
   );
   const userPrompt = buildContentImproverUserPrompt(text);
-  const apiKey = process.env.POLLINATIONS_API_KEY?.trim();
   const temperature =
     body.mode === "creative" || body.mode === "humanize" ? 0.75 : 0.45;
 
-  // Optional local mock for demos / offline QA when Pollinations is unavailable.
+  // Optional local mock for demos / offline QA when upstream models are unavailable.
   if (process.env.CONTENT_IMPROVER_MOCK === "1") {
     const improved = mockImproveText(text, body.mode, body.strength);
     track(request, true);
@@ -133,6 +96,7 @@ export async function POST(request: Request) {
         seed,
         mode: body.mode,
         strength: body.strength,
+        provider: "mock",
         mock: true,
       },
       {
@@ -142,128 +106,61 @@ export async function POST(request: Request) {
     );
   }
 
-  const chatBody = {
-    model: "openai",
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
-    ],
-    seed,
-    temperature,
-  };
-
-  let upstream: Response | null = null;
-  let lastErrorStatus: number | null = null;
-
   try {
-    const headers: Record<string, string> = {
-      Accept: "application/json, text/plain;q=0.9,*/*;q=0.8",
-      "Content-Type": "application/json",
-    };
-    if (apiKey) {
-      headers.Authorization = `Bearer ${apiKey}`;
-    }
-
-    upstream = await fetch("https://text.pollinations.ai/openai", {
-      method: "POST",
-      headers,
-      body: JSON.stringify(chatBody),
-      cache: "no-store",
-      signal: AbortSignal.timeout(55_000),
+    const result = await generateAiText({
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature,
+      seed,
+      preferFast: true,
+      timeoutMs: 55_000,
     });
 
-    // Anonymous GET still works on the legacy text host when the chat
-    // endpoint returns payment/auth errors for unauthenticated traffic.
-    if (
-      !apiKey &&
-      (upstream.status === 401 || upstream.status === 402)
-    ) {
-      lastErrorStatus = upstream.status;
-      const combined = `${systemPrompt}\n\n${userPrompt}`;
-      const getUrl = `https://text.pollinations.ai/${encodeURIComponent(combined)}?model=openai&seed=${seed}`;
-      if (getUrl.length <= 7000) {
-        upstream = await fetch(getUrl, {
-          method: "GET",
-          headers: { Accept: "text/plain, application/json;q=0.9,*/*;q=0.8" },
-          cache: "no-store",
-          signal: AbortSignal.timeout(55_000),
-        });
-      }
+    const cleaned = result.text
+      .replace(
+        /^(here(?:'s| is) (?:the |your )?(?:improved|rewritten|updated)(?: text| version)?[:\s-]*)/i,
+        "",
+      )
+      .replace(/^```(?:\w+)?\n?([\s\S]*?)\n?```$/u, "$1")
+      .trim();
+
+    if (!cleaned) {
+      track(request, false);
+      return jsonError(
+        "The improver returned an empty result. Try again.",
+        502,
+      );
     }
-  } catch {
-    track(request, false);
-    return jsonError(
-      "The content improver timed out. Wait a moment and try again.",
-      504,
+
+    track(request, true);
+
+    return Response.json(
+      {
+        improved: cleaned,
+        seed,
+        mode: body.mode,
+        strength: body.strength,
+        provider: result.provider,
+      },
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
     );
-  }
-
-  if (!upstream || !upstream.ok) {
-    const status = upstream?.status ?? lastErrorStatus ?? 502;
+  } catch (err) {
     track(request, false);
-    if (status === 429) {
-      return jsonError(
-        "Too many requests right now. Wait about 15 seconds and try again.",
-        429,
-      );
+    if (err instanceof AiTextGenerateError) {
+      return jsonError(err.message, err.status);
     }
-
-    if (status === 401 || status === 402) {
-      return jsonError(
-        "Content improvement is temporarily unavailable. Try again in a minute.",
-        503,
-      );
-    }
-
     return jsonError(
       "Could not improve that text. Try a shorter passage or a different mode.",
       502,
     );
   }
-
-  const contentType = upstream.headers.get("content-type") ?? "";
-  let improved: string | null = null;
-
-  if (contentType.includes("application/json")) {
-    const data = (await upstream.json().catch(() => null)) as unknown;
-    improved = extractImprovedText(data);
-  } else {
-    const raw = (await upstream.text()).trim();
-    improved = raw || null;
-  }
-
-  if (!improved) {
-    track(request, false);
-    return jsonError(
-      "The improver returned an empty result. Try again.",
-      502,
-    );
-  }
-
-  const cleaned = improved
-    .replace(
-      /^(here(?:'s| is) (?:the |your )?(?:improved|rewritten|updated)(?: text| version)?[:\s-]*)/i,
-      "",
-    )
-    .replace(/^```(?:\w+)?\n?([\s\S]*?)\n?```$/u, "$1")
-    .trim();
-
-  track(request, true);
-
-  return Response.json(
-    {
-      improved: cleaned || improved,
-      seed,
-      mode: body.mode,
-      strength: body.strength,
-    },
-    {
-      status: 200,
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    },
-  );
 }
 
 function mockImproveText(
@@ -273,7 +170,6 @@ function mockImproveText(
 ): string {
   let out = text.trim();
 
-  // Lightweight polish so local demos feel real without an upstream model.
   out = out
     .replace(/\bthere\b(?=\s+projects)/gi, "their")
     .replace(/\bthen\b(?=\s+before)/gi, "than")

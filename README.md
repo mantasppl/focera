@@ -22,7 +22,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | GA4 measurement ID (optional) |
 | `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Search Console HTML tag verification (optional) |
 | `POLLINATIONS_API_KEY` | Optional Pollinations key for AI Image / Story Generator limits |
-| `GROQ_API_KEY` | Required for Video Autocaption transcription (Groq Whisper) |
+| `GROQ_API_KEY` | Required for Video Autocaption transcription (Groq Whisper). Also used as a fallback for AI Content Improver when Pollinations is unavailable |
 | `RESEND_API_KEY` | Resend API key for the contact form (required for `/contact` submissions) |
 | `RESEND_FROM_EMAIL` | Optional From address (default `Focera Contact <onboarding@resend.dev>`) |
 | `ADMIN_PATH` | Obscure admin base path (e.g. `/admin-9xk2q7v8m`) |
