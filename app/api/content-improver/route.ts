@@ -120,6 +120,27 @@ export async function POST(request: Request) {
   );
   const userPrompt = buildContentImproverUserPrompt(text);
   const apiKey = process.env.POLLINATIONS_API_KEY?.trim();
+  const temperature =
+    body.mode === "creative" || body.mode === "humanize" ? 0.75 : 0.45;
+
+  // Optional local mock for demos / offline QA when Pollinations is unavailable.
+  if (process.env.CONTENT_IMPROVER_MOCK === "1") {
+    const improved = mockImproveText(text, body.mode, body.strength);
+    track(request, true);
+    return Response.json(
+      {
+        improved,
+        seed,
+        mode: body.mode,
+        strength: body.strength,
+        mock: true,
+      },
+      {
+        status: 200,
+        headers: { "Cache-Control": "no-store" },
+      },
+    );
+  }
 
   const chatBody = {
     model: "openai",
@@ -128,19 +149,21 @@ export async function POST(request: Request) {
       { role: "user", content: userPrompt },
     ],
     seed,
-    temperature: body.mode === "creative" || body.mode === "humanize" ? 0.75 : 0.45,
+    temperature,
   };
 
-  const headers: Record<string, string> = {
-    Accept: "application/json, text/plain;q=0.9,*/*;q=0.8",
-    "Content-Type": "application/json",
-  };
-  if (apiKey) {
-    headers.Authorization = `Bearer ${apiKey}`;
-  }
+  let upstream: Response | null = null;
+  let lastErrorStatus: number | null = null;
 
-  let upstream: Response;
   try {
+    const headers: Record<string, string> = {
+      Accept: "application/json, text/plain;q=0.9,*/*;q=0.8",
+      "Content-Type": "application/json",
+    };
+    if (apiKey) {
+      headers.Authorization = `Bearer ${apiKey}`;
+    }
+
     upstream = await fetch("https://text.pollinations.ai/openai", {
       method: "POST",
       headers,
@@ -148,6 +171,25 @@ export async function POST(request: Request) {
       cache: "no-store",
       signal: AbortSignal.timeout(55_000),
     });
+
+    // Anonymous GET still works on the legacy text host when the chat
+    // endpoint returns payment/auth errors for unauthenticated traffic.
+    if (
+      !apiKey &&
+      (upstream.status === 401 || upstream.status === 402)
+    ) {
+      lastErrorStatus = upstream.status;
+      const combined = `${systemPrompt}\n\n${userPrompt}`;
+      const getUrl = `https://text.pollinations.ai/${encodeURIComponent(combined)}?model=openai&seed=${seed}`;
+      if (getUrl.length <= 7000) {
+        upstream = await fetch(getUrl, {
+          method: "GET",
+          headers: { Accept: "text/plain, application/json;q=0.9,*/*;q=0.8" },
+          cache: "no-store",
+          signal: AbortSignal.timeout(55_000),
+        });
+      }
+    }
   } catch {
     track(request, false);
     return jsonError(
@@ -156,16 +198,17 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!upstream.ok) {
+  if (!upstream || !upstream.ok) {
+    const status = upstream?.status ?? lastErrorStatus ?? 502;
     track(request, false);
-    if (upstream.status === 429) {
+    if (status === 429) {
       return jsonError(
         "Too many requests right now. Wait about 15 seconds and try again.",
         429,
       );
     }
 
-    if (upstream.status === 401 || upstream.status === 402) {
+    if (status === 401 || status === 402) {
       return jsonError(
         "Content improvement is temporarily unavailable. Try again in a minute.",
         503,
@@ -221,4 +264,46 @@ export async function POST(request: Request) {
       },
     },
   );
+}
+
+function mockImproveText(
+  text: string,
+  mode: string,
+  strength: string,
+): string {
+  let out = text.trim();
+
+  // Lightweight polish so local demos feel real without an upstream model.
+  out = out
+    .replace(/\bthere\b(?=\s+projects)/gi, "their")
+    .replace(/\bthen\b(?=\s+before)/gi, "than")
+    .replace(/\bmore easier\b/gi, "more easily")
+    .replace(/\bare working\b/gi, "is working")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (mode === "formal") {
+    out = out
+      .replace(/\bhey\b/gi, "Hello")
+      .replace(/\basap\b/gi, "as soon as possible")
+      .replace(/\bchat through\b/gi, "discuss");
+  }
+
+  if (mode === "shorten" || strength === "strong") {
+    out = out
+      .replace(/\bhopefully\b/gi, "")
+      .replace(/\bjust checking if\b/gi, "Checking whether")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+  }
+
+  if (mode === "expand") {
+    out = `${out} This clearer wording keeps the original intent while making the message easier to read.`;
+  }
+
+  if (mode === "casual") {
+    out = out.replace(/\bHello\b/g, "Hey");
+  }
+
+  return out;
 }
