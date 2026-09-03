@@ -55,6 +55,7 @@ export default function ContentImprover() {
     setLoading(true);
     setError("");
     setCopied(false);
+    setImproved("");
 
     try {
       const response = await fetch("/api/content-improver", {
