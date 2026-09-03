@@ -9,8 +9,14 @@ import {
   useRef,
   type ReactNode,
 } from "react";
+import {
+  clickIdReferrer,
+  isOwnSiteReferrer,
+  referrerFromUtmSource,
+} from "@/lib/analytics/source";
 
 const SESSION_KEY = "focera_analytics_session";
+const FIRST_TOUCH_KEY = "focera_traffic_source";
 const ENDPOINT = "/api/analytics/event";
 const PAGEVIEW_ENDPOINT = "/api/analytics/pageview";
 const HEARTBEAT_MS = 25_000;
@@ -44,15 +50,51 @@ const UUID_RE =
 
 let lastView = { path: "", at: 0 };
 
+function landingReferrer(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  const params = new URLSearchParams(window.location.search);
+  const utm =
+    params.get("utm_source")?.trim() ||
+    params.get("ref")?.trim() ||
+    "";
+  if (utm) return referrerFromUtmSource(utm);
+  const fromClickId = clickIdReferrer(params);
+  if (fromClickId) return fromClickId;
+  const referrer = document.referrer?.trim() || "";
+  if (referrer && !isOwnSiteReferrer(referrer)) return referrer.slice(0, 500);
+  return undefined;
+}
+
+/** First-touch source for this browser tab (UTM, click id, or external referrer). */
+function getFirstTouchReferrer(): string | undefined {
+  if (typeof window === "undefined") return undefined;
+  try {
+    const existing = window.sessionStorage.getItem(FIRST_TOUCH_KEY);
+    if (existing === "") return undefined;
+    if (existing) return existing;
+  } catch {
+    // private mode / blocked storage
+  }
+
+  const captured = landingReferrer() || "";
+  try {
+    window.sessionStorage.setItem(FIRST_TOUCH_KEY, captured);
+  } catch {
+    // ignore
+  }
+  return captured || undefined;
+}
+
 function postPresence(kind: "view" | "heartbeat", path: string) {
   if (typeof window === "undefined") return;
   const sessionId = getAnalyticsSessionId();
   if (!UUID_RE.test(sessionId)) return;
 
+  const firstTouch = getFirstTouchReferrer();
   const body = JSON.stringify({
     sessionId,
     path,
-    referrer: document.referrer || undefined,
+    referrer: document.referrer || firstTouch || undefined,
     kind,
   });
 
@@ -120,12 +162,13 @@ export function trackToolUsage(options: TrackOptions): string {
 
   if (typeof window === "undefined") return eventId;
 
+  const firstTouch = getFirstTouchReferrer();
   const body = JSON.stringify({
     toolId: options.toolId,
     success: options.success,
     eventId,
     sessionId: getAnalyticsSessionId(),
-    referrer: document.referrer || undefined,
+    referrer: firstTouch || document.referrer || undefined,
     eventType: "tool_usage",
     metadata: options.metadata,
   });
@@ -173,9 +216,10 @@ export function ToolAnalyticsProvider({
   const toolIdRef = useRef(toolId);
   toolIdRef.current = toolId;
 
-  // Prefetch session id so the first track call is snappy.
+  // Prefetch session id and first-touch source so the first track call is snappy.
   useEffect(() => {
     getAnalyticsSessionId();
+    getFirstTouchReferrer();
   }, []);
 
   const value = useMemo<ToolAnalyticsContextValue>(

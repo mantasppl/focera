@@ -3,6 +3,7 @@ import { getToolBySlug } from "@/data/tools";
 import { requireAdminApi } from "@/lib/admin/guard";
 import { parsePreset, resolveDateRange } from "@/lib/analytics/dates";
 import { getExportRows } from "@/lib/analytics/queries";
+import { classifyTrafficSource } from "@/lib/analytics/source";
 import { safeSpreadsheetCell, toCsv } from "@/lib/security/export-safe";
 import { readJsonBody } from "@/lib/security/request";
 
@@ -73,6 +74,7 @@ export async function POST(request: Request) {
     os: safeSpreadsheetCell(row.os || ""),
     device: safeSpreadsheetCell(row.device || ""),
     referrer: safeSpreadsheetCell(row.referrer || ""),
+    source: safeSpreadsheetCell(classifyTrafficSource(row.referrer)),
     success: row.success ? "true" : "false",
   }));
 
@@ -91,6 +93,7 @@ export async function POST(request: Request) {
     "os",
     "device",
     "referrer",
+    "source",
     "success",
   ];
 

@@ -224,6 +224,14 @@ export default function ToolDetailDashboard({ toolId }: { toolId: string }) {
           <h2 className="admin-chart-card__title">Browsers</h2>
           <BreakdownList items={detail?.browsers ?? []} empty="No browser data yet." />
         </section>
+
+        <section className="admin-chart-card">
+          <h2 className="admin-chart-card__title">Where users came from</h2>
+          <BreakdownList
+            items={detail?.sources ?? []}
+            empty="No traffic source data yet."
+          />
+        </section>
       </div>
     </div>
   );

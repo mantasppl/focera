@@ -29,6 +29,7 @@ type OverviewResponse = {
     topTools: NamedCount[];
     devices: NamedCount[];
     browsers: NamedCount[];
+    sources: NamedCount[];
   };
 };
 
@@ -173,6 +174,7 @@ export default function AnalyticsDashboard() {
         topTools={data?.charts.topTools ?? []}
         devices={data?.charts.devices ?? []}
         browsers={data?.charts.browsers ?? []}
+        sources={data?.charts.sources ?? []}
         loading={loading && !data}
       />
 

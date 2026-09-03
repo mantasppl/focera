@@ -54,6 +54,7 @@ export default function AnalyticsCharts({
   topTools,
   devices,
   browsers,
+  sources,
   loading,
 }: {
   daily: TimeBucket[];
@@ -61,12 +62,13 @@ export default function AnalyticsCharts({
   topTools: NamedCount[];
   devices: NamedCount[];
   browsers: NamedCount[];
+  sources: NamedCount[];
   loading?: boolean;
 }) {
   if (loading) {
     return (
       <div className="admin-chart-grid">
-        {Array.from({ length: 5 }).map((_, i) => (
+        {Array.from({ length: 6 }).map((_, i) => (
           <section key={i} className="admin-chart-card">
             <div className="admin-skeleton admin-skeleton--chart" />
           </section>
@@ -154,6 +156,23 @@ export default function AnalyticsCharts({
             <YAxis allowDecimals={false} tick={{ fill: MUTED, fontSize: 11 }} />
             <Tooltip />
             <Bar dataKey="count" fill={ACCENT} name="Uses" radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </ChartCard>
+
+      <ChartCard title="Where users came from" empty={!hasData(sources)}>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={sources} layout="vertical" margin={{ left: 24 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--admin-grid)" />
+            <XAxis type="number" allowDecimals={false} tick={{ fill: MUTED, fontSize: 11 }} />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={110}
+              tick={{ fill: MUTED, fontSize: 11 }}
+            />
+            <Tooltip />
+            <Bar dataKey="count" fill={ACCENT_DEEP} name="Uses" radius={[0, 4, 4, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </ChartCard>

@@ -8,6 +8,7 @@ import {
   getHourlyUsage,
   getOverviewStats,
   getPerToolStats,
+  getSourceDistribution,
   getTopTools,
 } from "@/lib/analytics/queries";
 
@@ -32,7 +33,7 @@ export async function GET(request: Request) {
     );
     const search = searchParams.get("search") || undefined;
 
-    const [stats, tools, daily, hourly, topTools, devices, browsers] =
+    const [stats, tools, daily, hourly, topTools, devices, browsers, sources] =
       await Promise.all([
         getOverviewStats(range),
         getPerToolStats(range, search),
@@ -41,6 +42,7 @@ export async function GET(request: Request) {
         getTopTools(range, 10),
         getDeviceDistribution(range),
         getBrowserDistribution(range),
+        getSourceDistribution(range),
       ]);
 
     const storage = getAnalyticsStorageMode();
@@ -65,6 +67,7 @@ export async function GET(request: Request) {
         topTools,
         devices,
         browsers,
+        sources,
       },
     });
   } catch (error) {

@@ -1,3 +1,4 @@
+import { asc, eq } from "drizzle-orm";
 import { ensureAnalyticsSchema, getDb } from "@/lib/analytics/db";
 import { parseUserAgent } from "@/lib/analytics/parse-ua";
 import {
@@ -5,8 +6,32 @@ import {
   extractRequestIp,
   hashVisitorIp,
 } from "@/lib/analytics/request-meta";
-import { toolUsage } from "@/lib/analytics/schema";
+import { pageViews, toolUsage } from "@/lib/analytics/schema";
+import { isOwnSiteReferrer } from "@/lib/analytics/source";
 import type { TrackToolUsagePayload } from "@/lib/analytics/types";
+
+async function resolveStoredReferrer(
+  sessionId: string,
+  raw: string | undefined,
+): Promise<string | null> {
+  const trimmed = raw?.trim().slice(0, 500) || null;
+  if (trimmed && !isOwnSiteReferrer(trimmed)) return trimmed;
+
+  try {
+    const [row] = await getDb()
+      .select({ referrer: pageViews.referrer })
+      .from(pageViews)
+      .where(eq(pageViews.sessionId, sessionId))
+      .orderBy(asc(pageViews.timestamp))
+      .limit(1);
+    const first = row?.referrer?.trim().slice(0, 500) || null;
+    if (first && !isOwnSiteReferrer(first)) return first;
+  } catch {
+    // best-effort attribution
+  }
+
+  return trimmed;
+}
 
 export async function recordToolUsageEvent(
   payload: TrackToolUsagePayload & { toolName: string },
@@ -31,7 +56,7 @@ export async function recordToolUsageEvent(
       browser: ua.browser,
       os: ua.os,
       device: ua.device,
-      referrer: payload.referrer?.slice(0, 500) || null,
+      referrer: await resolveStoredReferrer(payload.sessionId, payload.referrer),
       success: payload.success,
       metadata: payload.metadata ? JSON.stringify(payload.metadata) : null,
     });

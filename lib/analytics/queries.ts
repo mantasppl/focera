@@ -9,6 +9,7 @@ import {
 } from "@/lib/analytics/dates";
 import { ensureAnalyticsSchema, getDb } from "@/lib/analytics/db";
 import { toolUsage } from "@/lib/analytics/schema";
+import { aggregateNamedCounts, classifyTrafficSource } from "@/lib/analytics/source";
 import {
   formatZonedDay,
   formatZonedHour,
@@ -258,6 +259,34 @@ export function getBrowserDistribution(range: DateRange, toolId?: string) {
   return getNamedBreakdown(range, "browser", 10, toolId);
 }
 
+export async function getSourceDistribution(
+  range: DateRange,
+  toolId?: string,
+  limit = 12,
+): Promise<NamedCount[]> {
+  await ensureAnalyticsSchema();
+  const db = getDb();
+  const filters = [rangeFilter(range)];
+  if (toolId) filters.push(eq(toolUsage.toolId, toolId));
+
+  const rows = await db
+    .select({
+      referrer: toolUsage.referrer,
+      value: count(),
+    })
+    .from(toolUsage)
+    .where(and(...filters))
+    .groupBy(toolUsage.referrer);
+
+  return aggregateNamedCounts(
+    rows.map((row) => ({
+      name: classifyTrafficSource(row.referrer),
+      count: row.value,
+    })),
+    limit,
+  );
+}
+
 export async function getToolDetail(
   toolId: string,
   range: DateRange,
@@ -309,10 +338,11 @@ export async function getToolDetail(
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([label, count]) => ({ label, count }));
 
-  const [countries, devices, browsers] = await Promise.all([
+  const [countries, devices, browsers, sources] = await Promise.all([
     getNamedBreakdown(range, "country", 10, toolId),
     getDeviceDistribution(range, toolId),
     getBrowserDistribution(range, toolId),
+    getSourceDistribution(range, toolId),
   ]);
 
   return {
@@ -326,6 +356,7 @@ export async function getToolDetail(
     countries,
     devices,
     browsers,
+    sources,
   };
 }
 

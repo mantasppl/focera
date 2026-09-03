@@ -85,4 +85,5 @@ export type ToolDetailStats = {
   countries: NamedCount[];
   devices: NamedCount[];
   browsers: NamedCount[];
+  sources: NamedCount[];
 };
