@@ -2353,7 +2353,7 @@ a {
 /* -- Tool page shell -- */
 .tool-shell__glow {
   position: absolute;
-  inset: auto -15% 0 35%;
+  inset: auto 0 0 35%;
   height: 55%;
   background: radial-gradient(
     closest-side,
@@ -2381,13 +2381,12 @@ a {
 
   html,
   body {
-    overflow-x: clip;
     max-width: 100%;
+    overscroll-behavior-x: none;
   }
 
   .page-shell,
   .tool-shell {
-    overflow-x: clip;
     max-width: 100%;
     min-width: 0;
   }
@@ -2396,6 +2395,20 @@ a {
   .tool-shell__main {
     max-width: 100%;
     min-width: 0;
+  }
+
+  .site-header__bar {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .site-header.is-scrolled .site-header__bar,
+  .site-header.is-open .site-header__bar {
+    background: #fff;
   }
 
   .site-header__inner,
@@ -8089,7 +8102,7 @@ a {
   /* Compact sticky dock: image only, maximize room for options below */
   .add-text-on-image.is-preview-first > .add-text-on-image__canvas-panel {
     position: sticky;
-    top: 3.6rem;
+    top: var(--site-header-height);
     z-index: 20;
     width: auto;
     max-width: none;
@@ -8380,7 +8393,7 @@ a {
    */
   .image-editor-shell.is-preview-first > .image-editor-shell__canvas-panel {
     position: sticky;
-    top: 3.6rem;
+    top: var(--site-header-height);
     z-index: 20;
     width: auto;
     max-width: none;
@@ -14873,7 +14886,7 @@ html[data-admin-theme="dark"] .admin-error {
   }
 
   .qr-tool__preview-dock {
-    top: 3.6rem;
+    top: var(--site-header-height);
     gap: 0.4rem;
     padding: 0.5rem;
     border-radius: var(--radius);
