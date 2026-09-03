@@ -17,7 +17,7 @@ type AdminChromeProps = {
 export default function AdminChrome({ children, title }: AdminChromeProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { analyticsPath, ratingsPath, loginPath, api } = useAdminPath();
+  const { trafficPath, analyticsPath, ratingsPath, loginPath, api } = useAdminPath();
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -62,13 +62,22 @@ export default function AdminChrome({ children, title }: AdminChromeProps) {
       <header className="admin-header">
         <div className="admin-header__inner">
           <div className="admin-header__brand">
-            <Link href={analyticsPath} className="site-logo">
+            <Link href={trafficPath} className="site-logo">
               <BrandMark className="site-logo__mark" />
               Focera
             </Link>
-            <span className="admin-header__badge">Analytics</span>
+            <span className="admin-header__badge">Admin</span>
           </div>
           <nav className="admin-nav" aria-label="Admin">
+            <Link
+              href={trafficPath}
+              className={cn(
+                "admin-nav__link",
+                pathname.includes("/traffic") && "is-active",
+              )}
+            >
+              Traffic
+            </Link>
             <Link
               href={analyticsPath}
               className={cn(
@@ -76,7 +85,7 @@ export default function AdminChrome({ children, title }: AdminChromeProps) {
                 pathname.includes("/analytics") && "is-active",
               )}
             >
-              Dashboard
+              Usage
             </Link>
             <Link
               href={ratingsPath}
@@ -88,7 +97,7 @@ export default function AdminChrome({ children, title }: AdminChromeProps) {
               Ratings
             </Link>
             <Link href="/" className="admin-nav__link">
-              View site
+              Site
             </Link>
           </nav>
           <div className="admin-header__actions">

@@ -68,6 +68,10 @@ export function adminLoginPath(): string {
   return `${getAdminPath()}/login`;
 }
 
+export function adminTrafficPath(): string {
+  return `${getAdminPath()}/traffic`;
+}
+
 export function adminAnalyticsPath(): string {
   return `${getAdminPath()}/analytics`;
 }

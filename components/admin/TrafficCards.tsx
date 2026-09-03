@@ -30,14 +30,6 @@ export default function TrafficCards({
 
   return (
     <section className="admin-traffic" aria-label="Site traffic">
-      <div className="admin-table-card__head">
-        <h2>Site traffic</h2>
-        <p>
-          Live visitors plus page views and unique visitors for today, this
-          week, this month, and all time.
-        </p>
-      </div>
-
       <article className="admin-online-card">
         <p className="admin-stat-card__label">
           <span className="admin-online-card__dot" aria-hidden="true" />

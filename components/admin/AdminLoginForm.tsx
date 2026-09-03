@@ -9,7 +9,7 @@ import { useAdminPath } from "@/components/admin/AdminPathContext";
 export default function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { adminPath, analyticsPath, api } = useAdminPath();
+  const { adminPath, trafficPath, api } = useAdminPath();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [csrfToken, setCsrfToken] = useState("");
@@ -57,8 +57,8 @@ export default function AdminLoginForm() {
         } | null;
         throw new Error(body?.error || "Invalid credentials");
       }
-      const next = searchParams.get("next") || analyticsPath;
-      router.replace(next.startsWith(adminPath) ? next : analyticsPath);
+      const next = searchParams.get("next") || trafficPath;
+      router.replace(next.startsWith(adminPath) ? next : trafficPath);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Invalid credentials");

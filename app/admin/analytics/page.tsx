@@ -3,7 +3,7 @@ import AnalyticsDashboard from "@/components/admin/AnalyticsDashboard";
 
 export default function AdminAnalyticsPage() {
   return (
-    <AdminChrome title="Tool usage analytics">
+    <AdminChrome title="Tool usage">
       <AnalyticsDashboard />
     </AdminChrome>
   );

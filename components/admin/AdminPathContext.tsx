@@ -9,6 +9,7 @@ import {
 
 type AdminPathContextValue = {
   adminPath: string;
+  trafficPath: string;
   analyticsPath: string;
   ratingsPath: string;
   loginPath: string;
@@ -28,6 +29,7 @@ export function AdminPathProvider({
     const base = adminPath.replace(/\/+$/, "");
     return {
       adminPath: base,
+      trafficPath: `${base}/traffic`,
       analyticsPath: `${base}/analytics`,
       ratingsPath: `${base}/ratings`,
       loginPath: `${base}/login`,

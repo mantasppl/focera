@@ -182,7 +182,7 @@ export async function proxy(request: NextRequest) {
     const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
     if (isLoginPage && (await verifySession(token))) {
       return NextResponse.redirect(
-        new URL(`${adminPath}/analytics`, request.url),
+        new URL(`${adminPath}/traffic`, request.url),
       );
     }
     return NextResponse.rewrite(rewriteUrl);
