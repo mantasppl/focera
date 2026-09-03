@@ -8241,6 +8241,14 @@ a {
   padding: 0.65rem 1rem 0.85rem;
 }
 
+.image-editor-shell__stage-wrap {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .image-editor-shell__file-bar {
   display: flex;
   align-items: flex-start;
@@ -8359,6 +8367,7 @@ a {
   .image-editor-shell__stage.tool-stage {
     min-height: 0;
     height: 100%;
+    flex: 1;
     padding: 1.5rem;
   }
 
@@ -8386,10 +8395,55 @@ a {
     overflow: hidden;
   }
 
+  .image-editor-shell__stage-wrap {
+    position: relative;
+  }
+
+  .image-editor-shell__expand-btn {
+    position: absolute;
+    right: 0.55rem;
+    bottom: 0.55rem;
+    z-index: 6;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid color-mix(in srgb, #fff 35%, transparent);
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.72);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.28);
+    cursor: pointer;
+    transition:
+      transform 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .image-editor-shell__expand-btn:hover,
+  .image-editor-shell__expand-btn:focus-visible {
+    background: rgba(15, 23, 42, 0.88);
+    outline: none;
+  }
+
+  .image-editor-shell__expand-btn:active {
+    transform: scale(0.97);
+  }
+
+  .image-editor-shell__expand-label {
+    line-height: 1;
+  }
+
   /*
-   * Mobile sticky preview dock (Remove.bg / PhotoRoom style):
-   * image + slider only, no title/meta/hint chrome, compact height
-   * so options below remain usable while scrolling.
+   * Mobile sticky preview dock:
+   * - Expanded after upload (large preview)
+   * - Collapsed while scrolling options (compact dock)
+   * - Fullscreen via Expand button
    */
   .image-editor-shell.is-preview-first > .image-editor-shell__canvas-panel {
     position: sticky;
@@ -8421,10 +8475,12 @@ a {
 
   .image-editor-shell.is-preview-first .image-editor-shell__stage {
     min-height: 0;
-    max-height: min(28dvh, 11.5rem);
-    padding: 0.35rem 0.5rem;
     border: none;
     border-radius: 0;
+    padding: 0.45rem 0.55rem;
+    transition:
+      max-height 240ms ease,
+      padding 240ms ease;
   }
 
   .image-editor-shell.is-preview-first .image-editor-shell__stage.tool-stage.is-ready,
@@ -8439,16 +8495,58 @@ a {
     gap: 0;
   }
 
+  /* Expanded: large preview right after upload / at top of page */
+  .image-editor-shell.is-preview-expanded .image-editor-shell__stage {
+    max-height: min(48dvh, 20rem);
+    padding: 0.55rem 0.65rem;
+  }
+
+  .image-editor-shell.is-preview-expanded .compare__stage,
+  .image-editor-shell.is-preview-expanded .enhancing__frame {
+    max-height: min(44dvh, 18.5rem);
+  }
+
+  .image-editor-shell.is-preview-expanded .compare__image--after,
+  .image-editor-shell.is-preview-expanded .enhancing__image,
+  .image-editor-shell.is-preview-expanded .preview-single__image,
+  .image-editor-shell.is-preview-expanded .crop-image__editor,
+  .image-editor-shell.is-preview-expanded .crop-image__stage,
+  .image-editor-shell.is-preview-expanded .image-splitter__stage,
+  .image-editor-shell.is-preview-expanded .image-splitter__image {
+    max-height: min(44dvh, 18.5rem);
+  }
+
+  /* Collapsed: compact sticky dock while browsing options */
+  .image-editor-shell.is-preview-collapsed .image-editor-shell__stage {
+    max-height: min(28dvh, 11.5rem);
+    padding: 0.35rem 0.5rem;
+  }
+
+  .image-editor-shell.is-preview-collapsed .compare__stage,
+  .image-editor-shell.is-preview-collapsed .enhancing__frame {
+    max-height: min(26dvh, 10.75rem);
+  }
+
+  .image-editor-shell.is-preview-collapsed .compare__image--after,
+  .image-editor-shell.is-preview-collapsed .enhancing__image,
+  .image-editor-shell.is-preview-collapsed .preview-single__image,
+  .image-editor-shell.is-preview-collapsed .crop-image__editor,
+  .image-editor-shell.is-preview-collapsed .crop-image__stage,
+  .image-editor-shell.is-preview-collapsed .image-splitter__stage,
+  .image-editor-shell.is-preview-collapsed .image-splitter__image {
+    max-height: min(26dvh, 10.75rem);
+  }
+
   .image-editor-shell.is-preview-first .compare__stage,
   .image-editor-shell.is-preview-first .enhancing__frame {
     max-width: none;
     width: 100%;
     height: auto;
-    max-height: min(26dvh, 10.75rem);
     aspect-ratio: auto;
     border: none;
     border-radius: 0.35rem;
     touch-action: pan-y;
+    transition: max-height 240ms ease;
   }
 
   .image-editor-shell.is-preview-first .compare__image--after,
@@ -8458,8 +8556,8 @@ a {
     display: block;
     width: 100%;
     height: auto;
-    max-height: min(26dvh, 10.75rem);
     object-fit: contain;
+    transition: max-height 240ms ease;
   }
 
   .image-editor-shell.is-preview-first .compare__image--before {
@@ -8467,11 +8565,11 @@ a {
   }
 
   .image-editor-shell.is-preview-first .preview-single__image {
-    max-height: min(26dvh, 10.75rem);
     width: auto;
     height: auto;
     max-width: 100%;
     object-fit: contain;
+    transition: max-height 240ms ease;
   }
 
   .image-editor-shell.is-preview-first .compare__badge {
@@ -8511,11 +8609,89 @@ a {
   .image-editor-shell.is-preview-first .image-splitter__image {
     min-height: 0;
     height: auto;
-    max-height: min(26dvh, 10.75rem);
   }
 
   .image-editor-shell__sidebar.tool-panel {
     padding-top: 0.85rem;
+  }
+
+  /* Fullscreen lightbox preview */
+  .image-editor-shell.is-preview-fullscreen > .image-editor-shell__sidebar {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .image-editor-shell.is-preview-fullscreen > .image-editor-shell__canvas-panel {
+    position: fixed;
+    inset: 0;
+    top: 0;
+    z-index: 80;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: #0c0f12;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .image-editor-shell.is-preview-fullscreen .image-editor-shell__stage-wrap {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .image-editor-shell.is-preview-fullscreen .image-editor-shell__stage {
+    flex: 1;
+    max-height: none;
+    min-height: 0;
+    height: 100%;
+    padding: 3.25rem 0.75rem 4.5rem;
+    background: #0c0f12 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-editor-shell.is-preview-fullscreen .compare__stage,
+  .image-editor-shell.is-preview-fullscreen .enhancing__frame,
+  .image-editor-shell.is-preview-fullscreen .preview-single__image,
+  .image-editor-shell.is-preview-fullscreen .compare__image--after,
+  .image-editor-shell.is-preview-fullscreen .enhancing__image,
+  .image-editor-shell.is-preview-fullscreen .crop-image__editor,
+  .image-editor-shell.is-preview-fullscreen .crop-image__stage,
+  .image-editor-shell.is-preview-fullscreen .image-splitter__stage,
+  .image-editor-shell.is-preview-fullscreen .image-splitter__image {
+    max-height: min(82dvh, 100%);
+    max-width: 100%;
+  }
+
+  .image-editor-shell.is-preview-fullscreen .image-editor-shell__expand-btn {
+    top: calc(0.65rem + env(safe-area-inset-top, 0px));
+    right: calc(0.75rem + env(safe-area-inset-right, 0px));
+    bottom: auto;
+    min-height: 2.4rem;
+    padding: 0.5rem 0.95rem;
+    font-size: 0.84rem;
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+  }
+
+  .image-editor-shell.is-preview-fullscreen .compare__badge {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.55rem;
+  }
+}
+
+@media (min-width: 860px) {
+  .image-editor-shell__expand-btn {
+    display: none;
   }
 }
 
