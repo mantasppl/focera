@@ -54,14 +54,22 @@ export default function BeforeAfterPreview({
     <div className={cn("compare", className)}>
       <div ref={containerRef} className="compare__stage">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={afterSrc} alt={afterAlt} className="compare__image compare__image--after" />
+        <img
+          src={afterSrc}
+          alt={afterAlt}
+          className="compare__image compare__image--after"
+        />
 
         <div
           className="compare__before"
           style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={beforeSrc} alt={beforeAlt} className="compare__image compare__image--before" />
+          <img
+            src={beforeSrc}
+            alt={beforeAlt}
+            className="compare__image compare__image--before"
+          />
         </div>
 
         <button
@@ -81,7 +89,7 @@ export default function BeforeAfterPreview({
         <span className="compare__badge compare__badge--before">Before</span>
         <span className="compare__badge compare__badge--after">After</span>
       </div>
-      <p className="tool-hint">{hint}</p>
+      {hint ? <p className="tool-hint compare__hint">{hint}</p> : null}
     </div>
   );
 }
