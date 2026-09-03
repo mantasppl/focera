@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import QRCode from "qrcode";
 import {
   SHARE_NETWORKS,
   canonicalShareUrl,
@@ -36,6 +37,9 @@ export default function ShareMenu({
   const [copied, setCopied] = useState(false);
   const [canNativeShare, setCanNativeShare] = useState(false);
   const [centerOnMobile, setCenterOnMobile] = useState(false);
+  const [qrSrc, setQrSrc] = useState<string | null>(null);
+  const [qrUrl, setQrUrl] = useState("");
+  const [qrBusy, setQrBusy] = useState(false);
 
   useEffect(() => {
     setCanNativeShare(typeof navigator !== "undefined" && "share" in navigator);
@@ -52,17 +56,23 @@ export default function ShareMenu({
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open && !qrSrc) return;
 
     function onPointerDown(event: MouseEvent) {
       const target = event.target as Node;
+      if (qrSrc) return;
       if (rootRef.current?.contains(target)) return;
       if (panelRef.current?.contains(target)) return;
       setOpen(false);
     }
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key !== "Escape") return;
+      if (qrSrc) {
+        setQrSrc(null);
+        return;
+      }
+      setOpen(false);
     }
 
     document.addEventListener("mousedown", onPointerDown);
@@ -71,7 +81,7 @@ export default function ShareMenu({
       document.removeEventListener("mousedown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, qrSrc]);
 
   useEffect(() => {
     if (!copied) return;
@@ -109,6 +119,27 @@ export default function ShareMenu({
     }
   }
 
+  async function onShowQr() {
+    if (qrBusy) return;
+    const shareUrl = payload().url;
+    setQrBusy(true);
+    try {
+      const dataUrl = await QRCode.toDataURL(shareUrl, {
+        width: 360,
+        margin: 2,
+        errorCorrectionLevel: "M",
+        color: { dark: "#0a0b0d", light: "#ffffff" },
+      });
+      setQrUrl(shareUrl);
+      setQrSrc(dataUrl);
+      setOpen(false);
+    } catch {
+      setQrSrc(null);
+    } finally {
+      setQrBusy(false);
+    }
+  }
+
   const useCenteredPortal = variant === "icon" && centerOnMobile;
 
   const panel = open ? (
@@ -136,6 +167,24 @@ export default function ShareMenu({
 
       <ul className="share-grid">
         {SHARE_NETWORKS.map((network) => {
+          if (network.id === "qr") {
+            return (
+              <li key={network.id}>
+                <button
+                  type="button"
+                  className="share-network"
+                  onClick={() => void onShowQr()}
+                  disabled={qrBusy}
+                >
+                  <span className="share-network__icon" aria-hidden="true">
+                    <NetworkIcon id="qr" />
+                  </span>
+                  {network.label}
+                </button>
+              </li>
+            );
+          }
+
           const share = payload();
           const href = shareNetworkHref(network.id, share.url, share.text);
           const isMail = network.id === "email";
@@ -212,6 +261,42 @@ export default function ShareMenu({
             document.body,
           )
         : panel}
+
+      {qrSrc && typeof document !== "undefined"
+        ? createPortal(
+            <div className="share-qr-portal">
+              <button
+                type="button"
+                className="share-portal__backdrop"
+                aria-label="Close QR code"
+                onClick={() => setQrSrc(null)}
+              />
+              <div
+                className="share-qr-dialog"
+                role="dialog"
+                aria-label="QR code for this page"
+              >
+                <p className="share-qr-dialog__title">Scan to open this page</p>
+                <img
+                  className="share-qr-dialog__image"
+                  src={qrSrc}
+                  width={220}
+                  height={220}
+                  alt={`QR code for ${qrUrl}`}
+                />
+                <p className="share-qr-dialog__url">{qrUrl}</p>
+                <button
+                  type="button"
+                  className="share-qr-dialog__close"
+                  onClick={() => setQrSrc(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }
@@ -367,12 +452,42 @@ function NetworkIcon({ id }: { id: ShareNetworkId }) {
           />
         </svg>
       );
-    case "line":
+    case "qr":
       return (
-        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+          <rect
+            x="3.5"
+            y="3.5"
+            width="7"
+            height="7"
+            rx="1.2"
+            stroke="currentColor"
+            strokeWidth="1.7"
+          />
+          <rect x="5.6" y="5.6" width="2.8" height="2.8" fill="currentColor" />
+          <rect
+            x="13.5"
+            y="3.5"
+            width="7"
+            height="7"
+            rx="1.2"
+            stroke="currentColor"
+            strokeWidth="1.7"
+          />
+          <rect x="15.6" y="5.6" width="2.8" height="2.8" fill="currentColor" />
+          <rect
+            x="3.5"
+            y="13.5"
+            width="7"
+            height="7"
+            rx="1.2"
+            stroke="currentColor"
+            strokeWidth="1.7"
+          />
+          <rect x="5.6" y="15.6" width="2.8" height="2.8" fill="currentColor" />
           <path
             fill="currentColor"
-            d="M12 4.2c-4.6 0-8.3 3-8.3 6.7 0 3.3 2.9 6.1 6.9 6.6.3 0 .6.2.7.5l.5 1.8c.1.3.4.2.6 0l1.5-1.2c.2-.1.3-.1.5-.1 4.3-.6 7.6-3.6 7.6-7.6 0-3.7-3.7-6.7-8-6.7Zm-3.3 8.8H7.3V9.2h1.4v3.8Zm2.3 0h-1.4V9.2h1.4v3.8Zm3.4 0h-1.2l-1.3-1.8v1.8h-1.4V9.2h1.2l1.3 1.8V9.2H16v3.8Zm2.6 0h-1.4V9.2H18v3.8Z"
+            d="M13.5 13.5h2.2v2.2h-2.2zm3.2 0h3.8v2.2h-3.8zm-3.2 3.2h3.8v3.8h-3.8zm4.4 0h2.8v2.2H18zm0 2.8h2.8v1h-2.8z"
           />
         </svg>
       );

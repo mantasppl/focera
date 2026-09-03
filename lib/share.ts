@@ -11,7 +11,7 @@ export type ShareNetworkId =
   | "threads"
   | "bluesky"
   | "tumblr"
-  | "line"
+  | "qr"
   | "email";
 
 export type ShareNetwork = {
@@ -30,7 +30,7 @@ export const SHARE_NETWORKS: ShareNetwork[] = [
   { id: "threads", label: "Threads" },
   { id: "bluesky", label: "Bluesky" },
   { id: "tumblr", label: "Tumblr" },
-  { id: "line", label: "LINE" },
+  { id: "qr", label: "QR code" },
   { id: "email", label: "Email" },
 ];
 
@@ -85,9 +85,9 @@ export function shareNetworkHref(
       return `https://bsky.app/intent/compose?text=${composed}`;
     case "tumblr":
       return `https://www.tumblr.com/widgets/share/tool?canonicalUrl=${encodedUrl}&title=${encodedText}&caption=${encodedText}`;
-    case "line":
-      return `https://social-plugins.line.me/lineit/share?url=${encodedUrl}`;
     case "email":
       return `mailto:?subject=${encodedText}&body=${composed}`;
+    case "qr":
+      return url;
   }
 }

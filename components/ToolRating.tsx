@@ -12,8 +12,10 @@ import { getAnalyticsSessionId } from "@/lib/analytics/client";
 import { PRODUCT_DOWNLOAD_EVENT } from "@/lib/ratings/notify";
 import { cn } from "@/lib/utils";
 
-const DOWNLOADS_BEFORE_PROMPT = 3;
+const DOWNLOADS_BEFORE_PROMPT = 5;
 const DOWNLOAD_COUNT_KEY = "focera_product_download_count";
+const RATED_TOOLS_KEY = "focera_tool_rated_at";
+const RATED_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
 
 type ToolRatingProps = {
   toolSlug: string;
@@ -26,19 +28,65 @@ type Status =
   | { type: "success" }
   | { type: "error"; message: string };
 
-function readDownloadCount(): number {
+function readDownloadCounts(): Record<string, number> {
   try {
     const raw = window.localStorage.getItem(DOWNLOAD_COUNT_KEY);
-    const n = raw ? Number.parseInt(raw, 10) : 0;
-    return Number.isFinite(n) && n > 0 ? n : 0;
+    if (!raw) return {};
+    // Legacy global counter from the 3-download prompt.
+    if (/^\d+$/.test(raw)) return {};
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return {};
+    }
+    const counts: Record<string, number> = {};
+    for (const [slug, value] of Object.entries(parsed)) {
+      const n = typeof value === "number" ? value : Number.parseInt(String(value), 10);
+      if (slug && Number.isFinite(n) && n > 0) counts[slug] = n;
+    }
+    return counts;
   } catch {
-    return 0;
+    return {};
   }
 }
 
-function writeDownloadCount(value: number) {
+function writeDownloadCounts(counts: Record<string, number>) {
   try {
-    window.localStorage.setItem(DOWNLOAD_COUNT_KEY, String(value));
+    window.localStorage.setItem(DOWNLOAD_COUNT_KEY, JSON.stringify(counts));
+  } catch {
+    // ignore quota / private mode
+  }
+}
+
+function readRatedAtMap(): Record<string, number> {
+  try {
+    const raw = window.localStorage.getItem(RATED_TOOLS_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return {};
+    }
+    const map: Record<string, number> = {};
+    for (const [slug, value] of Object.entries(parsed)) {
+      const n = typeof value === "number" ? value : Number.parseInt(String(value), 10);
+      if (slug && Number.isFinite(n) && n > 0) map[slug] = n;
+    }
+    return map;
+  } catch {
+    return {};
+  }
+}
+
+function hasRecentlyRated(toolSlug: string): boolean {
+  const ratedAt = readRatedAtMap()[toolSlug];
+  if (!ratedAt) return false;
+  return Date.now() - ratedAt < RATED_COOLDOWN_MS;
+}
+
+function markToolRated(toolSlug: string) {
+  try {
+    const map = readRatedAtMap();
+    map[toolSlug] = Date.now();
+    window.localStorage.setItem(RATED_TOOLS_KEY, JSON.stringify(map));
   } catch {
     // ignore quota / private mode
   }
@@ -142,6 +190,7 @@ function RatingForm({
       setComment("");
       setStars(0);
       setStatus({ type: "success" });
+      markToolRated(toolSlug);
       onSuccess?.();
     } catch {
       setStatus({
@@ -204,18 +253,25 @@ export default function ToolRating({ toolSlug, toolName }: ToolRatingProps) {
 
   useEffect(() => {
     function onDownload() {
-      const next = readDownloadCount() + 1;
+      if (hasRecentlyRated(toolSlug)) return;
+
+      const counts = readDownloadCounts();
+      const next = (counts[toolSlug] || 0) + 1;
       if (next >= DOWNLOADS_BEFORE_PROMPT) {
-        writeDownloadCount(0);
-        window.setTimeout(() => setModalOpen(true), 500);
+        counts[toolSlug] = 0;
+        writeDownloadCounts(counts);
+        window.setTimeout(() => {
+          if (!hasRecentlyRated(toolSlug)) setModalOpen(true);
+        }, 500);
         return;
       }
-      writeDownloadCount(next);
+      counts[toolSlug] = next;
+      writeDownloadCounts(counts);
     }
 
     window.addEventListener(PRODUCT_DOWNLOAD_EVENT, onDownload);
     return () => window.removeEventListener(PRODUCT_DOWNLOAD_EVENT, onDownload);
-  }, []);
+  }, [toolSlug]);
 
   useEffect(() => {
     if (!modalOpen) return;
@@ -276,9 +332,7 @@ export default function ToolRating({ toolSlug, toolName }: ToolRatingProps) {
                 ×
               </button>
             </div>
-            <p className="tool-rating__lede">
-              You downloaded {DOWNLOADS_BEFORE_PROMPT} files. How was {toolName}?
-            </p>
+            <p className="tool-rating__lede">How was {toolName}?</p>
             <RatingForm
               toolSlug={toolSlug}
               toolName={toolName}
