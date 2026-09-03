@@ -1195,6 +1195,70 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "content-improver",
+    name: "AI Content Improver",
+    shortName: "Content Improver",
+    description:
+      "Improve writing with AI — polish grammar, paraphrase, change tone, shorten, expand, humanize, and more. Free online content improver, no account required.",
+    categories: ["ai", "file"],
+    status: "ready",
+    href: "/content-improver",
+    keywords: [
+      "content improver",
+      "ai content improver",
+      "ai writing improver",
+      "paraphrase tool",
+      "rewrite text",
+      "grammar checker online",
+      "improve writing",
+      "rephrase sentence",
+      "tone changer",
+      "make text better",
+      "humanize ai text",
+      "shorten text",
+      "expand text",
+      "free paraphraser",
+      "writing assistant",
+    ],
+    faq: [
+      {
+        question: "Is this AI content improver free?",
+        answer:
+          "Yes. Paste text, improve it, and copy or download the result with no account, subscription, or credit card.",
+      },
+      {
+        question: "What can the content improver do?",
+        answer:
+          "It covers the most-used jobs from popular writing tools: polish grammar and clarity, paraphrase, fluency, formal or casual tone, academic style, simplify, creative rewrite, shorten, expand, humanize, persuasive marketing, confident voice, and SEO-friendly scannable copy — plus light, balanced, or strong rewrite strength.",
+      },
+      {
+        question: "How does AI content improvement work?",
+        answer:
+          "You paste a draft, choose an improvement mode and rewrite strength, then the tool sends your text to an AI writing model and returns an improved version you can copy, download, or reuse as input.",
+      },
+      {
+        question: "Is my text stored by Focera?",
+        answer:
+          "Focera does not keep a library of your drafts. Text is sent to the generation provider to create the rewrite, then shown in your browser to copy or download.",
+      },
+      {
+        question: "Can I copy or download the improved text?",
+        answer:
+          "Yes. After improvement, copy to your clipboard, download a plain TXT file, or use Use as input to refine again with another mode.",
+      },
+      {
+        question: "How long can my draft be?",
+        answer:
+          "You can paste up to 8,000 characters at a time. For longer documents, improve section by section for the best quality.",
+      },
+      {
+        question: "Do I need an account or browser extension?",
+        answer:
+          "No. Open the page, paste your text, and improve. Nothing to install and no signup required.",
+      },
+    ],
+  },
+  {
     slug: "invoice-generator",
     name: "Invoice Generator",
     shortName: "Invoices",

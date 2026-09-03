@@ -23,9 +23,16 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "change-background",
   ],
   "ai-story-generator": [
+    "content-improver",
     "markdown-editor",
     "word-counter",
     "text-case-converter",
+  ],
+  "content-improver": [
+    "word-counter",
+    "text-case-converter",
+    "markdown-editor",
+    "ai-story-generator",
   ],
   "background-remover": [
     "make-background-transparent",
@@ -198,6 +205,7 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "word-counter",
   ],
   "markdown-editor": [
+    "content-improver",
     "json-formatter",
     "word-counter",
     "text-case-converter",
@@ -283,6 +291,7 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   "rotate-pdf": ["pdf-editor", "rearrange-pdf", "delete-pdf-pages"],
   "split-pdf": ["merge-pdf", "rearrange-pdf", "pdf-editor"],
   "text-case-converter": [
+    "content-improver",
     "word-counter",
     "markdown-editor",
     "lorem-ipsum-generator",
@@ -320,6 +329,7 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   "video-to-gif": ["gif-to-mp4", "webp-to-gif", "png-to-gif", "jpg-to-gif"],
   "video-to-text": ["youtube-to-text", "audio-to-text", "video-autocaption"],
   "word-counter": [
+    "content-improver",
     "text-case-converter",
     "markdown-editor",
     "lorem-ipsum-generator",
