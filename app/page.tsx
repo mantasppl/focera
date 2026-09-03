@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import JsonLd from "@/components/JsonLd";
 import ToolCard from "@/components/ToolCard";
+import ToolInquiry from "@/components/ToolInquiry";
 import ToolSearch from "@/components/ToolSearch";
 import {
   categoryDescriptions,
@@ -75,6 +76,11 @@ const homeFaq = [
     answer:
       "Yes. Pages are mobile-first and responsive so you can use tools on phones, tablets, and desktops.",
   },
+  {
+    question: "What if I cannot find a tool?",
+    answer:
+      "Request it from the homepage. We build requested tools for free and publish them within 24 hours, then email you when they go live.",
+  },
 ];
 
 export default function HomePage() {
@@ -107,6 +113,8 @@ export default function HomePage() {
             </Link>
           </div>
         </section>
+
+        <ToolInquiry />
 
         <section
           className="page-section"

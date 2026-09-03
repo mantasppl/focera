@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import RelatedTools from "@/components/RelatedTools";
 import ShareMenu from "@/components/ShareMenu";
+import ToolInquiry from "@/components/ToolInquiry";
 import ToolFeedbackPrompt from "@/components/ToolFeedbackPrompt";
 import ToolRating from "@/components/ToolRating";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
@@ -88,6 +89,7 @@ export default function ToolLayout({
           <ToolFeedbackPrompt toolSlug={tool.slug} />
         </div>
         <RelatedTools key={tool.href} currentSlug={tool.slug} />
+        <ToolInquiry />
 
         {content}
 
