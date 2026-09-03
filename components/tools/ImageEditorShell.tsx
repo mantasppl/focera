@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 
 const MOBILE_QUERY = "(max-width: 859px)";
@@ -28,22 +29,7 @@ type ImageEditorShellProps = {
   children: ReactNode;
 };
 
-function ExpandIcon({ expanded }: { expanded: boolean }) {
-  if (expanded) {
-    return (
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-        <path
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9 9 4.5 4.5M4.5 4.5H9M4.5 4.5V9M15 9l4.5-4.5M19.5 4.5H15M19.5 4.5V9M9 15l-4.5 4.5M4.5 19.5H9M4.5 19.5V15M15 15l4.5 4.5M19.5 19.5H15M19.5 19.5V15"
-        />
-      </svg>
-    );
-  }
-
+function ExpandIcon() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
       <path
@@ -53,6 +39,20 @@ function ExpandIcon({ expanded }: { expanded: boolean }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M9 3.5H4.5V8M15 3.5h4.5V8M9 20.5H4.5V16M15 20.5h4.5V16"
+      />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        d="M6 6l12 12M18 6 6 18"
       />
     </svg>
   );
@@ -75,7 +75,12 @@ export default function ImageEditorShell({
 }: ImageEditorShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
   const scrollBaselineRef = useRef(0);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
 
   // New upload → big preview again, leave fullscreen.
   useEffect(() => {
@@ -142,95 +147,109 @@ export default function ImageEditorShell({
     };
   }, [fullscreen]);
 
-  const showExpand = hasSource && (stageReady || hasSource) && !loading;
+  const showExpand = hasSource && !loading && !fullscreen;
 
-  return (
-    <div
-      className={cn(
-        "tool-grid image-editor-shell",
-        className,
-        hasSource && "is-preview-first image-editor-shell--editing",
-        hasSource && !collapsed && !fullscreen && "is-preview-expanded",
-        hasSource && collapsed && !fullscreen && "is-preview-collapsed",
-        fullscreen && "is-preview-fullscreen",
-      )}
-    >
-      <aside className="image-editor-shell__sidebar tool-panel">
-        {sidebar}
-        {sidebarFooter ? (
-          <div className="image-editor-shell__sidebar-footer">
-            {sidebarFooter}
-          </div>
-        ) : null}
-      </aside>
-
-      <div className="image-editor-shell__canvas-panel tool-panel tool-panel--preview">
-        <div className="image-editor-shell__canvas-header">
-          <div>
-            <p className="image-editor-shell__canvas-title">{previewTitle}</p>
-            {previewMeta ? (
-              <p className="image-editor-shell__canvas-meta">{previewMeta}</p>
-            ) : null}
-          </div>
-          {previewHint ? (
-            <p className="image-editor-shell__canvas-hint">{previewHint}</p>
-          ) : null}
-        </div>
-
-        <div className="image-editor-shell__stage-wrap">
-          <div
-            className={cn(
-              "image-editor-shell__stage tool-stage",
-              (stageReady || hasSource) && "is-ready",
-              loading && "is-loading",
-            )}
-          >
-            {loading ? (
-              <div className="tool-loading" role="status" aria-live="polite">
-                <span className="tool-loading__spinner" aria-hidden="true" />
-                <span className="tool-loading__text">{loadingText}</span>
-                <span className="tool-loading__subtext">{loadingSubtext}</span>
-              </div>
-            ) : hasSource || stageReady ? (
-              children
-            ) : (
-              <div className="image-editor-shell__empty-canvas">
-                <p className="tool-placeholder">
-                  Your image preview appears here
-                </p>
-                <p className="image-editor-shell__empty-hint">
-                  Upload a photo to get started.
-                </p>
-              </div>
-            )}
-          </div>
-
-          {showExpand ? (
+  const closeControl =
+    fullscreen && portalReady
+      ? createPortal(
+          <div className="image-editor-shell__fullscreen-bar">
             <button
               type="button"
-              className="image-editor-shell__expand-btn"
-              aria-label={
-                fullscreen
-                  ? "Exit full screen preview"
-                  : "Expand preview to full screen"
-              }
-              aria-pressed={fullscreen}
-              onClick={() => setFullscreen((value) => !value)}
+              className="image-editor-shell__fullscreen-close"
+              aria-label="Close full screen preview"
+              onClick={() => setFullscreen(false)}
             >
-              <ExpandIcon expanded={fullscreen} />
-              <span className="image-editor-shell__expand-label">
-                {fullscreen ? "Close" : "Expand"}
-              </span>
+              <CloseIcon />
+              <span>Close</span>
             </button>
+          </div>,
+          document.body,
+        )
+      : null;
+
+  return (
+    <>
+      <div
+        className={cn(
+          "tool-grid image-editor-shell",
+          className,
+          hasSource && "is-preview-first image-editor-shell--editing",
+          hasSource && !collapsed && !fullscreen && "is-preview-expanded",
+          hasSource && collapsed && !fullscreen && "is-preview-collapsed",
+          fullscreen && "is-preview-fullscreen",
+        )}
+      >
+        <aside className="image-editor-shell__sidebar tool-panel">
+          {sidebar}
+          {sidebarFooter ? (
+            <div className="image-editor-shell__sidebar-footer">
+              {sidebarFooter}
+            </div>
+          ) : null}
+        </aside>
+
+        <div className="image-editor-shell__canvas-panel tool-panel tool-panel--preview">
+          <div className="image-editor-shell__canvas-header">
+            <div>
+              <p className="image-editor-shell__canvas-title">{previewTitle}</p>
+              {previewMeta ? (
+                <p className="image-editor-shell__canvas-meta">{previewMeta}</p>
+              ) : null}
+            </div>
+            {previewHint ? (
+              <p className="image-editor-shell__canvas-hint">{previewHint}</p>
+            ) : null}
+          </div>
+
+          <div className="image-editor-shell__stage-wrap">
+            <div
+              className={cn(
+                "image-editor-shell__stage tool-stage",
+                (stageReady || hasSource) && "is-ready",
+                loading && "is-loading",
+              )}
+            >
+              {loading ? (
+                <div className="tool-loading" role="status" aria-live="polite">
+                  <span className="tool-loading__spinner" aria-hidden="true" />
+                  <span className="tool-loading__text">{loadingText}</span>
+                  <span className="tool-loading__subtext">{loadingSubtext}</span>
+                </div>
+              ) : hasSource || stageReady ? (
+                children
+              ) : (
+                <div className="image-editor-shell__empty-canvas">
+                  <p className="tool-placeholder">
+                    Your image preview appears here
+                  </p>
+                  <p className="image-editor-shell__empty-hint">
+                    Upload a photo to get started.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {showExpand ? (
+              <button
+                type="button"
+                className="image-editor-shell__expand-btn"
+                aria-label="Expand preview to full screen"
+                onClick={() => setFullscreen(true)}
+              >
+                <ExpandIcon />
+                <span className="image-editor-shell__expand-label">Expand</span>
+              </button>
+            ) : null}
+          </div>
+
+          {privacyHint ? (
+            <p className="tool-hint image-editor-shell__privacy-hint">
+              {privacyHint}
+            </p>
           ) : null}
         </div>
-
-        {privacyHint ? (
-          <p className="tool-hint image-editor-shell__privacy-hint">
-            {privacyHint}
-          </p>
-        ) : null}
       </div>
-    </div>
+      {closeControl}
+    </>
   );
 }
