@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BrandMark from "@/components/BrandMark";
 import CategoryIcon from "@/components/CategoryIcon";
 import CTA from "@/components/CTA";
 import FAQ from "@/components/FAQ";
@@ -91,26 +92,73 @@ export default function HomePage() {
       <JsonLd data={faqPageSchema(homeFaq)} />
       <Header />
       <main className="page-main">
-        <section className="page-hero">
-          <p className="page-hero__brand">{SITE_NAME}</p>
-          <h1 className="page-hero__title">
-            Free online tools &amp; AI utilities
-          </h1>
-          <p className="page-hero__lede">
-            Free online tools for PDF, image, video, AI, and files. Fast,
-            private, and secure in your browser — no sign-up required. Search
-            a feature or open a top tool.
-          </p>
-          <div className="page-hero__search">
-            <ToolSearch liveSuggestions />
+        <section className="page-hero page-hero--home">
+          <div className="home-hero">
+            <div className="home-hero__atmosphere" aria-hidden="true">
+              <span className="home-hero__orb home-hero__orb--teal" />
+              <span className="home-hero__orb home-hero__orb--warm" />
+              <span className="home-hero__ring" />
+              <span className="home-hero__grid" />
+            </div>
+
+            <p className="home-hero__kicker">
+              <BrandMark className="home-hero__mark" />
+              <span className="home-hero__kicker-name">{SITE_NAME}</span>
+              <span className="home-hero__kicker-dot" aria-hidden="true" />
+              <span>in-browser toolkit</span>
+            </p>
+
+            <h1 className="page-hero__title">
+              Free online tools{" "}
+              <span className="home-hero__title-line">in your browser</span>
+            </h1>
+            <p className="page-hero__lede">
+              Free. Private. No sign-up.
+            </p>
+
+            <div className="page-hero__search home-hero__search">
+              <ToolSearch
+                liveSuggestions
+                placeholder="Search tools…"
+              />
+            </div>
+
+            <nav className="home-hero__cats" aria-label="Tool categories">
+              {categoryOrder.map((category) => (
+                <Link
+                  key={category}
+                  href={`/tools/${category}`}
+                  className={`home-hero__cat home-hero__cat--${category}`}
+                >
+                  <span className="home-hero__cat-icon" aria-hidden="true">
+                    <CategoryIcon
+                      category={category}
+                      className="home-hero__cat-svg"
+                    />
+                  </span>
+                  {categoryLabels[category].replace(/ Tools$/, "")}
+                </Link>
+              ))}
+            </nav>
           </div>
-          <div className="page-hero__actions">
-            <Link href="/#categories" className="ui-btn ui-btn--primary">
-              Browse categories
-            </Link>
-            <Link href="/#top-tools" className="ui-btn ui-btn--ghost">
-              See top tools
-            </Link>
+
+          <div className="home-hero__mosaic" aria-hidden="true">
+            {categoryOrder.map((category) => (
+              <div
+                key={category}
+                className={`home-hero__tile home-hero__tile--${category}`}
+              >
+                <span className="home-hero__tile-icon">
+                  <CategoryIcon
+                    category={category}
+                    className="home-hero__tile-svg"
+                  />
+                </span>
+                <span className="home-hero__tile-label">
+                  {categoryLabels[category].replace(/ Tools$/, "")}
+                </span>
+              </div>
+            ))}
           </div>
         </section>
 
