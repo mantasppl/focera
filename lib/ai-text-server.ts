@@ -16,6 +16,8 @@ export type AiTextGenerateOptions = {
   /** Prefer a faster Groq model for short rewrites. */
   preferFast?: boolean;
   timeoutMs?: number;
+  /** Max completion tokens for Groq (default 4096). */
+  maxTokens?: number;
 };
 
 export type AiTextGenerateResult = {
@@ -66,7 +68,14 @@ function extractChatText(payload: unknown): string | null {
 
   const record = payload as Record<string, unknown>;
 
-  for (const key of ["text", "content", "story", "improved", "translation"] as const) {
+  for (const key of [
+    "text",
+    "content",
+    "story",
+    "essay",
+    "improved",
+    "translation",
+  ] as const) {
     const fromField = textFromContent(record[key]);
     if (fromField) return fromField;
   }
@@ -189,7 +198,11 @@ async function generateWithGroqModel(
         model,
         messages: options.messages,
         temperature: options.temperature ?? 0.5,
-        max_tokens: 4096,
+        max_tokens:
+          typeof options.maxTokens === "number" &&
+          Number.isFinite(options.maxTokens)
+            ? Math.min(8192, Math.max(256, Math.floor(options.maxTokens)))
+            : 4096,
         seed,
       }),
       cache: "no-store",

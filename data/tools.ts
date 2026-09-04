@@ -41,7 +41,7 @@ export const categoryDescriptions: Record<ToolCategory, string> = {
     "Edit photos, adjust size, color, and text, or convert formats — background remover, compressors, converters, and more.",
   video:
     "Video tools like Compress Video, Video to GIF, Trim Video, and much more.",
-  ai: "AI tools like AI Image Generator, Background Remover, YouTube Summarizer, and much more.",
+  ai: "AI tools like AI Image Generator, AI Essay Writer, Background Remover, YouTube Summarizer, and much more.",
   file: "File tools like QR Generator, Password Generator, JSON Formatter, and much more.",
 };
 
@@ -1255,6 +1255,75 @@ export const tools: Tool[] = [
         question: "Do I need an account or browser extension?",
         answer:
           "No. Open the page, paste your text, and improve. Nothing to install and no signup required.",
+      },
+    ],
+  },
+  {
+    slug: "essay-writer",
+    name: "AI Essay Writer",
+    shortName: "Essay Writer",
+    description:
+      "Write essays with AI — pick type, academic level, length, citations, and voice, then copy or download the draft. Free online essay writer, no account required.",
+    categories: ["ai", "file"],
+    status: "ready",
+    href: "/essay-writer",
+    keywords: [
+      "essay writer",
+      "ai essay writer",
+      "free essay writer",
+      "essay generator",
+      "ai essay generator",
+      "write an essay",
+      "argumentative essay generator",
+      "college essay writer",
+      "essay outline generator",
+      "mla essay writer",
+      "apa essay writer",
+      "persuasive essay writer",
+      "expository essay generator",
+      "admission essay writer",
+      "free essay generator no signup",
+    ],
+    faq: [
+      {
+        question: "Is this AI essay writer free?",
+        answer:
+          "Yes. Enter a topic, generate a draft, and copy or download the result with no account, subscription, or credit card.",
+      },
+      {
+        question: "What can the essay writer do?",
+        answer:
+          "It covers the most-used jobs from popular essay generators: argumentative, persuasive, expository, narrative, descriptive, compare/contrast, cause/effect, analytical, research, and admission essays — plus academic level, length, MLA/APA/Chicago citations, natural or confident voice, and an optional outline above the essay.",
+      },
+      {
+        question: "How does AI essay writing work?",
+        answer:
+          "You enter a topic or assignment prompt, optionally add a thesis or points to cover, then choose type, level, length, citations, and voice. The tool sends those settings to an AI writing model and returns a complete draft you can copy or download.",
+      },
+      {
+        question: "Does it invent fake citations?",
+        answer:
+          "No. When you pick MLA, APA, or Chicago, the writer formats citations for widely known, real sources only. If a source is not certain, it is omitted rather than fabricated — unlike many essay generators that invent papers and page numbers.",
+      },
+      {
+        question: "Is my prompt stored by Focera?",
+        answer:
+          "Focera does not keep a library of your prompts or essays. Text is sent to the generation provider to create the draft, then shown in your browser to copy or download.",
+      },
+      {
+        question: "Can I copy or download the essay?",
+        answer:
+          "Yes. After generation, copy to your clipboard or download a plain TXT file. Use New variation for another take, then polish the draft in the AI content improver if you want.",
+      },
+      {
+        question: "How long can the essay be?",
+        answer:
+          "Choose Short (~350 words), Standard (~650 words), or Long (~1000 words). For longer papers, generate section by section or expand the draft in the content improver.",
+      },
+      {
+        question: "Do I need an account or API key?",
+        answer:
+          "No. Open the page, enter a topic, and write. Nothing to install and no signup required.",
       },
     ],
   },

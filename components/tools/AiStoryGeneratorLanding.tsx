@@ -90,9 +90,11 @@ export default function AiStoryGeneratorLanding() {
             <li>Social short fiction and writing-challenge entries</li>
           </ul>
           <p>
-            After you draft, pair the story with Focera&apos;s{" "}
-            <Link href="/ai-image-generator">AI image generator</Link> when you
-            want a matching cover or scene visual.
+            After you draft, polish the prose with Focera&apos;s{" "}
+            <Link href="/content-improver">AI content improver</Link>, try the{" "}
+            <Link href="/essay-writer">AI essay writer</Link> for nonfiction
+            assignments, or pair a scene with the{" "}
+            <Link href="/ai-image-generator">AI image generator</Link>.
           </p>
         </section>
 

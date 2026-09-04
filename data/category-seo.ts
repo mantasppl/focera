@@ -182,19 +182,21 @@ export const categorySeo: Record<ToolCategory, CategorySeoContent> = {
       "YouTube summarizer",
       "speech to text",
       "AI story generator",
+      "AI essay writer",
+      "content improver",
       "image to text",
       "PDF translator",
     ],
     heading: "Free AI tools online — generate, summarize, and transform content in your browser",
     intro: [
-      "Focera’s AI Tools category focuses on free online AI utilities that speed up creative and productivity tasks: generate images and stories, remove or change backgrounds, colorize photos, turn speech and video into text, summarize YouTube content, run OCR on images, translate image text, and translate PDFs.",
+      "Focera’s AI Tools category focuses on free online AI utilities that speed up creative and productivity tasks: generate images, stories, and essays, improve writing, remove or change backgrounds, colorize photos, turn speech and video into text, summarize YouTube content, run OCR on images, translate image text, and translate PDFs.",
       "These tools help you draft ideas, clean visuals, and extract meaning from media — with clear, practical workflows and a privacy-minded design so you can work without creating an account.",
     ],
     toolsHeading: "What AI tools you’ll find here",
     tools: [
       "Create & edit visuals — AI Image Generator, Background Remover, Change Background, and Colorize Photo for fast visual production.",
       "Understand media — YouTube Summarizer, YouTube to Text, Video to Text, Audio to Text, and Image to Text for transcripts, notes, and OCR.",
-      "Writing & documents — AI Story Generator for drafts and ideas, plus PDF Translator when you need readable text across languages.",
+      "Writing & documents — AI Essay Writer, AI Content Improver, and AI Story Generator for drafts, plus PDF Translator when you need readable text across languages.",
     ],
     useCasesHeading: "Where you can use these AI tools",
     useCases: [
@@ -206,7 +208,7 @@ export const categorySeo: Record<ToolCategory, CategorySeoContent> = {
       {
         title: "Study & research",
         description:
-          "Summarize educational YouTube videos, transcribe lectures, OCR textbook photos, and translate PDF handouts.",
+          "Summarize educational YouTube videos, transcribe lectures, draft essays, OCR textbook photos, and translate PDF handouts.",
       },
       {
         title: "Business workflows",

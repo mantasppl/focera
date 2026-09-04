@@ -122,8 +122,9 @@ export default function ContentImproverLanding() {
           </ul>
           <p>
             After you improve a draft, check length with the{" "}
-            <Link href="/word-counter">word counter</Link> or keep editing in
-            the <Link href="/markdown-editor">Markdown editor</Link>.
+            <Link href="/word-counter">word counter</Link>, draft a full essay
+            with the <Link href="/essay-writer">AI essay writer</Link>, or keep
+            editing in the <Link href="/markdown-editor">Markdown editor</Link>.
           </p>
         </section>
 

@@ -23,14 +23,20 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "change-background",
   ],
   "ai-story-generator": [
+    "essay-writer",
     "content-improver",
     "markdown-editor",
     "word-counter",
-    "text-case-converter",
   ],
   "content-improver": [
+    "essay-writer",
     "word-counter",
-    "text-case-converter",
+    "markdown-editor",
+    "ai-story-generator",
+  ],
+  "essay-writer": [
+    "content-improver",
+    "word-counter",
     "markdown-editor",
     "ai-story-generator",
   ],
@@ -206,7 +212,7 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   ],
   "markdown-editor": [
     "content-improver",
-    "json-formatter",
+    "essay-writer",
     "word-counter",
     "text-case-converter",
   ],
@@ -330,9 +336,9 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   "video-to-text": ["youtube-to-text", "audio-to-text", "video-autocaption"],
   "word-counter": [
     "content-improver",
+    "essay-writer",
     "text-case-converter",
     "markdown-editor",
-    "lorem-ipsum-generator",
   ],
   "word-to-pdf": ["outlook-to-pdf", "powerpoint-to-pdf", "pdf-to-word"],
   "youtube-summarize": ["youtube-to-text", "video-to-text", "audio-to-text"],
