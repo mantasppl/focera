@@ -1,8 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import Button from "@/components/Button";
-import Input from "@/components/Input";
 import {
   CONTENT_IMPROVER_MODES,
   CONTENT_IMPROVER_STRENGTHS,
@@ -17,10 +16,38 @@ import {
 import { useToolAnalytics } from "@/lib/analytics/client";
 import { cn, copyText } from "@/lib/utils";
 
-const EXAMPLE_SNIPPETS = [
-  "Our team are working on a new product that will hopefully help customers to better manage there projects more easier and faster then before.",
-  "This blog post talks about why remote work is good. Remote work has benefits. People like flexibility. Companies can save money on offices.",
-  "Hey — just checking if you got my last email? Would love to sync sometime this week if you're free to chat through next steps asap.",
+type WriteStarterId = "email" | "caption" | "blog" | "product";
+
+const WRITE_STARTERS: {
+  id: WriteStarterId;
+  label: string;
+  mode: ContentImproverModeId;
+  text: string;
+}[] = [
+  {
+    id: "email",
+    label: "Email",
+    mode: "formal",
+    text: "Hi,\n\nJust checking in about the project timeline. Can we move the deadline to Friday?\n\nThanks",
+  },
+  {
+    id: "caption",
+    label: "Caption",
+    mode: "casual",
+    text: "new drop is live!! super excited for this one, link in bio, dont miss it",
+  },
+  {
+    id: "blog",
+    label: "Blog",
+    mode: "polish",
+    text: "Remote work is good. It has benefits. People like flexibility and companies save money.",
+  },
+  {
+    id: "product",
+    label: "Product",
+    mode: "persuasive",
+    text: "Our app helps teams manage projects easier and faster then before.",
+  },
 ];
 
 export default function ContentImprover() {
@@ -29,6 +56,7 @@ export default function ContentImprover() {
   const modeGroupId = useId();
   const strengthGroupId = useId();
   const outputId = useId();
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const [text, setText] = useState("");
   const [mode, setMode] = useState<ContentImproverModeId>("polish");
@@ -36,14 +64,63 @@ export default function ContentImprover() {
     useState<ContentImproverStrengthId>("balanced");
   const [seed, setSeed] = useState(() => randomContentImproverSeed());
   const [improved, setImproved] = useState("");
+  const [resultMode, setResultMode] = useState<ContentImproverModeId | null>(
+    null,
+  );
+  const [resultStrength, setResultStrength] =
+    useState<ContentImproverStrengthId | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeStarter, setActiveStarter] = useState<WriteStarterId | null>(
+    null,
+  );
 
   const canImprove = text.trim().length > 0 && !loading;
   const inputWords = countWords(text);
   const outputWords = countWords(improved);
   const inputChars = text.trim().length;
+  const activeMode = CONTENT_IMPROVER_MODES.find((item) => item.id === mode);
+
+  function focusInput() {
+    inputRef.current?.focus();
+  }
+
+  function updateDraft(next: string, starter: WriteStarterId | null = null) {
+    setText(next);
+    setActiveStarter(starter);
+    if (error) setError("");
+  }
+
+  async function handlePaste() {
+    try {
+      const clip = await navigator.clipboard.readText();
+      if (!clip.trim()) {
+        setError("Clipboard is empty. Copy some text, then tap Paste.");
+        return;
+      }
+      updateDraft(clip.slice(0, MAX_CONTENT_IMPROVER_LENGTH));
+      focusInput();
+    } catch {
+      setError("Could not paste. Allow clipboard access, or use Ctrl+V / Cmd+V.");
+      focusInput();
+    }
+  }
+
+  function handleClear() {
+    updateDraft("");
+    setImproved("");
+    setResultMode(null);
+    setResultStrength(null);
+    setCopied(false);
+    focusInput();
+  }
+
+  function applyStarter(starter: (typeof WRITE_STARTERS)[number]) {
+    updateDraft(starter.text, starter.id);
+    setMode(starter.mode);
+    focusInput();
+  }
 
   async function improveText(nextSeed = seed) {
     const textError = validateContentImproverText(text);
@@ -87,6 +164,8 @@ export default function ContentImprover() {
 
       setImproved(data.improved.trim());
       setSeed(typeof data.seed === "number" ? data.seed : nextSeed);
+      setResultMode(mode);
+      setResultStrength(strength);
       trackSuccess();
     } catch (err) {
       trackFailure();
@@ -125,59 +204,96 @@ export default function ContentImprover() {
 
   function handleUseAsInput() {
     if (!improved) return;
-    setText(improved);
+    updateDraft(improved);
     setImproved("");
-    setError("");
+    setResultMode(null);
+    setResultStrength(null);
     setCopied(false);
-  }
-
-  function applyExample(example: string) {
-    setText(example);
-    if (error) setError("");
+    focusInput();
   }
 
   return (
-    <div className="tool-grid">
-      <div className="tool-panel">
-        <Input
-          id={inputId}
-          as="textarea"
-          label="Your text"
-          value={text}
-          onChange={(e) => {
-            setText(e.target.value);
-            if (error) setError("");
+    <div className="content-improver">
+      <div
+        className="content-improver__bar"
+        role="toolbar"
+        aria-label="Write and improve"
+      >
+        <Button
+          onClick={() => {
+            const nextSeed = randomContentImproverSeed();
+            setSeed(nextSeed);
+            void improveText(nextSeed);
           }}
-          rows={8}
-          maxLength={MAX_CONTENT_IMPROVER_LENGTH}
-          placeholder="Paste a draft, email, caption, essay paragraph, or product copy…"
-          hint={`${inputChars.toLocaleString()}/${MAX_CONTENT_IMPROVER_LENGTH.toLocaleString()} · ${inputWords.toLocaleString()} words`}
-        />
-
-        <div
-          className="content-improver__examples"
-          aria-label="Example drafts"
+          disabled={!canImprove}
         >
-          {EXAMPLE_SNIPPETS.map((example) => (
-            <button
-              key={example}
-              type="button"
-              className="content-improver__example"
-              disabled={loading}
-              onClick={() => applyExample(example)}
-            >
-              {example}
-            </button>
-          ))}
-        </div>
+          {loading ? "Improving…" : "Improve"}
+        </Button>
+        <Button
+          onClick={handleRegenerate}
+          disabled={!text.trim() || loading}
+          variant="ghost"
+        >
+          New variation
+        </Button>
+        <Button variant="ghost" onClick={() => void handlePaste()} disabled={loading}>
+          Paste
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={handleClear}
+          disabled={loading || (!text && !improved)}
+        >
+          Clear
+        </Button>
+        <span className="content-improver__bar-split" aria-hidden="true" />
+        {WRITE_STARTERS.map((starter) => (
+          <button
+            key={starter.id}
+            type="button"
+            className={cn(
+              "content-improver__start",
+              activeStarter === starter.id && "is-active",
+            )}
+            disabled={loading}
+            onClick={() => applyStarter(starter)}
+          >
+            {starter.label}
+          </button>
+        ))}
+      </div>
 
-        <div className="content-improver__options">
+      <div className="content-improver__workspace">
+        <div className="tool-panel content-improver__panel">
+          <div className="content-improver__editor">
+            <div className="content-improver__editor-head">
+              <label className="content-improver__editor-title" htmlFor={inputId}>
+                Your draft
+              </label>
+              <span className="content-improver__count">
+                {inputWords.toLocaleString()} words · {inputChars.toLocaleString()}
+                /{MAX_CONTENT_IMPROVER_LENGTH.toLocaleString()}
+              </span>
+            </div>
+            <textarea
+              ref={inputRef}
+              id={inputId}
+              className="ui-input ui-input--textarea content-improver__textarea"
+              value={text}
+              onChange={(e) => updateDraft(e.target.value)}
+              rows={10}
+              maxLength={MAX_CONTENT_IMPROVER_LENGTH}
+              placeholder="Paste or type your draft. Then pick a mode and tap Improve."
+              spellCheck
+            />
+          </div>
+
           <div className="ui-field">
             <span className="ui-label" id={modeGroupId}>
-              Improvement mode
+              How to improve
             </span>
             <div
-              className="content-improver__chips content-improver__chips--mode"
+              className="content-improver__modes"
               role="radiogroup"
               aria-labelledby={modeGroupId}
             >
@@ -189,31 +305,30 @@ export default function ContentImprover() {
                     type="button"
                     role="radio"
                     aria-checked={selected}
+                    title={option.hint}
                     className={cn(
-                      "content-improver__chip",
+                      "content-improver__mode",
                       selected && "is-active",
                     )}
                     disabled={loading}
                     onClick={() => setMode(option.id)}
                   >
-                    <span className="content-improver__chip-label">
-                      {option.label}
-                    </span>
-                    <span className="content-improver__chip-hint">
-                      {option.hint}
-                    </span>
+                    {option.id === "seo" ? "SEO" : option.label}
                   </button>
                 );
               })}
             </div>
+            {activeMode ? (
+              <p className="content-improver__mode-hint">{activeMode.hint}</p>
+            ) : null}
           </div>
 
           <div className="ui-field">
             <span className="ui-label" id={strengthGroupId}>
-              Rewrite strength
+              Strength
             </span>
             <div
-              className="content-improver__chips content-improver__chips--strength"
+              className="content-improver__strength"
               role="radiogroup"
               aria-labelledby={strengthGroupId}
             >
@@ -225,113 +340,89 @@ export default function ContentImprover() {
                     type="button"
                     role="radio"
                     aria-checked={selected}
+                    title={option.hint}
                     className={cn(
-                      "content-improver__chip",
+                      "content-improver__strength-btn",
                       selected && "is-active",
                     )}
                     disabled={loading}
                     onClick={() => setStrength(option.id)}
                   >
-                    <span className="content-improver__chip-label">
-                      {option.label}
-                    </span>
-                    <span className="content-improver__chip-hint">
-                      {option.hint}
-                    </span>
+                    {option.label}
                   </button>
                 );
               })}
             </div>
           </div>
+
+          {error ? (
+            <p className="tool-error" role="alert">
+              {error}
+            </p>
+          ) : null}
         </div>
 
-        <div className="tool-actions">
-          <Button
-            onClick={() => {
-              const nextSeed = randomContentImproverSeed();
-              setSeed(nextSeed);
-              void improveText(nextSeed);
-            }}
-            disabled={!canImprove}
-          >
-            {loading ? "Improving…" : "Improve content"}
-          </Button>
-          <Button
-            onClick={handleRegenerate}
-            disabled={!text.trim() || loading}
-            variant="ghost"
-          >
-            New variation
-          </Button>
-          <Button
-            onClick={() => void handleCopy()}
-            disabled={!improved || loading}
-            variant="ghost"
-          >
-            {copied ? "Copied" : "Copy"}
-          </Button>
-          <Button
-            onClick={handleDownload}
-            disabled={!improved || loading}
-            variant="ghost"
-          >
-            Download TXT
-          </Button>
-          <Button
-            onClick={handleUseAsInput}
-            disabled={!improved || loading}
-            variant="ghost"
-          >
-            Use as input
-          </Button>
-        </div>
-
-        {error ? (
-          <p className="tool-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="tool-panel tool-panel--preview">
-        <div
-          className={cn(
-            "tool-stage content-improver__stage",
-            improved && "is-ready",
-            loading && "is-loading",
-          )}
-        >
-          {loading ? (
-            <div className="tool-loading" role="status" aria-live="polite">
-              <span className="tool-loading__spinner" aria-hidden="true" />
-              <span className="tool-loading__text">Improving your writing…</span>
-              <span className="tool-loading__subtext">
-                Usually takes a few seconds. Free models can be slower when busy.
-              </span>
+        <div className="tool-panel tool-panel--preview content-improver__panel">
+          <div className="content-improver__editor content-improver__editor--out">
+            <div className="content-improver__editor-head">
+              <div className="content-improver__editor-meta">
+                <label className="content-improver__editor-title" htmlFor={outputId}>
+                  Improved
+                </label>
+                <span className="content-improver__count">
+                  {improved
+                    ? `${outputWords.toLocaleString()} words`
+                    : "Waiting for a rewrite"}
+                </span>
+              </div>
+              <div className="content-improver__result-btns">
+                <Button
+                  onClick={() => void handleCopy()}
+                  disabled={!improved || loading}
+                >
+                  {copied ? "Copied" : "Copy"}
+                </Button>
+                <Button
+                  onClick={handleDownload}
+                  disabled={!improved || loading}
+                  variant="ghost"
+                >
+                  Download
+                </Button>
+                <Button
+                  onClick={handleUseAsInput}
+                  disabled={!improved || loading}
+                  variant="ghost"
+                >
+                  Use as input
+                </Button>
+              </div>
             </div>
-          ) : (
-            <div className="content-improver__output">
-              <label className="ui-label" htmlFor={outputId}>
-                Improved text
-              </label>
+            {loading ? (
+              <div className="content-improver__loading" role="status" aria-live="polite">
+                <span className="tool-loading__spinner" aria-hidden="true" />
+                <span>Improving your writing…</span>
+              </div>
+            ) : (
               <textarea
                 id={outputId}
                 className="ui-input ui-input--textarea content-improver__textarea"
                 value={improved}
                 readOnly
                 spellCheck={false}
-                rows={16}
-                placeholder="Your improved content will appear here"
+                rows={10}
+                placeholder="Improved text appears here"
                 aria-live="polite"
               />
-            </div>
-          )}
+            )}
+          </div>
+
+          <p className="tool-hint">
+            {improved && resultMode && resultStrength
+              ? `${inputWords.toLocaleString()} → ${outputWords.toLocaleString()} words · ${resultMode} · ${resultStrength}`
+              : "Paste a draft or tap Email, Caption, Blog, or Product to start."}
+          </p>
         </div>
-        <p className="tool-hint">
-          {improved
-            ? `${inputWords.toLocaleString()} → ${outputWords.toLocaleString()} words · ${mode} · ${strength} · seed ${seed}`
-            : "AI content improver · free · no account required"}
-        </p>
       </div>
     </div>
   );

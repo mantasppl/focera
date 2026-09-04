@@ -50,9 +50,9 @@ export default function ContentImproverLanding() {
           </p>
           <ol className="tool-content__steps">
             <li>
-              <strong>Paste your draft.</strong> Emails, captions, essays,
-              product copy, and blog paragraphs all work. Example chips show the
-              kind of rough text that improves well.
+              <strong>Paste or start writing.</strong> Use Paste, or tap Email,
+              Caption, Blog, or Product to drop in a short draft you can
+              improve right away.
             </li>
             <li>
               <strong>Choose a mode and strength.</strong> Start with Polish for
