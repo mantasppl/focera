@@ -154,7 +154,12 @@ function iconKindForSlug(slug: string): IconKind {
   )
     return "ocr";
   if (slug.includes("video")) return "video";
-  if (slug.includes("ai-image") || slug.includes("ai-story")) return "spark";
+  if (
+    slug.includes("ai-image") ||
+    slug.includes("ai-story") ||
+    slug.includes("content-improver")
+  )
+    return "spark";
   if (slug.includes("palette") || slug.includes("color")) return "palette";
   if (slug.includes("qr")) return "qr";
   if (slug.includes("invoice")) return "invoice";

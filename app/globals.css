@@ -11462,6 +11462,156 @@ a {
   }
 }
 
+/* -- AI Content Improver -- */
+.content-improver__examples {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.content-improver__example {
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.content-improver__example:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--ink);
+  background: rgba(15, 122, 102, 0.06);
+}
+
+.content-improver__example:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.content-improver__options {
+  display: grid;
+  gap: 1rem;
+}
+
+.content-improver__chips {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.content-improver__chips--mode {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.content-improver__chips--strength {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.content-improver__chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel, #fff);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.content-improver__chip:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.content-improver__chip.is-active {
+  border-color: var(--accent);
+  background: rgba(15, 122, 102, 0.1);
+  color: var(--accent-deep);
+}
+
+.content-improver__chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.content-improver__chip-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.content-improver__chip-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.content-improver__chip.is-active .content-improver__chip-hint {
+  color: rgba(15, 122, 102, 0.75);
+}
+
+.content-improver__stage {
+  min-height: 320px;
+  place-items: stretch;
+}
+
+.content-improver__stage.is-loading {
+  place-items: center;
+}
+
+.content-improver__stage.is-ready {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.content-improver__output {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.content-improver__textarea {
+  min-height: 360px;
+  resize: vertical;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 1100px) {
+  .content-improver__chips--mode {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .content-improver__chips--mode {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .content-improver__chips--mode,
+  .content-improver__chips--strength {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 /* -- YouTube to Text -- */
 .youtube-to-text__examples {
   display: flex;
