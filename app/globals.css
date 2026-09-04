@@ -1511,11 +1511,13 @@ a {
   grid-template-columns: 1fr;
   align-items: center;
   gap: 1.5rem;
+  z-index: 4;
 }
 
 .home-hero {
   position: relative;
   isolation: isolate;
+  z-index: 2;
   min-width: 0;
 }
 
@@ -1651,6 +1653,8 @@ a {
 }
 
 .home-hero__search {
+  position: relative;
+  z-index: 3;
   margin-top: 1.25rem;
   max-width: 34rem;
 }
@@ -2028,7 +2032,7 @@ a {
 
 .tool-search__panel {
   position: absolute;
-  z-index: 30;
+  z-index: 40;
   top: calc(100% + 0.45rem);
   left: 0;
   right: 0;
