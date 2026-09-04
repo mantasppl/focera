@@ -157,6 +157,7 @@ function iconKindForSlug(slug: string): IconKind {
   if (
     slug.includes("ai-image") ||
     slug.includes("ai-story") ||
+    slug.includes("ai-paragraph") ||
     slug.includes("content-improver") ||
     slug.includes("essay-writer")
   )

@@ -1328,6 +1328,68 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "ai-paragraph-generator",
+    name: "AI Paragraph Generator",
+    shortName: "Paragraphs",
+    description:
+      "Generate AI paragraphs from a topic — pick tone, purpose, length, and count, then copy or download. Free online paragraph writer, no account required.",
+    categories: ["ai", "file"],
+    status: "ready",
+    href: "/ai-paragraph-generator",
+    keywords: [
+      "ai paragraph generator",
+      "paragraph generator",
+      "free paragraph generator",
+      "paragraph writer",
+      "ai paragraph writer",
+      "write a paragraph",
+      "generate paragraph",
+      "paragraph maker",
+      "blog paragraph generator",
+      "product description paragraph",
+      "email paragraph writer",
+      "free ai writing tool",
+      "paragraph generator no signup",
+    ],
+    faq: [
+      {
+        question: "Is this AI paragraph generator free?",
+        answer:
+          "Yes. Enter a topic, generate paragraphs, and copy or download the text with no account, subscription, or credit card.",
+      },
+      {
+        question: "What can the paragraph generator do?",
+        answer:
+          "It writes one to five paragraphs with tone (neutral, formal, casual, persuasive, friendly, professional), purpose (general, blog, product, email, school), length (short, medium, long), and optional keywords to include.",
+      },
+      {
+        question: "How does AI paragraph generation work?",
+        answer:
+          "You describe a topic or brief, optionally add keywords, then choose tone, purpose, length, and how many paragraphs you need. The tool sends those settings to an AI writing model and returns complete paragraphs you can copy or download.",
+      },
+      {
+        question: "Is my prompt stored by Focera?",
+        answer:
+          "Focera does not keep a library of your prompts or paragraphs. Text is sent to the generation provider to create the draft, then shown in your browser to copy or download.",
+      },
+      {
+        question: "Can I copy or download the paragraphs?",
+        answer:
+          "Yes. After generation, copy to your clipboard or download a plain TXT file. Use New variation for another take, then polish the draft in the AI content improver if you want.",
+      },
+      {
+        question: "How long can each paragraph be?",
+        answer:
+          "Choose Short (~50 words), Medium (~100 words), or Long (~180 words) per paragraph. Generate up to five paragraphs at once, or expand further in the essay writer or content improver.",
+      },
+      {
+        question: "Do I need an account or API key?",
+        answer:
+          "No. Open the page, enter a topic, and generate. Nothing to install and no signup required.",
+      },
+    ],
+  },
+  {
     slug: "invoice-generator",
     name: "Invoice Generator",
     shortName: "Invoices",

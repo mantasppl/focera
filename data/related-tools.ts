@@ -23,21 +23,27 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "change-background",
   ],
   "ai-story-generator": [
+    "ai-paragraph-generator",
     "essay-writer",
     "content-improver",
-    "markdown-editor",
     "word-counter",
   ],
-  "content-improver": [
+  "ai-paragraph-generator": [
     "essay-writer",
+    "content-improver",
     "word-counter",
-    "markdown-editor",
     "ai-story-generator",
   ],
-  "essay-writer": [
-    "content-improver",
+  "content-improver": [
+    "ai-paragraph-generator",
+    "essay-writer",
     "word-counter",
     "markdown-editor",
+  ],
+  "essay-writer": [
+    "ai-paragraph-generator",
+    "content-improver",
+    "word-counter",
     "ai-story-generator",
   ],
   "background-remover": [
@@ -206,6 +212,7 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   "invoice-generator": ["profit-calculator", "utm-builder", "pdf-creator"],
   "json-formatter": ["markdown-editor", "utm-builder", "html-css-js-minifier"],
   "lorem-ipsum-generator": [
+    "ai-paragraph-generator",
     "markdown-editor",
     "text-case-converter",
     "word-counter",

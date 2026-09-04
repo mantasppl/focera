@@ -44,6 +44,8 @@ const TOKEN_ALIASES: Record<string, string[]> = {
   essay: ["essay", "essays", "paper", "assignment", "thesis", "writer"],
   essays: ["essay", "paper", "assignment", "writer"],
   thesis: ["essay", "paper", "argument", "writer"],
+  paragraph: ["paragraph", "paragraphs", "writer", "generator"],
+  paragraphs: ["paragraph", "writer", "generator"],
   rem: ["remove", "remover", "removal"],
   mrg: ["merge", "merger"],
   overlay: ["overlay", "stamp", "layer", "watermark"],
