@@ -13,10 +13,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import BreakdownList from "@/components/admin/BreakdownList";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import DateRangeFilter from "@/components/admin/DateRangeFilter";
 import Button from "@/components/Button";
 import { adminFetch } from "@/lib/admin/csrf-client";
+import { formatDurationSeconds } from "@/lib/analytics/format";
 import { todayZonedIso } from "@/lib/analytics/timezone";
 import type { DatePreset, ToolDetailStats } from "@/lib/analytics/types";
 
@@ -154,6 +156,49 @@ export default function ToolDetailDashboard({ toolId }: { toolId: string }) {
             )}
           </p>
         </article>
+        <article className="admin-stat-card">
+          <p className="admin-stat-card__label">Conversion rate</p>
+          <p className="admin-stat-card__value">
+            {loading && !detail ? (
+              <span className="admin-skeleton" />
+            ) : detail?.conversionRate == null ? (
+              "—"
+            ) : (
+              `${detail.conversionRate}%`
+            )}
+          </p>
+          <p className="admin-stat-card__hint">
+            {detail?.uploads
+              ? `${detail.downloads.toLocaleString()} downloads / ${detail.uploads.toLocaleString()} uploads`
+              : "Upload → download"}
+          </p>
+        </article>
+        <article className="admin-stat-card">
+          <p className="admin-stat-card__label">Time on tool</p>
+          <p className="admin-stat-card__value">
+            {loading && !detail ? (
+              <span className="admin-skeleton" />
+            ) : detail?.avgTimeOnToolSeconds == null ? (
+              "—"
+            ) : (
+              formatDurationSeconds(detail.avgTimeOnToolSeconds)
+            )}
+          </p>
+          <p className="admin-stat-card__hint">Average visible time</p>
+        </article>
+        <article className="admin-stat-card">
+          <p className="admin-stat-card__label">Repeat users</p>
+          <p className="admin-stat-card__value">
+            {loading && !detail ? (
+              <span className="admin-skeleton" />
+            ) : (
+              (detail?.repeatUsers ?? 0).toLocaleString()
+            )}
+          </p>
+          <p className="admin-stat-card__hint">
+            {detail ? `${detail.repeatRate}% of visitors came back` : "Prior visitors who used this tool again"}
+          </p>
+        </article>
       </div>
 
       <div className="admin-chart-grid">
@@ -216,6 +261,14 @@ export default function ToolDetailDashboard({ toolId }: { toolId: string }) {
         </section>
 
         <section className="admin-chart-card">
+          <h2 className="admin-chart-card__title">Top keywords</h2>
+          <BreakdownList
+            items={detail?.keywords ?? []}
+            empty="No keyword data yet."
+          />
+        </section>
+
+        <section className="admin-chart-card">
           <h2 className="admin-chart-card__title">Device breakdown</h2>
           <BreakdownList items={detail?.devices ?? []} empty="No device data yet." />
         </section>
@@ -234,33 +287,5 @@ export default function ToolDetailDashboard({ toolId }: { toolId: string }) {
         </section>
       </div>
     </div>
-  );
-}
-
-function BreakdownList({
-  items,
-  empty,
-}: {
-  items: Array<{ name: string; count: number }>;
-  empty: string;
-}) {
-  if (items.length === 0) {
-    return <div className="admin-empty">{empty}</div>;
-  }
-  const max = Math.max(...items.map((item) => item.count), 1);
-  return (
-    <ul className="admin-breakdown">
-      {items.map((item) => (
-        <li key={item.name}>
-          <div className="admin-breakdown__meta">
-            <span>{item.name}</span>
-            <strong>{item.count.toLocaleString()}</strong>
-          </div>
-          <div className="admin-breakdown__bar">
-            <span style={{ width: `${(item.count / max) * 100}%` }} />
-          </div>
-        </li>
-      ))}
-    </ul>
   );
 }

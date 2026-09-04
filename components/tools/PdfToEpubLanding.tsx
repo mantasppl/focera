@@ -57,7 +57,7 @@ export default function PdfToEpubLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to EPUB. An
-            .epub file is built locally and downloads automatically — preview
+            .epub file is built locally and is ready to download — preview
             the extracted summary in the panel.
           </li>
         </ol>

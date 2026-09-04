@@ -16,6 +16,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import BreakdownList from "@/components/admin/BreakdownList";
 import type { NamedCount, TimeBucket } from "@/lib/analytics/types";
 
 const ACCENT = "#0d9488";
@@ -55,6 +56,8 @@ export default function AnalyticsCharts({
   devices,
   browsers,
   sources,
+  countries,
+  keywords,
   loading,
 }: {
   daily: TimeBucket[];
@@ -63,12 +66,14 @@ export default function AnalyticsCharts({
   devices: NamedCount[];
   browsers: NamedCount[];
   sources: NamedCount[];
+  countries: NamedCount[];
+  keywords: NamedCount[];
   loading?: boolean;
 }) {
   if (loading) {
     return (
       <div className="admin-chart-grid">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 8 }).map((_, i) => (
           <section key={i} className="admin-chart-card">
             <div className="admin-skeleton admin-skeleton--chart" />
           </section>
@@ -175,6 +180,30 @@ export default function AnalyticsCharts({
             <Bar dataKey="count" fill={ACCENT_DEEP} name="Uses" radius={[0, 4, 4, 0]} />
           </BarChart>
         </ResponsiveContainer>
+      </ChartCard>
+
+      <ChartCard title="Country" empty={!hasData(countries)}>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={countries} layout="vertical" margin={{ left: 24 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--admin-grid)" />
+            <XAxis type="number" allowDecimals={false} tick={{ fill: MUTED, fontSize: 11 }} />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={120}
+              tick={{ fill: MUTED, fontSize: 11 }}
+            />
+            <Tooltip />
+            <Bar dataKey="count" fill={ACCENT} name="Uses" radius={[0, 4, 4, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </ChartCard>
+
+      <ChartCard title="Top keywords" empty={!hasData(keywords)}>
+        <BreakdownList
+          items={keywords}
+          empty="No keyword data for this range yet."
+        />
       </ChartCard>
     </div>
   );

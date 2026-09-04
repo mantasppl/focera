@@ -57,7 +57,7 @@ export default function GifToPdfLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to PDF. The
-            file is built locally and downloads automatically — preview the
+            file is built locally and is ready to download — preview the
             first image in the panel.
           </li>
         </ol>

@@ -197,7 +197,6 @@ export default function TrimVideo() {
       const url = URL.createObjectURL(trimmed.blob);
       setResult(trimmed);
       setResultUrl(url);
-      downloadTrimmedVideo(trimmed.blob, sourceFile, trimmed.extension);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -364,7 +363,7 @@ export default function TrimVideo() {
             onClick={() => void handleTrim()}
             disabled={!hasSource || loading}
           >
-            {loading ? "Trimming…" : "Trim & download"}
+            {loading ? "Trimming…" : "Trim video"}
           </Button>
           <Button
             variant="ghost"
@@ -377,7 +376,7 @@ export default function TrimVideo() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -456,7 +455,7 @@ export default function TrimVideo() {
                 onLoadedMetadata={handleLoadedMetadata}
               />
               <p className="tool-placeholder preview-single__hint">
-                Drag the handles or enter start and end, then Trim & download.
+                Drag the handles or enter start and end, then Trim video.
               </p>
             </div>
           ) : (
@@ -468,7 +467,7 @@ export default function TrimVideo() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "Video trimming runs in your browser · files never upload to Focera"}
         </p>
       </div>

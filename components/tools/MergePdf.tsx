@@ -35,6 +35,7 @@ export default function MergePdf() {
   const [error, setError] = useState("");
   const [mergedReady, setMergedReady] = useState(false);
   const [mergedSize, setMergedSize] = useState(0);
+  const [mergedBlob, setMergedBlob] = useState<Blob | null>(null);
 
   const files = entries.map((entry) => entry.file);
   const fileCount = entries.length;
@@ -50,6 +51,7 @@ export default function MergePdf() {
   function handleAddFiles(incoming: File[]) {
     setMergedReady(false);
     setMergedSize(0);
+    setMergedBlob(null);
     setError("");
     setProgressText("");
     setEntries((current) => [...current, ...createEntries(incoming)]);
@@ -58,12 +60,14 @@ export default function MergePdf() {
   function handleRemove(id: string) {
     setMergedReady(false);
     setMergedSize(0);
+    setMergedBlob(null);
     setEntries((current) => current.filter((entry) => entry.id !== id));
   }
 
   function handleMove(id: string, direction: -1 | 1) {
     setMergedReady(false);
     setMergedSize(0);
+    setMergedBlob(null);
     setEntries((current) => {
       const index = current.findIndex((entry) => entry.id === id);
       if (index < 0) return current;
@@ -84,6 +88,7 @@ export default function MergePdf() {
     setLoading(false);
     setMergedReady(false);
     setMergedSize(0);
+    setMergedBlob(null);
   }
 
   async function handleMerge() {
@@ -100,6 +105,7 @@ export default function MergePdf() {
     setError("");
     setMergedReady(false);
     setMergedSize(0);
+    setMergedBlob(null);
     setProgressText("Preparing merge…");
 
     try {
@@ -112,7 +118,7 @@ export default function MergePdf() {
 
       if (controller.signal.aborted) return;
 
-      downloadMergedPdf(blob, "merged.pdf");
+      setMergedBlob(blob);
       setMergedSize(blob.size);
       setMergedReady(true);
       setProgressText("");
@@ -133,6 +139,11 @@ export default function MergePdf() {
         setLoading(false);
       }
     }
+  }
+
+  function handleDownload() {
+    if (!mergedBlob) return;
+    downloadMergedPdf(mergedBlob, "merged.pdf");
   }
 
   return (
@@ -221,6 +232,12 @@ export default function MergePdf() {
           </Button>
         </div>
 
+        {mergedReady ? (
+          <div className="tool-actions">
+            <Button onClick={handleDownload}>Download</Button>
+          </div>
+        ) : null}
+
         {error ? (
           <p className="tool-error" role="alert">
             {error}
@@ -249,7 +266,7 @@ export default function MergePdf() {
                 Combined {fileCount} files · {formatFileSize(mergedSize)}
               </p>
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Reorder or add files
+                Click Download when you want the file. Reorder or add files
                 to merge again.
               </p>
             </div>
@@ -260,7 +277,7 @@ export default function MergePdf() {
                   ? "Add two or more PDFs to combine them into one file"
                   : fileCount === 1
                     ? "Add at least one more PDF to enable merge"
-                    : `${fileCount} PDFs queued · click Merge PDFs to download`}
+                    : `${fileCount} PDFs queued · click Merge PDFs to combine them`}
               </p>
               {fileCount > 0 ? (
                 <ul className="merge-pdf__summary" aria-label="Queued files">
@@ -277,7 +294,7 @@ export default function MergePdf() {
 
         <p className="tool-hint">
           {mergedReady
-            ? "Merge again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "PDF merge runs in your browser · files never upload to Focera"}
         </p>
       </div>

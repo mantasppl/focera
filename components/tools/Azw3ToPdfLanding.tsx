@@ -56,8 +56,7 @@ export default function Azw3ToPdfLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to PDF.
-            Chapters are read in order, rendered locally, and the PDF downloads
-            automatically — preview a text summary in the panel.
+            Chapters are read in order, rendered locally, and the PDF is ready to download — preview a text summary in the panel.
           </li>
         </ol>
         <p>

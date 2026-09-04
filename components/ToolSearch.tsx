@@ -12,6 +12,7 @@ import {
 } from "react";
 import type { Tool } from "@/data/tools";
 import { formatToolCategories } from "@/data/tools";
+import { trackSiteSearch } from "@/lib/analytics/client";
 import { searchTools } from "@/lib/search-tools";
 import { cn } from "@/lib/utils";
 
@@ -87,6 +88,7 @@ export default function ToolSearch({
 
   function goToResultsPage(q: string) {
     setOpen(false);
+    trackSiteSearch(q);
     if (onSubmitQuery) {
       onSubmitQuery(q);
       return;
@@ -205,6 +207,7 @@ export default function ToolSearch({
                 <li key={hit.tool.slug} role="presentation">
                   <SearchResultLink
                     tool={hit.tool}
+                    query={deferredQuery}
                     id={`${listId}-${hit.tool.slug}`}
                     active={index === activeIndex}
                     onMouseEnter={() => setActiveIndex(index)}
@@ -228,11 +231,13 @@ export default function ToolSearch({
 
 function SearchResultLink({
   tool,
+  query,
   id,
   active,
   onMouseEnter,
 }: {
   tool: Tool;
+  query: string;
   id: string;
   active: boolean;
   onMouseEnter: () => void;
@@ -245,6 +250,7 @@ function SearchResultLink({
       aria-selected={active}
       className={cn("tool-search__hit", active && "is-active")}
       onMouseEnter={onMouseEnter}
+      onClick={() => trackSiteSearch(query)}
     >
       <span className="tool-search__hit-meta">
         <span className="tool-search__hit-cat">

@@ -118,3 +118,22 @@ export const visitorPresence = sqliteTable(
 
 export type VisitorPresenceRow = typeof visitorPresence.$inferSelect;
 export type NewVisitorPresenceRow = typeof visitorPresence.$inferInsert;
+
+export const searchQueries = sqliteTable(
+  "search_queries",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    eventId: text("event_id").notNull().unique(),
+    timestamp: integer("timestamp", { mode: "timestamp_ms" }).notNull(),
+    sessionId: text("session_id").notNull(),
+    query: text("query").notNull(),
+    country: text("country"),
+  },
+  (table) => [
+    index("search_queries_timestamp_idx").on(table.timestamp),
+    index("search_queries_query_idx").on(table.query),
+  ],
+);
+
+export type SearchQueryRow = typeof searchQueries.$inferSelect;
+export type NewSearchQueryRow = typeof searchQueries.$inferInsert;

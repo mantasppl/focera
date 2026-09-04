@@ -57,7 +57,7 @@ export default function TiffToPdfLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to PDF. Pages
-            are decoded locally and the PDF downloads automatically — preview
+            are decoded locally and the PDF is ready to download — preview
             the first page in the panel.
           </li>
         </ol>

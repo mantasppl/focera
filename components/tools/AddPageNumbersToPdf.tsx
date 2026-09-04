@@ -117,7 +117,6 @@ export default function AddPageNumbersToPdf() {
       resultUrlRef.current = url;
       setPreviewUrl(url);
       setResult(numbered);
-      downloadNumberedPdf(numbered.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -295,7 +294,7 @@ export default function AddPageNumbersToPdf() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -336,7 +335,7 @@ export default function AddPageNumbersToPdf() {
                 />
               ) : null}
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Change position,
+                Click Download when you want the file. Change position,
                 format, or size and number again anytime.
               </p>
             </div>
@@ -349,7 +348,7 @@ export default function AddPageNumbersToPdf() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "Numbers draw on every page · files never upload to Focera"}
         </p>
       </div>

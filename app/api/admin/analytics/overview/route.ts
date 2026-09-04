@@ -3,12 +3,14 @@ import { parsePreset, resolveDateRange } from "@/lib/analytics/dates";
 import { getAnalyticsStorageMode } from "@/lib/analytics/db";
 import {
   getBrowserDistribution,
+  getCountryDistribution,
   getDailyUsage,
   getDeviceDistribution,
   getHourlyUsage,
   getOverviewStats,
   getPerToolStats,
   getSourceDistribution,
+  getTopKeywords,
   getTopTools,
 } from "@/lib/analytics/queries";
 
@@ -33,17 +35,29 @@ export async function GET(request: Request) {
     );
     const search = searchParams.get("search") || undefined;
 
-    const [stats, tools, daily, hourly, topTools, devices, browsers, sources] =
-      await Promise.all([
-        getOverviewStats(range),
-        getPerToolStats(range, search),
-        getDailyUsage(range),
-        getHourlyUsage(range),
-        getTopTools(range, 10),
-        getDeviceDistribution(range),
-        getBrowserDistribution(range),
-        getSourceDistribution(range),
-      ]);
+    const [
+      stats,
+      tools,
+      daily,
+      hourly,
+      topTools,
+      devices,
+      browsers,
+      sources,
+      countries,
+      keywords,
+    ] = await Promise.all([
+      getOverviewStats(range),
+      getPerToolStats(range, search),
+      getDailyUsage(range),
+      getHourlyUsage(range),
+      getTopTools(range, 10),
+      getDeviceDistribution(range),
+      getBrowserDistribution(range),
+      getSourceDistribution(range),
+      getCountryDistribution(range),
+      getTopKeywords(range, 12),
+    ]);
 
     const storage = getAnalyticsStorageMode();
 
@@ -68,6 +82,8 @@ export async function GET(request: Request) {
         devices,
         browsers,
         sources,
+        countries,
+        keywords,
       },
     });
   } catch (error) {

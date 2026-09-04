@@ -1,8 +1,11 @@
 import { getToolBySlug } from "@/data/tools";
 import type {
   AnalyticsEventType,
+  FeatureKind,
   TrackToolUsagePayload,
 } from "@/lib/analytics/types";
+
+const FEATURE_KINDS = new Set<FeatureKind>(["upload", "download", "dwell"]);
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -43,9 +46,11 @@ export function validateTrackPayload(body: unknown): ValidatedTrackEvent {
     return { ok: false, error: "Invalid sessionId." };
   }
 
-  // Public ingest only accepts tool_usage — other event types are server-only.
-  const eventType: AnalyticsEventType = "tool_usage";
-  if (raw.eventType !== undefined && raw.eventType !== "tool_usage") {
+  // Public ingest accepts tool_usage plus a small feature set (upload/download/dwell).
+  let eventType: AnalyticsEventType = "tool_usage";
+  if (raw.eventType === "feature") {
+    eventType = "feature";
+  } else if (raw.eventType !== undefined && raw.eventType !== "tool_usage") {
     return { ok: false, error: "Invalid eventType." };
   }
 
@@ -84,6 +89,19 @@ export function validateTrackPayload(body: unknown): ValidatedTrackEvent {
         return { ok: false, error: "Metadata value too long." };
       }
       metadata[key] = value as string | number | boolean | null;
+    }
+  }
+
+  if (eventType === "feature") {
+    const kind = metadata?.kind;
+    if (typeof kind !== "string" || !FEATURE_KINDS.has(kind as FeatureKind)) {
+      return { ok: false, error: "Invalid feature kind." };
+    }
+    if (kind === "dwell") {
+      const seconds = metadata?.seconds;
+      if (typeof seconds !== "number" || !Number.isFinite(seconds) || seconds < 3 || seconds > 1800) {
+        return { ok: false, error: "Invalid dwell duration." };
+      }
     }
   }
 

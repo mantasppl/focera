@@ -57,8 +57,7 @@ export default function MergePdfLanding() {
           </li>
           <li>
             <strong>Merge and download.</strong> Click Merge PDFs. Pages are
-            copied into one document locally, and the combined file downloads
-            automatically.
+            copied into one document locally, and the combined file is ready to download.
           </li>
         </ol>
         <p>

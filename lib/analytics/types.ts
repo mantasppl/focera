@@ -17,6 +17,8 @@ export type DatePreset =
   | "this_year"
   | "custom";
 
+export type FeatureKind = "upload" | "download" | "dwell";
+
 export type TrackToolUsagePayload = {
   toolId: string;
   success: boolean;
@@ -36,6 +38,15 @@ export type OverviewStats = {
   uniqueVisitors: number;
   averageDailyUses: number;
   successRate: number;
+  /** Sessions that downloaded after uploading. Null when no uploads yet. */
+  conversionRate: number | null;
+  uploads: number;
+  downloads: number;
+  /** Average visible seconds on a tool. Null when no dwell events yet. */
+  avgTimeOnToolSeconds: number | null;
+  /** Visitors in this range who also visited before it. */
+  repeatUsers: number;
+  repeatRate: number;
 };
 
 /** Visitors with a heartbeat newer than this are counted as online. */
@@ -79,6 +90,12 @@ export type ToolDetailStats = {
   toolName: string;
   total: number;
   successRate: number;
+  conversionRate: number | null;
+  uploads: number;
+  downloads: number;
+  avgTimeOnToolSeconds: number | null;
+  repeatUsers: number;
+  repeatRate: number;
   daily: TimeBucket[];
   weekly: TimeBucket[];
   monthly: TimeBucket[];
@@ -86,4 +103,5 @@ export type ToolDetailStats = {
   devices: NamedCount[];
   browsers: NamedCount[];
   sources: NamedCount[];
+  keywords: NamedCount[];
 };

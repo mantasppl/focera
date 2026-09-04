@@ -9,17 +9,22 @@ import {
   useRef,
   type ReactNode,
 } from "react";
+import { PRODUCT_DOWNLOAD_EVENT } from "@/lib/ratings/notify";
 import {
   clickIdReferrer,
   isOwnSiteReferrer,
   referrerFromUtmSource,
 } from "@/lib/analytics/source";
+import type { AnalyticsEventType } from "@/lib/analytics/types";
 
 const SESSION_KEY = "focera_analytics_session";
 const FIRST_TOUCH_KEY = "focera_traffic_source";
 const ENDPOINT = "/api/analytics/event";
 const PAGEVIEW_ENDPOINT = "/api/analytics/pageview";
+const SEARCH_ENDPOINT = "/api/analytics/search";
 const HEARTBEAT_MS = 25_000;
+const MIN_DWELL_SECONDS = 3;
+const MAX_DWELL_SECONDS = 1800;
 
 function randomId(): string {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -151,6 +156,7 @@ type TrackOptions = {
   metadata?: Record<string, string | number | boolean | null>;
   /** Optional stable id for this completion — defaults to a new UUID. */
   eventId?: string;
+  eventType?: AnalyticsEventType;
 };
 
 /**
@@ -169,7 +175,7 @@ export function trackToolUsage(options: TrackOptions): string {
     eventId,
     sessionId: getAnalyticsSessionId(),
     referrer: firstTouch || document.referrer || undefined,
-    eventType: "tool_usage",
+    eventType: options.eventType || "tool_usage",
     metadata: options.metadata,
   });
 
@@ -195,6 +201,36 @@ export function trackToolUsage(options: TrackOptions): string {
   return eventId;
 }
 
+function normalizeSearchQuery(raw: string): string {
+  return raw.trim().toLowerCase().replace(/\s+/g, " ").slice(0, 80);
+}
+
+let lastSearch = { query: "", at: 0 };
+
+/** Record an explicit site search (submit or result click). */
+export function trackSiteSearch(query: string): void {
+  if (typeof window === "undefined") return;
+  const normalized = normalizeSearchQuery(query);
+  if (normalized.length < 2) return;
+
+  const now = Date.now();
+  if (lastSearch.query === normalized && now - lastSearch.at < 2000) return;
+  lastSearch = { query: normalized, at: now };
+
+  const sessionId = getAnalyticsSessionId();
+  if (!UUID_RE.test(sessionId)) return;
+
+  const body = JSON.stringify({ sessionId, query: normalized });
+  void fetch(SEARCH_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {
+    // best-effort
+  });
+}
+
 type ToolAnalyticsContextValue = {
   toolId: string;
   trackSuccess: (metadata?: TrackOptions["metadata"]) => void;
@@ -205,6 +241,20 @@ const ToolAnalyticsContext = createContext<ToolAnalyticsContextValue | null>(
   null,
 );
 
+function trackFeature(
+  toolId: string,
+  kind: "upload" | "download" | "dwell",
+  extra?: Record<string, string | number | boolean | null>,
+) {
+  if (!toolId) return;
+  trackToolUsage({
+    toolId,
+    success: true,
+    eventType: "feature",
+    metadata: { kind, ...extra },
+  });
+}
+
 export function ToolAnalyticsProvider({
   toolId,
   children,
@@ -213,6 +263,7 @@ export function ToolAnalyticsProvider({
   children: ReactNode;
 }) {
   const lastEventRef = useRef<string>("");
+  const lastFunnelRef = useRef({ upload: 0, download: 0 });
   const toolIdRef = useRef(toolId);
   toolIdRef.current = toolId;
 
@@ -221,6 +272,86 @@ export function ToolAnalyticsProvider({
     getAnalyticsSessionId();
     getFirstTouchReferrer();
   }, []);
+
+  useEffect(() => {
+    function recordFunnel(kind: "upload" | "download") {
+      const now = Date.now();
+      if (now - lastFunnelRef.current[kind] < 1500) return;
+      lastFunnelRef.current[kind] = now;
+      trackFeature(toolIdRef.current, kind);
+    }
+
+    function onDownload() {
+      recordFunnel("download");
+    }
+
+    function onFileChange(event: Event) {
+      const target = event.target;
+      if (
+        target instanceof HTMLInputElement &&
+        target.type === "file" &&
+        target.files &&
+        target.files.length > 0
+      ) {
+        recordFunnel("upload");
+      }
+    }
+
+    function onDrop(event: DragEvent) {
+      if (event.dataTransfer?.files?.length) {
+        recordFunnel("upload");
+      }
+    }
+
+    window.addEventListener(PRODUCT_DOWNLOAD_EVENT, onDownload);
+    document.addEventListener("change", onFileChange, true);
+    document.addEventListener("drop", onDrop, true);
+    return () => {
+      window.removeEventListener(PRODUCT_DOWNLOAD_EVENT, onDownload);
+      document.removeEventListener("change", onFileChange, true);
+      document.removeEventListener("drop", onDrop, true);
+    };
+  }, [toolId]);
+
+  useEffect(() => {
+    let visibleStarted = Date.now();
+    let accumulated = 0;
+    let sent = false;
+
+    function flushVisible() {
+      if (document.visibilityState === "visible" && visibleStarted) {
+        accumulated += Date.now() - visibleStarted;
+        visibleStarted = 0;
+      }
+    }
+
+    function sendDwell() {
+      if (sent) return;
+      flushVisible();
+      const seconds = Math.round(accumulated / 1000);
+      if (seconds < MIN_DWELL_SECONDS) return;
+      sent = true;
+      trackFeature(toolIdRef.current, "dwell", {
+        seconds: Math.min(seconds, MAX_DWELL_SECONDS),
+      });
+    }
+
+    function onVisibility() {
+      if (document.visibilityState === "hidden") {
+        flushVisible();
+      } else if (!visibleStarted) {
+        visibleStarted = Date.now();
+      }
+    }
+
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", sendDwell);
+    return () => {
+      sendDwell();
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", sendDwell);
+    };
+  }, [toolId]);
 
   const value = useMemo<ToolAnalyticsContextValue>(
     () => ({

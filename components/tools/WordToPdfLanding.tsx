@@ -57,7 +57,7 @@ export default function WordToPdfLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to PDF. The
-            file is built locally and downloads automatically — preview a text
+            file is built locally and is ready to download — preview a text
             summary in the panel.
           </li>
         </ol>

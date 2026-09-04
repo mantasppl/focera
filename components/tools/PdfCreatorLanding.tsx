@@ -58,7 +58,7 @@ export default function PdfCreatorLanding() {
           </li>
           <li>
             <strong>Create and download.</strong> Click Create PDF. The file is
-            built in your browser and downloads automatically — create again
+            built in your browser and is ready to download — create again
             anytime after edits.
           </li>
         </ol>

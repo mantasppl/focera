@@ -297,7 +297,6 @@ export default function EsignPdf() {
       resultUrlRef.current = url;
       setPreviewUrl(url);
       setResult(signed);
-      downloadSignedPdf(signed.blob, pdfFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -639,7 +638,7 @@ export default function EsignPdf() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -682,7 +681,7 @@ export default function EsignPdf() {
                 />
               ) : null}
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Adjust the signature
+                Click Download when you want the file. Adjust the signature
                 and sign again anytime.
               </p>
             </div>
@@ -696,7 +695,7 @@ export default function EsignPdf() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "Type, draw, or upload a signature · files never leave your browser"}
         </p>
       </div>

@@ -30,6 +30,8 @@ type OverviewResponse = {
     devices: NamedCount[];
     browsers: NamedCount[];
     sources: NamedCount[];
+    countries: NamedCount[];
+    keywords: NamedCount[];
   };
 };
 
@@ -175,6 +177,8 @@ export default function AnalyticsDashboard() {
         devices={data?.charts.devices ?? []}
         browsers={data?.charts.browsers ?? []}
         sources={data?.charts.sources ?? []}
+        countries={data?.charts.countries ?? []}
+        keywords={data?.charts.keywords ?? []}
         loading={loading && !data}
       />
 

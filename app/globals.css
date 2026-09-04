@@ -15298,6 +15298,14 @@ html[data-admin-theme="dark"] {
   letter-spacing: -0.03em;
 }
 
+.admin-stat-card__hint {
+  margin: 0.3rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
 .admin-traffic {
   display: grid;
   gap: 0.85rem;

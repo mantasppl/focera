@@ -95,11 +95,6 @@ export default function CompressVideo() {
       const url = URL.createObjectURL(compressed.blob);
       setResult(compressed);
       setResultUrl(url);
-      downloadCompressedVideo(
-        compressed.blob,
-        sourceFile,
-        compressed.extension,
-      );
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -199,7 +194,7 @@ export default function CompressVideo() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -308,7 +303,7 @@ export default function CompressVideo() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "Video compression runs in your browser · files never upload to Focera"}
         </p>
       </div>

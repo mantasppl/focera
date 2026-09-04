@@ -1,5 +1,6 @@
-import { and, count, countDistinct, eq, gte, lte, sql } from "drizzle-orm";
+import { and, count, countDistinct, eq, gte, inArray, lt, lte, sql } from "drizzle-orm";
 import { getToolBySlug } from "@/data/tools";
+import { countryDisplayName } from "@/lib/analytics/countries";
 import {
   daysBetweenInclusive,
   eachDay,
@@ -8,7 +9,8 @@ import {
   type DateRange,
 } from "@/lib/analytics/dates";
 import { ensureAnalyticsSchema, getDb } from "@/lib/analytics/db";
-import { toolUsage } from "@/lib/analytics/schema";
+import { keywordForPath, landingPathsForTool } from "@/lib/analytics/keywords";
+import { pageViews, searchQueries, toolUsage } from "@/lib/analytics/schema";
 import { aggregateNamedCounts, classifyTrafficSource } from "@/lib/analytics/source";
 import {
   formatZonedDay,
@@ -78,6 +80,11 @@ export async function getOverviewStats(range: DateRange): Promise<OverviewStats>
   const successUses = successRow?.value ?? 0;
   const dayCount = daysBetweenInclusive(range.start, range.end);
 
+  const [engagement, repeat] = await Promise.all([
+    getEngagementStats(range),
+    getRepeatUserStats(range),
+  ]);
+
   return {
     totalUses,
     usesToday: todayRow?.value ?? 0,
@@ -86,7 +93,209 @@ export async function getOverviewStats(range: DateRange): Promise<OverviewStats>
     uniqueVisitors: uniqueRow?.value ?? 0,
     averageDailyUses: Math.round((totalUses / dayCount) * 10) / 10,
     successRate: totalUses === 0 ? 100 : Math.round((successUses / totalUses) * 1000) / 10,
+    ...engagement,
+    ...repeat,
   };
+}
+
+function parseFeature(metadata: string | null): {
+  kind: string;
+  seconds?: number;
+} | null {
+  if (!metadata) return null;
+  try {
+    const parsed = JSON.parse(metadata) as { kind?: unknown; seconds?: unknown };
+    if (typeof parsed.kind !== "string") return null;
+    return {
+      kind: parsed.kind,
+      seconds: typeof parsed.seconds === "number" ? parsed.seconds : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function getFeatureRows(range: DateRange, toolId?: string) {
+  await ensureAnalyticsSchema();
+  const db = getDb();
+  const filters = [
+    gte(toolUsage.timestamp, range.start),
+    lte(toolUsage.timestamp, range.end),
+    eq(toolUsage.eventType, "feature"),
+  ];
+  if (toolId) filters.push(eq(toolUsage.toolId, toolId));
+
+  return db
+    .select({
+      sessionId: toolUsage.sessionId,
+      metadata: toolUsage.metadata,
+    })
+    .from(toolUsage)
+    .where(and(...filters));
+}
+
+export async function getEngagementStats(
+  range: DateRange,
+  toolId?: string,
+): Promise<{
+  conversionRate: number | null;
+  uploads: number;
+  downloads: number;
+  avgTimeOnToolSeconds: number | null;
+}> {
+  const rows = await getFeatureRows(range, toolId);
+  const uploadSessions = new Set<string>();
+  const downloadSessions = new Set<string>();
+  let dwellTotal = 0;
+  let dwellCount = 0;
+
+  for (const row of rows) {
+    const feature = parseFeature(row.metadata);
+    if (!feature) continue;
+    if (feature.kind === "upload") uploadSessions.add(row.sessionId);
+    if (feature.kind === "download") downloadSessions.add(row.sessionId);
+    if (feature.kind === "dwell" && typeof feature.seconds === "number") {
+      dwellTotal += feature.seconds;
+      dwellCount += 1;
+    }
+  }
+
+  let converted = 0;
+  for (const session of uploadSessions) {
+    if (downloadSessions.has(session)) converted += 1;
+  }
+
+  return {
+    uploads: uploadSessions.size,
+    downloads: downloadSessions.size,
+    conversionRate:
+      uploadSessions.size === 0
+        ? null
+        : Math.round((converted / uploadSessions.size) * 1000) / 10,
+    avgTimeOnToolSeconds:
+      dwellCount === 0 ? null : Math.round((dwellTotal / dwellCount) * 10) / 10,
+  };
+}
+
+export async function getRepeatUserStats(
+  range: DateRange,
+  toolId?: string,
+): Promise<{ repeatUsers: number; repeatRate: number }> {
+  await ensureAnalyticsSchema();
+  const db = getDb();
+
+  const inRangeRows = await db
+    .selectDistinct({ sessionId: toolUsage.sessionId })
+    .from(toolUsage)
+    .where(
+      toolId
+        ? and(rangeFilter(range), eq(toolUsage.toolId, toolId))
+        : rangeFilter(range),
+    );
+
+  const inRange = [...new Set(inRangeRows.map((row) => row.sessionId))];
+  if (inRange.length === 0) {
+    return { repeatUsers: 0, repeatRate: 0 };
+  }
+
+  const prior = new Set<string>();
+  const chunkSize = 400;
+  for (let i = 0; i < inRange.length; i += chunkSize) {
+    const chunk = inRange.slice(i, i + chunkSize);
+    const priorUsageFilters = [
+      lt(toolUsage.timestamp, range.start),
+      inArray(toolUsage.sessionId, chunk),
+    ];
+    if (toolId) priorUsageFilters.push(eq(toolUsage.toolId, toolId));
+
+    const [priorUsage, priorViews] = await Promise.all([
+      db
+        .selectDistinct({ sessionId: toolUsage.sessionId })
+        .from(toolUsage)
+        .where(and(...priorUsageFilters)),
+      toolId
+        ? Promise.resolve([] as Array<{ sessionId: string }>)
+        : db
+            .selectDistinct({ sessionId: pageViews.sessionId })
+            .from(pageViews)
+            .where(
+              and(
+                lt(pageViews.timestamp, range.start),
+                inArray(pageViews.sessionId, chunk),
+              ),
+            ),
+    ]);
+    for (const row of priorUsage) prior.add(row.sessionId);
+    for (const row of priorViews) prior.add(row.sessionId);
+  }
+
+  const repeatUsers = inRange.filter((id) => prior.has(id)).length;
+  return {
+    repeatUsers,
+    repeatRate: Math.round((repeatUsers / inRange.length) * 1000) / 10,
+  };
+}
+
+export async function getTopKeywords(
+  range: DateRange,
+  limit = 12,
+  toolId?: string,
+): Promise<NamedCount[]> {
+  await ensureAnalyticsSchema();
+  const db = getDb();
+
+  const viewFilters = [
+    gte(pageViews.timestamp, range.start),
+    lte(pageViews.timestamp, range.end),
+  ];
+  if (toolId) {
+    const paths = landingPathsForTool(toolId);
+    if (paths.length === 0) return [];
+    viewFilters.push(inArray(pageViews.path, paths));
+  }
+
+  const viewRows = await db
+    .select({
+      path: pageViews.path,
+      value: count(),
+    })
+    .from(pageViews)
+    .where(and(...viewFilters))
+    .groupBy(pageViews.path);
+
+  const mapped: Array<{ name: string; count: number }> = [];
+
+  if (!toolId) {
+    const searchRows = await db
+      .select({
+        name: searchQueries.query,
+        value: count(),
+      })
+      .from(searchQueries)
+      .where(
+        and(
+          gte(searchQueries.timestamp, range.start),
+          lte(searchQueries.timestamp, range.end),
+        ),
+      )
+      .groupBy(searchQueries.query);
+
+    for (const row of searchRows) {
+      mapped.push({ name: row.name, count: row.value });
+    }
+  }
+
+  for (const row of viewRows) {
+    const keyword = keywordForPath(row.path);
+    if (!keyword) continue;
+    mapped.push({ name: keyword, count: row.value });
+  }
+
+  return aggregateNamedCounts(mapped, limit);
+}
+
+export function getCountryDistribution(range: DateRange, toolId?: string) {
+  return getNamedBreakdown(range, "country", 12, toolId);
 }
 
 export async function getPerToolStats(
@@ -245,10 +454,12 @@ async function getNamedBreakdown(
     .orderBy(sql`count(*) desc`)
     .limit(limit);
 
-  return rows.map((r) => ({
-    name: r.name || "Unknown",
+  const items = rows.map((r) => ({
+    name:
+      column === "country" ? countryDisplayName(r.name) : r.name || "Unknown",
     count: r.value,
   }));
+  return column === "country" ? aggregateNamedCounts(items, limit) : items;
 }
 
 export function getDeviceDistribution(range: DateRange, toolId?: string) {
@@ -338,18 +549,24 @@ export async function getToolDetail(
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([label, count]) => ({ label, count }));
 
-  const [countries, devices, browsers, sources] = await Promise.all([
-    getNamedBreakdown(range, "country", 10, toolId),
-    getDeviceDistribution(range, toolId),
-    getBrowserDistribution(range, toolId),
-    getSourceDistribution(range, toolId),
-  ]);
+  const [countries, devices, browsers, sources, keywords, engagement, repeat] =
+    await Promise.all([
+      getNamedBreakdown(range, "country", 10, toolId),
+      getDeviceDistribution(range, toolId),
+      getBrowserDistribution(range, toolId),
+      getSourceDistribution(range, toolId),
+      getTopKeywords(range, 10, toolId),
+      getEngagementStats(range, toolId),
+      getRepeatUserStats(range, toolId),
+    ]);
 
   return {
     toolId,
     toolName: tool.name,
     total,
     successRate: total === 0 ? 100 : Math.round((successUses / total) * 1000) / 10,
+    ...engagement,
+    ...repeat,
     daily,
     weekly,
     monthly,
@@ -357,6 +574,7 @@ export async function getToolDetail(
     devices,
     browsers,
     sources,
+    keywords,
   };
 }
 

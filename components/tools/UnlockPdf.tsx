@@ -94,7 +94,6 @@ export default function UnlockPdf() {
       resultUrlRef.current = url;
       setPreviewUrl(url);
       setResult(unlocked);
-      downloadUnlockedPdf(unlocked.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -193,7 +192,7 @@ export default function UnlockPdf() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -254,7 +253,7 @@ export default function UnlockPdf() {
                 />
               ) : null}
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Open the file without
+                Click Download when you want the file. Open the file without
                 a password, or download again anytime.
               </p>
             </div>
@@ -268,7 +267,7 @@ export default function UnlockPdf() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "PDF unlock runs in your browser · files never upload to Focera"}
         </p>
       </div>

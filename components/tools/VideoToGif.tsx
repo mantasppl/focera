@@ -105,7 +105,6 @@ export default function VideoToGif() {
       const url = URL.createObjectURL(converted.blob);
       setResult(converted);
       setResultUrl(url);
-      downloadGif(converted.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -277,7 +276,7 @@ export default function VideoToGif() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -366,7 +365,7 @@ export default function VideoToGif() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "Clips up to 30 seconds · conversion runs in your browser · files never upload"}
         </p>
       </div>

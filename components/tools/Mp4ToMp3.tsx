@@ -33,7 +33,7 @@ const DEFAULT_COPY: Required<VideoToMp3Copy> = {
   emptyPlaceholder: "Upload a video to extract and download MP3 audio here",
   previewHint: "Choose a quality and click Convert to MP3.",
   hintIdle: "MP4 to MP3 runs in your browser · files never upload to Focera",
-  hintReady: "Download again anytime · processed locally",
+  hintReady: "Download when you are ready · processed locally",
   loadingSubtext: "Conversion runs locally in your browser. Keep this tab open.",
 };
 
@@ -121,7 +121,6 @@ export default function Mp4ToMp3({ copy }: Mp4ToMp3Props) {
       const url = URL.createObjectURL(converted.blob);
       setResult(converted);
       setResultUrl(url);
-      downloadMp3(converted.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -221,7 +220,7 @@ export default function Mp4ToMp3({ copy }: Mp4ToMp3Props) {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 

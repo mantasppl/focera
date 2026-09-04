@@ -57,7 +57,7 @@ export default function PdfToWordLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to Word. A
-            .docx file is built locally and downloads automatically — preview
+            .docx file is built locally and is ready to download — preview
             the extracted summary in the panel.
           </li>
         </ol>

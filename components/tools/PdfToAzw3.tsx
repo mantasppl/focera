@@ -113,7 +113,6 @@ export default function PdfToAzw3() {
       }
 
       setResult(converted);
-      downloadAzw3File(converted.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -213,7 +212,7 @@ export default function PdfToAzw3() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -275,7 +274,7 @@ export default function PdfToAzw3() {
                 </pre>
               ) : null}
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Switch mode and
+                Click Download when you want the file. Switch mode and
                 convert again anytime.
               </p>
             </div>
@@ -288,7 +287,7 @@ export default function PdfToAzw3() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "PDF to AZW3 conversion runs in your browser · files never upload to Focera"}
         </p>
       </div>

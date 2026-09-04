@@ -143,7 +143,6 @@ export default function AddTextToPdf() {
       resultUrlRef.current = url;
       setPreviewUrl(url);
       setResult(stamped);
-      downloadTextPdf(stamped.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -445,7 +444,7 @@ export default function AddTextToPdf() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -488,7 +487,7 @@ export default function AddTextToPdf() {
                 />
               ) : null}
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Change the text or
+                Click Download when you want the file. Change the text or
                 options and apply again anytime.
               </p>
             </div>
@@ -501,7 +500,7 @@ export default function AddTextToPdf() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "Text is drawn on top of pages · files never upload to Focera"}
         </p>
       </div>

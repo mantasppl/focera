@@ -57,7 +57,7 @@ export default function PdfToAzw3Landing() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to AZW3. A
-            .azw3 KF8 file is built locally and downloads automatically —
+            .azw3 KF8 file is built locally and is ready to download —
             preview the extracted summary in the panel.
           </li>
         </ol>

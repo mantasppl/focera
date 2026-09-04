@@ -14,5 +14,10 @@
  *   trackToolUsageServer({ toolId, toolName, success: true }, request);
  */
 
-export { trackToolUsage, useToolAnalytics, ToolAnalyticsProvider } from "@/lib/analytics/client";
+export {
+  trackSiteSearch,
+  trackToolUsage,
+  useToolAnalytics,
+  ToolAnalyticsProvider,
+} from "@/lib/analytics/client";
 export { trackToolUsageServer, recordToolUsageEvent } from "@/lib/analytics/track";

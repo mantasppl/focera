@@ -57,7 +57,7 @@ export default function PdfToMobiLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to MOBI. A
-            .mobi file is built locally and downloads automatically — preview
+            .mobi file is built locally and is ready to download — preview
             the extracted summary in the panel.
           </li>
         </ol>

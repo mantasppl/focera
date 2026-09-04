@@ -57,7 +57,7 @@ export default function PdfToPowerpointLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to PowerPoint.
-            A .pptx file is built locally and downloads automatically — preview
+            A .pptx file is built locally and is ready to download — preview
             the extracted summary in the panel.
           </li>
         </ol>

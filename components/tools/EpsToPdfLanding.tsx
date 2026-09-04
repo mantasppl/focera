@@ -58,7 +58,7 @@ export default function EpsToPdfLanding() {
           <li>
             <strong>Convert and download.</strong> Click Convert to PDF. The
             first run loads the converter engine once; then the PDF builds
-            locally and downloads automatically.
+            locally and is ready to download.
           </li>
         </ol>
         <p>

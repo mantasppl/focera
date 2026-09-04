@@ -111,7 +111,6 @@ export default function PdfCreator() {
       });
 
       setResult(created);
-      downloadCreatedPdf(created);
       trackSuccess();
     } catch (err) {
       trackFailure();
@@ -307,7 +306,7 @@ export default function PdfCreator() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -358,7 +357,7 @@ export default function PdfCreator() {
                 </li>
               </ul>
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Edit the text or
+                Click Download when you want the file. Edit the text or
                 options and create again anytime.
               </p>
             </div>
@@ -392,7 +391,7 @@ export default function PdfCreator() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : `PDF Creator runs in your browser · ${pdfCreatorLimitsHint()}`}
         </p>
       </div>

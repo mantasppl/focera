@@ -61,7 +61,7 @@ export default function EpsToPngLanding() {
           <li>
             <strong>Convert and download.</strong> Click Convert to PNG. The
             first run loads the converter engine once; then the PNG builds
-            locally and downloads automatically.
+            locally and is ready to download.
           </li>
         </ol>
         <p>

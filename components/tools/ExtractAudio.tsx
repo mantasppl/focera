@@ -14,7 +14,7 @@ export default function ExtractAudio() {
         previewHint: "Choose a quality and click Extract audio.",
         hintIdle:
           "Extract audio runs in your browser · files never upload to Focera",
-        hintReady: "Download again anytime · processed locally",
+        hintReady: "Download when you are ready · processed locally",
         loadingSubtext:
           "Extraction runs locally in your browser. Keep this tab open.",
       }}

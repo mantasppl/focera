@@ -57,7 +57,7 @@ export default function PdfToExcelLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to Excel. An
-            .xlsx file is built locally and downloads automatically — preview a
+            .xlsx file is built locally and is ready to download — preview a
             sample of the rows in the panel.
           </li>
         </ol>

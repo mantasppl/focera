@@ -58,7 +58,7 @@ export default function PdfToCsvLanding() {
           </li>
           <li>
             <strong>Convert and download.</strong> Click Convert to CSV. A .csv
-            (or ZIP) is built locally and downloads automatically — preview a
+            (or ZIP) is built locally and is ready to download — preview a
             sample of the rows in the panel.
           </li>
         </ol>

@@ -113,7 +113,6 @@ export default function EpubToPdf() {
       }
 
       setResult(converted);
-      downloadEpubPdfFile(converted.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -213,7 +212,7 @@ export default function EpubToPdf() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -278,7 +277,7 @@ export default function EpubToPdf() {
                 </p>
               ) : (
                 <p className="tool-placeholder preview-single__hint">
-                  Your download should start automatically. Change page size and
+                  Click Download when you want the file. Change page size and
                   convert again anytime.
                 </p>
               )}
@@ -292,7 +291,7 @@ export default function EpubToPdf() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "EPUB to PDF conversion runs in your browser · files never upload to Focera"}
         </p>
       </div>

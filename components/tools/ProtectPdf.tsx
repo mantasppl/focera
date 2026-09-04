@@ -95,7 +95,6 @@ export default function ProtectPdf() {
 
       setProgressText("Saving protected PDF…");
       setResult(protectedPdf);
-      downloadProtectedPdf(protectedPdf.blob, sourceFile);
       setProgressText("");
       trackSuccess();
     } catch (err) {
@@ -216,7 +215,7 @@ export default function ProtectPdf() {
 
         {hasResult ? (
           <div className="tool-actions">
-            <Button onClick={handleDownloadAgain}>Download again</Button>
+            <Button onClick={handleDownloadAgain}>Download</Button>
           </div>
         ) : null}
 
@@ -270,7 +269,7 @@ export default function ProtectPdf() {
                 </li>
               </ul>
               <p className="tool-placeholder preview-single__hint">
-                Your download should start automatically. Open the file with
+                Click Download when you want the file. Open the file with
                 the password you set, or download again anytime.
               </p>
             </div>
@@ -284,7 +283,7 @@ export default function ProtectPdf() {
 
         <p className="tool-hint">
           {hasResult
-            ? "Download again anytime · processed locally"
+            ? "Download when you are ready · processed locally"
             : "PDF protection runs in your browser · files never upload to Focera"}
         </p>
       </div>
