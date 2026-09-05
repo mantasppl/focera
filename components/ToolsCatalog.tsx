@@ -39,12 +39,21 @@ function ToolChipGrid({ tools }: { tools: Tool[] }) {
   );
 }
 
+const categoryShortLabels: Record<ToolCategory, string> = {
+  pdf: "PDF",
+  image: "Image",
+  video: "Video",
+  ai: "AI",
+  file: "File",
+};
+
 function CatalogCategoryNav() {
   return (
     <nav className="tools-category-nav" aria-label="Browse by category">
       <div className="tools-category-nav__track">
         {categoryOrder.map((cat) => {
           const count = getToolsByCategory(cat).length;
+          const fullLabel = categoryLabels[cat];
 
           return (
             <a
@@ -54,6 +63,7 @@ function CatalogCategoryNav() {
                 "tools-category-nav__btn",
                 `tools-category-nav__btn--${cat}`,
               )}
+              aria-label={`${fullLabel}, ${count} tools`}
               onClick={(event) => {
                 event.preventDefault();
                 const target = document.getElementById(`cat-${cat}`);
@@ -75,8 +85,11 @@ function CatalogCategoryNav() {
                 />
               </span>
               <span className="tools-category-nav__copy">
-                <span className="tools-category-nav__name">
-                  {categoryLabels[cat]}
+                <span className="tools-category-nav__name tools-category-nav__name--short">
+                  {categoryShortLabels[cat]}
+                </span>
+                <span className="tools-category-nav__name tools-category-nav__name--full">
+                  {fullLabel}
                 </span>
                 <span className="tools-category-nav__count">{count}</span>
               </span>
