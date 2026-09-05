@@ -2141,6 +2141,185 @@ a {
   max-width: 40rem;
 }
 
+.tools-category-nav-section {
+  margin-top: -0.35rem;
+  margin-bottom: 0.15rem;
+}
+
+.tools-category-nav {
+  position: sticky;
+  top: var(--site-header-height);
+  z-index: 28;
+  margin: 0 -0.65rem;
+  padding: 0.45rem 0.65rem 0.55rem;
+  background: color-mix(in srgb, var(--surface-glass) 88%, #f4f6f9);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+}
+
+.tools-category-nav__track {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.1rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tools-category-nav__btn {
+  --category-tint: var(--accent);
+  --category-tint-soft: var(--accent-soft);
+  --category-tint-deep: var(--accent-deep);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 0 0 auto;
+  min-height: 2.55rem;
+  padding: 0.35rem 0.7rem 0.35rem 0.4rem;
+  text-decoration: none;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.tools-category-nav__btn--pdf {
+  --category-tint: #0d9488;
+  --category-tint-soft: rgba(13, 148, 136, 0.12);
+  --category-tint-deep: #0f766e;
+}
+
+.tools-category-nav__btn--image {
+  --category-tint: #0284c7;
+  --category-tint-soft: rgba(2, 132, 199, 0.12);
+  --category-tint-deep: #0369a1;
+}
+
+.tools-category-nav__btn--video {
+  --category-tint: #c2410c;
+  --category-tint-soft: rgba(194, 65, 12, 0.12);
+  --category-tint-deep: #9a3412;
+}
+
+.tools-category-nav__btn--ai {
+  --category-tint: #0f766e;
+  --category-tint-soft: rgba(15, 118, 110, 0.14);
+  --category-tint-deep: #115e59;
+}
+
+.tools-category-nav__btn--file {
+  --category-tint: #475569;
+  --category-tint-soft: rgba(71, 85, 105, 0.12);
+  --category-tint-deep: #334155;
+}
+
+.tools-category-nav__btn:hover {
+  border-color: color-mix(in srgb, var(--category-tint) 42%, var(--line));
+  background: color-mix(in srgb, var(--surface) 90%, var(--category-tint-soft));
+  transform: translateY(-1px);
+}
+
+.tools-category-nav__btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--category-tint) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.tools-category-nav__btn.is-active {
+  border-color: color-mix(in srgb, var(--category-tint) 55%, var(--line));
+  background: color-mix(in srgb, var(--surface) 78%, var(--category-tint-soft));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--category-tint) 18%, transparent),
+    var(--shadow-sm);
+}
+
+.tools-category-nav__icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  color: var(--category-tint-deep);
+  background: var(--category-tint-soft);
+}
+
+.tools-category-nav__svg {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.tools-category-nav__copy {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.tools-category-nav__name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.tools-category-nav__count {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--category-tint-deep);
+  background: color-mix(in srgb, var(--category-tint-soft) 75%, white);
+  border-radius: 999px;
+  padding: 0.08rem 0.38rem;
+  line-height: 1.3;
+}
+
+#cat-pdf,
+#cat-image,
+#cat-video,
+#cat-ai,
+#cat-file {
+  scroll-margin-top: calc(var(--site-header-height) + 4.1rem);
+}
+
+@media (min-width: 720px) {
+  .tools-category-nav__track {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
+  .tools-category-nav__btn {
+    flex: 1 1 auto;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.75rem 0.4rem 0.45rem;
+    border-radius: 0.85rem;
+  }
+
+  .tools-category-nav__name {
+    font-size: 0.88rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tools-category-nav__btn {
+    transition: none;
+  }
+
+  .tools-category-nav__btn:hover {
+    transform: none;
+  }
+}
+
 .tool-search-status {
   margin: 0.75rem 0 0;
   font-size: 0.9rem;

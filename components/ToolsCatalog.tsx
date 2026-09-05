@@ -2,6 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import CategoryIcon from "@/components/CategoryIcon";
 import CategoryNiches from "@/components/CategoryNiches";
 import ToolChip from "@/components/ToolChip";
 import ToolSearch from "@/components/ToolSearch";
@@ -14,6 +15,7 @@ import {
   type ToolCategory,
 } from "@/data/tools";
 import { searchTools } from "@/lib/search-tools";
+import { cn } from "@/lib/utils";
 
 type ToolsCatalogProps = {
   /** When set, show only this category’s tools (and search within it). */
@@ -34,6 +36,55 @@ function ToolChipGrid({ tools }: { tools: Tool[] }) {
         <ToolChip key={tool.slug} tool={tool} />
       ))}
     </div>
+  );
+}
+
+function CatalogCategoryNav() {
+  return (
+    <nav className="tools-category-nav" aria-label="Browse by category">
+      <div className="tools-category-nav__track">
+        {categoryOrder.map((cat) => {
+          const count = getToolsByCategory(cat).length;
+
+          return (
+            <a
+              key={cat}
+              href={`#cat-${cat}`}
+              className={cn(
+                "tools-category-nav__btn",
+                `tools-category-nav__btn--${cat}`,
+              )}
+              onClick={(event) => {
+                event.preventDefault();
+                const target = document.getElementById(`cat-${cat}`);
+                if (!target) return;
+                const reduceMotion = window.matchMedia(
+                  "(prefers-reduced-motion: reduce)",
+                ).matches;
+                target.scrollIntoView({
+                  behavior: reduceMotion ? "auto" : "smooth",
+                  block: "start",
+                });
+                window.history.replaceState(null, "", `#cat-${cat}`);
+              }}
+            >
+              <span className="tools-category-nav__icon" aria-hidden="true">
+                <CategoryIcon
+                  category={cat}
+                  className="tools-category-nav__svg"
+                />
+              </span>
+              <span className="tools-category-nav__copy">
+                <span className="tools-category-nav__name">
+                  {categoryLabels[cat]}
+                </span>
+                <span className="tools-category-nav__count">{count}</span>
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
 
@@ -117,6 +168,12 @@ function ToolsCatalogInner({ category }: ToolsCatalogProps) {
           </p>
         ) : null}
       </div>
+
+      {!trimmed && !category ? (
+        <div className="page-section page-section--static tools-category-nav-section">
+          <CatalogCategoryNav />
+        </div>
+      ) : null}
 
       {trimmed ? (
         <section
