@@ -2419,22 +2419,39 @@ a {
     transform 160ms ease;
 }
 
-.image-niche-nav__btn--edit-image {
+.image-niche-nav__btn--sky,
+.image-niche--sky {
   --niche-tint: #0284c7;
   --niche-tint-soft: rgba(2, 132, 199, 0.12);
   --niche-tint-deep: #0369a1;
 }
 
-.image-niche-nav__btn--change-image-format {
+.image-niche-nav__btn--teal,
+.image-niche--teal {
   --niche-tint: #0d9488;
   --niche-tint-soft: rgba(13, 148, 136, 0.12);
   --niche-tint-deep: #0f766e;
 }
 
-.image-niche-nav__btn--size-color-text {
+.image-niche-nav__btn--violet,
+.image-niche--violet {
   --niche-tint: #7c3aed;
   --niche-tint-soft: rgba(124, 58, 237, 0.12);
   --niche-tint-deep: #6d28d9;
+}
+
+.image-niche-nav__btn--warm,
+.image-niche--warm {
+  --niche-tint: #c2410c;
+  --niche-tint-soft: rgba(194, 65, 12, 0.12);
+  --niche-tint-deep: #9a3412;
+}
+
+.image-niche-nav__btn--slate,
+.image-niche--slate {
+  --niche-tint: #475569;
+  --niche-tint-soft: rgba(71, 85, 105, 0.12);
+  --niche-tint-deep: #334155;
 }
 
 .image-niche-nav__btn:hover {
@@ -2556,23 +2573,6 @@ a {
   z-index: -1;
 }
 
-.image-niche--edit-image {
-  --niche-tint: #0284c7;
-  --niche-tint-soft: rgba(2, 132, 199, 0.12);
-  --niche-tint-deep: #0369a1;
-}
-
-.image-niche--change-image-format {
-  --niche-tint: #0d9488;
-  --niche-tint-soft: rgba(13, 148, 136, 0.12);
-  --niche-tint-deep: #0f766e;
-}
-
-.image-niche--size-color-text {
-  --niche-tint: #7c3aed;
-  --niche-tint-soft: rgba(124, 58, 237, 0.12);
-  --niche-tint-deep: #6d28d9;
-}
 
 .image-niche__header {
   display: flex;

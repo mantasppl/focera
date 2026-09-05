@@ -36,13 +36,13 @@ export const categoryLabels: Record<ToolCategory, string> = {
 };
 
 export const categoryDescriptions: Record<ToolCategory, string> = {
-  pdf: "PDF tools like Merge PDF, Compress PDF, PDF to Word, and much more.",
+  pdf: "Edit PDFs, compress and protect files, or change formats — merge, convert, and more.",
   image:
     "Edit photos, adjust size, color, and text, or convert formats — background remover, compressors, converters, and more.",
   video:
-    "Video tools like Compress Video, Video to GIF, Trim Video, and much more.",
-  ai: "AI tools like AI Image Generator, AI Essay Writer, Background Remover, YouTube Summarizer, and much more.",
-  file: "File tools like QR Generator, Password Generator, JSON Formatter, and much more.",
+    "Edit clips, extract audio and captions, or download social video — compress, trim, and more.",
+  ai: "Create AI images, draft writing, or turn speech and media into text — generate, improve, and transcribe.",
+  file: "Generate QR codes and passwords, format code and text, or convert office and media files.",
 };
 
 /** Curated homepage picks — popular ready tools across categories. */

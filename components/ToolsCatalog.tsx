@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import ImageToolsNiches from "@/components/ImageToolsNiches";
+import CategoryNiches from "@/components/CategoryNiches";
 import ToolChip from "@/components/ToolChip";
 import ToolSearch from "@/components/ToolSearch";
 import {
@@ -44,17 +44,14 @@ function CategoryToolGrid({
   category: ToolCategory;
   grouped?: boolean;
 }) {
-  if (category === "image") {
-    return (
-      <ImageToolsNiches
-        tools={getToolsByCategory("image")}
-        stickyNav={grouped}
-        headingLevel={grouped ? "h2" : "h3"}
-      />
-    );
-  }
-
-  return <ToolChipGrid tools={getToolsByCategory(category)} />;
+  return (
+    <CategoryNiches
+      category={category}
+      tools={getToolsByCategory(category)}
+      stickyNav={grouped}
+      headingLevel={grouped ? "h2" : "h3"}
+    />
+  );
 }
 
 function ToolsCatalogInner({ category }: ToolsCatalogProps) {
@@ -142,11 +139,7 @@ function ToolsCatalogInner({ category }: ToolsCatalogProps) {
         </section>
       ) : category ? (
         <section
-          className={
-            category === "image"
-              ? "page-section page-section--static"
-              : "page-section"
-          }
+          className="page-section page-section--static"
           aria-label={categoryLabels[category]}
         >
           <CategoryToolGrid category={category} grouped />
@@ -155,11 +148,7 @@ function ToolsCatalogInner({ category }: ToolsCatalogProps) {
         categoryOrder.map((cat) => (
           <section
             key={cat}
-            className={
-              cat === "image"
-                ? "page-section page-section--static"
-                : "page-section"
-            }
+            className="page-section page-section--static"
             aria-labelledby={`cat-${cat}-heading`}
             id={`cat-${cat}`}
           >

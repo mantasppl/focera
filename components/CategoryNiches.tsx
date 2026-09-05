@@ -1,21 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import ImageNicheIcon from "@/components/ImageNicheIcon";
+import NicheIcon from "@/components/NicheIcon";
 import ToolChip from "@/components/ToolChip";
 import {
-  groupImageTools,
-  imageNicheOrder,
-  imageNicheSectionId,
-  type ImageNicheId,
-  type ImageNicheMeta,
-} from "@/data/image-niches";
-import type { Tool } from "@/data/tools";
+  categoryNicheSectionId,
+  getCategoryNiches,
+  groupCategoryTools,
+  type CategoryNicheDef,
+} from "@/data/category-niches";
+import type { Tool, ToolCategory } from "@/data/tools";
 import { cn } from "@/lib/utils";
 
-type ImageToolsNichesProps = {
+type CategoryNichesProps = {
+  category: ToolCategory;
   tools: Tool[];
-  /** Sticky jump nav on the dedicated image category page. */
   stickyNav?: boolean;
   headingLevel?: "h2" | "h3";
 };
@@ -62,20 +61,22 @@ function NicheHeading({
 }
 
 function NicheNav({
+  category,
   groups,
   activeId,
   sticky,
   onJump,
 }: {
-  groups: { niche: ImageNicheMeta; tools: Tool[] }[];
-  activeId: ImageNicheId;
+  category: ToolCategory;
+  groups: { niche: CategoryNicheDef; tools: Tool[] }[];
+  activeId: string;
   sticky: boolean;
-  onJump: (id: ImageNicheId) => void;
+  onJump: (id: string) => void;
 }) {
   return (
     <nav
       className={cn("image-niche-nav", sticky && "image-niche-nav--sticky")}
-      aria-label="Jump to image tool groups"
+      aria-label="Jump to tool groups"
     >
       <div className="image-niche-nav__track">
         {groups.map(({ niche, tools }) => {
@@ -83,10 +84,10 @@ function NicheNav({
           return (
             <a
               key={niche.id}
-              href={`#${imageNicheSectionId(niche.id)}`}
+              href={`#${categoryNicheSectionId(category, niche.id)}`}
               className={cn(
                 "image-niche-nav__btn",
-                `image-niche-nav__btn--${niche.id}`,
+                `image-niche-nav__btn--${niche.tone}`,
                 selected && "is-active",
               )}
               aria-current={selected ? "location" : undefined}
@@ -96,7 +97,7 @@ function NicheNav({
               }}
             >
               <span className="image-niche-nav__icon" aria-hidden="true">
-                <ImageNicheIcon niche={niche.id} />
+                <NicheIcon kind={niche.icon} />
               </span>
               <span className="image-niche-nav__copy">
                 <span className="image-niche-nav__name image-niche-nav__name--full">
@@ -105,9 +106,7 @@ function NicheNav({
                 <span className="image-niche-nav__name image-niche-nav__name--short">
                   {niche.shortName}
                 </span>
-                <span className="image-niche-nav__count">
-                  {tools.length}
-                </span>
+                <span className="image-niche-nav__count">{tools.length}</span>
               </span>
             </a>
           );
@@ -117,37 +116,46 @@ function NicheNav({
   );
 }
 
-export default function ImageToolsNiches({
+export default function CategoryNiches({
+  category,
   tools,
   stickyNav = false,
   headingLevel = "h2",
-}: ImageToolsNichesProps) {
-  const groups = groupImageTools(tools);
-  const [activeId, setActiveId] = useState<ImageNicheId>(imageNicheOrder[0]);
+}: CategoryNichesProps) {
+  const niches = getCategoryNiches(category);
+  const groups = groupCategoryTools(category, tools);
+  const [activeId, setActiveId] = useState(niches[0]?.id ?? "");
 
-  const jumpTo = useCallback((id: ImageNicheId) => {
-    const section = document.getElementById(imageNicheSectionId(id));
-    if (!section) return;
-    setActiveId(id);
-    const url = `${window.location.pathname}${window.location.search}#${imageNicheSectionId(id)}`;
-    window.history.replaceState(null, "", url);
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    section.scrollIntoView({
-      behavior: reduceMotion ? "auto" : "smooth",
-      block: "start",
-    });
-  }, []);
+  const jumpTo = useCallback(
+    (id: string) => {
+      const section = document.getElementById(
+        categoryNicheSectionId(category, id),
+      );
+      if (!section) return;
+      setActiveId(id);
+      const url = `${window.location.pathname}${window.location.search}#${categoryNicheSectionId(category, id)}`;
+      window.history.replaceState(null, "", url);
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      section.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    },
+    [category],
+  );
 
   useEffect(() => {
     const hash = window.location.hash.replace(/^#/, "");
-    const match = imageNicheOrder.find(
-      (id) => imageNicheSectionId(id) === hash,
+    const match = niches.find(
+      (niche) => categoryNicheSectionId(category, niche.id) === hash,
     );
     if (!match) return;
-    setActiveId(match);
-    const section = document.getElementById(imageNicheSectionId(match));
+    setActiveId(match.id);
+    const section = document.getElementById(
+      categoryNicheSectionId(category, match.id),
+    );
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -155,11 +163,13 @@ export default function ImageToolsNiches({
       behavior: reduceMotion ? "auto" : "smooth",
       block: "start",
     });
-  }, []);
+  }, [category, niches]);
 
   useEffect(() => {
-    const nodes = imageNicheOrder
-      .map((id) => document.getElementById(imageNicheSectionId(id)))
+    const nodes = niches
+      .map((niche) =>
+        document.getElementById(categoryNicheSectionId(category, niche.id)),
+      )
       .filter((node): node is HTMLElement => Boolean(node));
     if (!nodes.length) return;
 
@@ -169,10 +179,11 @@ export default function ImageToolsNiches({
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (!visible?.target.id) return;
-        const next = imageNicheOrder.find(
-          (id) => imageNicheSectionId(id) === visible.target.id,
+        const next = niches.find(
+          (niche) =>
+            categoryNicheSectionId(category, niche.id) === visible.target.id,
         );
-        if (next) setActiveId(next);
+        if (next) setActiveId(next.id);
       },
       {
         rootMargin: "-28% 0px -58% 0px",
@@ -182,7 +193,7 @@ export default function ImageToolsNiches({
 
     for (const node of nodes) observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [category, niches]);
 
   return (
     <div
@@ -192,6 +203,7 @@ export default function ImageToolsNiches({
       )}
     >
       <NicheNav
+        category={category}
         groups={groups}
         activeId={activeId}
         sticky={stickyNav}
@@ -200,18 +212,18 @@ export default function ImageToolsNiches({
 
       <div className="image-niche-stack">
         {groups.map(({ niche, tools: nicheTools }) => {
-          const sectionId = imageNicheSectionId(niche.id);
+          const sectionId = categoryNicheSectionId(category, niche.id);
           const titleId = `${sectionId}-heading`;
           return (
             <section
               key={niche.id}
               id={sectionId}
-              className={cn("image-niche", `image-niche--${niche.id}`)}
+              className={cn("image-niche", `image-niche--${niche.tone}`)}
               aria-labelledby={titleId}
             >
               <header className="image-niche__header">
                 <span className="image-niche__icon" aria-hidden="true">
-                  <ImageNicheIcon niche={niche.id} />
+                  <NicheIcon kind={niche.icon} />
                 </span>
                 <div className="image-niche__intro">
                   <div className="image-niche__title-row">

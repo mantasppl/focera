@@ -7,11 +7,10 @@ import Header from "@/components/Header";
 import JsonLd from "@/components/JsonLd";
 import ToolsCatalog from "@/components/ToolsCatalog";
 import { getCategorySeo } from "@/data/category-seo";
-import { flattenGroupedImageTools } from "@/data/image-niches";
+import { flattenGroupedCategoryTools } from "@/data/category-niches";
 import {
   categoryLabels,
   categoryOrder,
-  getToolsByCategory,
   isToolCategory,
 } from "@/data/tools";
 import {
@@ -59,10 +58,7 @@ export default async function CategoryToolsPage({ params }: PageProps) {
   const category = raw;
   const label = categoryLabels[category];
   const seo = getCategorySeo(category);
-  const tools =
-    category === "image"
-      ? flattenGroupedImageTools()
-      : getToolsByCategory(category);
+  const tools = flattenGroupedCategoryTools(category);
   const count = tools.length;
   const path = `/tools/${category}`;
 
