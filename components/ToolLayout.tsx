@@ -11,8 +11,8 @@ import RelatedTools from "@/components/RelatedTools";
 import ShareMenu from "@/components/ShareMenu";
 import ToolInquiry from "@/components/ToolInquiry";
 import ToolComments from "@/components/comments/ToolComments";
+import ToolFeedbackPrompt from "@/components/ToolFeedbackPrompt";
 import ToolPublicRating from "@/components/ToolPublicRating";
-import ToolRating from "@/components/ToolRating";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
@@ -89,7 +89,7 @@ export default function ToolLayout({
               {parentTool.name}
             </Link>
           ) : null}
-          <ToolRating toolSlug={tool.slug} toolName={tool.name} />
+          <ToolFeedbackPrompt toolSlug={tool.slug} />
         </div>
         <RelatedTools key={tool.href} currentSlug={tool.slug} />
         <Suspense
