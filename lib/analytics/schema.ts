@@ -3,6 +3,7 @@ import {
   integer,
   sqliteTable,
   text,
+  uniqueIndex,
 } from "drizzle-orm/sqlite-core";
 
 /**
@@ -137,3 +138,52 @@ export const searchQueries = sqliteTable(
 
 export type SearchQueryRow = typeof searchQueries.$inferSelect;
 export type NewSearchQueryRow = typeof searchQueries.$inferInsert;
+
+export const toolComments = sqliteTable(
+  "tool_comments",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    toolId: text("tool_id").notNull(),
+    name: text("name").notNull(),
+    email: text("email"),
+    content: text("content").notNull(),
+    /** 1–5 for top-level comments; null for replies. */
+    rating: integer("rating"),
+    likesCount: integer("likes_count").notNull().default(0),
+    parentId: integer("parent_id"),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+    ipHash: text("ip_hash"),
+    isSeed: integer("is_seed", { mode: "boolean" }).notNull().default(false),
+  },
+  (table) => [
+    index("tool_comments_tool_id_idx").on(table.toolId),
+    index("tool_comments_created_at_idx").on(table.createdAt),
+    index("tool_comments_tool_time_idx").on(table.toolId, table.createdAt),
+    index("tool_comments_parent_id_idx").on(table.parentId),
+  ],
+);
+
+export type ToolCommentRow = typeof toolComments.$inferSelect;
+export type NewToolCommentRow = typeof toolComments.$inferInsert;
+
+export const toolCommentLikes = sqliteTable(
+  "tool_comment_likes",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    commentId: integer("comment_id").notNull(),
+    /** Hashed IP or client-provided local id. */
+    identifier: text("identifier").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (table) => [
+    index("tool_comment_likes_comment_id_idx").on(table.commentId),
+    index("tool_comment_likes_identifier_idx").on(table.identifier),
+    uniqueIndex("tool_comment_likes_unique_idx").on(
+      table.commentId,
+      table.identifier,
+    ),
+  ],
+);
+
+export type ToolCommentLikeRow = typeof toolCommentLikes.$inferSelect;
+export type NewToolCommentLikeRow = typeof toolCommentLikes.$inferInsert;

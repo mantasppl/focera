@@ -7,7 +7,7 @@ import * as schema from "@/lib/analytics/schema";
 let client: Client | null = null;
 let db: LibSQLDatabase<typeof schema> | null = null;
 let appliedSchemaVersion = 0;
-const ANALYTICS_SCHEMA_VERSION = 4;
+const ANALYTICS_SCHEMA_VERSION = 5;
 let resolvedUrl: string | null = null;
 
 function isServerlessRuntime(): boolean {
@@ -176,6 +176,32 @@ CREATE TABLE IF NOT EXISTS search_queries (
 );
 CREATE INDEX IF NOT EXISTS search_queries_timestamp_idx ON search_queries (timestamp);
 CREATE INDEX IF NOT EXISTS search_queries_query_idx ON search_queries (query);
+CREATE TABLE IF NOT EXISTS tool_comments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tool_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  email TEXT,
+  content TEXT NOT NULL,
+  rating INTEGER,
+  likes_count INTEGER NOT NULL DEFAULT 0,
+  parent_id INTEGER,
+  created_at INTEGER NOT NULL,
+  ip_hash TEXT,
+  is_seed INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS tool_comments_tool_id_idx ON tool_comments (tool_id);
+CREATE INDEX IF NOT EXISTS tool_comments_created_at_idx ON tool_comments (created_at);
+CREATE INDEX IF NOT EXISTS tool_comments_tool_time_idx ON tool_comments (tool_id, created_at);
+CREATE INDEX IF NOT EXISTS tool_comments_parent_id_idx ON tool_comments (parent_id);
+CREATE TABLE IF NOT EXISTS tool_comment_likes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  comment_id INTEGER NOT NULL,
+  identifier TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS tool_comment_likes_comment_id_idx ON tool_comment_likes (comment_id);
+CREATE INDEX IF NOT EXISTS tool_comment_likes_identifier_idx ON tool_comment_likes (identifier);
+CREATE UNIQUE INDEX IF NOT EXISTS tool_comment_likes_unique_idx ON tool_comment_likes (comment_id, identifier);
 `);
   appliedSchemaVersion = ANALYTICS_SCHEMA_VERSION;
 }

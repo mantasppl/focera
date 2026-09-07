@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import Link from "next/link";
 import type { Tool } from "@/data/tools";
 import { getToolBySlug } from "@/data/tools";
@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 import RelatedTools from "@/components/RelatedTools";
 import ShareMenu from "@/components/ShareMenu";
 import ToolInquiry from "@/components/ToolInquiry";
+import ToolComments from "@/components/comments/ToolComments";
 import ToolFeedbackPrompt from "@/components/ToolFeedbackPrompt";
 import ToolRating from "@/components/ToolRating";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
@@ -86,6 +87,20 @@ export default function ToolLayout({
             </Link>
           ) : null}
           <ToolRating toolSlug={tool.slug} toolName={tool.name} />
+          <Suspense
+            fallback={
+              <div className="tool-comments tool-comments--loading" aria-hidden="true">
+                <div className="tool-comments__intro">
+                  <h2 className="tool-comments__title">How did you use this tool?</h2>
+                  <p className="tool-comments__subtitle">
+                    Share your results, tips, or best prompts.
+                  </p>
+                </div>
+              </div>
+            }
+          >
+            <ToolComments toolSlug={tool.slug} toolName={tool.name} />
+          </Suspense>
           <ToolFeedbackPrompt toolSlug={tool.slug} />
         </div>
         <RelatedTools key={tool.href} currentSlug={tool.slug} />

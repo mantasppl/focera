@@ -17,13 +17,13 @@ const contentSecurityPolicy = [
   // unsafe-eval — required by onnxruntime-web / @imgly image decode (new Function).
   //   Also needed in production for background-remover, change-background, colorize-photo.
   // Clarity — www/scripts/*.clarity.ms plus c.bing.com (Microsoft identity endpoint).
-  "script-src 'self' 'unsafe-inline' blob: 'wasm-unsafe-eval' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://scripts.clarity.ms https://*.clarity.ms https://c.bing.com",
+  "script-src 'self' 'unsafe-inline' blob: 'wasm-unsafe-eval' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://scripts.clarity.ms https://*.clarity.ms https://c.bing.com https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   // blob: — onnxruntime fetches WASM/JS glue via blob: URLs created by @imgly/background-removal.
   "connect-src 'self' blob: https://www.google-analytics.com https://region1.google-analytics.com https://image.pollinations.ai https://text.pollinations.ai https://api.groq.com https:",
   "worker-src 'self' blob:",
   "child-src 'self' blob:",
-  "frame-src 'self' blob:",
+  "frame-src 'self' blob: https://challenges.cloudflare.com",
   ...(isProd ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
 
