@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Button from "@/components/Button";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import { adminFetch } from "@/lib/admin/csrf-client";
 import type {
@@ -40,14 +41,13 @@ export default function RatingsDashboard() {
   const { api } = useAdminPath();
   const [toolId, setToolId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [data, setData] = useState<RatingsResponse | null>(null);
+  const [baseDrafts, setBaseDrafts] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    const controller = new AbortController();
-    let active = true;
-
-    async function load() {
+  const load = useCallback(
+    async (signal?: AbortSignal) => {
       setLoading(true);
       setError("");
       const params = new URLSearchParams();
@@ -56,32 +56,68 @@ export default function RatingsDashboard() {
       try {
         const response = await adminFetch(
           `${api("/ratings")}?${params.toString()}`,
-          { signal: controller.signal },
+          { signal },
         );
-        if (!active || controller.signal.aborted) return;
+        if (signal?.aborted) return;
         if (!response.ok) {
           const body = (await response.json().catch(() => null)) as {
             error?: string;
           } | null;
-          throw new Error(body?.error || `Failed to load ratings (${response.status}).`);
+          throw new Error(
+            body?.error || `Failed to load ratings (${response.status}).`,
+          );
         }
         const payload = (await response.json()) as RatingsResponse;
-        if (!active) return;
+        if (signal?.aborted) return;
         setData(payload);
+        const drafts: Record<string, string> = {};
+        for (const tool of payload.tools) {
+          drafts[tool.toolId] = String(tool.baseCount);
+        }
+        setBaseDrafts(drafts);
       } catch (err) {
-        if (!active || controller.signal.aborted) return;
+        if (signal?.aborted) return;
         setError(err instanceof Error ? err.message : "Failed to load ratings.");
       } finally {
-        if (active) setLoading(false);
+        if (!signal?.aborted) setLoading(false);
       }
-    }
+    },
+    [api, toolId],
+  );
 
-    void load();
-    return () => {
-      active = false;
-      controller.abort();
-    };
-  }, [api, toolId]);
+  useEffect(() => {
+    const controller = new AbortController();
+    void load(controller.signal);
+    return () => controller.abort();
+  }, [load]);
+
+  async function saveBaseCount(tool: ToolRatingSummary) {
+    const raw = baseDrafts[tool.toolId] ?? String(tool.baseCount);
+    const next = Number(raw);
+    if (!Number.isInteger(next) || next < 0) {
+      setError("Base count must be a whole number ≥ 0.");
+      return;
+    }
+    setBusyId(tool.toolId);
+    setError("");
+    try {
+      const response = await adminFetch(api("/ratings"), {
+        method: "PATCH",
+        body: JSON.stringify({ toolId: tool.toolId, baseCount: next }),
+      });
+      const body = (await response.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+      if (!response.ok) {
+        throw new Error(body?.error || "Could not update base count.");
+      }
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not update base count.");
+    } finally {
+      setBusyId(null);
+    }
+  }
 
   const stats = data?.stats;
   const tools = data?.tools ?? [];
@@ -101,7 +137,7 @@ export default function RatingsDashboard() {
             { label: "Total ratings", value: stats?.total },
             { label: "Average stars", value: stats?.average },
             { label: "With comments", value: stats?.withComments },
-            { label: "Tools rated", value: tools.length },
+            { label: "Tools listed", value: tools.length },
           ] as const
         ).map((card) => (
           <article key={card.label} className="admin-stat-card">
@@ -121,68 +157,99 @@ export default function RatingsDashboard() {
 
       <section className="admin-table-card">
         <div className="admin-table-card__head">
-          <h2>Every tool</h2>
-          <p>Average rating, count, and comments per tool.</p>
+          <h2>Public rating counts</h2>
+          <p>
+            Displayed count = base + live ratings. Edit base to correct the
+            public number (115–2541 seeded by default).
+          </p>
         </div>
         <div className="admin-table-wrap">
           <table className="admin-table">
             <thead>
               <tr>
                 <th>Tool</th>
-                <th className="is-num">Ratings</th>
+                <th className="is-num">Base</th>
+                <th className="is-num">Live</th>
+                <th className="is-num">Display</th>
                 <th className="is-num">Average</th>
                 <th className="is-num">Comments</th>
-                <th className="is-num">5★</th>
-                <th className="is-num">4★</th>
-                <th className="is-num">3★</th>
-                <th className="is-num">2★</th>
-                <th className="is-num">1★</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={9}>
+                  <td colSpan={7}>
                     <div className="admin-skeleton admin-skeleton--row" />
                   </td>
                 </tr>
               ) : tools.length === 0 ? (
                 <tr>
-                  <td colSpan={9}>
-                    <div className="admin-empty">
-                      No ratings yet. They appear here after someone rates a tool.
-                    </div>
+                  <td colSpan={7}>
+                    <div className="admin-empty">No tools found.</div>
                   </td>
                 </tr>
               ) : (
-                tools.map((tool) => (
-                  <tr key={tool.toolId}>
-                    <td>
-                      <button
-                        type="button"
-                        className="admin-table__link"
-                        onClick={() =>
-                          setToolId((current) =>
-                            current === tool.toolId ? "" : tool.toolId,
-                          )
-                        }
-                      >
-                        {tool.toolName}
-                        <span className="admin-table__slug">{tool.toolId}</span>
-                      </button>
-                    </td>
-                    <td className="is-num">{tool.count.toLocaleString()}</td>
-                    <td className="is-num">{tool.average.toFixed(1)}</td>
-                    <td className="is-num">
-                      {tool.withComments.toLocaleString()}
-                    </td>
-                    <td className="is-num">{tool.stars[5]}</td>
-                    <td className="is-num">{tool.stars[4]}</td>
-                    <td className="is-num">{tool.stars[3]}</td>
-                    <td className="is-num">{tool.stars[2]}</td>
-                    <td className="is-num">{tool.stars[1]}</td>
-                  </tr>
-                ))
+                tools.map((tool) => {
+                  const draft = baseDrafts[tool.toolId] ?? String(tool.baseCount);
+                  const dirty = Number(draft) !== tool.baseCount;
+                  return (
+                    <tr key={tool.toolId}>
+                      <td>
+                        <button
+                          type="button"
+                          className="admin-table__link"
+                          onClick={() =>
+                            setToolId((current) =>
+                              current === tool.toolId ? "" : tool.toolId,
+                            )
+                          }
+                        >
+                          {tool.toolName}
+                          <span className="admin-table__slug">{tool.toolId}</span>
+                        </button>
+                      </td>
+                      <td className="is-num">
+                        <input
+                          className="admin-base-input"
+                          type="number"
+                          min={0}
+                          value={draft}
+                          disabled={busyId === tool.toolId}
+                          onChange={(e) =>
+                            setBaseDrafts((prev) => ({
+                              ...prev,
+                              [tool.toolId]: e.target.value,
+                            }))
+                          }
+                          aria-label={`Base count for ${tool.toolName}`}
+                        />
+                      </td>
+                      <td className="is-num">{tool.liveCount.toLocaleString()}</td>
+                      <td className="is-num">
+                        {(
+                          (Number.isInteger(Number(draft))
+                            ? Number(draft)
+                            : tool.baseCount) + tool.liveCount
+                        ).toLocaleString()}
+                      </td>
+                      <td className="is-num">{tool.average.toFixed(1)}</td>
+                      <td className="is-num">
+                        {tool.withComments.toLocaleString()}
+                      </td>
+                      <td>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          disabled={busyId === tool.toolId || !dirty}
+                          onClick={() => void saveBaseCount(tool)}
+                        >
+                          {busyId === tool.toolId ? "Saving…" : "Save"}
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

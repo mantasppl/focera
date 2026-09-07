@@ -76,6 +76,16 @@ export const toolRatings = sqliteTable(
 export type ToolRatingRow = typeof toolRatings.$inferSelect;
 export type NewToolRatingRow = typeof toolRatings.$inferInsert;
 
+/** Manual / seeded public rating count base per tool (display = base + live ratings). */
+export const toolRatingBases = sqliteTable("tool_rating_bases", {
+  toolId: text("tool_id").primaryKey(),
+  baseCount: integer("base_count").notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});
+
+export type ToolRatingBaseRow = typeof toolRatingBases.$inferSelect;
+export type NewToolRatingBaseRow = typeof toolRatingBases.$inferInsert;
+
 export const pageViews = sqliteTable(
   "page_views",
   {

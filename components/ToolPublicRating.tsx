@@ -16,6 +16,8 @@ export default async function ToolPublicRating({
     toolSlug,
     average: 0,
     count: 0,
+    baseCount: 0,
+    liveCount: 0,
     stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
   };
 

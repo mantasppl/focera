@@ -114,7 +114,7 @@ export default function ToolPublicRatingView({
   }
 
   const fills = starsForAverage(rating.average);
-  const label = `${rating.average.toFixed(1)} out of 5 stars from ${rating.count} rating${rating.count === 1 ? "" : "s"} for ${toolName}`;
+  const label = `${rating.average.toFixed(1)} out of 5 stars · ${rating.count.toLocaleString()} for ${toolName}`;
 
   return (
     <div className="tool-public-rating" aria-label={label}>
@@ -136,7 +136,7 @@ export default function ToolPublicRatingView({
         ·
       </span>
       <span className="tool-public-rating__count">
-        {rating.count} {rating.count === 1 ? "rating" : "ratings"}
+        {rating.count.toLocaleString()}
       </span>
     </div>
   );
