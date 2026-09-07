@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { verifyTurnstileToken } from "@/lib/comments/turnstile";
 import { CONTACT_EMAIL, validateContactPayload } from "@/lib/contact";
 import { guardApiRequest } from "@/lib/security/request";
 
@@ -8,6 +9,7 @@ type ContactBody = {
   name?: unknown;
   email?: unknown;
   message?: unknown;
+  turnstileToken?: unknown;
 };
 
 function jsonError(message: string, status: number) {
@@ -37,6 +39,11 @@ export async function POST(request: Request) {
     body = (await request.json()) as ContactBody;
   } catch {
     return jsonError("Invalid JSON body.", 400);
+  }
+
+  const turnstile = await verifyTurnstileToken(body.turnstileToken, request);
+  if (!turnstile.ok) {
+    return jsonError(turnstile.error, 400);
   }
 
   const validated = validateContactPayload(body);

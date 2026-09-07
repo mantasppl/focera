@@ -4463,6 +4463,12 @@ a {
   margin-top: 0.25rem;
 }
 
+.contact-form__turnstile {
+  min-height: 65px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
 .contact-form__success {
   margin: 0;
   color: var(--accent-deep);

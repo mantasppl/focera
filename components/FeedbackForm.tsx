@@ -1,9 +1,19 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState, type FormEvent } from "react";
+import {
+  Suspense,
+  useCallback,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import TurnstileWidget, {
+  TURNSTILE_SITE_KEY,
+  type TurnstileWidgetHandle,
+} from "@/components/comments/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
 
 type Status =
@@ -21,9 +31,24 @@ function FeedbackFormFields() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>({ type: "idle" });
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileWidgetHandle | null>(null);
+  const turnstileRequired = Boolean(TURNSTILE_SITE_KEY);
+
+  const onTurnstileReady = useCallback((handle: TurnstileWidgetHandle) => {
+    turnstileRef.current = handle;
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (status.type === "loading") return;
+    if (turnstileRequired && !turnstileToken) {
+      setStatus({
+        type: "error",
+        message: "Please complete the security check.",
+      });
+      return;
+    }
     setStatus({ type: "loading" });
 
     try {
@@ -34,6 +59,7 @@ function FeedbackFormFields() {
           email,
           message,
           toolSlug: toolSlug || undefined,
+          turnstileToken: turnstileToken || "",
         }),
       });
 
@@ -48,13 +74,19 @@ function FeedbackFormFields() {
             data?.error ||
             `Could not send your message. Email us at ${CONTACT_EMAIL}.`,
         });
+        turnstileRef.current?.reset();
+        setTurnstileToken(null);
         return;
       }
 
       setEmail("");
       setMessage("");
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
       setStatus({ type: "success" });
     } catch {
+      turnstileRef.current?.reset();
+      setTurnstileToken(null);
       setStatus({
         type: "error",
         message: `Network error. Please email us at ${CONTACT_EMAIL}.`,
@@ -92,6 +124,15 @@ function FeedbackFormFields() {
         disabled={status.type === "loading"}
       />
 
+      {turnstileRequired ? (
+        <TurnstileWidget
+          siteKey={TURNSTILE_SITE_KEY}
+          className="contact-form__turnstile"
+          onToken={setTurnstileToken}
+          onReady={onTurnstileReady}
+        />
+      ) : null}
+
       {status.type === "success" ? (
         <p className="contact-form__success" role="status">
           Thanks — your feedback was sent. We read every message.
@@ -104,7 +145,13 @@ function FeedbackFormFields() {
         </p>
       ) : null}
 
-      <Button type="submit" disabled={status.type === "loading"}>
+      <Button
+        type="submit"
+        disabled={
+          status.type === "loading" ||
+          (turnstileRequired && !turnstileToken)
+        }
+      >
         {status.type === "loading" ? "Sending…" : "Send feedback"}
       </Button>
     </form>
