@@ -8,12 +8,6 @@ export type ContactPayload = {
   message: string;
 };
 
-export type FeedbackPayload = {
-  email: string | null;
-  message: string;
-  toolSlug: string | null;
-};
-
 export type ToolInquiryPayload = {
   idea: string;
   similarUrl: string | null;
@@ -50,49 +44,6 @@ export function validateContactPayload(input: {
   }
 
   return { ok: true, data: { name, email, message } };
-}
-
-export function validateFeedbackPayload(input: {
-  email?: unknown;
-  message?: unknown;
-  toolSlug?: unknown;
-}): { ok: true; data: FeedbackPayload } | { ok: false; error: string } {
-  const emailRaw = typeof input.email === "string" ? input.email.trim() : "";
-  const message =
-    typeof input.message === "string" ? input.message.trim() : "";
-  const toolSlugRaw =
-    typeof input.toolSlug === "string" ? input.toolSlug.trim() : "";
-
-  if (emailRaw) {
-    if (!EMAIL_PATTERN.test(emailRaw)) {
-      return { ok: false, error: "Please enter a valid email address." };
-    }
-    if (emailRaw.length > 254) {
-      return { ok: false, error: "Email is too long." };
-    }
-  }
-
-  if (!message || message.length < 10) {
-    return {
-      ok: false,
-      error: "Please enter a message (at least 10 characters).",
-    };
-  }
-  if (message.length > 5000) {
-    return { ok: false, error: "Message is too long." };
-  }
-
-  const toolSlug =
-    toolSlugRaw && /^[a-z0-9-]{1,80}$/.test(toolSlugRaw) ? toolSlugRaw : null;
-
-  return {
-    ok: true,
-    data: {
-      email: emailRaw || null,
-      message,
-      toolSlug,
-    },
-  };
 }
 
 function normalizeSimilarUrl(

@@ -101,7 +101,7 @@ function weightedSample(
   return picked;
 }
 
-export function getRelatedTools(currentSlug: string, limit = 3): Tool[] {
+export function getRelatedTools(currentSlug: string, limit = 5): Tool[] {
   const ready = getReadyTools();
   const current = getToolBySlug(currentSlug);
   const curated = new Set(relatedToolSlugs[currentSlug] ?? []);
@@ -131,7 +131,7 @@ export function getRelatedTools(currentSlug: string, limit = 3): Tool[] {
 
 export default function RelatedTools({
   currentSlug,
-  limit = 3,
+  limit = 5,
   title = "You may also be interested in:",
   className,
 }: RelatedToolsProps) {

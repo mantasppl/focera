@@ -11,7 +11,7 @@ import RelatedTools from "@/components/RelatedTools";
 import ShareMenu from "@/components/ShareMenu";
 import ToolInquiry from "@/components/ToolInquiry";
 import ToolComments from "@/components/comments/ToolComments";
-import ToolFeedbackPrompt from "@/components/ToolFeedbackPrompt";
+import ToolPublicRating from "@/components/ToolPublicRating";
 import ToolRating from "@/components/ToolRating";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 import { cn } from "@/lib/utils";
@@ -59,6 +59,9 @@ export default function ToolLayout({
           </p>
           <h1 className="tool-hero__title">{tool.name}</h1>
           <p className="tool-hero__lede">{tool.description}</p>
+          <Suspense fallback={null}>
+            <ToolPublicRating toolSlug={tool.slug} toolName={tool.name} />
+          </Suspense>
         </section>
 
         <div className="tool-workspace-block">
@@ -87,23 +90,22 @@ export default function ToolLayout({
             </Link>
           ) : null}
           <ToolRating toolSlug={tool.slug} toolName={tool.name} />
-          <Suspense
-            fallback={
-              <div className="tool-comments tool-comments--loading" aria-hidden="true">
-                <div className="tool-comments__intro">
-                  <h2 className="tool-comments__title">How did you use this tool?</h2>
-                  <p className="tool-comments__subtitle">
-                    Share your results, tips, or best prompts.
-                  </p>
-                </div>
-              </div>
-            }
-          >
-            <ToolComments toolSlug={tool.slug} toolName={tool.name} />
-          </Suspense>
-          <ToolFeedbackPrompt toolSlug={tool.slug} />
         </div>
         <RelatedTools key={tool.href} currentSlug={tool.slug} />
+        <Suspense
+          fallback={
+            <div className="tool-comments tool-comments--loading" aria-hidden="true">
+              <div className="tool-comments__intro">
+                <h2 className="tool-comments__title">How did you use this tool?</h2>
+                <p className="tool-comments__subtitle">
+                  Share your results, tips, or best prompts.
+                </p>
+              </div>
+            </div>
+          }
+        >
+          <ToolComments toolSlug={tool.slug} toolName={tool.name} />
+        </Suspense>
         <ToolInquiry />
 
         {content}

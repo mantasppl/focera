@@ -21,10 +21,12 @@ import type {
   CommentSort,
   PublicComment,
 } from "@/lib/comments/types";
+import { TOOL_RATING_UPDATED_EVENT } from "@/lib/ratings/events";
 import { cn } from "@/lib/utils";
 
 const CLIENT_ID_KEY = "focera_comment_client_id";
 const LIKED_KEY = "focera_comment_likes";
+const INITIAL_VISIBLE_COMMENTS = 3;
 
 type CommentSectionProps = {
   toolSlug: string;
@@ -239,6 +241,7 @@ export default function CommentSection({
   const [expandedReplies, setExpandedReplies] = useState<Set<number>>(
     () => new Set(),
   );
+  const [showAllComments, setShowAllComments] = useState(false);
   const [isPending, startTransition] = useTransition();
   const turnstileRequired = Boolean(TURNSTILE_SITE_KEY);
 
@@ -276,6 +279,7 @@ export default function CommentSection({
   async function onSortChange(next: CommentSort) {
     if (next === sort) return;
     setSort(next);
+    setShowAllComments(false);
     try {
       await refresh(next);
     } catch {
@@ -335,6 +339,11 @@ export default function CommentSection({
       turnstileRef.current?.reset();
       setTurnstileToken(null);
       setStatus({ type: "success" });
+      window.dispatchEvent(
+        new CustomEvent(TOOL_RATING_UPDATED_EVENT, {
+          detail: { toolSlug },
+        }),
+      );
       window.setTimeout(() => setStatus({ type: "idle" }), 2500);
       if (sort === "top") {
         try {
@@ -763,7 +772,23 @@ export default function CommentSection({
             Be the first to share how you used this tool.
           </p>
         ) : (
-          comments.map((comment) => renderComment(comment))
+          <>
+            {(showAllComments
+              ? comments
+              : comments.slice(0, INITIAL_VISIBLE_COMMENTS)
+            ).map((comment) => renderComment(comment))}
+            {comments.length > INITIAL_VISIBLE_COMMENTS ? (
+              <button
+                type="button"
+                className="tool-comments__show-more"
+                onClick={() => setShowAllComments((open) => !open)}
+              >
+                {showAllComments
+                  ? "Show less"
+                  : `Show more (${comments.length - INITIAL_VISIBLE_COMMENTS} more)`}
+              </button>
+            ) : null}
+          </>
         )}
       </div>
     </section>

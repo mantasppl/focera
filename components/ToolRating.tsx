@@ -9,6 +9,7 @@ import {
 } from "react";
 import Button from "@/components/Button";
 import { getAnalyticsSessionId } from "@/lib/analytics/client";
+import { TOOL_RATING_UPDATED_EVENT } from "@/lib/ratings/events";
 import { PRODUCT_DOWNLOAD_EVENT } from "@/lib/ratings/notify";
 import { cn } from "@/lib/utils";
 
@@ -242,6 +243,11 @@ function RatingForm({
       setCommentOpen(false);
       setStatus({ type: "success" });
       markToolRated(toolSlug);
+      window.dispatchEvent(
+        new CustomEvent(TOOL_RATING_UPDATED_EVENT, {
+          detail: { toolSlug },
+        }),
+      );
       onSuccess?.();
     } catch {
       setStatus({

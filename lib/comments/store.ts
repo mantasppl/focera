@@ -1,8 +1,12 @@
 import { createHash } from "node:crypto";
 import { and, count, eq, inArray } from "drizzle-orm";
-import { ensureAnalyticsSchema, getDb } from "@/lib/analytics/db";
+import { getToolBySlug } from "@/data/tools";
+import { ensureAnalyticsSchema, getAnalyticsClient, getDb } from "@/lib/analytics/db";
 import { toolCommentLikes, toolComments } from "@/lib/analytics/schema";
-import { COMMENT_SEEDS, fillSeedTemplate } from "@/lib/comments/seed";
+import {
+  buildSeedsForTool,
+  COMMENT_SEED_VERSION,
+} from "@/lib/comments/seed";
 import type { CommentListResult, CommentSort, PublicComment } from "@/lib/comments/types";
 import type { CommentPayload } from "@/lib/comments/validate";
 import { getClientIp } from "@/lib/security/request";
@@ -52,6 +56,7 @@ function mapPublic(
     likesCount: number;
     parentId: number | null;
     createdAt: Date | number;
+    isSeed?: boolean | null;
   },
   likedIds: Set<number>,
   isTop: boolean,
@@ -67,16 +72,52 @@ function mapPublic(
     parentId: row.parentId,
     createdAt: toIso(row.createdAt),
     isTop,
+    isSystem: Boolean(row.isSeed),
     replies,
   };
 }
 
 const seedingLocks = new Set<string>();
+let seedVersionReady: Promise<void> | null = null;
+
+async function ensureCommentSeedVersion(): Promise<void> {
+  if (!seedVersionReady) {
+    seedVersionReady = (async () => {
+      await ensureAnalyticsSchema();
+      const client = getAnalyticsClient();
+      await client.execute(`
+CREATE TABLE IF NOT EXISTS analytics_meta (
+  key TEXT PRIMARY KEY NOT NULL,
+  value TEXT NOT NULL
+);
+`);
+      const existing = await client.execute({
+        sql: `SELECT value FROM analytics_meta WHERE key = ?`,
+        args: ["comment_seed_version"],
+      });
+      const current = String(existing.rows[0]?.value ?? "");
+      if (current === COMMENT_SEED_VERSION) return;
+
+      // Wipe prior seeds/likes so tools can regenerate with the new rules.
+      await client.execute(`DELETE FROM tool_comment_likes`);
+      await client.execute(`DELETE FROM tool_comments`);
+      await client.execute({
+        sql: `INSERT OR REPLACE INTO analytics_meta (key, value) VALUES (?, ?)`,
+        args: ["comment_seed_version", COMMENT_SEED_VERSION],
+      });
+    })().catch((error) => {
+      seedVersionReady = null;
+      throw error;
+    });
+  }
+  await seedVersionReady;
+}
 
 async function ensureToolCommentSeeds(
   toolId: string,
   toolName: string,
 ): Promise<void> {
+  await ensureCommentSeedVersion();
   if (seedingLocks.has(toolId)) return;
   seedingLocks.add(toolId);
   try {
@@ -86,17 +127,46 @@ async function ensureToolCommentSeeds(
       .from(toolComments)
       .where(eq(toolComments.toolId, toolId));
 
+    // Already seeded (including intentionally empty via marker) or has user comments.
     if ((existing?.value ?? 0) > 0) return;
 
+    const tool = getToolBySlug(toolId);
+    const seeds = tool
+      ? buildSeedsForTool(tool)
+      : buildSeedsForTool({
+          slug: toolId,
+          name: toolName,
+          shortName: toolName,
+          categories: ["file"],
+        });
+
     const now = Date.now();
-    for (const seed of COMMENT_SEEDS) {
+
+    if (seeds.length === 0) {
+      // Marker so we don't keep re-rolling empty tools on every request.
+      await db.insert(toolComments).values({
+        toolId,
+        name: "__seed_empty__",
+        email: null,
+        content: "",
+        rating: null,
+        likesCount: 0,
+        parentId: null,
+        createdAt: new Date(now),
+        ipHash: null,
+        isSeed: true,
+      });
+      return;
+    }
+
+    for (const seed of seeds) {
       const [parent] = await db
         .insert(toolComments)
         .values({
           toolId,
           name: seed.name,
           email: null,
-          content: fillSeedTemplate(seed.content, toolName),
+          content: seed.content,
           rating: seed.rating,
           likesCount: seed.likes,
           parentId: null,
@@ -113,7 +183,7 @@ async function ensureToolCommentSeeds(
           toolId,
           name: reply.name,
           email: null,
-          content: fillSeedTemplate(reply.content, toolName),
+          content: reply.content,
           rating: null,
           likesCount: reply.likes,
           parentId: parent.id,
@@ -126,6 +196,14 @@ async function ensureToolCommentSeeds(
   } finally {
     seedingLocks.delete(toolId);
   }
+}
+
+/** Ensures seed comments exist so public ratings can include them. */
+export async function ensureToolCommentSeedsForRating(
+  toolSlug: string,
+  toolName: string,
+): Promise<void> {
+  await ensureToolCommentSeeds(toolSlug, toolName);
 }
 
 export async function listToolComments(options: {
@@ -150,13 +228,18 @@ export async function listToolComments(options: {
       likesCount: toolComments.likesCount,
       parentId: toolComments.parentId,
       createdAt: toolComments.createdAt,
+      isSeed: toolComments.isSeed,
     })
     .from(toolComments)
     .where(eq(toolComments.toolId, options.toolSlug));
 
-  const roots = rows.filter((row) => row.parentId == null);
-  const repliesByParent = new Map<number, typeof rows>();
-  for (const row of rows) {
+  const visible = rows.filter(
+    (row) => row.name !== "__seed_empty__" && row.content.trim().length > 0,
+  );
+
+  const roots = visible.filter((row) => row.parentId == null);
+  const repliesByParent = new Map<number, typeof visible>();
+  for (const row of visible) {
     if (row.parentId == null) continue;
     const list = repliesByParent.get(row.parentId) ?? [];
     list.push(row);
@@ -262,6 +345,7 @@ export async function insertToolComment(
       likesCount: toolComments.likesCount,
       parentId: toolComments.parentId,
       createdAt: toolComments.createdAt,
+      isSeed: toolComments.isSeed,
     });
 
   if (!row) throw new Error("INSERT_FAILED");

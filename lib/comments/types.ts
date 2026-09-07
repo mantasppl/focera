@@ -10,6 +10,8 @@ export type PublicComment = {
   parentId: number | null;
   createdAt: string;
   isTop: boolean;
+  /** Seeded / generated comment (shown as System in admin). */
+  isSystem: boolean;
   replies: PublicComment[];
 };
 

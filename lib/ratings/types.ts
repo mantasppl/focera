@@ -21,3 +21,11 @@ export type RatingListItem = {
   comment: string | null;
   createdAt: string;
 };
+
+/** Public aggregate shown on tool pages. */
+export type PublicToolRating = {
+  toolSlug: string;
+  average: number;
+  count: number;
+  stars: Record<1 | 2 | 3 | 4 | 5, number>;
+};
