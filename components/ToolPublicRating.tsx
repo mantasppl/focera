@@ -1,6 +1,7 @@
 import ToolPublicRatingView from "@/components/ToolPublicRatingView";
 import { ensureToolCommentSeedsForRating } from "@/lib/comments/store";
 import { getPublicToolRating } from "@/lib/ratings/store";
+import type { PublicToolRating } from "@/lib/ratings/types";
 
 type ToolPublicRatingProps = {
   toolSlug: string;
@@ -11,11 +12,11 @@ export default async function ToolPublicRating({
   toolSlug,
   toolName,
 }: ToolPublicRatingProps) {
-  let initial = {
+  let initial: PublicToolRating = {
     toolSlug,
     average: 0,
     count: 0,
-    stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } as const,
+    stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
   };
 
   try {
