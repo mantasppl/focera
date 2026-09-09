@@ -1,7 +1,8 @@
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { getDocument } from "pdfjs-dist";
 import * as XLSX from "xlsx";
 import { downloadBlob, formatFileSize } from "@/lib/image";
 import { MAX_PDF_PAGES } from "@/lib/pdf-to-jpg";
+import { ensurePdfjs } from "@/lib/pdfjs-setup";
 
 export type PdfToExcelLayout = "tables" | "lines";
 export type PdfToExcelSheets = "combined" | "per-page";
@@ -42,14 +43,6 @@ type PageRows = {
 
 const PREVIEW_ROW_LIMIT = 12;
 const PREVIEW_COL_LIMIT = 8;
-
-let workerConfigured = false;
-
-function ensurePdfWorker() {
-  if (workerConfigured || typeof window === "undefined") return;
-  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-  workerConfigured = true;
-}
 
 function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) {
@@ -365,7 +358,7 @@ export async function convertPdfToExcel(
   file: File,
   options: ConvertPdfToExcelOptions = {},
 ): Promise<PdfToExcelResult> {
-  ensurePdfWorker();
+  ensurePdfjs();
 
   const layout = options.layout ?? "tables";
   const sheets = options.sheets ?? "combined";

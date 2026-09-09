@@ -1,7 +1,8 @@
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { getDocument } from "pdfjs-dist";
 import { downloadBlob, fileBaseName, formatFileSize } from "@/lib/image";
 import { buildMobiBlob, formatMobiRecindex } from "@/lib/mobi-writer";
 import { MAX_PDF_PAGES } from "@/lib/pdf-to-jpg";
+import { ensurePdfjs } from "@/lib/pdfjs-setup";
 
 export type PdfToMobiMode = "text" | "visual";
 
@@ -34,14 +35,6 @@ type TextPiece = {
 
 const VISUAL_SCALE = 1.25;
 const MAX_MOBI_IMAGE_BYTES = 60 * 1024;
-
-let workerConfigured = false;
-
-function ensurePdfWorker() {
-  if (workerConfigured || typeof window === "undefined") return;
-  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-  workerConfigured = true;
-}
 
 function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) {
@@ -351,7 +344,7 @@ export async function convertPdfToMobi(
   file: File,
   options: ConvertPdfToMobiOptions = {},
 ): Promise<PdfToMobiResult> {
-  ensurePdfWorker();
+  ensurePdfjs();
 
   const mode = options.mode ?? "text";
   const data = new Uint8Array(await file.arrayBuffer());

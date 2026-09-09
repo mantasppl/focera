@@ -1,7 +1,8 @@
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { getDocument } from "pdfjs-dist";
 import JSZip from "jszip";
 import { downloadBlob, formatFileSize } from "@/lib/image";
 import { MAX_PDF_PAGES } from "@/lib/pdf-to-jpg";
+import { ensurePdfjs } from "@/lib/pdfjs-setup";
 import { safeSpreadsheetCell } from "@/lib/security/export-safe";
 
 export type PdfToCsvLayout = "tables" | "lines";
@@ -44,14 +45,6 @@ type PageRows = {
 
 const PREVIEW_ROW_LIMIT = 12;
 const PREVIEW_COL_LIMIT = 8;
-
-let workerConfigured = false;
-
-function ensurePdfWorker() {
-  if (workerConfigured || typeof window === "undefined") return;
-  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-  workerConfigured = true;
-}
 
 function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) {
@@ -371,7 +364,7 @@ export async function convertPdfToCsv(
   file: File,
   options: ConvertPdfToCsvOptions = {},
 ): Promise<PdfToCsvResult> {
-  ensurePdfWorker();
+  ensurePdfjs();
 
   const layout = options.layout ?? "tables";
   const output = options.output ?? "combined";

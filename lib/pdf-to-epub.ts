@@ -1,7 +1,8 @@
 import JSZip from "jszip";
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { getDocument } from "pdfjs-dist";
 import { downloadBlob, fileBaseName, formatFileSize } from "@/lib/image";
 import { MAX_PDF_PAGES } from "@/lib/pdf-to-jpg";
+import { ensurePdfjs } from "@/lib/pdfjs-setup";
 
 export type PdfToEpubMode = "text" | "visual";
 
@@ -71,14 +72,6 @@ p {
   font-style: italic;
 }
 `;
-
-let workerConfigured = false;
-
-function ensurePdfWorker() {
-  if (workerConfigured || typeof window === "undefined") return;
-  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-  workerConfigured = true;
-}
 
 function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) {
@@ -480,7 +473,7 @@ export async function convertPdfToEpub(
   file: File,
   options: ConvertPdfToEpubOptions = {},
 ): Promise<PdfToEpubResult> {
-  ensurePdfWorker();
+  ensurePdfjs();
 
   const mode = options.mode ?? "text";
   const data = new Uint8Array(await file.arrayBuffer());

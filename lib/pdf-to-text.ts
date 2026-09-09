@@ -1,6 +1,7 @@
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { getDocument } from "pdfjs-dist";
 import { downloadBlob, fileBaseName } from "@/lib/image";
 import { MAX_PDF_PAGES } from "@/lib/pdf-to-jpg";
+import { ensurePdfjs } from "@/lib/pdfjs-setup";
 
 export type PdfToTextLayout = "continuous" | "pages";
 
@@ -26,14 +27,6 @@ type TextPiece = {
   height: number;
   width: number;
 };
-
-let workerConfigured = false;
-
-function ensurePdfWorker() {
-  if (workerConfigured || typeof window === "undefined") return;
-  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-  workerConfigured = true;
-}
 
 function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) {
@@ -167,7 +160,7 @@ export async function extractTextFromPdf(
   file: File,
   options: ExtractPdfTextOptions = {},
 ): Promise<PdfToTextResult> {
-  ensurePdfWorker();
+  ensurePdfjs();
 
   const layout = options.layout ?? "continuous";
   const data = new Uint8Array(await file.arrayBuffer());

@@ -1,7 +1,8 @@
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { getDocument } from "pdfjs-dist";
 import { buildAzw3Blob, formatAzw3EmbedId } from "@/lib/azw3-writer";
 import { downloadBlob, fileBaseName, formatFileSize } from "@/lib/image";
 import { MAX_PDF_PAGES } from "@/lib/pdf-to-jpg";
+import { ensurePdfjs } from "@/lib/pdfjs-setup";
 
 export type PdfToAzw3Mode = "text" | "visual";
 
@@ -34,14 +35,6 @@ type TextPiece = {
 
 const VISUAL_SCALE = 1.25;
 const MAX_AZW3_IMAGE_BYTES = 120 * 1024;
-
-let workerConfigured = false;
-
-function ensurePdfWorker() {
-  if (workerConfigured || typeof window === "undefined") return;
-  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-  workerConfigured = true;
-}
 
 function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) {
@@ -323,7 +316,7 @@ export async function convertPdfToAzw3(
   file: File,
   options: ConvertPdfToAzw3Options = {},
 ): Promise<PdfToAzw3Result> {
-  ensurePdfWorker();
+  ensurePdfjs();
 
   const mode = options.mode ?? "text";
   const data = new Uint8Array(await file.arrayBuffer());

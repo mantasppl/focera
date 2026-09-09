@@ -1,7 +1,8 @@
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { getDocument } from "pdfjs-dist";
 import PptxGenJS from "pptxgenjs";
 import { downloadBlob, formatFileSize } from "@/lib/image";
 import { MAX_PDF_PAGES } from "@/lib/pdf-to-jpg";
+import { ensurePdfjs } from "@/lib/pdfjs-setup";
 
 export type PdfToPowerpointMode = "text" | "visual";
 
@@ -35,14 +36,6 @@ type TextPiece = {
 const VISUAL_SCALE = 1.5;
 const SLIDE_WIDTH_IN = 13.333;
 const SLIDE_HEIGHT_IN = 7.5;
-
-let workerConfigured = false;
-
-function ensurePdfWorker() {
-  if (workerConfigured || typeof window === "undefined") return;
-  GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-  workerConfigured = true;
-}
 
 function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) {
@@ -311,7 +304,7 @@ export async function convertPdfToPowerpoint(
   file: File,
   options: ConvertPdfToPowerpointOptions = {},
 ): Promise<PdfToPowerpointResult> {
-  ensurePdfWorker();
+  ensurePdfjs();
 
   const mode = options.mode ?? "text";
   const data = new Uint8Array(await file.arrayBuffer());
