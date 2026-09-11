@@ -105,51 +105,36 @@ export default function BackgroundRemoverLanding() {
 
         <section
           className="tool-content__section"
-          aria-labelledby="related-tools"
+          aria-labelledby="more-ways"
         >
-          <h2 id="related-tools" className="tool-content__heading">
-            Related Free Tools
+          <h2 id="more-ways" className="tool-content__heading">
+            More ways to use this tool:
           </h2>
           <p>
-            Focera groups fast, privacy-friendly utilities in one hub. After
-            you remove a background, these tools often fit the same workflow:
+            The same AI cutout works for ID photos, everyday images, and
+            product shots. Open a focused workflow when you need one of these:
           </p>
           <ul className="tool-content__list">
             <li>
-              <Link href="/make-background-transparent">
-                Make Background Transparent
+              <Link href="/remove-background-for-id-photo">
+                Remove Background for ID Photo
               </Link>{" "}
-              — Focused transparent PNG cutout without extra export modes.
+              — Isolate a person from a passport, badge, or credential photo so
+              you can place them on a required background color.
             </li>
             <li>
-              <Link href="/change-background">Change Background</Link> —
-              Replace the scene with a solid color, custom photo, or portrait
-              blur after cutout.
+              <Link href="/background-remover-for-images">
+                Background Remover for Images
+              </Link>{" "}
+              — Cut out subjects from everyday photos and stills, then download
+              a clean PNG with transparency.
             </li>
             <li>
-              <Link href="/blur-background">Blur Background</Link> — Soften
-              the original scene with adjustable portrait-style depth blur.
-            </li>
-            <li>
-              <Link href="/upscale-image">Upscale Image</Link> — Increase
-              resolution before or after exporting transparent PNGs.
-            </li>
-            <li>
-              <Link href="/remove-watermark">Remove Watermark</Link> — Brush
-              out logos or text overlays from photos you own.
-            </li>
-            <li>
-              <Link href="/image-compressor">Image Compressor</Link> — Reduce
-              file size before or after exporting transparent PNGs.
-            </li>
-            <li>
-              <Link href="/png-to-jpg">PNG to JPG Converter</Link> — Convert
-              PNG images to JPEG when your destination needs a smaller photo
-              format.
-            </li>
-            <li>
-              <Link href="/tools">All tools</Link> — Browse every free utility
-              in the Focera catalog.
+              <Link href="/product-photo-background-remover">
+                Product Photo Background Remover
+              </Link>{" "}
+              — Clear backdrops from pack shots and catalog photos for store
+              listings and ads.
             </li>
           </ul>
         </section>
