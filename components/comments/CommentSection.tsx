@@ -257,7 +257,30 @@ export default function CommentSection({
     setClientId(id);
     const localLiked = readLocalLiked();
     setComments((prev) => mergeLikedState(prev, localLiked));
-  }, []);
+
+    let cancelled = false;
+    void (async () => {
+      const params = new URLSearchParams({
+        toolSlug,
+        sort: initial.sort,
+        clientId: id,
+      });
+      try {
+        const res = await fetch(`/api/comments?${params.toString()}`);
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as CommentListResult;
+        if (cancelled) return;
+        setSort(data.sort);
+        setTotal(data.total);
+        setComments(mergeLikedState(data.comments, readLocalLiked()));
+      } catch {
+        // Keep SSR comments if the live refresh fails.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [toolSlug, initial.sort]);
 
   async function refresh(nextSort: CommentSort) {
     const params = new URLSearchParams({

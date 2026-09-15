@@ -1,12 +1,8 @@
 import { createHash } from "node:crypto";
-import { and, count, eq, inArray, isNull, ne } from "drizzle-orm";
-import { getToolBySlug } from "@/data/tools";
+import { and, count, eq, inArray } from "drizzle-orm";
 import { ensureAnalyticsSchema, getAnalyticsClient, getDb } from "@/lib/analytics/db";
 import { toolCommentLikes, toolComments } from "@/lib/analytics/schema";
-import {
-  buildSeedsForTool,
-  COMMENT_SEED_VERSION,
-} from "@/lib/comments/seed";
+import { COMMENT_SEED_VERSION } from "@/lib/comments/seed";
 import type { CommentListResult, CommentSort, PublicComment } from "@/lib/comments/types";
 import type { CommentPayload } from "@/lib/comments/validate";
 import { getClientIp } from "@/lib/security/request";
@@ -84,52 +80,25 @@ function seedClaimKey(toolId: string): string {
   return `comment_seeded:${toolId}`;
 }
 
-/** Drop exact duplicate seed roots (same content), keeping the oldest id. */
-async function dedupeSeedRootsForTool(toolId: string): Promise<void> {
-  const client = getAnalyticsClient();
-  const dupes = await client.execute({
-    sql: `
-SELECT id FROM tool_comments
-WHERE tool_id = ?
-  AND is_seed = 1
-  AND parent_id IS NULL
-  AND name != '__seed_empty__'
-  AND id NOT IN (
-    SELECT MIN(id)
-    FROM tool_comments
-    WHERE tool_id = ?
-      AND is_seed = 1
-      AND parent_id IS NULL
-      AND name != '__seed_empty__'
-    GROUP BY content
-  )
-`,
-    args: [toolId, toolId],
-  });
-  const rootIds = dupes.rows
+async function deleteSystemComments(client: ReturnType<typeof getAnalyticsClient>): Promise<void> {
+  const seedRows = await client.execute(
+    `SELECT id FROM tool_comments WHERE is_seed = 1`,
+  );
+  const ids = seedRows.rows
     .map((row) => Number(row.id))
     .filter((id) => Number.isInteger(id) && id > 0);
-  if (rootIds.length === 0) return;
+  if (ids.length === 0) return;
 
-  const replyRows = await client.execute({
-    sql: `SELECT id FROM tool_comments WHERE parent_id IN (${rootIds.map(() => "?").join(",")})`,
-    args: rootIds,
-  });
-  const ids = [
-    ...rootIds,
-    ...replyRows.rows
-      .map((row) => Number(row.id))
-      .filter((id) => Number.isInteger(id) && id > 0),
-  ];
-
+  const placeholders = ids.map(() => "?").join(",");
   await client.execute({
-    sql: `DELETE FROM tool_comment_likes WHERE comment_id IN (${ids.map(() => "?").join(",")})`,
+    sql: `UPDATE tool_comments SET parent_id = NULL WHERE is_seed = 0 AND parent_id IN (${placeholders})`,
     args: ids,
   });
   await client.execute({
-    sql: `DELETE FROM tool_comments WHERE id IN (${ids.map(() => "?").join(",")})`,
+    sql: `DELETE FROM tool_comment_likes WHERE comment_id IN (${placeholders})`,
     args: ids,
   });
+  await client.execute(`DELETE FROM tool_comments WHERE is_seed = 1`);
 }
 
 async function ensureCommentSeedVersion(): Promise<void> {
@@ -150,9 +119,8 @@ CREATE TABLE IF NOT EXISTS analytics_meta (
       const current = String(existing.rows[0]?.value ?? "");
       if (current === COMMENT_SEED_VERSION) return;
 
-      // Wipe prior seeds/likes so tools can regenerate with the new rules.
-      await client.execute(`DELETE FROM tool_comment_likes`);
-      await client.execute(`DELETE FROM tool_comments`);
+      // Drop generated system comments only — keep real user comments.
+      await deleteSystemComments(client);
       await client.execute(
         `DELETE FROM analytics_meta WHERE key LIKE 'comment_seeded:%'`,
       );
@@ -168,10 +136,7 @@ CREATE TABLE IF NOT EXISTS analytics_meta (
   await seedVersionReady;
 }
 
-async function ensureToolCommentSeeds(
-  toolId: string,
-  toolName: string,
-): Promise<void> {
+async function ensureToolCommentSeeds(toolId: string): Promise<void> {
   await ensureCommentSeedVersion();
   if (seedingLocks.has(toolId)) return;
   seedingLocks.add(toolId);
@@ -182,27 +147,9 @@ async function ensureToolCommentSeeds(
       .from(toolComments)
       .where(eq(toolComments.toolId, toolId));
 
-    // Already seeded (including intentionally empty via marker) or has user comments.
-    if ((existing?.value ?? 0) > 0) {
-      // Max seed roots is 5; higher usually means a serverless race re-inserted seeds.
-      const [seedRoots] = await db
-        .select({ value: count() })
-        .from(toolComments)
-        .where(
-          and(
-            eq(toolComments.toolId, toolId),
-            eq(toolComments.isSeed, true),
-            isNull(toolComments.parentId),
-            ne(toolComments.name, "__seed_empty__"),
-          ),
-        );
-      if ((seedRoots?.value ?? 0) > 5) {
-        await dedupeSeedRootsForTool(toolId);
-      }
-      return;
-    }
+    if ((existing?.value ?? 0) > 0) return;
 
-    // Cross-isolate lock so concurrent cold starts don't insert the same seeds.
+    // Marker so we don't keep re-running this on every request.
     const client = getAnalyticsClient();
     const claimed = await client.execute({
       sql: `INSERT OR IGNORE INTO analytics_meta (key, value) VALUES (?, ?)`,
@@ -210,80 +157,29 @@ async function ensureToolCommentSeeds(
     });
     if ((claimed.rowsAffected ?? 0) === 0) return;
 
-    const tool = getToolBySlug(toolId);
-    const seeds = tool
-      ? buildSeedsForTool(tool)
-      : buildSeedsForTool({
-          slug: toolId,
-          name: toolName,
-          shortName: toolName,
-          categories: ["file"],
-        });
-
-    const now = Date.now();
-
-    if (seeds.length === 0) {
-      // Marker so we don't keep re-rolling empty tools on every request.
-      await db.insert(toolComments).values({
-        toolId,
-        name: "__seed_empty__",
-        email: null,
-        content: "",
-        rating: null,
-        likesCount: 0,
-        parentId: null,
-        createdAt: new Date(now),
-        ipHash: null,
-        isSeed: true,
-      });
-      return;
-    }
-
-    for (const seed of seeds) {
-      const [parent] = await db
-        .insert(toolComments)
-        .values({
-          toolId,
-          name: seed.name,
-          email: null,
-          content: seed.content,
-          rating: seed.rating,
-          likesCount: seed.likes,
-          parentId: null,
-          createdAt: new Date(now - seed.hoursAgo * 3_600_000),
-          ipHash: null,
-          isSeed: true,
-        })
-        .returning({ id: toolComments.id });
-
-      if (!parent?.id || !seed.replies?.length) continue;
-
-      for (const reply of seed.replies) {
-        await db.insert(toolComments).values({
-          toolId,
-          name: reply.name,
-          email: null,
-          content: reply.content,
-          rating: null,
-          likesCount: reply.likes,
-          parentId: parent.id,
-          createdAt: new Date(now - reply.hoursAgo * 3_600_000),
-          ipHash: null,
-          isSeed: true,
-        });
-      }
-    }
+    await db.insert(toolComments).values({
+      toolId,
+      name: "__seed_empty__",
+      email: null,
+      content: "",
+      rating: null,
+      likesCount: 0,
+      parentId: null,
+      createdAt: new Date(),
+      ipHash: null,
+      isSeed: true,
+    });
   } finally {
     seedingLocks.delete(toolId);
   }
 }
 
-/** Ensures seed comments exist so public ratings can include them. */
+/** Ensures seed version is applied so ratings don't include removed system comments. */
 export async function ensureToolCommentSeedsForRating(
   toolSlug: string,
-  toolName: string,
+  _toolName: string,
 ): Promise<void> {
-  await ensureToolCommentSeeds(toolSlug, toolName);
+  await ensureToolCommentSeeds(toolSlug);
 }
 
 export async function listToolComments(options: {
@@ -293,7 +189,7 @@ export async function listToolComments(options: {
   likedIds?: number[];
 }): Promise<CommentListResult> {
   await ensureAnalyticsSchema();
-  await ensureToolCommentSeeds(options.toolSlug, options.toolName);
+  await ensureToolCommentSeeds(options.toolSlug);
 
   const sort: CommentSort = options.sort === "newest" ? "newest" : "top";
   const likedIds = new Set(options.likedIds ?? []);

@@ -15,8 +15,8 @@ export type SeedComment = {
   }>;
 };
 
-/** Bump to wipe old seeds and regenerate on next load. */
-export const COMMENT_SEED_VERSION = "3";
+/** Bump to wipe old seeds. Current version inserts no generated comments. */
+export const COMMENT_SEED_VERSION = "4";
 
 const AUTHORS = [
   "Maya Chen",
