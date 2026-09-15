@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MoreWaysToUseThisTool from "@/components/tools/MoreWaysToUseThisTool";
 
 export default function FreeQrCodeGeneratorSeoLanding() {
   return (
@@ -191,37 +192,7 @@ export default function FreeQrCodeGeneratorSeoLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
-        </h2>
-        <p>
-          After you export a code, these utilities often sit in the same
-          workflow:
-        </p>
-        <ul className="tool-content__list">
-          <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Attach campaign
-            parameters to URLs before you encode them.
-          </li>
-          <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Check
-            margin on products you promote through QR-driven pages.
-          </li>
-          <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Tidy JSON
-            when you wire QR payloads into apps and automations.
-          </li>
-          <li>
-            <Link href="/">Focera home</Link> — Browse the rest of the free
-            catalog.
-          </li>
-        </ul>
-        <p>
-          Every tool uses the same no-signup layout, so you can move from a
-          tracked URL to a finished code without learning a new UI.
-        </p>
-      </section>
+      <MoreWaysToUseThisTool currentSlug="free-qr-code-generator" />
     </article>
   );
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MoreWaysToUseThisTool from "@/components/tools/MoreWaysToUseThisTool";
 
 export default function QrCodeBuilderSeoLanding() {
   return (
@@ -173,35 +174,7 @@ export default function QrCodeBuilderSeoLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
-        </h2>
-        <p>
-          After the QR code builder exports, these often complete the job:
-        </p>
-        <ul className="tool-content__list">
-          <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Assemble tracking
-            parameters before you build the code.
-          </li>
-          <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Check
-            margin on scan-driven products.
-          </li>
-          <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Clean JSON
-            for automations that read QR payloads.
-          </li>
-          <li>
-            <Link href="/">Focera home</Link> — Browse every free tool.
-          </li>
-        </ul>
-        <p>
-          One hub, no signup — build the code, then tag the URL or format
-          JSON without switching products.
-        </p>
-      </section>
+      <MoreWaysToUseThisTool currentSlug="qr-code-builder" />
     </article>
   );
 }

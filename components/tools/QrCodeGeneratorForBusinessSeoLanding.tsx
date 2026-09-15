@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MoreWaysToUseThisTool from "@/components/tools/MoreWaysToUseThisTool";
 
 export default function QrCodeGeneratorForBusinessSeoLanding() {
   return (
@@ -152,30 +153,7 @@ export default function QrCodeGeneratorForBusinessSeoLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
-        </h2>
-        <p>After a business export, these often sit nearby:</p>
-        <ul className="tool-content__list">
-          <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Tag the URL before
-            you encode the mark.
-          </li>
-          <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Check
-            margin on scan-led offers.
-          </li>
-          <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Format JSON
-            for apps that consume QR data.
-          </li>
-          <li>
-            <Link href="/">Focera home</Link> — Open the rest of the catalog.
-          </li>
-        </ul>
-        <p>No new accounts between campaign tags and a finished code.</p>
-      </section>
+      <MoreWaysToUseThisTool currentSlug="qr-code-generator-for-business" />
     </article>
   );
 }

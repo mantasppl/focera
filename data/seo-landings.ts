@@ -7842,3 +7842,16 @@ export const seoLandings: SeoLandingPage[] = [
 export function getSeoLandingBySlug(slug: string): SeoLandingPage | undefined {
   return seoLandings.find((page) => page.slug === slug);
 }
+
+export function getSiblingSeoLandings(slug: string): SeoLandingPage[] {
+  const current = getSeoLandingBySlug(slug);
+  if (!current) return [];
+
+  return seoLandings
+    .filter(
+      (page) =>
+        page.parentToolSlug === current.parentToolSlug && page.slug !== slug,
+    )
+    .slice()
+    .sort((a, b) => a.h1.localeCompare(b.h1));
+}

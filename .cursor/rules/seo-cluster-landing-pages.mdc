@@ -26,7 +26,7 @@ Hero must match the parent:
 - H1: unique, keyword-natural, tool-name style
 - Lede: one sentence, same shape as the parent description
 
-Landing body must use the parent’s section order (see `MakeBackgroundTransparentLanding`): FeatureGrid → How It Works (intro + 3 steps + in-page jump) → Popular Use Cases → Related Free Tools → FAQ. Unique copy only. CTA same pattern as the parent.
+Landing body must use the parent’s section order (see `MakeBackgroundTransparentLanding`): FeatureGrid → How It Works (intro + 3 steps + in-page jump) → Popular Use Cases → More ways to use this tool (`MoreWaysToUseThisTool` sibling SEO links) → FAQ. Unique copy only. CTA same pattern as the parent. Do not add a Related Free Tools section on SEO landings.
 
 ## Parent tool button
 

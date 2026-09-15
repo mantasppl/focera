@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MoreWaysToUseThisTool from "@/components/tools/MoreWaysToUseThisTool";
 
 export default function QrCodeCreatorSeoLanding() {
   return (
@@ -176,35 +177,7 @@ export default function QrCodeCreatorSeoLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
-        </h2>
-        <p>
-          After the QR code creator exports, these often sit nearby:
-        </p>
-        <ul className="tool-content__list">
-          <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Tag the URL
-            before you create the mark.
-          </li>
-          <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Check
-            margin on scan-led offers.
-          </li>
-          <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Format JSON
-            for apps that consume QR data.
-          </li>
-          <li>
-            <Link href="/">Focera home</Link> — Open the rest of the catalog.
-          </li>
-        </ul>
-        <p>
-          No new accounts between creator, UTM tags, and the other free
-          utilities.
-        </p>
-      </section>
+      <MoreWaysToUseThisTool currentSlug="qr-code-creator" />
     </article>
   );
 }

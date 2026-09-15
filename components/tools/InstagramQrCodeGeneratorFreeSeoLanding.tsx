@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MoreWaysToUseThisTool from "@/components/tools/MoreWaysToUseThisTool";
 
 export default function InstagramQrCodeGeneratorFreeSeoLanding() {
   return (
@@ -148,30 +149,7 @@ export default function InstagramQrCodeGeneratorFreeSeoLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
-        </h2>
-        <p>After you export a free Instagram code, these often sit nearby:</p>
-        <ul className="tool-content__list">
-          <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Tag a landing
-            page if you encode that instead of the profile.
-          </li>
-          <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Check
-            margin on scan-driven offers.
-          </li>
-          <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Tidy JSON
-            for apps that read QR payloads.
-          </li>
-          <li>
-            <Link href="/">Focera home</Link> — Browse the rest of the hub.
-          </li>
-        </ul>
-        <p>Same no-signup layout from a public URL to a print file.</p>
-      </section>
+      <MoreWaysToUseThisTool currentSlug="instagram-qr-code-generator-free" />
     </article>
   );
 }

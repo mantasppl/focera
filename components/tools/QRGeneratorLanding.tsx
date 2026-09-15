@@ -226,41 +226,80 @@ export default function QRGeneratorLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
+      <section className="tool-content__section" aria-labelledby="more-ways">
+        <h2 id="more-ways" className="tool-content__heading">
+          More ways to use this tool:
         </h2>
         <p>
-          Focera is built as a growing collection of fast, privacy-friendly
-          utilities. After you create your QR code, these tools often sit on the
-          same workflow:
+          The same generator covers Instagram, Wi‑Fi, menus, vCards, logos, and
+          print files. Open a focused workflow when you need one of these:
         </p>
         <ul className="tool-content__list">
           <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Add campaign tracking
-            parameters to URLs before generating codes for ads, email, and social
-            posts.
+            <Link href="/instagram-qr-code-generator-free">
+              Instagram QR Code Generator Free
+            </Link>{" "}
+            — Encode a public profile, post, or reel URL and download PNG, SVG,
+            or PDF with no paywall.
           </li>
           <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Model
-            margin and revenue when pricing products promoted through QR-driven
-            landing pages.
+            <Link href="/wifi-qr-code-generator">WiFi QR Code Generator</Link>{" "}
+            — Encode SSID, password, and encryption so guests can join the
+            network with a scan.
           </li>
           <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Clean and validate
-            JSON payloads for developers wiring QR endpoints into apps and
-            automations.
+            <Link href="/colorful-qr-code-generator">
+              Colorful QR Code Generator
+            </Link>{" "}
+            — Set dot, corner, and background colors or a gradient to match a
+            brand.
           </li>
           <li>
-            <Link href="/">Focera home</Link> — Discover every free tool in one
-            place, from image utilities to developer helpers.
+            <Link href="/qr-code-generator-for-business">
+              QR Code Generator for Business
+            </Link>{" "}
+            — Create branded codes for listings, events, campaigns, and
+            storefronts.
+          </li>
+          <li>
+            <Link href="/qr-code-generator-for-instagram-link">
+              QR Code Generator for Instagram Link
+            </Link>{" "}
+            — Paste a public Instagram URL and export a scan-ready mark for
+            print or social.
+          </li>
+          <li>
+            <Link href="/qr-code-generator-for-menu">
+              QR Code Generator for Menu
+            </Link>{" "}
+            — Encode a menu page or hosted PDF URL for tables, windows, and
+            takeout bags.
+          </li>
+          <li>
+            <Link href="/vcard-qr-code-generator">
+              vCard QR Code Generator
+            </Link>{" "}
+            — Encode name, phone, email, and website so a scan saves a contact.
+          </li>
+          <li>
+            <Link href="/qr-code-generator-with-logo">
+              QR Code Generator with Logo
+            </Link>{" "}
+            — Place a center mark on the code, then download PNG, SVG, or PDF.
+          </li>
+          <li>
+            <Link href="/pdf-qr-code-generator">PDF QR Code Generator</Link>{" "}
+            — Download a print-ready PDF of the mark, or encode a URL to a PDF
+            you host.
+          </li>
+          <li>
+            <Link href="/image-qr-code-generator">
+              Image QR Code Generator
+            </Link>{" "}
+            — Export PNG or SVG, add a logo, and encode a URL, Wi‑Fi, vCard, or
+            more.
           </li>
         </ul>
-        <p>
-          Each tool shares the same responsive layout, clear headings, and no-signup
-          experience — so you can move between tasks without learning a new interface
-          every time.
-        </p>
       </section>
     </article>
   );

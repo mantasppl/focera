@@ -111,8 +111,9 @@ export default function BackgroundRemoverLanding() {
             More ways to use this tool:
           </h2>
           <p>
-            The same AI cutout works for ID photos, everyday images, and
-            product shots. Open a focused workflow when you need one of these:
+            The same AI cutout works for ID photos, store listings, portraits,
+            and design files. Open a focused workflow when you need one of
+            these:
           </p>
           <ul className="tool-content__list">
             <li>
@@ -135,6 +136,53 @@ export default function BackgroundRemoverLanding() {
               </Link>{" "}
               — Clear backdrops from pack shots and catalog photos for store
               listings and ads.
+            </li>
+            <li>
+              <Link href="/ecommerce-image-background-removal">
+                Ecommerce Image Background Removal
+              </Link>{" "}
+              — Isolate products for storefronts, ads, and marketplaces so they
+              sit on a clean canvas.
+            </li>
+            <li>
+              <Link href="/remove-white-background">
+                Remove White Background
+              </Link>{" "}
+              — Replace a studio white backdrop with true transparency instead
+              of a near-white JPEG.
+            </li>
+            <li>
+              <Link href="/profile-photo-background-remover">
+                Profile Photo Background Remover
+              </Link>{" "}
+              — Cut out a headshot for LinkedIn, team pages, and social avatars.
+            </li>
+            <li>
+              <Link href="/ai-photo-background-remover">
+                AI Photo Background Remover
+              </Link>{" "}
+              — Run an AI cutout on camera photos and portraits in your
+              browser.
+            </li>
+            <li>
+              <Link href="/remove-background-for-design">
+                Remove Background for Design
+              </Link>{" "}
+              — Isolate a subject so you can drop it into a layout, poster, or
+              mockup.
+            </li>
+            <li>
+              <Link href="/youtube-thumbnail-background-remover">
+                Youtube Thumbnail Background Remover
+              </Link>{" "}
+              — Cut out a face or product for a thumbnail composite.
+            </li>
+            <li>
+              <Link href="/graphic-design-background-remover">
+                Graphic Design Background Remover
+              </Link>{" "}
+              — Export a clean PNG with alpha for graphic layouts and brand
+              assets.
             </li>
           </ul>
         </section>

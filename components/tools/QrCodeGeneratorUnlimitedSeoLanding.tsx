@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MoreWaysToUseThisTool from "@/components/tools/MoreWaysToUseThisTool";
 
 export default function QrCodeGeneratorUnlimitedSeoLanding() {
   return (
@@ -147,30 +148,7 @@ export default function QrCodeGeneratorUnlimitedSeoLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
-        </h2>
-        <p>After you generate a batch of codes, these often come next:</p>
-        <ul className="tool-content__list">
-          <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Add campaign
-            parameters before you encode each URL.
-          </li>
-          <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Price
-            offers promoted through a scan.
-          </li>
-          <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Validate
-            JSON used by apps that read QR data.
-          </li>
-          <li>
-            <Link href="/">Focera home</Link> — Open the full free catalog.
-          </li>
-        </ul>
-        <p>No new accounts between a tagged URL and a finished code.</p>
-      </section>
+      <MoreWaysToUseThisTool currentSlug="qr-code-generator-unlimited" />
     </article>
   );
 }

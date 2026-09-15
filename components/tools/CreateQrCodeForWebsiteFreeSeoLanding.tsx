@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MoreWaysToUseThisTool from "@/components/tools/MoreWaysToUseThisTool";
 
 export default function CreateQrCodeForWebsiteFreeSeoLanding() {
   return (
@@ -146,30 +147,7 @@ export default function CreateQrCodeForWebsiteFreeSeoLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
-        </h2>
-        <p>After you create a website code, these often sit nearby:</p>
-        <ul className="tool-content__list">
-          <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Tag a landing
-            page before you encode it.
-          </li>
-          <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Check
-            margin on scan-driven offers.
-          </li>
-          <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Tidy JSON
-            for apps that read QR payloads.
-          </li>
-          <li>
-            <Link href="/">Focera home</Link> — Browse the rest of the hub.
-          </li>
-        </ul>
-        <p>Same no-signup layout from a domain to a print-ready mark.</p>
-      </section>
+      <MoreWaysToUseThisTool currentSlug="create-qr-code-for-website-free" />
     </article>
   );
 }

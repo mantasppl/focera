@@ -1,4 +1,5 @@
 import Link from "next/link";
+import MoreWaysToUseThisTool from "@/components/tools/MoreWaysToUseThisTool";
 
 export default function DynamicQrCodeGeneratorSeoLanding() {
   return (
@@ -157,30 +158,7 @@ export default function DynamicQrCodeGeneratorSeoLanding() {
         </p>
       </section>
 
-      <section className="tool-content__section" aria-labelledby="related-tools">
-        <h2 id="related-tools" className="tool-content__heading">
-          Related Free Tools from Focera
-        </h2>
-        <p>After you encode a URL you control, these often come next:</p>
-        <ul className="tool-content__list">
-          <li>
-            <Link href="/utm-builder">UTM Builder</Link> — Attach campaign
-            parameters to the URL before you encode it.
-          </li>
-          <li>
-            <Link href="/profit-calculator">Profit Calculator</Link> — Check
-            margin on offers behind the scan.
-          </li>
-          <li>
-            <Link href="/json-formatter">JSON Formatter</Link> — Tidy JSON
-            for automations that read QR payloads.
-          </li>
-          <li>
-            <Link href="/">Focera home</Link> — Browse the rest of the hub.
-          </li>
-        </ul>
-        <p>Same no-signup layout from tagged URL to finished code.</p>
-      </section>
+      <MoreWaysToUseThisTool currentSlug="dynamic-qr-code-generator" />
     </article>
   );
 }
