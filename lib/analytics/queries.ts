@@ -8,7 +8,7 @@ import {
   resolveDateRange,
   type DateRange,
 } from "@/lib/analytics/dates";
-import { ensureAnalyticsSchema, getDb } from "@/lib/analytics/db";
+import { ensureAnalyticsSchema, getAnalyticsClient, getDb } from "@/lib/analytics/db";
 import { keywordForPath, landingPathsForTool } from "@/lib/analytics/keywords";
 import { pageViews, searchQueries, toolUsage } from "@/lib/analytics/schema";
 import { aggregateNamedCounts, classifyTrafficSource } from "@/lib/analytics/source";
@@ -18,11 +18,13 @@ import {
   formatZonedMonth,
   formatZonedWeek,
 } from "@/lib/analytics/timezone";
+import { scoreToolUsage } from "@/lib/analytics/tool-score";
 import type {
   NamedCount,
   OverviewStats,
   TimeBucket,
   ToolDetailStats,
+  ToolRankingStats,
   ToolStatsRow,
 } from "@/lib/analytics/types";
 
@@ -405,28 +407,92 @@ export async function getHourlyUsage(range: DateRange): Promise<TimeBucket[]> {
   }));
 }
 
+function toCount(value: unknown): number {
+  const n = typeof value === "bigint" ? Number(value) : Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+/**
+ * Per-tool usage stats for ranking.
+ *
+ * Pass a date range for windowed listings, or `"all_time"` for lifetime totals.
+ * Omit `range` to use the last 30 days.
+ */
+export async function getToolRankingStats(
+  range?: DateRange | "all_time",
+): Promise<ToolRankingStats[]> {
+  await ensureAnalyticsSchema();
+  const client = getAnalyticsClient();
+  const allTime = range === "all_time";
+  const window = allTime ? null : (range ?? resolveDateRange("last_30_days"));
+  const timeClause = window
+    ? "AND timestamp >= ? AND timestamp <= ?"
+    : "";
+  const args = window ? [window.start.getTime(), window.end.getTime()] : [];
+
+  const result = await client.execute({
+    sql: `
+      SELECT
+        tool_id,
+        MAX(tool_name) AS tool_name,
+        COUNT(*) AS unique_users,
+        SUM(uses) AS total_uses,
+        SUM(CASE WHEN uses > 1 THEN 1 ELSE 0 END) AS returning_users,
+        MAX(last_used) AS last_used
+      FROM (
+        SELECT
+          tool_id,
+          tool_name,
+          session_id,
+          COUNT(*) AS uses,
+          MAX(timestamp) AS last_used
+        FROM tool_usage
+        WHERE event_type = 'tool_usage'
+          ${timeClause}
+        GROUP BY tool_id, session_id
+      )
+      GROUP BY tool_id
+    `,
+    args,
+  });
+
+  const ranked: ToolRankingStats[] = result.rows
+    .map((row) => {
+      const uniqueUsers = toCount(row.unique_users);
+      const totalUses = toCount(row.total_uses);
+      const returningUsers = toCount(row.returning_users);
+      const lastUsedMs = toCount(row.last_used ?? row.lastUsed);
+      return {
+        toolId: String(row.tool_id ?? row.toolId ?? ""),
+        toolName: String(row.tool_name ?? row.toolName ?? ""),
+        uniqueUsers,
+        totalUses,
+        returningUsers,
+        lastUsedMs,
+        score: scoreToolUsage({ uniqueUsers, totalUses, returningUsers }),
+      };
+    })
+    .filter((row) => row.toolId);
+
+  ranked.sort(
+    (a, b) =>
+      b.score - a.score ||
+      b.uniqueUsers - a.uniqueUsers ||
+      b.totalUses - a.totalUses ||
+      a.toolId.localeCompare(b.toolId),
+  );
+
+  return ranked;
+}
+
 export async function getTopTools(
   range: DateRange,
   limit = 10,
 ): Promise<NamedCount[]> {
-  await ensureAnalyticsSchema();
-  const db = getDb();
-
-  const rows = await db
-    .select({
-      toolId: toolUsage.toolId,
-      toolName: toolUsage.toolName,
-      value: count(),
-    })
-    .from(toolUsage)
-    .where(rangeFilter(range))
-    .groupBy(toolUsage.toolId, toolUsage.toolName)
-    .orderBy(sql`count(*) desc`)
-    .limit(limit);
-
-  return rows.map((r) => ({
-    name: getToolBySlug(r.toolId)?.shortName || r.toolName,
-    count: r.value,
+  const ranked = await getToolRankingStats(range);
+  return ranked.slice(0, limit).map((row) => ({
+    name: getToolBySlug(row.toolId)?.shortName || row.toolName,
+    count: row.totalUses,
   }));
 }
 

@@ -45,7 +45,7 @@ export const categoryDescriptions: Record<ToolCategory, string> = {
   file: "Generate QR codes and passwords, format code and text, or convert office and media files.",
 };
 
-/** Curated homepage picks — popular ready tools across categories. */
+/** Fallback homepage picks when usage ranking has no data yet. */
 export const topToolSlugs: string[] = [
   "merge-pdf",
   "compress-pdf",
@@ -7655,6 +7655,7 @@ export function getPrimaryCategory(tool: Tool): ToolCategory {
   return tool.categories[0] ?? "file";
 }
 
+/** Curated fallback used when analytics ranking is unavailable. */
 export function getTopTools(limit = 8): Tool[] {
   const bySlug = new Map(tools.map((tool) => [tool.slug, tool]));
   return topToolSlugs

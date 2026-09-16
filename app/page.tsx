@@ -15,8 +15,8 @@ import {
   categoryLabels,
   categoryOrder,
   getToolsByCategory,
-  getTopTools,
 } from "@/data/tools";
+import { getRankedAllTimeBestTools, getRankedTopTools, getRankedTrendingTools } from "@/lib/analytics/top-tools";
 import {
   DEFAULT_OG_IMAGE,
   faqPageSchema,
@@ -25,6 +25,8 @@ import {
   SITE_NAME,
   SITE_TAGLINE,
 } from "@/lib/seo";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   ...pageMetadata({
@@ -84,8 +86,12 @@ const homeFaq = [
   },
 ];
 
-export default function HomePage() {
-  const topTools = getTopTools(8);
+export default async function HomePage() {
+  const [topTools, trendingTools, allTimeBest] = await Promise.all([
+    getRankedTopTools(8),
+    getRankedTrendingTools(8),
+    getRankedAllTimeBestTools(8),
+  ]);
 
   return (
     <div className="page-shell">
@@ -239,6 +245,31 @@ export default function HomePage() {
           </div>
         </section>
 
+        {trendingTools.length > 0 ? (
+          <section
+            className="page-section"
+            aria-labelledby="trending-heading"
+            id="trending"
+          >
+            <div className="section-heading-row">
+              <h2 id="trending-heading" className="section-heading">
+                Trending
+              </h2>
+              <Link href="/tools" className="section-heading-link">
+                Browse full catalog
+              </Link>
+            </div>
+            <p className="section-lede">
+              What&apos;s heating up this week — based on recent use.
+            </p>
+            <div className="tool-card-grid">
+              {trendingTools.map((tool) => (
+                <ToolCard key={tool.slug} tool={tool} />
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         <section
           className="page-section"
           aria-labelledby="top-tools-heading"
@@ -253,7 +284,7 @@ export default function HomePage() {
             </Link>
           </div>
           <p className="section-lede">
-            Popular picks across PDF, image, AI, and file workflows.
+            The most-used tools across PDF, image, AI, and file workflows.
           </p>
           <div className="tool-card-grid">
             {topTools.map((tool) => (
@@ -261,6 +292,31 @@ export default function HomePage() {
             ))}
           </div>
         </section>
+
+        {allTimeBest.length > 0 ? (
+          <section
+            className="page-section"
+            aria-labelledby="all-time-best-heading"
+            id="all-time-best"
+          >
+            <div className="section-heading-row">
+              <h2 id="all-time-best-heading" className="section-heading">
+                All Time Best
+              </h2>
+              <Link href="/tools" className="section-heading-link">
+                Browse full catalog
+              </Link>
+            </div>
+            <p className="section-lede">
+              Lifetime favorites — ranked by unique visitors, uses, and returns.
+            </p>
+            <div className="tool-card-grid">
+              {allTimeBest.map((tool) => (
+                <ToolCard key={tool.slug} tool={tool} />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <div className="page-section">
           <FAQ items={homeFaq} title={`About ${SITE_NAME}`} />

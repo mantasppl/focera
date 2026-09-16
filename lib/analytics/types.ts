@@ -85,6 +85,16 @@ export type NamedCount = {
   count: number;
 };
 
+export type ToolRankingStats = {
+  toolId: string;
+  toolName: string;
+  uniqueUsers: number;
+  totalUses: number;
+  returningUsers: number;
+  lastUsedMs: number;
+  score: number;
+};
+
 export type ToolDetailStats = {
   toolId: string;
   toolName: string;
