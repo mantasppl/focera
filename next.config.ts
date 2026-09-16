@@ -23,7 +23,7 @@ const contentSecurityPolicy = [
   "connect-src 'self' blob: https://www.google-analytics.com https://region1.google-analytics.com https://image.pollinations.ai https://text.pollinations.ai https://api.groq.com https:",
   "worker-src 'self' blob:",
   "child-src 'self' blob:",
-  "frame-src 'self' blob: https://challenges.cloudflare.com",
+  "frame-src 'self' blob: https://challenges.cloudflare.com https://www.youtube.com https://www.youtube-nocookie.com",
   ...(isProd ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
 
@@ -45,6 +45,15 @@ const nextConfig: NextConfig = {
         source: "/password-checker",
         destination: "/password-generator",
         permanent: true,
+      },
+    ];
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/blog/:slug",
+        has: [{ type: "query", key: "preview", value: "true" }],
+        destination: "/blog/preview/:slug",
       },
     ];
   },
