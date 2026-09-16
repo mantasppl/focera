@@ -1,5 +1,4 @@
 import ToolPublicRatingView from "@/components/ToolPublicRatingView";
-import { ensureToolCommentSeedsForRating } from "@/lib/comments/store";
 import { getPublicToolRating } from "@/lib/ratings/store";
 import type { PublicToolRating } from "@/lib/ratings/types";
 
@@ -14,15 +13,12 @@ export default async function ToolPublicRating({
 }: ToolPublicRatingProps) {
   let initial: PublicToolRating = {
     toolSlug,
-    average: 0,
+    average: 5,
     count: 0,
-    baseCount: 0,
-    liveCount: 0,
     stars: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
   };
 
   try {
-    await ensureToolCommentSeedsForRating(toolSlug, toolName);
     initial = await getPublicToolRating(toolSlug);
   } catch (error) {
     console.error("[ratings] public load failed:", error);

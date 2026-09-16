@@ -138,11 +138,6 @@ CREATE TABLE IF NOT EXISTS tool_ratings (
 CREATE INDEX IF NOT EXISTS tool_ratings_tool_id_idx ON tool_ratings (tool_id);
 CREATE INDEX IF NOT EXISTS tool_ratings_created_at_idx ON tool_ratings (created_at);
 CREATE INDEX IF NOT EXISTS tool_ratings_tool_time_idx ON tool_ratings (tool_id, created_at);
-CREATE TABLE IF NOT EXISTS tool_rating_bases (
-  tool_id TEXT PRIMARY KEY NOT NULL,
-  base_count INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
-);
 CREATE TABLE IF NOT EXISTS page_views (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   event_id TEXT NOT NULL UNIQUE,

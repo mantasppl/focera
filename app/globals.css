@@ -3223,15 +3223,6 @@ a {
   letter-spacing: -0.02em;
 }
 
-.tool-public-rating__sep {
-  color: var(--muted);
-}
-
-.tool-public-rating__count {
-  color: var(--muted);
-  font-weight: 560;
-}
-
 .tool-workspace {
   display: grid;
   gap: 1.25rem;
@@ -16614,18 +16605,6 @@ html[data-admin-theme="dark"] .admin-badge--user {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.92rem;
-}
-
-.admin-base-input {
-  width: 5.5rem;
-  min-height: 2rem;
-  border: 1px solid var(--admin-line);
-  border-radius: 0.4rem;
-  background: var(--admin-surface, var(--surface));
-  color: inherit;
-  font: inherit;
-  text-align: right;
-  padding: 0.25rem 0.45rem;
 }
 
 .admin-login {

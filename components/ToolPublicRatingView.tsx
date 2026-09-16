@@ -87,7 +87,7 @@ export default function ToolPublicRatingView({
         );
         if (!res.ok) return;
         const data = (await res.json()) as PublicToolRating;
-        if (typeof data.average === "number" && typeof data.count === "number") {
+        if (typeof data.average === "number") {
           setRating(data);
         }
       } catch {
@@ -105,16 +105,11 @@ export default function ToolPublicRatingView({
     return () => window.removeEventListener(TOOL_RATING_UPDATED_EVENT, onUpdated);
   }, [toolSlug]);
 
-  if (rating.count < 1) {
-    return (
-      <p className="tool-public-rating tool-public-rating--empty">
-        No public ratings yet
-      </p>
-    );
-  }
-
   const fills = starsForAverage(rating.average);
-  const label = `${rating.average.toFixed(1)} out of 5 stars · ${rating.count.toLocaleString()} for ${toolName}`;
+  const label =
+    rating.count > 0
+      ? `${rating.average.toFixed(1)} out of 5 stars for ${toolName}`
+      : `5 out of 5 stars for ${toolName}`;
 
   return (
     <div className="tool-public-rating" aria-label={label}>
@@ -131,12 +126,10 @@ export default function ToolPublicRatingView({
           </span>
         ))}
       </span>
-      <span className="tool-public-rating__score">{rating.average.toFixed(1)}</span>
-      <span className="tool-public-rating__sep" aria-hidden="true">
-        ·
-      </span>
-      <span className="tool-public-rating__count">
-        {rating.count.toLocaleString()}
+      <span className="tool-public-rating__score">
+        {rating.average % 1 === 0
+          ? rating.average.toFixed(0)
+          : rating.average.toFixed(1)}
       </span>
     </div>
   );
