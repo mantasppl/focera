@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import { adminFetch } from "@/lib/admin/csrf-client";
@@ -24,7 +24,7 @@ function formatWhen(ms: number | null): string {
 }
 
 export default function PostsList() {
-  const { api, contentPostsPath } = useAdminPath();
+  const { adminPath, contentPostsPath } = useAdminPath();
   const [status, setStatus] = useState<"all" | PostStatus>("all");
   const [query, setQuery] = useState("");
   const [queryInput, setQueryInput] = useState("");
@@ -33,41 +33,42 @@ export default function PostsList() {
   const [error, setError] = useState("");
   const [data, setData] = useState<ListResponse | null>(null);
 
-  const load = useCallback(
-    async (signal?: AbortSignal) => {
-      const params = new URLSearchParams();
-      if (status !== "all") params.set("status", status);
-      if (query) params.set("q", query);
-      params.set("limit", "100");
+  async function loadPosts(nextStatus = status, nextQuery = query) {
+    const params = new URLSearchParams();
+    if (nextStatus !== "all") params.set("status", nextStatus);
+    if (nextQuery) params.set("q", nextQuery);
+    params.set("limit", "100");
+    const response = await adminFetch(
+      `${adminPath}/api/content/posts?${params.toString()}`,
+    );
+    const payload = (await response.json().catch(() => null)) as ListResponse | null;
+    if (!response.ok) {
+      throw new Error(payload?.error || `Failed to load posts (${response.status}).`);
+    }
+    return payload;
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
       try {
-        const response = await adminFetch(
-          `${api("/content/posts")}?${params.toString()}`,
-          { signal },
-        );
-        if (signal?.aborted) return;
-        const payload = (await response.json().catch(() => null)) as ListResponse | null;
-        if (!response.ok) {
-          throw new Error(payload?.error || `Failed to load posts (${response.status}).`);
-        }
+        const payload = await loadPosts();
+        if (cancelled) return;
         setData(payload);
         setError("");
       } catch (err) {
-        if (signal?.aborted) return;
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : "Failed to load posts.");
       } finally {
-        if (!signal?.aborted) setLoading(false);
+        if (!cancelled) setLoading(false);
       }
-    },
-    [api, query, status],
-  );
-
-  useEffect(() => {
-    const controller = new AbortController();
-    void (async () => {
-      await load(controller.signal);
     })();
-    return () => controller.abort();
-  }, [load]);
+    return () => {
+      cancelled = true;
+    };
+    // loadPosts reads latest status/query from the render that scheduled this effect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adminPath, query, status]);
 
   const posts = data?.posts ?? [];
 
@@ -81,16 +82,20 @@ export default function PostsList() {
     setBusyId(post.id);
     setError("");
     try {
-      const response = await adminFetch(api(`/content/posts/${post.id}`), {
-        method: "DELETE",
-      });
+      const response = await adminFetch(
+        `${adminPath}/api/content/posts/${post.id}`,
+        { method: "DELETE" },
+      );
       const body = (await response.json().catch(() => null)) as { error?: string } | null;
       if (!response.ok) throw new Error(body?.error || "Could not delete post.");
-      await load();
+      setLoading(true);
+      const payload = await loadPosts();
+      setData(payload);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not delete post.");
     } finally {
       setBusyId(null);
+      setLoading(false);
     }
   }
 

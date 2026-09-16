@@ -119,7 +119,7 @@ function emptyState(): EditorState {
 
 export default function PostEditor({ postId }: { postId?: string }) {
   const router = useRouter();
-  const { api, contentPostsPath } = useAdminPath();
+  const { adminPath, contentPostsPath } = useAdminPath();
   const [state, setState] = useState<EditorState>(emptyState);
   const [slugLocked, setSlugLocked] = useState(Boolean(postId));
   const [tools, setTools] = useState<ContentTool[]>([]);
@@ -129,39 +129,38 @@ export default function PostEditor({ postId }: { postId?: string }) {
   const [notice, setNotice] = useState("");
 
   useEffect(() => {
-    const controller = new AbortController();
+    let cancelled = false;
     void (async () => {
       try {
-        const toolsRes = await adminFetch(api("/content/tools"), {
-          signal: controller.signal,
-        });
+        const toolsRes = await adminFetch(`${adminPath}/api/content/tools`);
         const toolsBody = (await toolsRes.json().catch(() => null)) as {
           tools?: ContentTool[];
         } | null;
-        if (toolsRes.ok && toolsBody?.tools) setTools(toolsBody.tools);
+        if (!cancelled && toolsRes.ok && toolsBody?.tools) setTools(toolsBody.tools);
 
         if (!postId) return;
-        const postRes = await adminFetch(api(`/content/posts/${postId}`), {
-          signal: controller.signal,
-        });
+        const postRes = await adminFetch(`${adminPath}/api/content/posts/${postId}`);
         const postBody = (await postRes.json().catch(() => null)) as {
           post?: Post;
           error?: string;
         } | null;
+        if (cancelled) return;
         if (!postRes.ok || !postBody?.post) {
           throw new Error(postBody?.error || "Failed to load post.");
         }
         setState(postToState(postBody.post));
         setSlugLocked(true);
       } catch (err) {
-        if (controller.signal.aborted) return;
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : "Failed to load editor.");
       } finally {
-        if (!controller.signal.aborted) setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
-    return () => controller.abort();
-  }, [api, postId]);
+    return () => {
+      cancelled = true;
+    };
+  }, [adminPath, postId]);
 
   const payload = useMemo(
     () => ({
@@ -194,7 +193,9 @@ export default function PostEditor({ postId }: { postId?: string }) {
     setNotice("");
     try {
       const response = await adminFetch(
-        postId ? api(`/content/posts/${postId}`) : api("/content/posts"),
+        postId
+          ? `${adminPath}/api/content/posts/${postId}`
+          : `${adminPath}/api/content/posts`,
         {
           method: postId ? "PATCH" : "POST",
           body: JSON.stringify(payload),

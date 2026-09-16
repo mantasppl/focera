@@ -96,9 +96,14 @@ export async function handleCreatePost(request: Request) {
   }
 }
 
+async function resolvePostId(id: string): Promise<string | null> {
+  const post = (await getPostById(id)) || (await getPostBySlug(id));
+  return post?.id ?? null;
+}
+
 export async function handleGetPost(id: string, request: Request) {
   try {
-    const post = await getPostById(id);
+    const post = (await getPostById(id)) || (await getPostBySlug(id));
     if (!post) return jsonError("Post not found.", 404);
     if (post.status !== "published" && !isAdminApiRequest(request)) {
       return jsonError("Unauthorized.", 401);
@@ -121,7 +126,9 @@ export async function handleUpdatePost(id: string, request: Request) {
   if (!validated.ok) return jsonError(validated.error, 400);
 
   try {
-    const post = await updatePost(id, validated.data);
+    const postId = await resolvePostId(id);
+    if (!postId) return jsonError("Post not found.", 404);
+    const post = await updatePost(postId, validated.data);
     revalidatePostPaths(post.slug);
     return Response.json({ ok: true, post });
   } catch (error) {
@@ -134,9 +141,11 @@ export async function handleDeletePost(id: string, request: Request) {
   if (denied) return denied;
 
   try {
-    const result = await deletePost(id);
+    const postId = await resolvePostId(id);
+    if (!postId) return jsonError("Post not found.", 404);
+    const result = await deletePost(postId);
     revalidatePostPaths(result.slug);
-    return Response.json({ ok: true, id });
+    return Response.json({ ok: true, id: postId });
   } catch (error) {
     return storeErrorResponse(error);
   }
