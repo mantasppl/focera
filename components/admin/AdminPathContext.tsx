@@ -12,6 +12,8 @@ type AdminPathContextValue = {
   trafficPath: string;
   analyticsPath: string;
   commentsPath: string;
+  contentPath: string;
+  contentPostsPath: string;
   loginPath: string;
   api: (subpath: string) => string;
 };
@@ -32,6 +34,8 @@ export function AdminPathProvider({
       trafficPath: `${base}/traffic`,
       analyticsPath: `${base}/analytics`,
       commentsPath: `${base}/comments`,
+      contentPath: `${base}/content`,
+      contentPostsPath: `${base}/content/posts`,
       loginPath: `${base}/login`,
       api(subpath: string) {
         const clean = subpath.startsWith("/") ? subpath : `/${subpath}`;

@@ -1,9 +1,10 @@
-import type { MetadataRoute } from "next";
 import { seoLandings } from "@/data/seo-landings";
 import { categoryOrder, tools } from "@/data/tools";
+import { listPublishedPosts } from "@/lib/content/store";
 import { SITE_URL } from "@/lib/seo";
+import type { MetadataRoute } from "next";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -18,6 +19,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/blog`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
     },
     {
       url: `${SITE_URL}/contact`,
@@ -70,10 +77,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.65,
   }));
 
+  let postRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await listPublishedPosts();
+    postRoutes = posts.map((post) => ({
+      url: `${SITE_URL}/blog/${post.slug}`,
+      lastModified: post.updatedAt ? new Date(post.updatedAt) : now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+  } catch (error) {
+    console.error("[sitemap] published posts failed:", error);
+  }
+
   return [
     ...staticRoutes,
     ...categoryRoutes,
     ...toolRoutes,
     ...seoLandingRoutes,
+    ...postRoutes,
   ];
 }

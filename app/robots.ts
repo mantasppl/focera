@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         // Do not list the secret ADMIN_PATH here (would advertise it).
-        disallow: ["/api/", "/admin", "/admin/"],
+        disallow: ["/api/", "/admin", "/admin/", "/blog/preview", "/blog/preview/"],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
