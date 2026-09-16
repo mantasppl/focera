@@ -76,6 +76,14 @@ export function adminAnalyticsPath(): string {
   return `${getAdminPath()}/analytics`;
 }
 
+export function adminContentPath(): string {
+  return `${getAdminPath()}/content`;
+}
+
+export function adminContentPostsPath(): string {
+  return `${getAdminPath()}/content/posts`;
+}
+
 export function adminApiPath(subpath: string): string {
   const clean = subpath.startsWith("/") ? subpath : `/${subpath}`;
   return `${getAdminPath()}/api${clean}`;

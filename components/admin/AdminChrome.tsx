@@ -17,7 +17,7 @@ type AdminChromeProps = {
 export default function AdminChrome({ children, title }: AdminChromeProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { trafficPath, analyticsPath, commentsPath, loginPath, api } =
+  const { trafficPath, analyticsPath, commentsPath, contentPath, loginPath, api } =
     useAdminPath();
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [loggingOut, setLoggingOut] = useState(false);
@@ -96,6 +96,15 @@ export default function AdminChrome({ children, title }: AdminChromeProps) {
               )}
             >
               Comments
+            </Link>
+            <Link
+              href={contentPath}
+              className={cn(
+                "admin-nav__link",
+                pathname.includes("/content") && "is-active",
+              )}
+            >
+              Content
             </Link>
             <Link href="/" className="admin-nav__link">
               Site
