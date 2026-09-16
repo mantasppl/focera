@@ -32,8 +32,8 @@ function parseFaqItems(value: unknown): FaqItem[] {
     .map((item) => {
       const rec = asRecord(item);
       if (!rec) return null;
-      const question = asString(rec.question).trim();
-      const answer = asString(rec.answer).trim();
+      const question = asString(rec.question ?? rec.q).trim();
+      const answer = asString(rec.answer ?? rec.a).trim();
       if (!question && !answer) return null;
       return { question, answer };
     })
@@ -72,14 +72,14 @@ export function parseContentBlocks(value: unknown): ContentBlock[] {
           id,
           type: "cta",
           label: asString(rec.label) || "Open tool",
-          toolId: asString(rec.toolId ?? rec.tool_id),
+          toolId: asString(rec.toolId ?? rec.tool_id ?? rec.toolSlug ?? rec.tool_slug),
         });
         break;
       case "tool_embed":
         blocks.push({
           id,
           type: "tool_embed",
-          toolId: asString(rec.toolId ?? rec.tool_id),
+          toolId: asString(rec.toolId ?? rec.tool_id ?? rec.toolSlug ?? rec.tool_slug),
         });
         break;
       case "faq":
