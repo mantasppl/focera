@@ -1,9 +1,16 @@
 import { and, avg, count, eq, isNotNull, isNull, sql } from "drizzle-orm";
-import { ensureAnalyticsSchema, getDb } from "@/lib/analytics/db";
+import {
+  ensureAnalyticsSchema,
+  getAnalyticsClient,
+  getDb,
+} from "@/lib/analytics/db";
 import { toolComments, toolRatings } from "@/lib/analytics/schema";
 import type { PublicToolRating } from "@/lib/ratings/types";
 
 export type { PublicToolRating };
+
+/** Bump to wipe leftover ratings and re-mark seeds once on next deploy/load. */
+const PUBLIC_RATING_RESET_VERSION = "3";
 
 const EMPTY_STARS: Record<1 | 2 | 3 | 4 | 5, number> = {
   1: 0,
@@ -13,15 +20,55 @@ const EMPTY_STARS: Record<1 | 2 | 3 | 4 | 5, number> = {
   5: 0,
 };
 
+let ratingResetReady: Promise<void> | null = null;
+
+async function ensurePublicRatingReset(): Promise<void> {
+  if (!ratingResetReady) {
+    ratingResetReady = (async () => {
+      await ensureAnalyticsSchema();
+      const client = getAnalyticsClient();
+      await client.execute(`
+CREATE TABLE IF NOT EXISTS analytics_meta (
+  key TEXT PRIMARY KEY NOT NULL,
+  value TEXT NOT NULL
+);
+`);
+      const existing = await client.execute({
+        sql: `SELECT value FROM analytics_meta WHERE key = ?`,
+        args: ["public_rating_reset_version"],
+      });
+      const current = String(existing.rows[0]?.value ?? "");
+      if (current === PUBLIC_RATING_RESET_VERSION) return;
+
+      // Wipe form ratings and treat all existing comments as system so hero
+      // stars reset to 5 until new real user reviews arrive.
+      await client.execute(`DELETE FROM tool_ratings`);
+      await client.execute(`
+UPDATE tool_comments
+SET is_seed = 1
+WHERE name != '__seed_empty__'
+`);
+      await client.execute({
+        sql: `INSERT OR REPLACE INTO analytics_meta (key, value) VALUES (?, ?)`,
+        args: ["public_rating_reset_version", PUBLIC_RATING_RESET_VERSION],
+      });
+    })().catch((error) => {
+      ratingResetReady = null;
+      throw error;
+    });
+  }
+  await ratingResetReady;
+}
+
 /**
  * Public stars for a tool page.
- * No reviews → 5.0. With real reviews → weighted average of tool_ratings
- * + user (non-system) comment ratings. Count is real reviews only (not shown in UI).
+ * Real reviews = tool_ratings + user comments (is_seed = 0) with a rating.
+ * No reviews → 5.
  */
 export async function getPublicToolRating(
   toolSlug: string,
 ): Promise<PublicToolRating> {
-  await ensureAnalyticsSchema();
+  await ensurePublicRatingReset();
   const db = getDb();
 
   const [ratingAgg] = await db
@@ -53,7 +100,7 @@ export async function getPublicToolRating(
         eq(toolComments.toolId, toolSlug),
         isNull(toolComments.parentId),
         isNotNull(toolComments.rating),
-        eq(toolComments.isSeed, false),
+        sql`${toolComments.isSeed} = 0`,
         sql`${toolComments.name} != '__seed_empty__'`,
       ),
     );
@@ -67,7 +114,7 @@ export async function getPublicToolRating(
       toolSlug,
       average: 5,
       count: 0,
-      stars: { ...EMPTY_STARS, 5: 0 },
+      stars: { ...EMPTY_STARS },
     };
   }
 
