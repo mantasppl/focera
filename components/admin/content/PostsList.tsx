@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import { adminFetch } from "@/lib/admin/csrf-client";
-import type { PostListItem, PostStatus } from "@/lib/content/types";
+import type { Post, PostListItem, PostStatus } from "@/lib/content/types";
 
 type ListResponse = {
   ok: boolean;
@@ -30,11 +31,14 @@ export default function PostsList({
   initialPosts?: PostListItem[];
   initialTotal?: number;
 }) {
+  const router = useRouter();
   const { adminPath, contentPostsPath } = useAdminPath();
   const [status, setStatus] = useState<"all" | PostStatus>("all");
   const [query, setQuery] = useState("");
   const [queryInput, setQueryInput] = useState("");
+  const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [data, setData] = useState<ListResponse | null>(
@@ -114,6 +118,33 @@ export default function PostsList({
     }
   }
 
+  async function handleGenerate(event: FormEvent) {
+    event.preventDefault();
+    const value = keyword.trim();
+    if (value.length < 2) {
+      setError("Enter a keyword of at least 2 characters.");
+      return;
+    }
+    setGenerating(true);
+    setError("");
+    try {
+      const response = await adminFetch("/api/ai/generate-post", {
+        method: "POST",
+        body: JSON.stringify({ keyword: value }),
+      });
+      const body = (await response.json().catch(() => null)) as
+        | { ok?: boolean; post?: Post; error?: string }
+        | null;
+      if (!response.ok || !body?.post?.id) {
+        throw new Error(body?.error || "Could not generate a draft.");
+      }
+      router.push(`${contentPostsPath}/${body.post.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not generate a draft.");
+      setGenerating(false);
+    }
+  }
+
   return (
     <div className="admin-dashboard">
       {error ? (
@@ -121,6 +152,36 @@ export default function PostsList({
           {error}
         </div>
       ) : null}
+
+      <section className="admin-table-card">
+        <div className="admin-table-card__head">
+          <h2>Generate with AI</h2>
+          <p>
+            Enter a keyword. Groq drafts an SEO post as a draft you can edit and
+            publish.
+          </p>
+        </div>
+        <form className="admin-generate" onSubmit={handleGenerate}>
+          <label className="admin-field admin-field--grow">
+            Keyword
+            <input
+              type="text"
+              value={keyword}
+              onChange={(event) => setKeyword(event.target.value)}
+              placeholder="compress pdf online"
+              maxLength={120}
+              disabled={generating}
+            />
+          </label>
+          <button
+            type="submit"
+            className="ui-btn ui-btn--primary"
+            disabled={generating || keyword.trim().length < 2}
+          >
+            {generating ? "Generating…" : "Generate AI draft"}
+          </button>
+        </form>
+      </section>
 
       <div className="admin-toolbar">
         <div className="admin-filters">
@@ -190,7 +251,9 @@ export default function PostsList({
               ) : null}
               {!loading && !posts.length ? (
                 <tr>
-                  <td colSpan={5}>No posts yet. Create one to start the blog.</td>
+                  <td colSpan={5}>
+                    No posts yet. Create one or generate a draft from a keyword.
+                  </td>
                 </tr>
               ) : null}
               {posts.map((post) => (
