@@ -128,7 +128,7 @@ const getCachedRankedTrendingToolSlugs = unstable_cache(
   { revalidate: TRENDING_TOOLS_REVALIDATE_SECONDS, tags: ["top-tools"] },
 );
 
-export async function getRankedTrendingTools(limit = 8): Promise<Tool[]> {
+export async function getRankedTrendingTools(limit = 5): Promise<Tool[]> {
   try {
     const slugs = await getCachedRankedTrendingToolSlugs(limit);
     const picked: Tool[] = [];
@@ -149,7 +149,7 @@ export async function getRankedTrendingTools(limit = 8): Promise<Tool[]> {
   }
 }
 
-export async function getRankedTopTools(limit = 8): Promise<Tool[]> {
+export async function getRankedTopTools(limit = 5): Promise<Tool[]> {
   try {
     const slugs = await getCachedRankedTopToolSlugs(limit);
     const picked: Tool[] = [];
@@ -223,7 +223,7 @@ const getCachedRankedAllTimeBestSlugs = unstable_cache(
   { revalidate: TOP_TOOLS_REVALIDATE_SECONDS, tags: ["top-tools"] },
 );
 
-export async function getRankedAllTimeBestTools(limit = 8): Promise<Tool[]> {
+export async function getRankedAllTimeBestTools(limit = 5): Promise<Tool[]> {
   try {
     const slugs = await getCachedRankedAllTimeBestSlugs(limit);
     const picked: Tool[] = [];

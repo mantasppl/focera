@@ -7,7 +7,7 @@ import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import JsonLd from "@/components/JsonLd";
-import ToolCard from "@/components/ToolCard";
+import RankedToolsSection from "@/components/RankedToolsSection";
 import ToolInquiry from "@/components/ToolInquiry";
 import ToolSearch from "@/components/ToolSearch";
 import {
@@ -88,9 +88,9 @@ const homeFaq = [
 
 export default async function HomePage() {
   const [topTools, trendingTools, allTimeBest] = await Promise.all([
-    getRankedTopTools(8),
-    getRankedTrendingTools(8),
-    getRankedAllTimeBestTools(8),
+    getRankedTopTools(5),
+    getRankedTrendingTools(5),
+    getRankedAllTimeBestTools(5),
   ]);
 
   return (
@@ -245,78 +245,27 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {trendingTools.length > 0 ? (
-          <section
-            className="page-section"
-            aria-labelledby="trending-heading"
-            id="trending"
-          >
-            <div className="section-heading-row">
-              <h2 id="trending-heading" className="section-heading">
-                Trending
-              </h2>
-              <Link href="/tools" className="section-heading-link">
-                Browse full catalog
-              </Link>
-            </div>
-            <p className="section-lede">
-              What&apos;s heating up this week — based on recent use.
-            </p>
-            <div className="tool-card-grid">
-              {trendingTools.map((tool) => (
-                <ToolCard key={tool.slug} tool={tool} />
-              ))}
-            </div>
-          </section>
-        ) : null}
-
-        <section
-          className="page-section"
-          aria-labelledby="top-tools-heading"
+        <RankedToolsSection
+          id="trending"
+          title="Trending"
+          lede="What's heating up this week."
+          tone="trending"
+          tools={trendingTools}
+        />
+        <RankedToolsSection
           id="top-tools"
-        >
-          <div className="section-heading-row">
-            <h2 id="top-tools-heading" className="section-heading">
-              Top tools
-            </h2>
-            <Link href="/tools" className="section-heading-link">
-              Browse full catalog
-            </Link>
-          </div>
-          <p className="section-lede">
-            The most-used tools across PDF, image, AI, and file workflows.
-          </p>
-          <div className="tool-card-grid">
-            {topTools.map((tool) => (
-              <ToolCard key={tool.slug} tool={tool} />
-            ))}
-          </div>
-        </section>
-
-        {allTimeBest.length > 0 ? (
-          <section
-            className="page-section"
-            aria-labelledby="all-time-best-heading"
-            id="all-time-best"
-          >
-            <div className="section-heading-row">
-              <h2 id="all-time-best-heading" className="section-heading">
-                All Time Best
-              </h2>
-              <Link href="/tools" className="section-heading-link">
-                Browse full catalog
-              </Link>
-            </div>
-            <p className="section-lede">
-              Lifetime favorites — ranked by unique visitors, uses, and returns.
-            </p>
-            <div className="tool-card-grid">
-              {allTimeBest.map((tool) => (
-                <ToolCard key={tool.slug} tool={tool} />
-              ))}
-            </div>
-          </section>
-        ) : null}
+          title="Top tools"
+          lede="Most used in the last 30 days."
+          tone="top"
+          tools={topTools}
+        />
+        <RankedToolsSection
+          id="all-time-best"
+          title="All Time Best"
+          lede="Lifetime favorites across every tool."
+          tone="best"
+          tools={allTimeBest}
+        />
 
         <div className="page-section">
           <FAQ items={homeFaq} title={`About ${SITE_NAME}`} />
