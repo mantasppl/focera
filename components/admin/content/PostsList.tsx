@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import { adminFetch } from "@/lib/admin/csrf-client";
@@ -23,15 +23,26 @@ function formatWhen(ms: number | null): string {
   });
 }
 
-export default function PostsList() {
+export default function PostsList({
+  initialPosts = [],
+  initialTotal = 0,
+}: {
+  initialPosts?: PostListItem[];
+  initialTotal?: number;
+}) {
   const { adminPath, contentPostsPath } = useAdminPath();
   const [status, setStatus] = useState<"all" | PostStatus>("all");
   const [query, setQuery] = useState("");
   const [queryInput, setQueryInput] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [data, setData] = useState<ListResponse | null>(null);
+  const [data, setData] = useState<ListResponse | null>(
+    initialPosts.length || initialTotal
+      ? { ok: true, posts: initialPosts, total: initialTotal }
+      : null,
+  );
+  const skipFirstFetch = useRef(Boolean(initialPosts.length || initialTotal));
 
   async function loadPosts(nextStatus = status, nextQuery = query) {
     const params = new URLSearchParams();
@@ -49,6 +60,10 @@ export default function PostsList() {
   }
 
   useEffect(() => {
+    if (skipFirstFetch.current) {
+      skipFirstFetch.current = false;
+      if (status === "all" && !query) return;
+    }
     let cancelled = false;
     void (async () => {
       try {

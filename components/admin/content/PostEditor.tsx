@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import BlockEditor from "@/components/admin/content/BlockEditor";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
@@ -117,50 +117,28 @@ function emptyState(): EditorState {
   };
 }
 
-export default function PostEditor({ postId }: { postId?: string }) {
+export default function PostEditor({
+  postId,
+  initialPost,
+  initialTools = [],
+}: {
+  postId?: string;
+  initialPost?: Post | null;
+  initialTools?: ContentTool[];
+}) {
   const router = useRouter();
   const { adminPath, contentPostsPath } = useAdminPath();
-  const [state, setState] = useState<EditorState>(emptyState);
-  const [slugLocked, setSlugLocked] = useState(Boolean(postId));
-  const [tools, setTools] = useState<ContentTool[]>([]);
-  const [loading, setLoading] = useState(Boolean(postId));
+  const [state, setState] = useState<EditorState>(
+    initialPost ? postToState(initialPost) : emptyState,
+  );
+  const [slugLocked, setSlugLocked] = useState(Boolean(initialPost || postId));
+  const tools = initialTools;
+  const loading = Boolean(postId) && !initialPost;
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(
+    postId && !initialPost ? "Post not found." : "",
+  );
   const [notice, setNotice] = useState("");
-
-  useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        const toolsRes = await adminFetch(`${adminPath}/api/content/tools`);
-        const toolsBody = (await toolsRes.json().catch(() => null)) as {
-          tools?: ContentTool[];
-        } | null;
-        if (!cancelled && toolsRes.ok && toolsBody?.tools) setTools(toolsBody.tools);
-
-        if (!postId) return;
-        const postRes = await adminFetch(`${adminPath}/api/content/posts/${postId}`);
-        const postBody = (await postRes.json().catch(() => null)) as {
-          post?: Post;
-          error?: string;
-        } | null;
-        if (cancelled) return;
-        if (!postRes.ok || !postBody?.post) {
-          throw new Error(postBody?.error || "Failed to load post.");
-        }
-        setState(postToState(postBody.post));
-        setSlugLocked(true);
-      } catch (err) {
-        if (cancelled) return;
-        setError(err instanceof Error ? err.message : "Failed to load editor.");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [adminPath, postId]);
 
   const payload = useMemo(
     () => ({

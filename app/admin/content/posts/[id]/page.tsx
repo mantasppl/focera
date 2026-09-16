@@ -1,5 +1,9 @@
 import AdminChrome from "@/components/admin/AdminChrome";
 import PostEditor from "@/components/admin/content/PostEditor";
+import { listContentTools } from "@/lib/content/db";
+import { getPostById, getPostBySlug } from "@/lib/content/store";
+
+export const runtime = "nodejs";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -7,9 +11,21 @@ type PageProps = {
 
 export default async function AdminEditPostPage({ params }: PageProps) {
   const { id } = await params;
+  const [post, tools] = await Promise.all([
+    getPostById(id).then((row) => row || getPostBySlug(id)),
+    listContentTools().catch((error) => {
+      console.error("[admin/content/posts/id] tools", error);
+      return [];
+    }),
+  ]);
+
   return (
     <AdminChrome title="Edit post">
-      <PostEditor postId={id} />
+      <PostEditor
+        postId={post?.id || id}
+        initialPost={post}
+        initialTools={tools}
+      />
     </AdminChrome>
   );
 }
