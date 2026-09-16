@@ -175,4 +175,5 @@ export const DEFAULT_CTA_CONFIG: CtaConfig = {
   variant: "button",
 };
 
+/** ISR interval for /blog. Page `export const revalidate` must stay a numeric literal of this value. */
 export const BLOG_REVALIDATE_SECONDS = 60;

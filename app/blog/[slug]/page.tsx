@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogPostView from "@/components/content/BlogPostView";
-import { BLOG_REVALIDATE_SECONDS } from "@/lib/content/types";
 import {
   getPublishedPostBySlug,
   listPublishedPostSlugs,
@@ -10,7 +9,8 @@ import { blogPostMetadata } from "@/lib/content/seo";
 import { pageMetadata, SITE_NAME } from "@/lib/seo";
 
 export const runtime = "nodejs";
-export const revalidate = BLOG_REVALIDATE_SECONDS;
+// Numeric literal required — Next.js cannot statically extract imported identifiers.
+export const revalidate = 60;
 export const dynamicParams = true;
 
 type PageProps = {

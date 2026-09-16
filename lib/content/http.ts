@@ -16,8 +16,6 @@ import {
 } from "@/lib/content/validate";
 import { readJsonBody } from "@/lib/security/request";
 
-export const runtime = "nodejs";
-
 export function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status });
 }

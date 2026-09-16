@@ -4,12 +4,12 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import { BLOG_REVALIDATE_SECONDS } from "@/lib/content/types";
 import { listPublishedPosts } from "@/lib/content/store";
 import { breadcrumbSchema, pageMetadata, SITE_NAME } from "@/lib/seo";
 
 export const runtime = "nodejs";
-export const revalidate = BLOG_REVALIDATE_SECONDS;
+// Numeric literal required — Next.js cannot statically extract imported identifiers.
+export const revalidate = 60;
 
 export const metadata: Metadata = pageMetadata({
   title: "Blog",
