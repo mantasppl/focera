@@ -16486,6 +16486,18 @@ html[data-admin-theme="dark"] {
   margin-left: auto;
 }
 
+.admin-generate {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: end;
+  padding: 0 1.1rem 1.1rem;
+}
+
+.admin-generate .admin-field--grow {
+  flex: 1 1 240px;
+}
+
 .admin-stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -17084,6 +17096,14 @@ html[data-admin-theme="dark"] .admin-badge--user {
   .admin-toolbar__export {
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-generate {
+    width: 100%;
+  }
+
+  .admin-generate .ui-btn {
+    width: 100%;
   }
 
   .admin-toolbar .ui-field,
