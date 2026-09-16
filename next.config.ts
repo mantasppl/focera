@@ -30,7 +30,7 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
-  serverExternalPackages: ["puppeteer", "@libsql/client"],
+  serverExternalPackages: ["puppeteer", "@libsql/client", "groq-sdk"],
   allowedDevOrigins: ["127.0.0.1"],
   images: {
     formats: ["image/avif", "image/webp"],
