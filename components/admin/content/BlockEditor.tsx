@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import TextBlockEditor from "@/components/admin/content/TextBlockEditor";
+import ImageUrlField from "@/components/admin/content/ImageUrlField";
 import {
   BLOCK_TYPES,
   type ContentBlock,
@@ -120,13 +121,11 @@ function BlockFields({
     case "image":
       return (
         <div className="admin-block__grid">
-          <label className="admin-field">
-            Image URL
-            <input
-              value={block.url}
-              onChange={(event) => onChange({ ...block, url: event.target.value })}
-            />
-          </label>
+          <ImageUrlField
+            label="Image"
+            value={block.url}
+            onChange={(url) => onChange({ ...block, url })}
+          />
           <label className="admin-field">
             Alt text
             <input

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import BlockEditor from "@/components/admin/content/BlockEditor";
+import ImageUrlField from "@/components/admin/content/ImageUrlField";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import Button from "@/components/Button";
 import { adminFetch } from "@/lib/admin/csrf-client";
@@ -279,15 +280,13 @@ export default function PostEditor({
               }
             />
           </label>
-          <label className="admin-field">
-            Cover image URL
-            <input
-              value={state.coverImage}
-              onChange={(event) =>
-                setState((current) => ({ ...current, coverImage: event.target.value }))
-              }
-            />
-          </label>
+          <ImageUrlField
+            label="Cover image"
+            value={state.coverImage}
+            onChange={(coverImage) =>
+              setState((current) => ({ ...current, coverImage }))
+            }
+          />
           <BlockEditor
             blocks={state.content}
             tools={tools}
@@ -342,15 +341,13 @@ export default function PostEditor({
                 }
               />
             </label>
-            <label className="admin-field">
-              OG image URL
-              <input
-                value={state.ogImage}
-                onChange={(event) =>
-                  setState((current) => ({ ...current, ogImage: event.target.value }))
-                }
-              />
-            </label>
+            <ImageUrlField
+              label="OG image"
+              value={state.ogImage}
+              onChange={(ogImage) =>
+                setState((current) => ({ ...current, ogImage }))
+              }
+            />
             <label className="admin-field">
               Canonical URL
               <input

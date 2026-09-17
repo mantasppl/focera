@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import ImageUrlField from "@/components/admin/content/ImageUrlField";
 import { contentMarkdownToHtml } from "@/lib/content/markdown";
 import { sanitizeHtmlBasic } from "@/lib/security/sanitize-html";
 import { cn } from "@/lib/utils";
@@ -183,8 +184,7 @@ export default function TextBlockEditor({
     setPanel(null);
   }
 
-  function applyImage(event: FormEvent) {
-    event.preventDefault();
+  function insertImageFromFields() {
     const src = safeUrl(imageUrl, "image");
     if (!src) return;
     restoreSelection();
@@ -408,16 +408,23 @@ export default function TextBlockEditor({
           ) : null}
 
           {panel === "image" ? (
-            <form className="admin-text-editor__panel" onSubmit={applyImage}>
-              <label className="admin-field admin-field--grow">
-                Image URL
-                <input
-                  value={imageUrl}
-                  onChange={(event) => setImageUrl(event.target.value)}
-                  placeholder="https://…"
-                  autoFocus
-                />
-              </label>
+            <div className="admin-text-editor__panel admin-text-editor__panel--stack">
+              <ImageUrlField
+                label="Image"
+                value={imageUrl}
+                onChange={setImageUrl}
+                onUploaded={(url) => {
+                  restoreSelection();
+                  document.execCommand(
+                    "insertHTML",
+                    false,
+                    `<img src="${escapeAttr(url)}" alt="${escapeAttr(imageAlt.trim())}" />`,
+                  );
+                  emitVisual();
+                  setImageUrl("");
+                  setPanel(null);
+                }}
+              />
               <label className="admin-field">
                 Alt text
                 <input
@@ -426,10 +433,14 @@ export default function TextBlockEditor({
                   placeholder="Describe the image"
                 />
               </label>
-              <button type="submit" className="ui-btn ui-btn--primary">
-                Add image
+              <button
+                type="button"
+                className="ui-btn ui-btn--primary"
+                onClick={insertImageFromFields}
+              >
+                Insert image
               </button>
-            </form>
+            </div>
           ) : null}
 
           <div

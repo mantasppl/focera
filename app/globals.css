@@ -18421,13 +18421,45 @@ html[data-admin-theme="dark"] .admin-badge--user {
   background: color-mix(in srgb, var(--accent, #0f7a66) 14%, transparent);
 }
 
-.admin-text-editor__panel {
+.admin-image-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.admin-image-field__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  align-items: end;
-  padding: 0.65rem 0.7rem;
-  border-bottom: 1px solid var(--admin-line);
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-image-field__url {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--admin-muted);
+  word-break: break-all;
+}
+
+.admin-image-field__error {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #9a3412;
+}
+
+.admin-image-field__preview {
+  max-width: 12rem;
+  max-height: 8rem;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--admin-line);
+}
+
+.admin-text-editor__panel--stack {
+  display: grid;
+  gap: 0.65rem;
+  align-items: stretch;
 }
 
 .admin-text-editor__surface {

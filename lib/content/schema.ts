@@ -1,4 +1,4 @@
-import { index, sqliteTable, text, integer, uniqueIndex } from "drizzle-orm/sqlite-core";
+import { blob, index, sqliteTable, text, integer, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 export const tools = sqliteTable(
   "tools",
@@ -54,3 +54,13 @@ export const posts = sqliteTable(
 
 export type PostRow = typeof posts.$inferSelect;
 export type NewPostRow = typeof posts.$inferInsert;
+
+export const contentImages = sqliteTable("content_images", {
+  id: text("id").primaryKey(),
+  filename: text("filename").notNull(),
+  mime: text("mime").notNull(),
+  bytes: blob("bytes", { mode: "buffer" }).notNull(),
+  createdAt: integer("created_at").notNull(),
+});
+
+export type ContentImageRow = typeof contentImages.$inferSelect;
