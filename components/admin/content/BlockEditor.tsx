@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import TextBlockEditor from "@/components/admin/content/TextBlockEditor";
 import {
   BLOCK_TYPES,
   type ContentBlock,
@@ -111,14 +112,10 @@ function BlockFields({
   switch (block.type) {
     case "text":
       return (
-        <label className="admin-field">
-          Markdown
-          <textarea
-            rows={8}
-            value={block.html}
-            onChange={(event) => onChange({ ...block, html: event.target.value })}
-          />
-        </label>
+        <TextBlockEditor
+          value={block.html}
+          onChange={(html) => onChange({ ...block, html })}
+        />
       );
     case "image":
       return (
