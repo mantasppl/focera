@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import TextBlockEditor from "@/components/admin/content/TextBlockEditor";
+import ImageUrlField from "@/components/admin/content/ImageUrlField";
 import {
   BLOCK_TYPES,
   type ContentBlock,
@@ -111,25 +113,19 @@ function BlockFields({
   switch (block.type) {
     case "text":
       return (
-        <label className="admin-field">
-          Markdown
-          <textarea
-            rows={8}
-            value={block.html}
-            onChange={(event) => onChange({ ...block, html: event.target.value })}
-          />
-        </label>
+        <TextBlockEditor
+          value={block.html}
+          onChange={(html) => onChange({ ...block, html })}
+        />
       );
     case "image":
       return (
         <div className="admin-block__grid">
-          <label className="admin-field">
-            Image URL
-            <input
-              value={block.url}
-              onChange={(event) => onChange({ ...block, url: event.target.value })}
-            />
-          </label>
+          <ImageUrlField
+            label="Image"
+            value={block.url}
+            onChange={(url) => onChange({ ...block, url })}
+          />
           <label className="admin-field">
             Alt text
             <input

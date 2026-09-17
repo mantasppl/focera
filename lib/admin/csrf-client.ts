@@ -22,7 +22,7 @@ export async function adminFetch(
     const token = readCsrfToken();
     if (token) headers.set("X-CSRF-Token", token);
   }
-  if (init.body && !headers.has("Content-Type")) {
+  if (init.body && !headers.has("Content-Type") && !(init.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
   return fetch(input, {

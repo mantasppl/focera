@@ -8,7 +8,7 @@ import type { ContentTool } from "@/lib/content/types";
 
 let db: LibSQLDatabase<typeof schema> | null = null;
 let appliedSchemaVersion = 0;
-const CONTENT_SCHEMA_VERSION = 1;
+const CONTENT_SCHEMA_VERSION = 2;
 let toolsSeeded = false;
 
 export function getContentDb(): LibSQLDatabase<typeof schema> {
@@ -61,6 +61,13 @@ CREATE TABLE IF NOT EXISTS posts (
 CREATE UNIQUE INDEX IF NOT EXISTS posts_slug_unique ON posts (slug);
 CREATE INDEX IF NOT EXISTS posts_status_idx ON posts (status);
 CREATE INDEX IF NOT EXISTS posts_published_at_idx ON posts (published_at);
+CREATE TABLE IF NOT EXISTS content_images (
+  id TEXT PRIMARY KEY NOT NULL,
+  filename TEXT NOT NULL,
+  mime TEXT NOT NULL,
+  bytes BLOB NOT NULL,
+  created_at INTEGER NOT NULL
+);
 `);
   appliedSchemaVersion = CONTENT_SCHEMA_VERSION;
   await seedContentTools();
