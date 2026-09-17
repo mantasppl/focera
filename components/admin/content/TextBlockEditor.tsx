@@ -110,6 +110,15 @@ export default function TextBlockEditor({
     const selection = window.getSelection();
     if (!el || !selection) return;
     el.focus();
+    if (selection.rangeCount > 0) {
+      const current = selection.getRangeAt(0);
+      if (
+        el.contains(current.commonAncestorContainer) &&
+        !current.collapsed
+      ) {
+        return;
+      }
+    }
     if (savedRange.current) {
       selection.removeAllRanges();
       selection.addRange(savedRange.current);
