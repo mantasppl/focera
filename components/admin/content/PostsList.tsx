@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
@@ -46,12 +46,11 @@ export default function PostsList({
       ? { ok: true, posts: initialPosts, total: initialTotal }
       : null,
   );
-  const skipFirstFetch = useRef(Boolean(initialPosts.length || initialTotal));
 
-  async function loadPosts(nextStatus = status, nextQuery = query) {
+  async function loadPosts() {
     const params = new URLSearchParams();
-    if (nextStatus !== "all") params.set("status", nextStatus);
-    if (nextQuery) params.set("q", nextQuery);
+    if (status !== "all") params.set("status", status);
+    if (query) params.set("q", query);
     params.set("limit", "100");
     const response = await adminFetch(
       `${adminPath}/api/content/posts?${params.toString()}`,
@@ -63,11 +62,20 @@ export default function PostsList({
     return payload;
   }
 
-  useEffect(() => {
-    if (skipFirstFetch.current) {
-      skipFirstFetch.current = false;
-      if (status === "all" && !query) return;
+  async function refreshPosts() {
+    setLoading(true);
+    try {
+      const payload = await loadPosts();
+      setData(payload);
+      setError("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load posts.");
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     let cancelled = false;
     void (async () => {
       try {
@@ -106,10 +114,15 @@ export default function PostsList({
         { method: "DELETE" },
       );
       const body = (await response.json().catch(() => null)) as { error?: string } | null;
-      if (!response.ok) throw new Error(body?.error || "Could not delete post.");
-      setLoading(true);
-      const payload = await loadPosts();
-      setData(payload);
+      if (!response.ok && response.status !== 404) {
+        throw new Error(body?.error || "Could not delete post.");
+      }
+      setData((current) => {
+        if (!current) return current;
+        const posts = current.posts.filter((item) => item.id !== post.id);
+        return { ...current, posts, total: Math.max(0, current.total - 1) };
+      });
+      await refreshPosts();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not delete post.");
     } finally {
@@ -228,6 +241,15 @@ export default function PostsList({
           <h2>Posts</h2>
           <p>
             {loading ? "Loading…" : `${counts.shown} of ${counts.all} posts`}
+            {" · "}
+            <button
+              type="button"
+              className="admin-table__link"
+              onClick={() => void refreshPosts()}
+              disabled={loading}
+            >
+              Refresh
+            </button>
           </p>
         </div>
         <div className="admin-table-wrap">
