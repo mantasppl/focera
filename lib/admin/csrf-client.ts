@@ -27,6 +27,7 @@ export async function adminFetch(
   }
   return fetch(input, {
     ...init,
+    cache: "no-store",
     headers,
     credentials: "same-origin",
   });

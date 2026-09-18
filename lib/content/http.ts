@@ -68,7 +68,10 @@ export async function handleListPosts(request: Request, requireAdmin: boolean) {
       limit: Number(searchParams.get("limit") || 50),
       offset: Number(searchParams.get("offset") || 0),
     });
-    return Response.json({ ok: true, posts: result.items, total: result.total });
+    return Response.json(
+      { ok: true, posts: result.items, total: result.total },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     console.error("[content] list failed:", error);
     return jsonError("Failed to list posts.", 500);

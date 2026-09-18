@@ -187,9 +187,16 @@ export default function PostEditor({
       if (!response.ok || !body?.post) {
         throw new Error(body?.error || "Could not save post.");
       }
-      setNotice(postId ? "Saved." : "Post created.");
+      setNotice(
+        body.post.status === "published"
+          ? postId
+            ? "Saved. Live blog will update within a minute."
+            : "Published. Live blog will update within a minute."
+          : "Saved as a draft. The public blog only shows Published posts.",
+      );
       setState(postToState(body.post));
       setSlugLocked(true);
+      router.refresh();
       if (!postId) {
         router.replace(`${contentPostsPath}/${body.post.id}`);
       }

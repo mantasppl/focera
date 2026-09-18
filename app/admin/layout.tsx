@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { AdminPathProvider } from "@/components/admin/AdminPathContext";
 import { getAdminPath } from "@/lib/admin/config";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Focera Admin",
   robots: {
