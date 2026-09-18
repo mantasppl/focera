@@ -7,7 +7,7 @@ import * as schema from "@/lib/analytics/schema";
 let client: Client | null = null;
 let db: LibSQLDatabase<typeof schema> | null = null;
 let appliedSchemaVersion = 0;
-const ANALYTICS_SCHEMA_VERSION = 6;
+const ANALYTICS_SCHEMA_VERSION = 7;
 let resolvedUrl: string | null = null;
 
 function isServerlessRuntime(): boolean {
@@ -154,6 +154,7 @@ CREATE TABLE IF NOT EXISTS page_views (
 CREATE INDEX IF NOT EXISTS page_views_timestamp_idx ON page_views (timestamp);
 CREATE INDEX IF NOT EXISTS page_views_session_id_idx ON page_views (session_id);
 CREATE INDEX IF NOT EXISTS page_views_session_time_idx ON page_views (session_id, timestamp);
+CREATE INDEX IF NOT EXISTS page_views_path_idx ON page_views (path);
 CREATE TABLE IF NOT EXISTS visitor_presence (
   session_id TEXT PRIMARY KEY,
   first_seen INTEGER NOT NULL,

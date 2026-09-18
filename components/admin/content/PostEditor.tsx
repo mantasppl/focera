@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import BlockEditor from "@/components/admin/content/BlockEditor";
 import ImageUrlField from "@/components/admin/content/ImageUrlField";
+import PostMetricsPanel from "@/components/admin/content/PostMetricsPanel";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import Button from "@/components/Button";
 import { adminFetch } from "@/lib/admin/csrf-client";
@@ -302,6 +303,7 @@ export default function PostEditor({
         </section>
 
         <div className="admin-editor__side">
+          <PostMetricsPanel postId={postId} slug={state.slug} />
           <section className="admin-panel">
             <h2>SEO</h2>
             <label className="admin-field">

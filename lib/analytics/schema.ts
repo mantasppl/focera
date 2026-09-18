@@ -95,6 +95,7 @@ export const pageViews = sqliteTable(
     index("page_views_timestamp_idx").on(table.timestamp),
     index("page_views_session_id_idx").on(table.sessionId),
     index("page_views_session_time_idx").on(table.sessionId, table.timestamp),
+    index("page_views_path_idx").on(table.path),
   ],
 );
 
