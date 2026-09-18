@@ -1,4 +1,5 @@
 import { requireAdminApi } from "@/lib/admin/guard";
+import { getBlogPostMetrics, getBlogPostsMetrics } from "@/lib/analytics/blog-metrics";
 import { isAdminApiRequest } from "@/lib/content/admin-access";
 import { revalidatePostPaths } from "@/lib/content/revalidate";
 import {
@@ -10,6 +11,7 @@ import {
   listPosts,
   updatePost,
 } from "@/lib/content/store";
+import { EMPTY_POST_METRICS } from "@/lib/content/types";
 import {
   validatePartialPostInput,
   validatePostInput,
@@ -68,8 +70,18 @@ export async function handleListPosts(request: Request, requireAdmin: boolean) {
       limit: Number(searchParams.get("limit") || 50),
       offset: Number(searchParams.get("offset") || 0),
     });
+    let posts = result.items;
+    try {
+      const metrics = await getBlogPostsMetrics(result.items.map((item) => item.slug));
+      posts = result.items.map((item) => ({
+        ...item,
+        metrics: metrics.get(item.slug) ?? EMPTY_POST_METRICS,
+      }));
+    } catch (error) {
+      console.error("[content] metrics list failed:", error);
+    }
     return Response.json(
-      { ok: true, posts: result.items, total: result.total },
+      { ok: true, posts, total: result.total },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
@@ -149,6 +161,43 @@ export async function handleDeletePost(id: string, request: Request) {
     return Response.json({ ok: true, id: postId });
   } catch (error) {
     return storeErrorResponse(error);
+  }
+}
+
+export async function handleGetPostMetrics(id: string, request: Request) {
+  const denied = await requirePostReadAuth(request);
+  if (denied) return denied;
+
+  try {
+    const post = (await getPostById(id)) || (await getPostBySlug(id));
+    if (!post) return jsonError("Post not found.", 404);
+    const metrics = await getBlogPostMetrics(post.slug);
+    return Response.json(
+      { ok: true, slug: post.slug, metrics },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  } catch (error) {
+    console.error("[content] metrics failed:", error);
+    return jsonError("Failed to load post metrics.", 500);
+  }
+}
+
+export async function handleGetPublishedPostMetrics(slug: string) {
+  try {
+    const post = await getPublishedPostBySlug(slug);
+    if (!post) return jsonError("Post not found.", 404);
+    const metrics = await getBlogPostMetrics(post.slug);
+    return Response.json(
+      { ok: true, slug: post.slug, metrics },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60",
+        },
+      },
+    );
+  } catch (error) {
+    console.error("[content] public metrics failed:", error);
+    return jsonError("Failed to load post metrics.", 500);
   }
 }
 

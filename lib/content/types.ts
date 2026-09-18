@@ -132,6 +132,23 @@ export type Post = {
   updatedAt: number;
 };
 
+export type PostTrafficSource = {
+  name: string;
+  count: number;
+};
+
+export type PostMetrics = {
+  views: number;
+  unique: number;
+  sources: PostTrafficSource[];
+};
+
+export const EMPTY_POST_METRICS: PostMetrics = {
+  views: 0,
+  unique: 0,
+  sources: [],
+};
+
 export type PostListItem = {
   id: string;
   title: string;
@@ -141,6 +158,7 @@ export type PostListItem = {
   publishedAt: number | null;
   createdAt: number;
   updatedAt: number;
+  metrics?: PostMetrics;
 };
 
 export type PostInput = {

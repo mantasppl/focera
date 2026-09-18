@@ -1,4 +1,5 @@
 import BlogAnalytics from "@/components/content/BlogAnalytics";
+import BlogPostMetrics from "@/components/content/BlogPostMetrics";
 import ContentRenderer from "@/components/content/ContentRenderer";
 import ConversionCta from "@/components/content/ConversionCta";
 import RelatedToolCards from "@/components/content/RelatedToolCards";
@@ -6,6 +7,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import JsonLd from "@/components/JsonLd";
+import { getBlogPostMetrics } from "@/lib/analytics/blog-metrics";
 import { getContentTool } from "@/lib/content/db";
 import { postStructuredData } from "@/lib/content/structured-data";
 import type { Post } from "@/lib/content/types";
@@ -18,8 +20,9 @@ export default async function BlogPostView({
   post: Post;
   preview?: boolean;
 }) {
-  const [primaryTool, ...relatedTools] = await Promise.all([
+  const [primaryTool, metrics, ...relatedTools] = await Promise.all([
     post.primaryToolId ? getContentTool(post.primaryToolId) : Promise.resolve(null),
+    getBlogPostMetrics(post.slug),
     ...post.relatedToolIds.map((id) => getContentTool(id)),
   ]);
   const related = relatedTools.filter((tool): tool is NonNullable<typeof tool> =>
@@ -54,6 +57,7 @@ export default async function BlogPostView({
             <p className="page-hero__brand">{SITE_NAME} Blog</p>
             <h1 className="blog-hero__title">{post.title}</h1>
             {post.excerpt ? <p className="blog-hero__excerpt">{post.excerpt}</p> : null}
+            <BlogPostMetrics slug={post.slug} initial={metrics} />
             {post.coverImage ? (
               // User-supplied cover URLs are not on the Next image host allowlist.
               // eslint-disable-next-line @next/next/no-img-element

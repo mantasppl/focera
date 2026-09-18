@@ -4,7 +4,10 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { getBlogPostsMetrics } from "@/lib/analytics/blog-metrics";
 import { listPublishedPosts } from "@/lib/content/store";
+import { topTrafficSources } from "@/lib/content/metrics-display";
+import { EMPTY_POST_METRICS } from "@/lib/content/types";
 import { breadcrumbSchema, pageMetadata, SITE_NAME } from "@/lib/seo";
 
 export const runtime = "nodejs";
@@ -27,12 +30,23 @@ function formatDate(ms: number | null): string {
   });
 }
 
+function formatCount(value: number): string {
+  return value.toLocaleString();
+}
+
 export default async function BlogIndexPage() {
   let posts: Awaited<ReturnType<typeof listPublishedPosts>> = [];
   try {
     posts = await listPublishedPosts();
   } catch (error) {
     console.error("[blog] list failed:", error);
+  }
+
+  let metricsBySlug = new Map<string, typeof EMPTY_POST_METRICS>();
+  try {
+    metricsBySlug = await getBlogPostsMetrics(posts.map((post) => post.slug));
+  } catch (error) {
+    console.error("[blog] metrics failed:", error);
   }
 
   const crumbs = [
@@ -57,21 +71,37 @@ export default async function BlogIndexPage() {
 
         {posts.length ? (
           <ul className="blog-index__list">
-            {posts.map((post) => (
-              <li key={post.id}>
-                <article className="blog-index__card">
-                  <p className="blog-index__meta">{formatDate(post.publishedAt)}</p>
-                  <h2 className="blog-index__title">
-                    <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                  </h2>
-                  {post.excerpt ? <p className="blog-index__excerpt">{post.excerpt}</p> : null}
-                  <Link href={`/blog/${post.slug}`} className="blog-index__more">
-                    Read guide
-                    <span aria-hidden="true"> →</span>
-                  </Link>
-                </article>
-              </li>
-            ))}
+            {posts.map((post) => {
+              const metrics = metricsBySlug.get(post.slug) ?? EMPTY_POST_METRICS;
+              const cameFrom = topTrafficSources(metrics);
+              const date = formatDate(post.publishedAt);
+              return (
+                <li key={post.id}>
+                  <article className="blog-index__card">
+                    <p className="blog-index__meta">
+                      {[
+                        date,
+                        `${formatCount(metrics.views)} views`,
+                        `${formatCount(metrics.unique)} unique`,
+                        cameFrom ? `from ${cameFrom}` : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                    <h2 className="blog-index__title">
+                      <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                    </h2>
+                    {post.excerpt ? (
+                      <p className="blog-index__excerpt">{post.excerpt}</p>
+                    ) : null}
+                    <Link href={`/blog/${post.slug}`} className="blog-index__more">
+                      Read guide
+                      <span aria-hidden="true"> →</span>
+                    </Link>
+                  </article>
+                </li>
+              );
+            })}
           </ul>
         ) : (
           <p className="blog-index__empty">New guides are on the way.</p>

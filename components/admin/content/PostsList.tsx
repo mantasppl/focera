@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import { adminFetch } from "@/lib/admin/csrf-client";
 import type { Post, PostListItem, PostStatus } from "@/lib/content/types";
+import { topTrafficSources } from "@/lib/content/metrics-display";
 
 type ListResponse = {
   ok: boolean;
@@ -13,6 +14,11 @@ type ListResponse = {
   total: number;
   error?: string;
 };
+
+function formatCount(value: number | undefined): string {
+  if (typeof value !== "number") return "—";
+  return value.toLocaleString();
+}
 
 function formatWhen(ms: number | null): string {
   if (!ms) return "—";
@@ -258,6 +264,9 @@ export default function PostsList({
               <tr>
                 <th>Title</th>
                 <th>Status</th>
+                <th className="is-num">Views</th>
+                <th className="is-num">Unique</th>
+                <th>Came from</th>
                 <th>Updated</th>
                 <th>Published</th>
                 <th>Actions</th>
@@ -266,14 +275,14 @@ export default function PostsList({
             <tbody>
               {loading && !posts.length ? (
                 <tr>
-                  <td colSpan={5}>
+                  <td colSpan={8}>
                     <span className="admin-skeleton" />
                   </td>
                 </tr>
               ) : null}
               {!loading && !posts.length ? (
                 <tr>
-                  <td colSpan={5}>
+                  <td colSpan={8}>
                     No posts yet. Create one or generate a draft from a keyword.
                   </td>
                 </tr>
@@ -299,6 +308,11 @@ export default function PostsList({
                     >
                       {post.status}
                     </span>
+                  </td>
+                  <td className="is-num">{formatCount(post.metrics?.views)}</td>
+                  <td className="is-num">{formatCount(post.metrics?.unique)}</td>
+                  <td className="is-wrap">
+                    {topTrafficSources(post.metrics) || "—"}
                   </td>
                   <td>{formatWhen(post.updatedAt)}</td>
                   <td>{formatWhen(post.publishedAt)}</td>
