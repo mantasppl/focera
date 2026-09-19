@@ -10519,13 +10519,38 @@ a {
 }
 
 @media (max-width: 859px) {
-  /* Unblur inherits compact shell dock; keep compare images fluid */
+  /* Unblur: large sticky preview so before/after quality is visible on phones */
+  .unblur-image.is-preview-expanded .image-editor-shell__stage {
+    max-height: min(72dvh, 34rem);
+    padding: 0.35rem 0.4rem;
+  }
+
+  .unblur-image.is-preview-expanded .compare__stage,
+  .unblur-image.is-preview-expanded .enhancing__frame,
+  .unblur-image.is-preview-expanded .compare__image--after,
+  .unblur-image.is-preview-expanded .enhancing__image,
+  .unblur-image.is-preview-expanded .preview-single__image {
+    max-height: min(68dvh, 32rem);
+  }
+
+  .unblur-image.is-preview-collapsed .image-editor-shell__stage {
+    max-height: min(42dvh, 18rem);
+  }
+
+  .unblur-image.is-preview-collapsed .compare__stage,
+  .unblur-image.is-preview-collapsed .enhancing__frame,
+  .unblur-image.is-preview-collapsed .compare__image--after,
+  .unblur-image.is-preview-collapsed .enhancing__image,
+  .unblur-image.is-preview-collapsed .preview-single__image {
+    max-height: min(40dvh, 16.5rem);
+  }
+
+  /* Keep compare images fluid in the mobile dock */
   .unblur-image.is-preview-first .compare__stage,
   .unblur-image.is-preview-first .enhancing__frame {
     max-width: none;
     width: 100%;
     height: auto;
-    max-height: min(26dvh, 10.75rem);
     aspect-ratio: auto;
     border: none;
     border-radius: 0.35rem;
@@ -10539,7 +10564,6 @@ a {
     display: block;
     width: 100%;
     height: auto;
-    max-height: min(26dvh, 10.75rem);
     object-fit: contain;
   }
 
