@@ -23,7 +23,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Search Console HTML tag verification (optional) |
 | `POLLINATIONS_API_KEY` | Optional Pollinations key for AI Image / Story Generator limits |
 | `GROQ_API_KEY` | Required for Video Autocaption transcription (Groq Whisper), AI writing tools (Content Improver, Essay Writer), and admin AI blog draft generation (`POST /api/ai/generate-post`). Pollinations is an optional fallback for writing tools |
-| `REPLICATE_API_TOKEN` | Required for Back to the Childhood (`POST /api/childhood`) SDXL image-to-image generation |
+| `REPLICATE_API_TOKEN` | **Required** for 90s Photo Generator (`POST /api/childhood`). Create a token at replicate.com/account/api-tokens and set it in Vercel/hosting env vars, then redeploy. |
 | `RESEND_API_KEY` | Resend API key for the contact form (required for `/contact` submissions) |
 | `RESEND_FROM_EMAIL` | Optional From address (default `Focera Contact <onboarding@resend.dev>`) |
 | `ADMIN_PATH` | Obscure admin base path (e.g. `/admin-9xk2q7v8m`) |
