@@ -330,6 +330,11 @@ export const ColorizePhotoLazy = dynamic(
   { ssr: false, loading: () => <ToolLoading /> },
 );
 
+export const ChildhoodPhotoLazy = dynamic(
+  () => import("@/components/tools/ChildhoodPhoto"),
+  { ssr: false, loading: () => <ToolLoading /> },
+);
+
 export const BlackAndWhitePhotoLazy = dynamic(
   () => import("@/components/tools/BlackAndWhitePhoto"),
   { ssr: false, loading: () => <ToolLoading /> },

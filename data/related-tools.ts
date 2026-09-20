@@ -22,6 +22,12 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
     "upscale-image",
     "change-background",
   ],
+  "90s-photo-generator": [
+    "ai-image-generator",
+    "colorize-photo",
+    "profile-photo-maker",
+    "upscale-image",
+  ],
   "ai-story-generator": [
     "ai-paragraph-generator",
     "essay-writer",
@@ -89,7 +95,7 @@ export const relatedToolSlugs: Record<string, readonly string[]> = {
   "colorize-photo": [
     "black-and-white-photo",
     "upscale-image",
-    "unblur-image",
+    "90s-photo-generator",
   ],
   "compress-pdf": ["unlock-pdf", "merge-pdf", "crop-pdf"],
   "compress-video": ["video-to-gif", "gif-to-mp4", "extract-audio"],

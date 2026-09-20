@@ -3,13 +3,23 @@ import { readFile, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { extname, join } from "node:path";
 import Replicate from "replicate";
+import {
+  CHILDHOOD_MAX_IMAGE_BYTES,
+  getChildhoodPreset,
+  isChildhoodPresetId,
+} from "@/lib/childhood-photo";
+import { trackToolUsageServer } from "@/lib/analytics/track";
+import { getToolBySlug } from "@/data/tools";
 import { publicErrorMessage } from "@/lib/security/public-error";
 import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const TOOL_SLUG = "90s-photo-generator";
+
+const MODEL =
+  "lucataco/ip_adapter-sdxl-face:226c6bf67a75a129b0f978e518fed33e1fb13956e15761c1ac53c9d2f898c9af" as const;
 
 const ALLOWED_MIME_TYPES = new Set([
   "image/jpeg",
@@ -18,23 +28,18 @@ const ALLOWED_MIME_TYPES = new Set([
   "image/webp",
 ]);
 
-const PRESET_PROMPTS = {
-  "90s_family":
-    "Preserve the exact same person, face, and identity. Transform into a nostalgic 1990s family photo. Use direct flash, warm tones, slight overexposure, film grain, and imperfect composition. Make it look like a real childhood memory from a family album.",
-  school:
-    "Preserve the same person and face. Turn into a 90s school portrait with studio lighting, simple background, soft smile, vintage tones, and slight grain. Make it feel like a printed school photo from 1995.",
-  disposable:
-    "Preserve the same person identity. Make it look like a disposable camera photo from early 2000s. Add strong flash, motion blur, grain, noise, and imperfect framing.",
-} as const;
-
-type ChildhoodPreset = keyof typeof PRESET_PROMPTS;
-
-function isChildhoodPreset(value: unknown): value is ChildhoodPreset {
-  return typeof value === "string" && value in PRESET_PROMPTS;
-}
-
 function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status });
+}
+
+function track(request: Request, success: boolean) {
+  const tool = getToolBySlug(TOOL_SLUG);
+  if (tool) {
+    trackToolUsageServer(
+      { toolId: tool.slug, toolName: tool.name, success },
+      request,
+    );
+  }
 }
 
 function fileExtension(file: File): string {
@@ -46,6 +51,12 @@ function fileExtension(file: File): string {
   if (file.type === "image/png") return ".png";
   if (file.type === "image/webp") return ".webp";
   return ".jpg";
+}
+
+function toDataUri(bytes: Buffer, mimeType: string): string {
+  const mime =
+    mimeType && mimeType.startsWith("image/") ? mimeType : "image/jpeg";
+  return `data:${mime};base64,${bytes.toString("base64")}`;
 }
 
 function extractImageUrl(output: unknown): string | null {
@@ -81,7 +92,7 @@ export async function POST(request: Request) {
     limit: 8,
     windowMs: 60_000,
     requireSameOrigin: true,
-    maxBodyBytes: MAX_IMAGE_BYTES + 256_000,
+    maxBodyBytes: CHILDHOOD_MAX_IMAGE_BYTES + 256_000,
   });
   if (guarded) return guarded;
 
@@ -105,7 +116,7 @@ export async function POST(request: Request) {
     return jsonError("Upload an image file.", 400);
   }
 
-  if (image.size > MAX_IMAGE_BYTES) {
+  if (image.size > CHILDHOOD_MAX_IMAGE_BYTES) {
     return jsonError("Image must be 10 MB or smaller.", 413);
   }
 
@@ -114,14 +125,14 @@ export async function POST(request: Request) {
   }
 
   const presetRaw = form.get("preset");
-  if (!isChildhoodPreset(presetRaw)) {
+  if (!isChildhoodPresetId(presetRaw)) {
     return jsonError(
       'Choose a valid preset: "90s_family", "school", or "disposable".',
       400,
     );
   }
 
-  const prompt = PRESET_PROMPTS[presetRaw];
+  const prompt = getChildhoodPreset(presetRaw).prompt;
   const tempPath = join(
     tmpdir(),
     `childhood-${randomUUID()}${fileExtension(image)}`,
@@ -131,31 +142,35 @@ export async function POST(request: Request) {
     const bytes = Buffer.from(await image.arrayBuffer());
     await writeFile(tempPath, bytes);
     const tempImage = await readFile(tempPath);
+    const imageUrl = toDataUri(tempImage, image.type || "image/jpeg");
 
     const replicate = new Replicate({ auth: token });
-    const output = await replicate.run("stability-ai/sdxl", {
+    const output = await replicate.run(MODEL, {
       input: {
-        image: tempImage,
+        image: imageUrl,
         prompt,
-        prompt_strength: 0.65,
-        guidance_scale: 8,
-        num_inference_steps: 25,
+        scale: 0.7,
+        num_inference_steps: 30,
       },
     });
 
-    const imageUrl = extractImageUrl(output);
-    if (!imageUrl) {
+    const generatedUrl = extractImageUrl(output);
+    if (!generatedUrl) {
+      track(request, false);
       return jsonError(
         "Could not generate a childhood photo. Try a different image.",
         502,
       );
     }
 
+    track(request, true);
+
     return Response.json(
-      { imageUrl },
+      { imageUrl: generatedUrl },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (err) {
+    track(request, false);
     return jsonError(
       publicErrorMessage(
         err,
