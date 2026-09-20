@@ -1,26 +1,33 @@
 export const CHILDHOOD_MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
+export const CHILDHOOD_NEGATIVE_PROMPT =
+  "blurry face, distorted face, different person, deformed eyes, unrealistic skin, AI generated look, cartoon, painting, illustration, extra fingers, bad anatomy";
+
+/** Scene hints sent to Groq before prompt generation. */
+export const CHILDHOOD_SCENE_HINTS = {
+  "90s_family": "casual home environment, family album, indoor, warm tones",
+  school: "studio portrait, simple background, school photo",
+  disposable: "random candid shot, early 2000s, messy framing",
+} as const;
+
 export const CHILDHOOD_PRESETS = [
   {
     id: "90s_family",
     label: "90s family",
     hint: "Album flash",
-    prompt:
-      "Preserve the exact same person, face, and identity. Transform into a nostalgic 1990s family photo. Use direct flash, warm tones, slight overexposure, film grain, and imperfect composition. Make it look like a real childhood memory from a family album.",
+    sceneHint: CHILDHOOD_SCENE_HINTS["90s_family"],
   },
   {
     id: "school",
     label: "School portrait",
     hint: "1995 yearbook",
-    prompt:
-      "Preserve the same person and face. Turn into a 90s school portrait with studio lighting, simple background, soft smile, vintage tones, and slight grain. Make it feel like a printed school photo from 1995.",
+    sceneHint: CHILDHOOD_SCENE_HINTS.school,
   },
   {
     id: "disposable",
     label: "Disposable cam",
     hint: "Early 2000s",
-    prompt:
-      "Preserve the same person identity. Make it look like a disposable camera photo from early 2000s. Add strong flash, motion blur, grain, noise, and imperfect framing.",
+    sceneHint: CHILDHOOD_SCENE_HINTS.disposable,
   },
 ] as const;
 
@@ -60,53 +67,35 @@ export async function generateChildhoodPhoto(
     signal,
   });
 
-  const contentType = response.headers.get("content-type") ?? "";
+  const data = (await response.json().catch(() => null)) as {
+    imageUrl?: string;
+    error?: string;
+  } | null;
 
   if (!response.ok) {
-    const data = (await response.json().catch(() => null)) as {
-      error?: string;
-    } | null;
     throw new Error(
       data?.error ?? "Could not generate a childhood photo. Try again.",
     );
   }
 
-  if (!contentType.startsWith("image/")) {
-    const data = (await response.json().catch(() => null)) as {
-      error?: string;
-      imageUrl?: string;
-    } | null;
-
-    // Backward compatible with older JSON { imageUrl } responses.
-    if (data?.imageUrl) {
-      const imageResponse = await fetch(data.imageUrl, { signal });
-      if (!imageResponse.ok) {
-        throw new Error("Could not download the generated photo. Try again.");
-      }
-      const blob = await imageResponse.blob();
-      if (blob.size < 1_000) {
-        throw new Error("The generated photo looked empty. Try again.");
-      }
-      return {
-        imageUrl: data.imageUrl,
-        blob,
-        preset,
-      };
-    }
-
-    throw new Error(
-      data?.error ?? "Could not generate a childhood photo. Try again.",
-    );
+  if (!data?.imageUrl) {
+    throw new Error("Could not generate a childhood photo. Try again.");
   }
 
-  const blob = await response.blob();
-  if (blob.size < 1_000) {
-    throw new Error("The generated photo looked empty. Try again.");
+  // data: URIs and most Replicate delivery URLs can be fetched in-browser.
+  const imageResponse = await fetch(data.imageUrl, { signal });
+  if (!imageResponse.ok) {
+    return {
+      imageUrl: data.imageUrl,
+      blob: new Blob(),
+      preset,
+    };
   }
 
+  const blob = await imageResponse.blob();
   return {
-    imageUrl: "",
-    blob,
+    imageUrl: data.imageUrl,
+    blob: blob.size >= 1_000 ? blob : new Blob(),
     preset,
   };
 }

@@ -51,6 +51,7 @@
     "recharts": "^3.10.1",
     "replicate": "^1.4.0",
     "resend": "^6.18.1",
+    "sharp": "^0.35.4",
     "terser": "^5.49.0",
     "tesseract.js": "^7.0.0",
     "ua-parser-js": "^2.0.10",
