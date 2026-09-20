@@ -4200,6 +4200,72 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "90s-photo-generator",
+    name: "90s Photo Generator (Free AI Childhood Photo Maker)",
+    shortName: "90s Photo Generator",
+    description:
+      "Turn your photo into a 90s childhood memory with free AI — family album, school portrait, or disposable camera looks. No account required.",
+    categories: ["image", "ai"],
+    status: "ready",
+    href: "/90s-photo-generator",
+    keywords: [
+      "90s photo generator",
+      "90s childhood photo",
+      "ai childhood photo maker",
+      "turn photo into childhood",
+      "nostalgic photo generator",
+      "90s family photo ai",
+      "school portrait generator",
+      "disposable camera filter ai",
+      "free 90s photo maker",
+      "childhood memory photo ai",
+      "vintage photo generator",
+      "retro photo ai",
+    ],
+    faq: [
+      {
+        question: "Is this 90s photo generator free?",
+        answer:
+          "Yes. Upload a photo, pick a childhood vibe, generate, and download with no account, subscription, or credit card.",
+      },
+      {
+        question: "Will the generated photo still look like me?",
+        answer:
+          "Yes. The tool uses a face-preserving IP-Adapter model so the same person and identity stay recognizable while the lighting, grain, and era change.",
+      },
+      {
+        question: "What presets can I choose?",
+        answer:
+          "Three vibes: 90s family album (warm flash and imperfect framing), school portrait (1995 yearbook look), and disposable camera (strong flash, grain, and motion blur).",
+      },
+      {
+        question: "Which photos work best?",
+        answer:
+          "Clear, front-facing portraits with a visible face work best. Avoid heavy occlusions, tiny faces, or extremely dark shots.",
+      },
+      {
+        question: "Are my photos stored permanently?",
+        answer:
+          "Your upload is saved temporarily to run AI generation, then removed from temp storage. The result is returned as an image URL you can download.",
+      },
+      {
+        question: "Which image formats are supported?",
+        answer:
+          "Upload JPG, PNG, or WebP files up to 10 MB. Download the generated photo in your preferred image format.",
+      },
+      {
+        question: "How long does generation take?",
+        answer:
+          "Most photos finish in about 20–60 seconds depending on queue load. Keep the tab open until the before/after preview appears.",
+      },
+      {
+        question: "Can I use the results commercially?",
+        answer:
+          "Yes for photos you own or have permission to edit. Only upload images you have the rights to transform.",
+      },
+    ],
+  },
+  {
     slug: "colorize-photo",
     name: "Colorize Photo — Color Your Photo",
     shortName: "Colorize Photo",
