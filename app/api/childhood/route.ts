@@ -137,7 +137,7 @@ export async function POST(request: Request) {
       input: {
         image: tempImage,
         prompt,
-        strength: 0.65,
+        prompt_strength: 0.65,
         guidance_scale: 8,
         num_inference_steps: 25,
       },
