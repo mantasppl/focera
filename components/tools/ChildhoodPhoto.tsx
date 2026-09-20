@@ -42,7 +42,8 @@ export default function ChildhoodPhoto() {
     openDownload,
     handleFormat,
   } = useImageFormatDownload({
-    getBlob: () => result?.blob ?? null,
+    getBlob: () =>
+      result?.blob && result.blob.size > 1_000 ? result.blob : null,
     getFilename: () =>
       sourceFile
         ? `${fileBaseName(sourceFile)}-90s-${result?.preset ?? preset}`
@@ -53,12 +54,12 @@ export default function ChildhoodPhoto() {
     return () => {
       abortRef.current?.abort();
       if (originalUrl) URL.revokeObjectURL(originalUrl);
-      if (resultUrl) URL.revokeObjectURL(resultUrl);
+      if (resultUrl.startsWith("blob:")) URL.revokeObjectURL(resultUrl);
     };
   }, [originalUrl, resultUrl]);
 
   function clearResult() {
-    if (resultUrl) URL.revokeObjectURL(resultUrl);
+    if (resultUrl.startsWith("blob:")) URL.revokeObjectURL(resultUrl);
     setResult(null);
     setResultUrl("");
   }
@@ -105,7 +106,10 @@ export default function ChildhoodPhoto() {
 
       if (controller.signal.aborted) return;
 
-      const url = URL.createObjectURL(generated.blob);
+      const url =
+        generated.blob.size > 1_000
+          ? URL.createObjectURL(generated.blob)
+          : generated.imageUrl;
       setResult(generated);
       setResultUrl(url);
       trackSuccess();
@@ -138,7 +142,9 @@ export default function ChildhoodPhoto() {
         previewTitle="Preview"
         previewMeta={
           hasResult
-            ? `90s memory · ${formatFileSize(result!.blob.size)}`
+            ? result!.blob.size > 1_000
+              ? `90s memory · ${formatFileSize(result!.blob.size)}`
+              : "90s memory ready"
             : hasSource
               ? sourceFile!.name
               : "Upload a clear face photo to start"

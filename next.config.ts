@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
     "@libsql/client",
     "groq-sdk",
     "replicate",
+    "sharp",
   ],
   allowedDevOrigins: ["127.0.0.1"],
   images: {
