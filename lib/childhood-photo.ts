@@ -60,33 +60,52 @@ export async function generateChildhoodPhoto(
     signal,
   });
 
-  const data = (await response.json().catch(() => null)) as {
-    imageUrl?: string;
-    error?: string;
-  } | null;
+  const contentType = response.headers.get("content-type") ?? "";
 
   if (!response.ok) {
+    const data = (await response.json().catch(() => null)) as {
+      error?: string;
+    } | null;
     throw new Error(
       data?.error ?? "Could not generate a childhood photo. Try again.",
     );
   }
 
-  if (!data?.imageUrl) {
-    throw new Error("Could not generate a childhood photo. Try again.");
+  if (!contentType.startsWith("image/")) {
+    const data = (await response.json().catch(() => null)) as {
+      error?: string;
+      imageUrl?: string;
+    } | null;
+
+    // Backward compatible with older JSON { imageUrl } responses.
+    if (data?.imageUrl) {
+      const imageResponse = await fetch(data.imageUrl, { signal });
+      if (!imageResponse.ok) {
+        throw new Error("Could not download the generated photo. Try again.");
+      }
+      const blob = await imageResponse.blob();
+      if (blob.size < 1_000) {
+        throw new Error("The generated photo looked empty. Try again.");
+      }
+      return {
+        imageUrl: data.imageUrl,
+        blob,
+        preset,
+      };
+    }
+
+    throw new Error(
+      data?.error ?? "Could not generate a childhood photo. Try again.",
+    );
   }
 
-  const imageResponse = await fetch(data.imageUrl, { signal });
-  if (!imageResponse.ok) {
-    throw new Error("Could not download the generated photo. Try again.");
-  }
-
-  const blob = await imageResponse.blob();
+  const blob = await response.blob();
   if (blob.size < 1_000) {
     throw new Error("The generated photo looked empty. Try again.");
   }
 
   return {
-    imageUrl: data.imageUrl,
+    imageUrl: "",
     blob,
     preset,
   };
