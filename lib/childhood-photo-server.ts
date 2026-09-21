@@ -29,7 +29,6 @@ Your goal is to generate highly controlled prompts that preserve identity and pr
 export type PreparedChildhoodImage = {
   buffer: Buffer;
   mime: "image/jpeg" | "image/png";
-  dataUri: string;
   tempPath: string;
 };
 
@@ -173,8 +172,7 @@ export async function callGroq(preset: ChildhoodPresetId): Promise<string> {
 }
 
 /**
- * Normalize upload to jpeg/png, fix orientation, resize longest edge to 1024px,
- * and expose both a Buffer and a data URI for Replicate.
+ * Normalize upload to jpeg/png, fix orientation, resize longest edge to 1024px.
  */
 export async function prepareImage(
   file: File,
@@ -212,7 +210,6 @@ export async function prepareImage(
   return {
     buffer,
     mime,
-    dataUri: `data:${mime};base64,${buffer.toString("base64")}`,
     tempPath,
   };
 }
@@ -226,7 +223,7 @@ export async function cleanupPreparedImage(
 
 function extractImageUrl(output: unknown): string | null {
   if (typeof output === "string" && output.length > 0) {
-    if (/^(https?:\/\/|data:image\/)/i.test(output)) return output;
+    if (/^https?:\/\//i.test(output)) return output;
   }
 
   if (Array.isArray(output) && output.length > 0) {
@@ -239,20 +236,17 @@ function extractImageUrl(output: unknown): string | null {
       try {
         const url = (maybeUrl as () => URL | string).call(output);
         const href = typeof url === "string" ? url : url.href;
-        if (/^(https?:\/\/|data:image\/)/i.test(href)) return href;
+        if (/^https?:\/\//i.test(href)) return href;
       } catch {
         return null;
       }
     }
-    if (
-      typeof maybeUrl === "string" &&
-      /^(https?:\/\/|data:image\/)/i.test(maybeUrl)
-    ) {
+    if (typeof maybeUrl === "string" && /^https?:\/\//i.test(maybeUrl)) {
       return maybeUrl;
     }
     if (typeof (output as { toString?: unknown }).toString === "function") {
       const asString = String(output);
-      if (/^(https?:\/\/|data:image\/)/i.test(asString)) return asString;
+      if (/^https?:\/\//i.test(asString)) return asString;
     }
   }
 
@@ -324,9 +318,13 @@ export function mapReplicateError(err: unknown): ChildhoodApiError {
   );
 }
 
-/** Run lucataco/ip_adapter-sdxl-face and return the generated image URL. */
+/**
+ * Run lucataco/ip_adapter-sdxl-face and return the hosted image URL.
+ * Uploads a Blob (not a giant data URI) so Replicate receives a proper file URL.
+ */
 export async function generateImage(options: {
-  imageDataUri: string;
+  image: Buffer;
+  mime: string;
   prompt: string;
 }): Promise<string> {
   const token = process.env.REPLICATE_API_TOKEN?.trim();
@@ -343,15 +341,21 @@ export async function generateImage(options: {
     fileEncodingStrategy: "upload",
   });
 
+  // Blob is uploaded by the Replicate SDK → hosted URL. Do NOT pass a data URI
+  // (those stay inline in the prediction JSON and frequently fail / time out).
+  const imageBlob = new Blob([new Uint8Array(options.image)], {
+    type: options.mime || "image/jpeg",
+  });
+
   const output = await replicate.run(MODEL, {
     input: {
-      image: options.imageDataUri,
+      image: imageBlob,
       prompt: options.prompt,
       negative_prompt: CHILDHOOD_NEGATIVE_PROMPT,
       scale: 0.65,
       num_inference_steps: 30,
-      guidance_scale: 7.5,
       num_outputs: 1,
+      // guidance_scale is NOT in this model's schema — do not send it.
     },
   });
 
@@ -400,4 +404,20 @@ export function parseChildhoodForm(form: FormData): {
   }
 
   return { image, preset: presetRaw };
+}
+
+/** Only allow proxying Replicate-hosted delivery URLs. */
+export function isAllowedResultUrl(raw: string): boolean {
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "https:") return false;
+    const host = url.hostname.toLowerCase();
+    return (
+      host === "replicate.delivery" ||
+      host.endsWith(".replicate.delivery") ||
+      host === "pbxt.replicate.delivery"
+    );
+  } catch {
+    return false;
+  }
 }

@@ -52,6 +52,35 @@ export type ChildhoodGenerateResult = {
   preset: ChildhoodPresetId;
 };
 
+async function fetchResultBlob(
+  imageUrl: string,
+  signal?: AbortSignal,
+): Promise<Blob> {
+  // Prefer same-origin proxy for HTTPS Replicate URLs (avoids CORS).
+  if (/^https?:\/\//i.test(imageUrl)) {
+    const proxy = await fetch("/api/childhood/proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: imageUrl }),
+      signal,
+    });
+    if (proxy.ok) {
+      const blob = await proxy.blob();
+      if (blob.size >= 1_000) return blob;
+    }
+  }
+
+  const direct = await fetch(imageUrl, { signal });
+  if (!direct.ok) {
+    throw new Error("Could not download the generated photo. Try again.");
+  }
+  const blob = await direct.blob();
+  if (blob.size < 1_000) {
+    throw new Error("The generated photo looked empty. Try again.");
+  }
+  return blob;
+}
+
 export async function generateChildhoodPhoto(
   file: File,
   preset: ChildhoodPresetId,
@@ -67,35 +96,34 @@ export async function generateChildhoodPhoto(
     signal,
   });
 
-  const data = (await response.json().catch(() => null)) as {
-    imageUrl?: string;
-    error?: string;
-  } | null;
+  const contentType = response.headers.get("content-type") ?? "";
+  let data: { imageUrl?: string; error?: string } | null = null;
+
+  if (contentType.includes("application/json")) {
+    data = (await response.json().catch(() => null)) as {
+      imageUrl?: string;
+      error?: string;
+    } | null;
+  }
 
   if (!response.ok) {
     throw new Error(
-      data?.error ?? "Could not generate a childhood photo. Try again.",
+      data?.error ??
+        `Could not generate a childhood photo. Try again. (${response.status})`,
     );
   }
 
   if (!data?.imageUrl) {
-    throw new Error("Could not generate a childhood photo. Try again.");
+    throw new Error(
+      "Could not generate a childhood photo. The server returned an empty result.",
+    );
   }
 
-  // data: URIs and most Replicate delivery URLs can be fetched in-browser.
-  const imageResponse = await fetch(data.imageUrl, { signal });
-  if (!imageResponse.ok) {
-    return {
-      imageUrl: data.imageUrl,
-      blob: new Blob(),
-      preset,
-    };
-  }
+  const blob = await fetchResultBlob(data.imageUrl, signal);
 
-  const blob = await imageResponse.blob();
   return {
     imageUrl: data.imageUrl,
-    blob: blob.size >= 1_000 ? blob : new Blob(),
+    blob,
     preset,
   };
 }
