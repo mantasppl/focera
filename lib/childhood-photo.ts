@@ -71,6 +71,9 @@ export type ChildhoodGenerateResult = {
   preset: ChildhoodPresetId;
 };
 
+const CLIENT_POLL_MS = 1_500;
+const CLIENT_POLL_TIMEOUT_MS = 120_000;
+
 async function readErrorMessage(response: Response): Promise<string | null> {
   const contentType = response.headers.get("content-type") ?? "";
   if (contentType.includes("application/json")) {
@@ -80,6 +83,16 @@ async function readErrorMessage(response: Response): Promise<string | null> {
     return data?.error?.trim() || null;
   }
   return null;
+}
+
+function statusFallbackMessage(status: number): string {
+  if (status === 504 || status === 408) {
+    return "Generation timed out. The AI is busy — wait a few seconds and try again.";
+  }
+  if (status === 429) {
+    return "Too many requests right now. Wait a moment and try again.";
+  }
+  return `Could not generate a childhood photo. Try again. (${status})`;
 }
 
 async function fetchResultBlob(
@@ -110,6 +123,67 @@ async function fetchResultBlob(
   return blob;
 }
 
+function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException("Aborted", "AbortError"));
+      return;
+    }
+    const timer = setTimeout(resolve, ms);
+    const onAbort = () => {
+      clearTimeout(timer);
+      reject(new DOMException("Aborted", "AbortError"));
+    };
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+}
+
+async function pollChildhoodPrediction(
+  predictionId: string,
+  signal?: AbortSignal,
+): Promise<string> {
+  const deadline = Date.now() + CLIENT_POLL_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    if (signal?.aborted) {
+      throw new DOMException("Aborted", "AbortError");
+    }
+
+    const response = await fetch(
+      `/api/childhood/status?id=${encodeURIComponent(predictionId)}`,
+      { method: "GET", signal, cache: "no-store" },
+    );
+
+    if (!response.ok) {
+      const message = await readErrorMessage(response);
+      throw new Error(message ?? statusFallbackMessage(response.status));
+    }
+
+    const data = (await response.json().catch(() => null)) as {
+      status?: string;
+      imageUrl?: string;
+      error?: string;
+    } | null;
+
+    if (data?.status === "succeeded" && data.imageUrl) {
+      return data.imageUrl;
+    }
+
+    if (data?.status === "failed" || data?.status === "canceled") {
+      throw new Error(
+        data.error ??
+          "Could not generate a childhood photo from that image. Try a clearer portrait.",
+      );
+    }
+
+    await sleep(CLIENT_POLL_MS, signal);
+  }
+
+  throw new Error(
+    "Generation timed out. The AI is busy — wait a few seconds and try again.",
+  );
+}
+
 export async function generateChildhoodPhoto(
   file: File,
   preset: ChildhoodPresetId,
@@ -127,28 +201,32 @@ export async function generateChildhoodPhoto(
 
   if (!response.ok) {
     const message = await readErrorMessage(response);
-    throw new Error(
-      message ??
-        `Could not generate a childhood photo. Try again. (${response.status})`,
-    );
+    throw new Error(message ?? statusFallbackMessage(response.status));
   }
 
   const data = (await response.json().catch(() => null)) as {
+    predictionId?: string;
     imageUrl?: string;
     error?: string;
   } | null;
 
-  if (!data?.imageUrl) {
-    throw new Error(
-      data?.error ??
-        "Could not generate a childhood photo. The server returned an empty result.",
-    );
+  let imageUrl = data?.imageUrl?.trim() || "";
+
+  if (!imageUrl) {
+    const predictionId = data?.predictionId?.trim() || "";
+    if (!predictionId) {
+      throw new Error(
+        data?.error ??
+          "Could not generate a childhood photo. The server returned an empty result.",
+      );
+    }
+    imageUrl = await pollChildhoodPrediction(predictionId, signal);
   }
 
-  const blob = await fetchResultBlob(data.imageUrl, signal);
+  const blob = await fetchResultBlob(imageUrl, signal);
 
   return {
-    imageUrl: data.imageUrl,
+    imageUrl,
     blob,
     preset,
   };
