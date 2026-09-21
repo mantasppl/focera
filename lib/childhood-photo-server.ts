@@ -18,9 +18,12 @@ const MODEL =
 const MAX_IMAGE_EDGE = 1024;
 
 const GROQ_MODELS = [
-  "llama-3.3-70b-versatile",
   "llama-3.1-8b-instant",
+  "llama-3.3-70b-versatile",
 ] as const;
+
+/** Keep Groq well under the serverless budget — Replicate needs most of the time. */
+const GROQ_TIMEOUT_MS = 6_000;
 
 const GROQ_SYSTEM = `You are an expert prompt engineer for image-to-image diffusion models.
 Your goal is to generate highly controlled prompts that preserve identity and produce realistic nostalgic photos.`;
@@ -134,34 +137,46 @@ export async function callGroq(preset: ChildhoodPresetId): Promise<string> {
     return buildFallbackPrompt(preset);
   }
 
-  const groq = new Groq({ apiKey, timeout: 25_000 });
+  const groq = new Groq({ apiKey, timeout: GROQ_TIMEOUT_MS });
   const userContent = buildPrompt(preset);
-  let lastError: unknown;
+  const fallback = buildFallbackPrompt(preset);
 
-  for (const model of GROQ_MODELS) {
-    try {
-      const completion = await groq.chat.completions.create({
-        model,
-        temperature: 0.4,
-        max_tokens: 700,
-        messages: [
-          { role: "system", content: GROQ_SYSTEM },
-          { role: "user", content: userContent },
-        ],
-      });
+  // Race Groq against a hard deadline so a slow prompt never starves Replicate.
+  const groqPromise = (async () => {
+    for (const model of GROQ_MODELS) {
+      try {
+        const completion = await groq.chat.completions.create({
+          model,
+          temperature: 0.4,
+          max_tokens: 500,
+          messages: [
+            { role: "system", content: GROQ_SYSTEM },
+            { role: "user", content: userContent },
+          ],
+        });
 
-      const text = cleanPrompt(completion.choices[0]?.message?.content ?? "");
-      if (text.length >= 80) {
-        return text;
+        const text = cleanPrompt(completion.choices[0]?.message?.content ?? "");
+        if (text.length >= 80) {
+          return text;
+        }
+      } catch (error) {
+        console.error(`[childhood] Groq model ${model} failed:`, error);
       }
-    } catch (error) {
-      lastError = error;
-      console.error(`[childhood] Groq model ${model} failed:`, error);
     }
-  }
+    return fallback;
+  })();
 
-  console.error("[childhood] Groq unavailable, using fallback prompt:", lastError);
-  return buildFallbackPrompt(preset);
+  try {
+    return await Promise.race([
+      groqPromise,
+      new Promise<string>((resolve) => {
+        setTimeout(() => resolve(fallback), GROQ_TIMEOUT_MS);
+      }),
+    ]);
+  } catch (error) {
+    console.error("[childhood] Groq unavailable, using fallback prompt:", error);
+    return fallback;
+  }
 }
 
 function sniffMime(bytes: Buffer, fallback: string): "image/jpeg" | "image/png" {
@@ -329,9 +344,9 @@ export function mapGenerationError(err: unknown): ChildhoodApiError {
     );
   }
 
-  if (/aborted|timeout|ETIMEDOUT|AbortError/i.test(raw)) {
+  if (/aborted|timeout|ETIMEDOUT|AbortError|FUNCTION_INVOCATION_TIMEOUT/i.test(raw)) {
     return new ChildhoodApiError(
-      "Generation timed out. Wait a moment and try again.",
+      "Generation timed out. The AI is busy — wait a few seconds and try again.",
       504,
     );
   }
@@ -354,7 +369,7 @@ export const mapReplicateError = mapGenerationError;
 
 /**
  * Run lucataco/ip_adapter-sdxl-face and return the hosted image URL.
- * Passes a Buffer so the Replicate SDK uploads a real file (not a data URI).
+ * Uploads a Buffer once (no File→retry double run, which caused 504s).
  */
 export async function generateImage(options: {
   image: Buffer;
@@ -375,27 +390,10 @@ export async function generateImage(options: {
     fileEncodingStrategy: "upload",
   });
 
-  // Prefer File (has filename + type) for Replicate's multipart upload.
-  const imageFile = new File([new Uint8Array(options.image)], `face.${options.mime === "image/png" ? "png" : "jpg"}`, {
-    type: options.mime || "image/jpeg",
-  });
-
-  let output: unknown;
-  try {
-    output = await replicate.run(MODEL, {
-      input: {
-        image: imageFile,
-        prompt: options.prompt,
-        negative_prompt: CHILDHOOD_NEGATIVE_PROMPT,
-        scale: 0.65,
-        num_inference_steps: 30,
-        num_outputs: 1,
-      },
-    });
-  } catch (error) {
-    // Fallback: some runtimes handle Buffer better than File.
-    console.error("[childhood] File upload path failed, retrying with Buffer:", error);
-    output = await replicate.run(MODEL, {
+  // Buffer is uploaded by the SDK to a hosted file URL — one prediction only.
+  const output = await replicate.run(
+    MODEL,
+    {
       input: {
         image: options.image,
         prompt: options.prompt,
@@ -404,8 +402,10 @@ export async function generateImage(options: {
         num_inference_steps: 30,
         num_outputs: 1,
       },
-    });
-  }
+      // Block until complete; leave headroom under the route maxDuration.
+      wait: { mode: "block", timeout: 100 },
+    },
+  );
 
   const imageUrl = extractImageUrl(output);
   if (!imageUrl) {
