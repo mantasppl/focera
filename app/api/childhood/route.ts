@@ -1,10 +1,10 @@
 import {
-  callGroq,
+  buildFallbackPrompt,
   cleanupPreparedImage,
-  generateImage,
   mapGenerationError,
   parseChildhoodForm,
   prepareImage,
+  startChildhoodPrediction,
   type PreparedChildhoodImage,
 } from "@/lib/childhood-photo-server";
 import { CHILDHOOD_MAX_IMAGE_BYTES } from "@/lib/childhood-photo";
@@ -13,8 +13,8 @@ import { getToolBySlug } from "@/data/tools";
 import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
-// Replicate IP-Adapter often needs 20–45s; keep headroom for upload + queue.
-export const maxDuration = 120;
+// Create-only: prep + Replicate create should finish in a few seconds.
+export const maxDuration = 60;
 
 const TOOL_SLUG = "90s-photo-generator";
 
@@ -62,23 +62,26 @@ export async function POST(request: Request) {
     try {
       const { image, preset } = parseChildhoodForm(form);
 
-      // Image prep + prompt writing are independent — overlap them.
-      const [preparedImage, prompt] = await Promise.all([
-        prepareImage(image),
-        callGroq(preset),
-      ]);
-      prepared = preparedImage;
+      // Use the fixed identity script directly — Groq added latency without
+      // improving the locked prompt template.
+      prepared = await prepareImage(image);
+      const prompt = buildFallbackPrompt(preset);
 
-      const imageUrl = await generateImage({
+      const started = await startChildhoodPrediction({
         image: prepared.buffer,
         mime: prepared.mime,
         prompt,
       });
 
-      track(request, true);
+      // Only track success once the image actually lands (status route).
+      if (started.imageUrl) {
+        track(request, true);
+      }
 
       return Response.json(
-        { imageUrl },
+        started.imageUrl
+          ? { predictionId: started.predictionId, imageUrl: started.imageUrl }
+          : { predictionId: started.predictionId },
         { headers: { "Cache-Control": "no-store" } },
       );
     } catch (err) {

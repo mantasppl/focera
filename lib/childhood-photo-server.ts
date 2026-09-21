@@ -18,6 +18,9 @@ const MODEL_VERSION =
 /** Poll interval while waiting for Replicate (Prefer: wait is unreliable here). */
 const REPLICATE_POLL_MS = 1_000;
 
+/** Fewer steps = faster SDXL runs; still enough for face IP-Adapter quality. */
+const NUM_INFERENCE_STEPS = 20;
+
 const MAX_IMAGE_EDGE = 1024;
 
 const GROQ_MODELS = [
@@ -470,18 +473,7 @@ async function toReplicateImageUri(
   return dataUri;
 }
 
-/**
- * Run lucataco/ip_adapter-sdxl-face and return the hosted image URL.
- *
- * Uses predictions.create + explicit poll instead of replicate.run({ wait: block }).
- * The SDK's Prefer:wait path treats status "processing" as done and returns empty
- * output — common when the long-poll window ends before SDXL finishes.
- */
-export async function generateImage(options: {
-  image: Buffer;
-  mime: string;
-  prompt: string;
-}): Promise<string> {
+function getReplicateClient(): Replicate {
   const token = process.env.REPLICATE_API_TOKEN?.trim();
   if (!token) {
     throw new ChildhoodApiError(
@@ -489,31 +481,155 @@ export async function generateImage(options: {
       503,
     );
   }
-
-  const replicate = new Replicate({
+  return new Replicate({
     auth: token,
     useFileOutput: false,
   });
+}
 
+export function isChildhoodPredictionId(value: unknown): value is string {
+  return typeof value === "string" && /^[a-z0-9]{10,64}$/i.test(value);
+}
+
+export type ChildhoodPredictionStart = {
+  predictionId: string;
+  /** Present only if Replicate finished before we returned (rare). */
+  imageUrl?: string;
+};
+
+export type ChildhoodPredictionStatus = {
+  status: "starting" | "processing" | "succeeded" | "failed" | "canceled";
+  imageUrl?: string;
+  error?: string;
+};
+
+function assertOurChildhoodPrediction(prediction: {
+  version?: unknown;
+}): void {
+  const version = typeof prediction.version === "string" ? prediction.version : "";
+  if (!version) return;
+  const bare = version.includes(":") ? (version.split(":").pop() ?? version) : version;
+  if (bare !== MODEL_VERSION) {
+    throw new ChildhoodApiError("Unknown prediction.", 404);
+  }
+}
+
+function mapTerminalPrediction(prediction: {
+  id?: string;
+  status: string;
+  error?: unknown;
+  output?: unknown;
+  version?: unknown;
+}): ChildhoodPredictionStatus {
+  assertOurChildhoodPrediction(prediction);
+
+  if (prediction.status === "failed") {
+    const detail =
+      typeof prediction.error === "string" && prediction.error.trim()
+        ? prediction.error.trim()
+        : "unknown";
+    throw new Error(`Prediction failed: ${detail}`);
+  }
+
+  if (prediction.status === "canceled") {
+    throw new ChildhoodApiError("Generation was canceled. Try again.", 502);
+  }
+
+  if (prediction.status === "succeeded") {
+    const imageUrl = extractImageUrl(prediction.output);
+    if (!imageUrl) {
+      console.error("[childhood] unexpected Replicate output:", prediction.output);
+      throw new ChildhoodApiError(
+        "Could not generate a childhood photo. Try a different image.",
+        502,
+      );
+    }
+    return { status: "succeeded", imageUrl };
+  }
+
+  if (prediction.status === "starting" || prediction.status === "processing") {
+    return { status: prediction.status };
+  }
+
+  return { status: "processing" };
+}
+
+/**
+ * Start a childhood face IP-Adapter prediction and return immediately.
+ * The browser polls `/api/childhood/status` so Vercel does not hold a
+ * long-running serverless request (which caused bare platform 504s).
+ */
+export async function startChildhoodPrediction(options: {
+  image: Buffer;
+  mime: string;
+  prompt: string;
+}): Promise<ChildhoodPredictionStart> {
+  const replicate = getReplicateClient();
   const imageUri = await toReplicateImageUri(
     replicate,
     options.image,
     options.mime,
   );
 
-  // Create without Prefer: wait, then poll until terminal status.
-  let prediction = await replicate.predictions.create({
+  const prediction = await replicate.predictions.create({
     version: MODEL_VERSION,
     input: {
       image: imageUri,
       prompt: options.prompt,
       negative_prompt: CHILDHOOD_NEGATIVE_PROMPT,
       scale: 0.65,
-      num_inference_steps: 30,
+      num_inference_steps: NUM_INFERENCE_STEPS,
       num_outputs: 1,
     },
   });
 
+  if (!prediction?.id || !isChildhoodPredictionId(prediction.id)) {
+    console.error("[childhood] create returned no prediction id:", prediction);
+    throw new ChildhoodApiError(
+      "Could not start childhood photo generation. Try again shortly.",
+      502,
+    );
+  }
+
+  if (prediction.status === "succeeded") {
+    const done = mapTerminalPrediction(prediction);
+    return { predictionId: prediction.id, imageUrl: done.imageUrl };
+  }
+
+  if (prediction.status === "failed" || prediction.status === "canceled") {
+    mapTerminalPrediction(prediction);
+  }
+
+  return { predictionId: prediction.id };
+}
+
+/** Fetch one childhood prediction by id (used by the status poll endpoint). */
+export async function getChildhoodPrediction(
+  predictionId: string,
+): Promise<ChildhoodPredictionStatus> {
+  if (!isChildhoodPredictionId(predictionId)) {
+    throw new ChildhoodApiError("Invalid prediction id.", 400);
+  }
+
+  const replicate = getReplicateClient();
+  const prediction = await replicate.predictions.get(predictionId);
+  return mapTerminalPrediction(prediction);
+}
+
+/**
+ * @deprecated Prefer startChildhoodPrediction + getChildhoodPrediction so
+ * serverless requests stay short. Kept for scripts/tests.
+ */
+export async function generateImage(options: {
+  image: Buffer;
+  mime: string;
+  prompt: string;
+}): Promise<string> {
+  const started = await startChildhoodPrediction(options);
+  if (started.imageUrl) return started.imageUrl;
+
+  const replicate = getReplicateClient();
+  let prediction = await replicate.predictions.get(started.predictionId);
   if (
     prediction.status !== "succeeded" &&
     prediction.status !== "failed" &&
@@ -524,32 +640,14 @@ export async function generateImage(options: {
     });
   }
 
-  if (prediction.status === "failed") {
-    throw new Error(`Prediction failed: ${prediction.error ?? "unknown"}`);
-  }
-
-  if (prediction.status !== "succeeded") {
-    console.error("[childhood] prediction ended without success:", {
-      id: prediction.id,
-      status: prediction.status,
-      error: prediction.error,
-    });
+  const done = mapTerminalPrediction(prediction);
+  if (!done.imageUrl) {
     throw new ChildhoodApiError(
       "Could not generate a childhood photo. Try again shortly.",
       502,
     );
   }
-
-  const imageUrl = extractImageUrl(prediction.output);
-  if (!imageUrl) {
-    console.error("[childhood] unexpected Replicate output:", prediction.output);
-    throw new ChildhoodApiError(
-      "Could not generate a childhood photo. Try a different image.",
-      502,
-    );
-  }
-
-  return imageUrl;
+  return done.imageUrl;
 }
 
 export function parseChildhoodForm(form: FormData): {
