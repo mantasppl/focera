@@ -1,13 +1,16 @@
 export const CHILDHOOD_MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
 export const CHILDHOOD_NEGATIVE_PROMPT =
-  "blurry face, distorted face, different person, deformed eyes, unrealistic skin, AI generated look, cartoon, painting, illustration, extra fingers, bad anatomy";
+  "different person, changed face, new identity, distorted face, deformed eyes, deformed nose, deformed lips, wrong face shape, blurry face, unrealistic skin, AI generated look, cinematic, perfect studio lighting, cartoon, painting, illustration, extra fingers, bad anatomy";
 
-/** Scene hints sent to Groq before prompt generation. */
+/** Scene blocks embedded in the childhood generation script. */
 export const CHILDHOOD_SCENE_HINTS = {
-  "90s_family": "casual home environment, family album, indoor, warm tones",
-  school: "studio portrait, simple background, school photo",
-  disposable: "random candid shot, early 2000s, messy framing",
+  "90s_family":
+    "A highly realistic 1998 indoor family living room in Eastern Europe. Old CRT TV in the background, wooden furniture, patterned carpet, warm tungsten lighting. Slightly messy environment, authentic 90s household.",
+  school:
+    "A highly realistic mid-1990s school portrait studio. Plain mottled blue-grey backdrop, even overhead lights, yearbook head-and-shoulders framing, slightly stiff pose, authentic school-photo look.",
+  disposable:
+    "A highly realistic early-2000s candid outdoor or hallway snapshot. Messy framing, accidental crop, harsh on-camera flash, ordinary everyday background, authentic disposable-camera energy.",
 } as const;
 
 export const CHILDHOOD_PRESETS = [
