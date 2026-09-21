@@ -197,8 +197,9 @@ function sniffMime(bytes: Buffer, fallback: string): "image/jpeg" | "image/png" 
 }
 
 /**
- * Normalize upload to jpeg/png, fix orientation, resize longest edge to 1024px.
- * Sharp is loaded dynamically so a native-binary failure cannot crash the route module.
+ * Normalize upload to jpeg, fix orientation, resize longest edge to 1024px.
+ * Always JPEG — the face IP-Adapter model is most reliable with jpeg bytes.
+ * Sharp is loaded dynamically so a native-binary failure cannot crash the route.
  */
 export async function prepareImage(
   file: File,
@@ -212,7 +213,7 @@ export async function prepareImage(
 
   const input = Buffer.from(await file.arrayBuffer());
   let buffer = input;
-  let mime = sniffMime(input, file.type || "image/jpeg");
+  let mime: "image/jpeg" | "image/png" = "image/jpeg";
 
   try {
     const sharp = (await import("sharp")).default;
@@ -229,16 +230,22 @@ export async function prepareImage(
       });
     }
 
-    const preferPng = meta.hasAlpha === true || file.type === "image/png";
-    buffer = preferPng
-      ? await pipeline.png({ compressionLevel: 8 }).toBuffer()
-      : await pipeline.jpeg({ quality: 90, mozjpeg: true }).toBuffer();
-    mime = preferPng ? "image/png" : "image/jpeg";
+    // Flatten alpha onto white, then JPEG — avoids PNG/webp edge cases on Replicate.
+    buffer = await pipeline
+      .flatten({ background: { r: 255, g: 255, b: 255 } })
+      .jpeg({ quality: 88, mozjpeg: true })
+      .toBuffer();
+    mime = "image/jpeg";
   } catch (error) {
     console.error("[childhood] sharp prepare failed, using original bytes:", error);
-    // Fall back to original bytes — generation can still succeed.
     buffer = input;
     mime = sniffMime(input, file.type || "image/jpeg");
+    if (mime !== "image/jpeg" && mime !== "image/png") {
+      throw new ChildhoodApiError(
+        "Could not read this image. Try a JPG or PNG portrait instead.",
+        400,
+      );
+    }
   }
 
   const ext = mime === "image/png" ? ".png" : ".jpg";
@@ -292,6 +299,15 @@ export function mapGenerationError(err: unknown): ChildhoodApiError {
 
   if (isApiError(err)) {
     const status = err.response.status;
+    // Log upstream body once for debugging (never send raw internals to the client).
+    void err.response
+      .clone()
+      .text()
+      .then((body) => {
+        console.error(`[childhood] Replicate HTTP ${status}:`, body.slice(0, 1000));
+      })
+      .catch(() => {});
+
     if (status === 401 || status === 403) {
       return new ChildhoodApiError(
         "AI generation is not configured. Set a valid REPLICATE_API_TOKEN on the server.",
@@ -312,11 +328,10 @@ export function mapGenerationError(err: unknown): ChildhoodApiError {
     }
     if (status === 422) {
       return new ChildhoodApiError(
-        "Could not process this photo. Use a clear, front-facing portrait and try again.",
+        "Could not process this photo. Use a clear JPG/PNG front-facing portrait and try again.",
         422,
       );
     }
-    // Surface other upstream statuses as 502 with a useful hint.
     return new ChildhoodApiError(
       "Could not generate a childhood photo. The image service failed — try again shortly.",
       502,
@@ -368,8 +383,47 @@ export function mapGenerationError(err: unknown): ChildhoodApiError {
 export const mapReplicateError = mapGenerationError;
 
 /**
+ * Build a schema-valid image URI for Replicate.
+ *
+ * Important: never pass a raw Node Buffer into replicate.run() — across Next.js
+ * bundling boundaries `instanceof Buffer` can fail inside the SDK, the Buffer
+ * gets JSON-serialized as an object, and Replicate returns HTTP 422.
+ */
+async function toReplicateImageUri(
+  replicate: Replicate,
+  buffer: Buffer,
+  mime: string,
+): Promise<string> {
+  const safeMime =
+    mime === "image/png" || mime === "image/jpeg" ? mime : "image/jpeg";
+  const dataUri = `data:${safeMime};base64,${buffer.toString("base64")}`;
+
+  // Resized portraits are small — data URI is the most reliable input type.
+  if (dataUri.length <= 3_500_000) {
+    return dataUri;
+  }
+
+  const ext = safeMime === "image/png" ? "png" : "jpg";
+  const file = new File([new Uint8Array(buffer)], `face.${ext}`, {
+    type: safeMime,
+  });
+
+  try {
+    const uploaded = await replicate.files.create(file);
+    const url = uploaded?.urls?.get;
+    if (typeof url === "string" && url.length > 0) {
+      return url;
+    }
+  } catch (error) {
+    console.error("[childhood] files.create failed:", error);
+  }
+
+  // Last resort: still return data URI even if large.
+  return dataUri;
+}
+
+/**
  * Run lucataco/ip_adapter-sdxl-face and return the hosted image URL.
- * Uploads a Buffer once (no File→retry double run, which caused 504s).
  */
 export async function generateImage(options: {
   image: Buffer;
@@ -387,25 +441,25 @@ export async function generateImage(options: {
   const replicate = new Replicate({
     auth: token,
     useFileOutput: false,
-    fileEncodingStrategy: "upload",
   });
 
-  // Buffer is uploaded by the SDK to a hosted file URL — one prediction only.
-  const output = await replicate.run(
-    MODEL,
-    {
-      input: {
-        image: options.image,
-        prompt: options.prompt,
-        negative_prompt: CHILDHOOD_NEGATIVE_PROMPT,
-        scale: 0.65,
-        num_inference_steps: 30,
-        num_outputs: 1,
-      },
-      // Block until complete; leave headroom under the route maxDuration.
-      wait: { mode: "block", timeout: 100 },
-    },
+  const imageUri = await toReplicateImageUri(
+    replicate,
+    options.image,
+    options.mime,
   );
+
+  const output = await replicate.run(MODEL, {
+    input: {
+      image: imageUri,
+      prompt: options.prompt,
+      negative_prompt: CHILDHOOD_NEGATIVE_PROMPT,
+      scale: 0.65,
+      num_inference_steps: 30,
+      num_outputs: 1,
+    },
+    wait: { mode: "block", timeout: 100 },
+  });
 
   const imageUrl = extractImageUrl(output);
   if (!imageUrl) {
