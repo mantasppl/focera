@@ -28,8 +28,9 @@ const GROQ_MODELS = [
 /** Keep Groq well under the serverless budget — Replicate needs most of the time. */
 const GROQ_TIMEOUT_MS = 6_000;
 
-const GROQ_SYSTEM = `You are an expert prompt engineer for image-to-image diffusion models.
-Your goal is to generate highly controlled prompts that preserve identity and produce realistic nostalgic photos.`;
+const GROQ_SYSTEM = `You write prompts for face-preserving image-to-image models.
+CRITICAL: the output must keep the SAME person — never invent a new face or identity.
+Return ONLY the final structured prompt. No preamble.`;
 
 export type PreparedChildhoodImage = {
   buffer: Buffer;
@@ -100,69 +101,62 @@ export function getSceneHint(preset: ChildhoodPresetId): string {
   return CHILDHOOD_SCENE_HINTS[preset];
 }
 
-export function buildPrompt(preset: ChildhoodPresetId): string {
+const PROMPT_IDENTITY = `CRITICAL: The person in the image must remain EXACTLY the same.
+Do not change identity, face shape, eyes, nose, lips, or proportions.
+
+This is NOT a new person generation.
+This is the SAME person placed into a different time period.`;
+
+const PROMPT_CAMERA = `Shot on a cheap 90s film camera with direct flash.
+Harsh flash lighting, slightly overexposed skin, imperfect framing.`;
+
+const PROMPT_IMPERFECTIONS = `Visible film grain, slight motion blur, color noise, washed colors, low dynamic range.`;
+
+const PROMPT_MOOD = `Candid, natural, unposed, like a real family memory.`;
+
+const PROMPT_FINAL_RULE = `This must look like a real photograph from a 90s family album.
+NOT cinematic, NOT perfect, NOT AI generated.
+
+The person must be instantly recognizable as the original.`;
+
+/** Fixed generation script used as the Replicate prompt (and as Groq's target format). */
+export function buildFallbackPrompt(preset: ChildhoodPresetId): string {
   const scene = getSceneHint(preset);
 
-  return `Generate a structured prompt with these sections:
+  return `${PROMPT_IDENTITY}
 
-1. IDENTITY (must preserve face exactly)
-2. SCENE (based on preset)
-3. CAMERA (90s style)
-4. LIGHTING
-5. IMPERFECTIONS (grain, blur, flash)
-6. MOOD (nostalgic, candid, imperfect)
-
-IMPORTANT RULES:
-- Do NOT change person identity
-- Do NOT describe a new person
-- Do NOT add fantasy elements
-- Keep it realistic, like a real photo
-
-STRICT RULE:
-The person in the image must remain exactly the same. Do not change identity, face, or proportions.
-
-Write a detailed prompt with:
-
-IDENTITY:
-Preserve exact same face, eyes, proportions, and identity.
+---
 
 SCENE:
 ${scene}
 
-CAMERA:
-1990s film camera, direct flash, slightly overexposed
+---
 
-LIGHTING:
-harsh flash, warm tones
+CAMERA:
+${PROMPT_CAMERA}
+
+---
 
 IMPERFECTIONS:
-film grain, slight blur, noise, imperfect framing
+${PROMPT_IMPERFECTIONS}
+
+---
 
 MOOD:
-nostalgic, candid, real memory
+${PROMPT_MOOD}
+
+---
 
 FINAL RULE:
-The result must look like a real photo from a family album, not AI generated.
-
-Return ONLY the final prompt.`;
+${PROMPT_FINAL_RULE}`;
 }
 
-export function buildFallbackPrompt(preset: ChildhoodPresetId): string {
-  const scene = getSceneHint(preset);
+export function buildPrompt(preset: ChildhoodPresetId): string {
+  return `Rewrite the following generation script. Keep EVERY identity rule, camera, imperfections, mood, and final rule EXACTLY as written. You may only lightly polish the SCENE wording for clarity — do not invent a new person, fantasy elements, or cinematic lighting.
 
-  return `IDENTITY: Preserve the exact same person, face, eyes, proportions, skin tone, age appearance, and identity. Do not change who this is. Do not invent a new person.
+Return ONLY the final script in this exact section layout.
 
-SCENE: ${scene}. Keep the subject as the clear focus of a real childhood photograph.
-
-CAMERA: 1990s consumer film camera or disposable camera look, direct on-camera flash, slightly overexposed highlights, imperfect amateur composition, not a modern smartphone photo.
-
-LIGHTING: Harsh direct flash, warm nostalgic tones, mild overexposure, soft shadow falloff behind the subject.
-
-IMPERFECTIONS: Visible film grain, slight motion or focus blur, fine noise, imperfect framing, candid snapshot energy — not studio-perfect.
-
-MOOD: Nostalgic, candid, imperfect, like a real childhood memory pulled from a family album.
-
-FINAL RULE: The output must look like a real photograph from a family album. Same person identity. No cartoon, painting, illustration, or obvious AI look.`;
+${buildFallbackPrompt(preset)}`;
 }
 
 function cleanPrompt(text: string): string {
