@@ -3,7 +3,7 @@ import { unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Groq from "groq-sdk";
-import Replicate, { type ApiError } from "replicate";
+import Replicate from "replicate";
 import {
   CHILDHOOD_MAX_IMAGE_BYTES,
   CHILDHOOD_NEGATIVE_PROMPT,
@@ -12,8 +12,11 @@ import {
   isChildhoodPresetId,
 } from "@/lib/childhood-photo";
 
-const MODEL =
-  "lucataco/ip_adapter-sdxl-face:226c6bf67a75a129b0f978e518fed33e1fb13956e15761c1ac53c9d2f898c9af" as const;
+const MODEL_VERSION =
+  "226c6bf67a75a129b0f978e518fed33e1fb13956e15761c1ac53c9d2f898c9af";
+
+/** Poll interval while waiting for Replicate (Prefer: wait is unreliable here). */
+const REPLICATE_POLL_MS = 1_000;
 
 const MAX_IMAGE_EDGE = 1024;
 
@@ -44,13 +47,52 @@ export class ChildhoodApiError extends Error {
   }
 }
 
-function isApiError(err: unknown): err is ApiError {
-  return (
-    !!err &&
-    typeof err === "object" &&
-    "response" in err &&
-    (err as ApiError).response instanceof Response
-  );
+/**
+ * Extract an HTTP status from a Replicate ApiError without `instanceof Response`.
+ * Next.js bundling can put Response in a different realm, so that check silently fails
+ * and errors fall through to the opaque "Try again shortly" message.
+ */
+function getUpstreamHttpStatus(err: unknown): number | null {
+  if (!err || typeof err !== "object") return null;
+
+  const response = (err as { response?: unknown }).response;
+  if (response && typeof response === "object" && "status" in response) {
+    const status = (response as { status: unknown }).status;
+    if (typeof status === "number" && Number.isFinite(status) && status > 0) {
+      return status;
+    }
+  }
+
+  const name = (err as { name?: unknown }).name;
+  const message = err instanceof Error ? err.message : String(err);
+  if (name === "ApiError" || /failed with status \d+/i.test(message)) {
+    const match = message.match(/failed with status (\d{3})\b/i);
+    if (match) {
+      const status = Number(match[1]);
+      if (Number.isFinite(status)) return status;
+    }
+  }
+
+  return null;
+}
+
+function logUpstreamBody(err: unknown, status: number): void {
+  const response = (err as { response?: unknown })?.response;
+  if (!response || typeof response !== "object") return;
+  const maybeClone = (response as { clone?: unknown }).clone;
+  if (typeof maybeClone !== "function") return;
+  try {
+    const cloned = maybeClone.call(response) as { text?: () => Promise<string> };
+    if (typeof cloned?.text !== "function") return;
+    void cloned
+      .text()
+      .then((body) => {
+        console.error(`[childhood] Replicate HTTP ${status}:`, body.slice(0, 1000));
+      })
+      .catch(() => {});
+  } catch {
+    // Body may already be consumed — status mapping still works.
+  }
 }
 
 /** Map preset → scene hint before calling Groq. */
@@ -297,39 +339,38 @@ function extractImageUrl(output: unknown): string | null {
 export function mapGenerationError(err: unknown): ChildhoodApiError {
   if (err instanceof ChildhoodApiError) return err;
 
-  if (isApiError(err)) {
-    const status = err.response.status;
-    // Log upstream body once for debugging (never send raw internals to the client).
-    void err.response
-      .clone()
-      .text()
-      .then((body) => {
-        console.error(`[childhood] Replicate HTTP ${status}:`, body.slice(0, 1000));
-      })
-      .catch(() => {});
+  const upstreamStatus = getUpstreamHttpStatus(err);
+  if (upstreamStatus !== null) {
+    logUpstreamBody(err, upstreamStatus);
 
-    if (status === 401 || status === 403) {
+    if (upstreamStatus === 401 || upstreamStatus === 403) {
       return new ChildhoodApiError(
         "AI generation is not configured. Set a valid REPLICATE_API_TOKEN on the server.",
         503,
       );
     }
-    if (status === 402) {
+    if (upstreamStatus === 402) {
       return new ChildhoodApiError(
         "AI generation is temporarily unavailable (billing). Try again later.",
         503,
       );
     }
-    if (status === 429) {
+    if (upstreamStatus === 429) {
       return new ChildhoodApiError(
         "Too many requests right now. Wait a moment and try again.",
         429,
       );
     }
-    if (status === 422) {
+    if (upstreamStatus === 422) {
       return new ChildhoodApiError(
         "Could not process this photo. Use a clear JPG/PNG front-facing portrait and try again.",
         422,
+      );
+    }
+    if (upstreamStatus >= 500) {
+      return new ChildhoodApiError(
+        "Could not generate a childhood photo. The image service failed — try again shortly.",
+        502,
       );
     }
     return new ChildhoodApiError(
@@ -366,12 +407,25 @@ export function mapGenerationError(err: unknown): ChildhoodApiError {
     );
   }
 
+  if (/fetch failed|ECONNRESET|ENOTFOUND|EAI_AGAIN|socket hang up|network/i.test(raw)) {
+    return new ChildhoodApiError(
+      "Could not reach the image service. Wait a moment and try again.",
+      502,
+    );
+  }
+
   if (/sharp|libvips|Input buffer/i.test(raw)) {
     return new ChildhoodApiError(
       "Could not read this image. Try a JPG or PNG portrait instead.",
       400,
     );
   }
+
+  console.error(
+    "[childhood] unmapped generation error:",
+    raw || (err instanceof Error ? err.name : typeof err),
+    err,
+  );
 
   return new ChildhoodApiError(
     "Could not generate a childhood photo. Try again shortly.",
@@ -385,9 +439,9 @@ export const mapReplicateError = mapGenerationError;
 /**
  * Build a schema-valid image URI for Replicate.
  *
- * Important: never pass a raw Node Buffer into replicate.run() — across Next.js
- * bundling boundaries `instanceof Buffer` can fail inside the SDK, the Buffer
- * gets JSON-serialized as an object, and Replicate returns HTTP 422.
+ * Never pass a raw Node Buffer into the SDK — across Next.js bundling boundaries
+ * `instanceof Buffer` can fail and the value gets JSON-serialized as an object → 422.
+ * Small portraits use a data URI; larger payloads upload via files.create (File/Uint8Array).
  */
 async function toReplicateImageUri(
   replicate: Replicate,
@@ -398,7 +452,7 @@ async function toReplicateImageUri(
     mime === "image/png" || mime === "image/jpeg" ? mime : "image/jpeg";
   const dataUri = `data:${safeMime};base64,${buffer.toString("base64")}`;
 
-  // Resized portraits are small — data URI is the most reliable input type.
+  // Resized portraits are almost always under this — data URI is the most reliable.
   if (dataUri.length <= 3_500_000) {
     return dataUri;
   }
@@ -411,19 +465,23 @@ async function toReplicateImageUri(
   try {
     const uploaded = await replicate.files.create(file);
     const url = uploaded?.urls?.get;
-    if (typeof url === "string" && url.length > 0) {
+    if (typeof url === "string" && /^https?:\/\//i.test(url)) {
       return url;
     }
+    console.error("[childhood] files.create returned no URL:", uploaded);
   } catch (error) {
-    console.error("[childhood] files.create failed:", error);
+    console.error("[childhood] files.create failed, using data URI:", error);
   }
 
-  // Last resort: still return data URI even if large.
   return dataUri;
 }
 
 /**
  * Run lucataco/ip_adapter-sdxl-face and return the hosted image URL.
+ *
+ * Uses predictions.create + explicit poll instead of replicate.run({ wait: block }).
+ * The SDK's Prefer:wait path treats status "processing" as done and returns empty
+ * output — common when the long-poll window ends before SDXL finishes.
  */
 export async function generateImage(options: {
   image: Buffer;
@@ -449,7 +507,9 @@ export async function generateImage(options: {
     options.mime,
   );
 
-  const output = await replicate.run(MODEL, {
+  // Create without Prefer: wait, then poll until terminal status.
+  let prediction = await replicate.predictions.create({
+    version: MODEL_VERSION,
     input: {
       image: imageUri,
       prompt: options.prompt,
@@ -458,12 +518,37 @@ export async function generateImage(options: {
       num_inference_steps: 30,
       num_outputs: 1,
     },
-    wait: { mode: "block", timeout: 100 },
   });
 
-  const imageUrl = extractImageUrl(output);
+  if (
+    prediction.status !== "succeeded" &&
+    prediction.status !== "failed" &&
+    prediction.status !== "canceled"
+  ) {
+    prediction = await replicate.wait(prediction, {
+      interval: REPLICATE_POLL_MS,
+    });
+  }
+
+  if (prediction.status === "failed") {
+    throw new Error(`Prediction failed: ${prediction.error ?? "unknown"}`);
+  }
+
+  if (prediction.status !== "succeeded") {
+    console.error("[childhood] prediction ended without success:", {
+      id: prediction.id,
+      status: prediction.status,
+      error: prediction.error,
+    });
+    throw new ChildhoodApiError(
+      "Could not generate a childhood photo. Try again shortly.",
+      502,
+    );
+  }
+
+  const imageUrl = extractImageUrl(prediction.output);
   if (!imageUrl) {
-    console.error("[childhood] unexpected Replicate output:", output);
+    console.error("[childhood] unexpected Replicate output:", prediction.output);
     throw new ChildhoodApiError(
       "Could not generate a childhood photo. Try a different image.",
       502,
