@@ -13,8 +13,8 @@ import { getToolBySlug } from "@/data/tools";
 import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
-// Keep within common Vercel plan limits (Hobby = 60s).
-export const maxDuration = 60;
+// Replicate IP-Adapter often needs 20–45s; keep headroom for upload + queue.
+export const maxDuration = 120;
 
 const TOOL_SLUG = "90s-photo-generator";
 
@@ -62,8 +62,13 @@ export async function POST(request: Request) {
     try {
       const { image, preset } = parseChildhoodForm(form);
 
-      prepared = await prepareImage(image);
-      const prompt = await callGroq(preset);
+      // Image prep + prompt writing are independent — overlap them.
+      const [preparedImage, prompt] = await Promise.all([
+        prepareImage(image),
+        callGroq(preset),
+      ]);
+      prepared = preparedImage;
+
       const imageUrl = await generateImage({
         image: prepared.buffer,
         mime: prepared.mime,
