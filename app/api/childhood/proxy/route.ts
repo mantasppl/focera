@@ -1,11 +1,14 @@
-import { isAllowedResultUrl } from "@/lib/childhood-photo-server";
+import { isAllowedResultUrl } from "@/lib/childhood-photo";
 import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 function jsonError(message: string, status: number) {
-  return Response.json({ error: message }, { status });
+  return Response.json(
+    { error: message },
+    { status, headers: { "Cache-Control": "no-store" } },
+  );
 }
 
 /**
@@ -13,28 +16,28 @@ function jsonError(message: string, status: number) {
  * the generated image without CORS issues.
  */
 export async function POST(request: Request) {
-  const guarded = guardApiRequest(request, {
-    bucket: "childhood-proxy",
-    limit: 30,
-    windowMs: 60_000,
-    requireSameOrigin: true,
-    maxBodyBytes: 4_096,
-  });
-  if (guarded) return guarded;
-
-  let body: { url?: unknown };
   try {
-    body = (await request.json()) as { url?: unknown };
-  } catch {
-    return jsonError("Invalid JSON body.", 400);
-  }
+    const guarded = guardApiRequest(request, {
+      bucket: "childhood-proxy",
+      limit: 30,
+      windowMs: 60_000,
+      requireSameOrigin: true,
+      maxBodyBytes: 4_096,
+    });
+    if (guarded) return guarded;
 
-  const url = typeof body.url === "string" ? body.url.trim() : "";
-  if (!url || !isAllowedResultUrl(url)) {
-    return jsonError("Invalid image URL.", 400);
-  }
+    let body: { url?: unknown };
+    try {
+      body = (await request.json()) as { url?: unknown };
+    } catch {
+      return jsonError("Invalid JSON body.", 400);
+    }
 
-  try {
+    const url = typeof body.url === "string" ? body.url.trim() : "";
+    if (!url || !isAllowedResultUrl(url)) {
+      return jsonError("Invalid image URL.", 400);
+    }
+
     const upstream = await fetch(url, {
       cache: "no-store",
       signal: AbortSignal.timeout(30_000),

@@ -2,7 +2,7 @@ import {
   callGroq,
   cleanupPreparedImage,
   generateImage,
-  mapReplicateError,
+  mapGenerationError,
   parseChildhoodForm,
   prepareImage,
   type PreparedChildhoodImage,
@@ -13,73 +13,83 @@ import { getToolBySlug } from "@/data/tools";
 import { guardApiRequest } from "@/lib/security/request";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+// Keep within common Vercel plan limits (Hobby = 60s).
+export const maxDuration = 60;
 
 const TOOL_SLUG = "90s-photo-generator";
 
 function jsonError(message: string, status: number) {
-  return Response.json({ error: message }, { status });
+  return Response.json(
+    { error: message },
+    { status, headers: { "Cache-Control": "no-store" } },
+  );
 }
 
 function track(request: Request, success: boolean) {
-  const tool = getToolBySlug(TOOL_SLUG);
-  if (tool) {
-    trackToolUsageServer(
-      { toolId: tool.slug, toolName: tool.name, success },
-      request,
-    );
+  try {
+    const tool = getToolBySlug(TOOL_SLUG);
+    if (tool) {
+      trackToolUsageServer(
+        { toolId: tool.slug, toolName: tool.name, success },
+        request,
+      );
+    }
+  } catch {
+    // Analytics must never break the tool.
   }
 }
 
 export async function POST(request: Request) {
-  const guarded = guardApiRequest(request, {
-    bucket: "childhood",
-    limit: 8,
-    windowMs: 60_000,
-    requireSameOrigin: true,
-    maxBodyBytes: CHILDHOOD_MAX_IMAGE_BYTES + 256_000,
-  });
-  if (guarded) return guarded;
-
-  let form: FormData;
   try {
-    form = await request.formData();
-  } catch {
-    return jsonError("Invalid multipart form data.", 400);
-  }
-
-  let prepared: PreparedChildhoodImage | null = null;
-
-  try {
-    const { image, preset } = parseChildhoodForm(form);
-
-    // 1) Normalize + resize upload (max 1024px)
-    prepared = await prepareImage(image);
-
-    // 2) Groq builds a structured identity-preserving nostalgia prompt
-    const prompt = await callGroq(preset);
-
-    // 3) Replicate IP-Adapter face generation (uploads Blob, returns HTTPS URL)
-    //    Do NOT inline the result as a data URI — that blows Vercel/JSON size limits
-    //    and surfaces as a generic client "Try again." error.
-    const imageUrl = await generateImage({
-      image: prepared.buffer,
-      mime: prepared.mime,
-      prompt,
+    const guarded = guardApiRequest(request, {
+      bucket: "childhood",
+      limit: 8,
+      windowMs: 60_000,
+      requireSameOrigin: true,
+      maxBodyBytes: CHILDHOOD_MAX_IMAGE_BYTES + 256_000,
     });
+    if (guarded) return guarded;
 
-    track(request, true);
+    let form: FormData;
+    try {
+      form = await request.formData();
+    } catch {
+      return jsonError("Invalid multipart form data.", 400);
+    }
 
-    return Response.json(
-      { imageUrl },
-      { headers: { "Cache-Control": "no-store" } },
-    );
+    let prepared: PreparedChildhoodImage | null = null;
+
+    try {
+      const { image, preset } = parseChildhoodForm(form);
+
+      prepared = await prepareImage(image);
+      const prompt = await callGroq(preset);
+      const imageUrl = await generateImage({
+        image: prepared.buffer,
+        mime: prepared.mime,
+        prompt,
+      });
+
+      track(request, true);
+
+      return Response.json(
+        { imageUrl },
+        { headers: { "Cache-Control": "no-store" } },
+      );
+    } catch (err) {
+      console.error("[childhood] generation failed:", err);
+      track(request, false);
+      const mapped = mapGenerationError(err);
+      return jsonError(mapped.message, mapped.status);
+    } finally {
+      await cleanupPreparedImage(prepared);
+    }
   } catch (err) {
-    console.error("[childhood] generation failed:", err);
-    track(request, false);
-    const mapped = mapReplicateError(err);
-    return jsonError(mapped.message, mapped.status);
-  } finally {
-    await cleanupPreparedImage(prepared);
+    // Last-resort guard so Next.js never returns a bare HTML 500.
+    console.error("[childhood] unhandled route failure:", err);
+    return jsonError(
+      "Could not generate a childhood photo. Try again shortly.",
+      502,
+    );
   }
 }
