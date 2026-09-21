@@ -53,39 +53,20 @@ export async function POST(request: Request) {
   try {
     const { image, preset } = parseChildhoodForm(form);
 
-    // 1) Normalize + resize upload (max 1024px) → temp file + data URI
+    // 1) Normalize + resize upload (max 1024px)
     prepared = await prepareImage(image);
 
     // 2) Groq builds a structured identity-preserving nostalgia prompt
     const prompt = await callGroq(preset);
 
-    // 3) Replicate IP-Adapter face generation
-    let imageUrl = await generateImage({
-      imageDataUri: prepared.dataUri,
+    // 3) Replicate IP-Adapter face generation (uploads Blob, returns HTTPS URL)
+    //    Do NOT inline the result as a data URI — that blows Vercel/JSON size limits
+    //    and surfaces as a generic client "Try again." error.
+    const imageUrl = await generateImage({
+      image: prepared.buffer,
+      mime: prepared.mime,
       prompt,
     });
-
-    // Prefer a data URI so the browser can preview/download without CORS issues.
-    try {
-      if (!imageUrl.startsWith("data:")) {
-        const upstream = await fetch(imageUrl, {
-          cache: "no-store",
-          signal: AbortSignal.timeout(45_000),
-        });
-        if (upstream.ok) {
-          const bytes = Buffer.from(await upstream.arrayBuffer());
-          if (bytes.byteLength >= 1_000 && bytes.byteLength <= 3_500_000) {
-            const mime =
-              upstream.headers.get("content-type")?.split(";")[0]?.trim() ||
-              "image/png";
-            const safeMime = mime.startsWith("image/") ? mime : "image/png";
-            imageUrl = `data:${safeMime};base64,${bytes.toString("base64")}`;
-          }
-        }
-      }
-    } catch (error) {
-      console.error("[childhood] could not inline generated image:", error);
-    }
 
     track(request, true);
 
