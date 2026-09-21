@@ -4,7 +4,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Groq from "groq-sdk";
 import Replicate, { type ApiError } from "replicate";
-import sharp from "sharp";
 import {
   CHILDHOOD_MAX_IMAGE_BYTES,
   CHILDHOOD_NEGATIVE_PROMPT,
@@ -56,10 +55,6 @@ export function getSceneHint(preset: ChildhoodPresetId): string {
   return CHILDHOOD_SCENE_HINTS[preset];
 }
 
-/**
- * Build the Groq user message / fallback structured prompt.
- * Identity preservation is non-negotiable.
- */
 export function buildPrompt(preset: ChildhoodPresetId): string {
   const scene = getSceneHint(preset);
 
@@ -107,7 +102,6 @@ The result must look like a real photo from a family album, not AI generated.
 Return ONLY the final prompt.`;
 }
 
-/** Deterministic fallback if Groq is unavailable. */
 export function buildFallbackPrompt(preset: ChildhoodPresetId): string {
   const scene = getSceneHint(preset);
 
@@ -134,7 +128,6 @@ function cleanPrompt(text: string): string {
     .trim();
 }
 
-/** Call Groq to generate a structured identity-preserving nostalgia prompt. */
 export async function callGroq(preset: ChildhoodPresetId): Promise<string> {
   const apiKey = process.env.GROQ_API_KEY?.trim();
   if (!apiKey) {
@@ -171,8 +164,26 @@ export async function callGroq(preset: ChildhoodPresetId): Promise<string> {
   return buildFallbackPrompt(preset);
 }
 
+function sniffMime(bytes: Buffer, fallback: string): "image/jpeg" | "image/png" {
+  if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    return "image/jpeg";
+  }
+  if (
+    bytes.length >= 8 &&
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47
+  ) {
+    return "image/png";
+  }
+  if (fallback === "image/png") return "image/png";
+  return "image/jpeg";
+}
+
 /**
  * Normalize upload to jpeg/png, fix orientation, resize longest edge to 1024px.
+ * Sharp is loaded dynamically so a native-binary failure cannot crash the route module.
  */
 export async function prepareImage(
   file: File,
@@ -184,34 +195,42 @@ export async function prepareImage(
     throw new ChildhoodApiError("Image must be 10 MB or smaller.", 413);
   }
 
-  const bytes = Buffer.from(await file.arrayBuffer());
-  const meta = await sharp(bytes, { failOn: "none" }).metadata();
-  const longest = Math.max(meta.width ?? 0, meta.height ?? 0);
+  const input = Buffer.from(await file.arrayBuffer());
+  let buffer = input;
+  let mime = sniffMime(input, file.type || "image/jpeg");
 
-  let pipeline = sharp(bytes, { failOn: "none" }).rotate();
-  if (longest > MAX_IMAGE_EDGE) {
-    pipeline = pipeline.resize({
-      width: MAX_IMAGE_EDGE,
-      height: MAX_IMAGE_EDGE,
-      fit: "inside",
-      withoutEnlargement: true,
-    });
+  try {
+    const sharp = (await import("sharp")).default;
+    const meta = await sharp(input, { failOn: "none" }).metadata();
+    const longest = Math.max(meta.width ?? 0, meta.height ?? 0);
+
+    let pipeline = sharp(input, { failOn: "none" }).rotate();
+    if (longest > MAX_IMAGE_EDGE) {
+      pipeline = pipeline.resize({
+        width: MAX_IMAGE_EDGE,
+        height: MAX_IMAGE_EDGE,
+        fit: "inside",
+        withoutEnlargement: true,
+      });
+    }
+
+    const preferPng = meta.hasAlpha === true || file.type === "image/png";
+    buffer = preferPng
+      ? await pipeline.png({ compressionLevel: 8 }).toBuffer()
+      : await pipeline.jpeg({ quality: 90, mozjpeg: true }).toBuffer();
+    mime = preferPng ? "image/png" : "image/jpeg";
+  } catch (error) {
+    console.error("[childhood] sharp prepare failed, using original bytes:", error);
+    // Fall back to original bytes — generation can still succeed.
+    buffer = input;
+    mime = sniffMime(input, file.type || "image/jpeg");
   }
 
-  const preferPng = meta.hasAlpha === true || file.type === "image/png";
-  const buffer = preferPng
-    ? await pipeline.png({ compressionLevel: 8 }).toBuffer()
-    : await pipeline.jpeg({ quality: 90, mozjpeg: true }).toBuffer();
-  const mime = preferPng ? ("image/png" as const) : ("image/jpeg" as const);
-  const ext = preferPng ? ".png" : ".jpg";
+  const ext = mime === "image/png" ? ".png" : ".jpg";
   const tempPath = join(tmpdir(), `childhood-${randomUUID()}${ext}`);
   await writeFile(tempPath, buffer);
 
-  return {
-    buffer,
-    mime,
-    tempPath,
-  };
+  return { buffer, mime, tempPath };
 }
 
 export async function cleanupPreparedImage(
@@ -253,7 +272,7 @@ function extractImageUrl(output: unknown): string | null {
   return null;
 }
 
-export function mapReplicateError(err: unknown): ChildhoodApiError {
+export function mapGenerationError(err: unknown): ChildhoodApiError {
   if (err instanceof ChildhoodApiError) return err;
 
   if (isApiError(err)) {
@@ -282,6 +301,11 @@ export function mapReplicateError(err: unknown): ChildhoodApiError {
         422,
       );
     }
+    // Surface other upstream statuses as 502 with a useful hint.
+    return new ChildhoodApiError(
+      "Could not generate a childhood photo. The image service failed — try again shortly.",
+      502,
+    );
   }
 
   const raw = err instanceof Error ? err.message.trim() : "";
@@ -312,15 +336,25 @@ export function mapReplicateError(err: unknown): ChildhoodApiError {
     );
   }
 
+  if (/sharp|libvips|Input buffer/i.test(raw)) {
+    return new ChildhoodApiError(
+      "Could not read this image. Try a JPG or PNG portrait instead.",
+      400,
+    );
+  }
+
   return new ChildhoodApiError(
     "Could not generate a childhood photo. Try again shortly.",
     502,
   );
 }
 
+/** @deprecated use mapGenerationError */
+export const mapReplicateError = mapGenerationError;
+
 /**
  * Run lucataco/ip_adapter-sdxl-face and return the hosted image URL.
- * Uploads a Blob (not a giant data URI) so Replicate receives a proper file URL.
+ * Passes a Buffer so the Replicate SDK uploads a real file (not a data URI).
  */
 export async function generateImage(options: {
   image: Buffer;
@@ -341,23 +375,37 @@ export async function generateImage(options: {
     fileEncodingStrategy: "upload",
   });
 
-  // Blob is uploaded by the Replicate SDK → hosted URL. Do NOT pass a data URI
-  // (those stay inline in the prediction JSON and frequently fail / time out).
-  const imageBlob = new Blob([new Uint8Array(options.image)], {
+  // Prefer File (has filename + type) for Replicate's multipart upload.
+  const imageFile = new File([new Uint8Array(options.image)], `face.${options.mime === "image/png" ? "png" : "jpg"}`, {
     type: options.mime || "image/jpeg",
   });
 
-  const output = await replicate.run(MODEL, {
-    input: {
-      image: imageBlob,
-      prompt: options.prompt,
-      negative_prompt: CHILDHOOD_NEGATIVE_PROMPT,
-      scale: 0.65,
-      num_inference_steps: 30,
-      num_outputs: 1,
-      // guidance_scale is NOT in this model's schema — do not send it.
-    },
-  });
+  let output: unknown;
+  try {
+    output = await replicate.run(MODEL, {
+      input: {
+        image: imageFile,
+        prompt: options.prompt,
+        negative_prompt: CHILDHOOD_NEGATIVE_PROMPT,
+        scale: 0.65,
+        num_inference_steps: 30,
+        num_outputs: 1,
+      },
+    });
+  } catch (error) {
+    // Fallback: some runtimes handle Buffer better than File.
+    console.error("[childhood] File upload path failed, retrying with Buffer:", error);
+    output = await replicate.run(MODEL, {
+      input: {
+        image: options.image,
+        prompt: options.prompt,
+        negative_prompt: CHILDHOOD_NEGATIVE_PROMPT,
+        scale: 0.65,
+        num_inference_steps: 30,
+        num_outputs: 1,
+      },
+    });
+  }
 
   const imageUrl = extractImageUrl(output);
   if (!imageUrl) {
@@ -376,7 +424,8 @@ export function parseChildhoodForm(form: FormData): {
   preset: ChildhoodPresetId;
 } {
   const image = form.get("image");
-  if (!(image instanceof File) || image.size <= 0) {
+  // Next.js / undici may return Blob or File depending on runtime.
+  if (!(image instanceof Blob) || image.size <= 0) {
     throw new ChildhoodApiError("Upload an image file.", 400);
   }
 
@@ -403,21 +452,12 @@ export function parseChildhoodForm(form: FormData): {
     );
   }
 
-  return { image, preset: presetRaw };
-}
+  const file =
+    image instanceof File
+      ? image
+      : new File([image], "upload.jpg", {
+          type: type || "image/jpeg",
+        });
 
-/** Only allow proxying Replicate-hosted delivery URLs. */
-export function isAllowedResultUrl(raw: string): boolean {
-  try {
-    const url = new URL(raw);
-    if (url.protocol !== "https:") return false;
-    const host = url.hostname.toLowerCase();
-    return (
-      host === "replicate.delivery" ||
-      host.endsWith(".replicate.delivery") ||
-      host === "pbxt.replicate.delivery"
-    );
-  } catch {
-    return false;
-  }
+  return { image: file, preset: presetRaw };
 }

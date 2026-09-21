@@ -46,17 +46,43 @@ export function getChildhoodPreset(id: ChildhoodPresetId) {
   return CHILDHOOD_PRESETS.find((preset) => preset.id === id)!;
 }
 
+/** Only allow proxying Replicate-hosted delivery URLs. */
+export function isAllowedResultUrl(raw: string): boolean {
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "https:") return false;
+    const host = url.hostname.toLowerCase();
+    return (
+      host === "replicate.delivery" ||
+      host.endsWith(".replicate.delivery") ||
+      host === "pbxt.replicate.delivery"
+    );
+  } catch {
+    return false;
+  }
+}
+
 export type ChildhoodGenerateResult = {
   imageUrl: string;
   blob: Blob;
   preset: ChildhoodPresetId;
 };
 
+async function readErrorMessage(response: Response): Promise<string | null> {
+  const contentType = response.headers.get("content-type") ?? "";
+  if (contentType.includes("application/json")) {
+    const data = (await response.json().catch(() => null)) as {
+      error?: string;
+    } | null;
+    return data?.error?.trim() || null;
+  }
+  return null;
+}
+
 async function fetchResultBlob(
   imageUrl: string,
   signal?: AbortSignal,
 ): Promise<Blob> {
-  // Prefer same-origin proxy for HTTPS Replicate URLs (avoids CORS).
   if (/^https?:\/\//i.test(imageUrl)) {
     const proxy = await fetch("/api/childhood/proxy", {
       method: "POST",
@@ -96,26 +122,23 @@ export async function generateChildhoodPhoto(
     signal,
   });
 
-  const contentType = response.headers.get("content-type") ?? "";
-  let data: { imageUrl?: string; error?: string } | null = null;
-
-  if (contentType.includes("application/json")) {
-    data = (await response.json().catch(() => null)) as {
-      imageUrl?: string;
-      error?: string;
-    } | null;
-  }
-
   if (!response.ok) {
+    const message = await readErrorMessage(response);
     throw new Error(
-      data?.error ??
+      message ??
         `Could not generate a childhood photo. Try again. (${response.status})`,
     );
   }
 
+  const data = (await response.json().catch(() => null)) as {
+    imageUrl?: string;
+    error?: string;
+  } | null;
+
   if (!data?.imageUrl) {
     throw new Error(
-      "Could not generate a childhood photo. The server returned an empty result.",
+      data?.error ??
+        "Could not generate a childhood photo. The server returned an empty result.",
     );
   }
 
