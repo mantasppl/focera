@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import AnalyticsCharts from "@/components/admin/AnalyticsCharts";
 import { useAdminPath } from "@/components/admin/AdminPathContext";
 import DateRangeFilter from "@/components/admin/DateRangeFilter";
+import RepeatUsersSection from "@/components/admin/RepeatUsersSection";
 import StatCards from "@/components/admin/StatCards";
 import ToolsTable from "@/components/admin/ToolsTable";
 import Button from "@/components/Button";
@@ -169,6 +170,8 @@ export default function AnalyticsDashboard() {
       ) : null}
 
       <StatCards stats={data?.stats ?? null} loading={loading && !data} />
+
+      <RepeatUsersSection />
 
       <AnalyticsCharts
         daily={data?.charts.daily ?? []}

@@ -49,6 +49,22 @@ export type OverviewStats = {
   repeatRate: number;
 };
 
+/** Calendar bucket for the repeat-users section. Not a sliding window. */
+export type RepeatPeriod = "today" | "yesterday" | "week" | "month" | "year";
+
+export type RepeatUserCount = {
+  repeatUsers: number;
+  uniqueVisitors: number;
+  repeatRate: number;
+};
+
+export type RepeatSectionStats = {
+  period: RepeatPeriod;
+  selected: RepeatUserCount;
+  /** Tool users who came back on a later calendar day. Does not decrease. */
+  allTime: RepeatUserCount;
+};
+
 /** Visitors with a heartbeat newer than this are counted as online. */
 export const ONLINE_WINDOW_MS = 5 * 60 * 1000;
 

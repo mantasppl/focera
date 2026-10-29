@@ -6,6 +6,7 @@ import {
   eachDay,
   formatDayLabel,
   resolveDateRange,
+  resolveRepeatPeriod,
   type DateRange,
 } from "@/lib/analytics/dates";
 import { ensureAnalyticsSchema, getAnalyticsClient, getDb } from "@/lib/analytics/db";
@@ -22,6 +23,9 @@ import { scoreToolUsage } from "@/lib/analytics/tool-score";
 import type {
   NamedCount,
   OverviewStats,
+  RepeatPeriod,
+  RepeatSectionStats,
+  RepeatUserCount,
   TimeBucket,
   ToolDetailStats,
   ToolRankingStats,
@@ -235,6 +239,88 @@ export async function getRepeatUserStats(
   return {
     repeatUsers,
     repeatRate: Math.round((repeatUsers / inRange.length) * 1000) / 10,
+  };
+}
+
+function timestampToDate(value: unknown): Date | null {
+  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+  const n = typeof value === "bigint" ? Number(value) : Number(value);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return new Date(n < 1e12 ? n * 1000 : n);
+}
+
+/**
+ * Tool users who were seen on two different calendar days.
+ * Unlike the range card, this total stays the same or grows.
+ */
+async function getAllTimeRepeatUserStats(): Promise<RepeatUserCount> {
+  await ensureAnalyticsSchema();
+  const client = getAnalyticsClient();
+  const result = await client.execute({
+    sql: `
+      SELECT a.session_id AS session_id,
+             MIN(a.ts) AS first_seen,
+             MAX(a.ts) AS last_seen
+      FROM (
+        SELECT session_id, timestamp AS ts FROM tool_usage
+        UNION ALL
+        SELECT session_id, timestamp AS ts FROM page_views
+      ) AS a
+      INNER JOIN (
+        SELECT DISTINCT session_id
+        FROM tool_usage
+        WHERE event_type = 'tool_usage'
+      ) AS users ON users.session_id = a.session_id
+      GROUP BY a.session_id
+    `,
+    args: [],
+  });
+
+  let repeatUsers = 0;
+  let uniqueVisitors = 0;
+  for (const row of result.rows) {
+    const first = timestampToDate(row.first_seen ?? row.firstSeen);
+    const last = timestampToDate(row.last_seen ?? row.lastSeen);
+    if (!first || !last) continue;
+    uniqueVisitors += 1;
+    if (formatZonedDay(first) !== formatZonedDay(last)) repeatUsers += 1;
+  }
+
+  return {
+    repeatUsers,
+    uniqueVisitors,
+    repeatRate:
+      uniqueVisitors === 0
+        ? 0
+        : Math.round((repeatUsers / uniqueVisitors) * 1000) / 10,
+  };
+}
+
+export async function getRepeatSectionStats(
+  period: RepeatPeriod,
+): Promise<RepeatSectionStats> {
+  await ensureAnalyticsSchema();
+  const range = resolveRepeatPeriod(period);
+  const db = getDb();
+
+  const [[uniqueRow], selected, allTime] = await Promise.all([
+    db
+      .select({ value: countDistinct(toolUsage.sessionId) })
+      .from(toolUsage)
+      .where(rangeFilter(range)),
+    getRepeatUserStats(range),
+    getAllTimeRepeatUserStats(),
+  ]);
+
+  const uniqueVisitors = uniqueRow?.value ?? 0;
+  return {
+    period,
+    selected: {
+      repeatUsers: selected.repeatUsers,
+      uniqueVisitors,
+      repeatRate: uniqueVisitors === 0 ? 0 : selected.repeatRate,
+    },
+    allTime,
   };
 }
 

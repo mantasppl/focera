@@ -1,10 +1,12 @@
-import type { DatePreset } from "@/lib/analytics/types";
+import type { DatePreset, RepeatPeriod } from "@/lib/analytics/types";
 import {
   addZonedDays,
   endOfZonedDay,
   formatZonedDay,
   parseZonedDateInput,
   startOfZonedDay,
+  startOfZonedIsoWeek,
+  startOfZonedMonth,
   startOfZonedYear,
 } from "@/lib/analytics/timezone";
 
@@ -71,6 +73,45 @@ export function resolveDateRange(
     default:
       return { start: todayStart, end: todayEnd, preset: "today" };
   }
+}
+
+const REPEAT_PERIODS: RepeatPeriod[] = [
+  "today",
+  "yesterday",
+  "week",
+  "month",
+  "year",
+];
+
+/** Today, yesterday, this week (Mon), this month, or this year — through end of today. */
+export function resolveRepeatPeriod(period: RepeatPeriod): DateRange {
+  const now = new Date();
+  const todayStart = startOfZonedDay(now);
+  const todayEnd = endOfZonedDay(now);
+
+  switch (period) {
+    case "today":
+      return { start: todayStart, end: todayEnd, preset: "today" };
+    case "yesterday": {
+      const y = addZonedDays(todayStart, -1);
+      return { start: startOfZonedDay(y), end: endOfZonedDay(y), preset: "yesterday" };
+    }
+    case "week":
+      return { start: startOfZonedIsoWeek(now), end: todayEnd, preset: "custom" };
+    case "month":
+      return { start: startOfZonedMonth(now), end: todayEnd, preset: "custom" };
+    case "year":
+      return { start: startOfZonedYear(now), end: todayEnd, preset: "this_year" };
+    default:
+      return { start: todayStart, end: todayEnd, preset: "today" };
+  }
+}
+
+export function parseRepeatPeriod(value: string | null | undefined): RepeatPeriod {
+  if (value && (REPEAT_PERIODS as string[]).includes(value)) {
+    return value as RepeatPeriod;
+  }
+  return "today";
 }
 
 export function parsePreset(value: string | null | undefined): DatePreset {

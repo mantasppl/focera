@@ -19,8 +19,8 @@ const CARDS: Array<{
     label: "Repeat users",
     hint: (stats) =>
       stats.uniqueVisitors > 0
-        ? `${stats.repeatRate}% of visitors came back`
-        : "Visitors who also came before this range",
+        ? `${stats.repeatRate}% had already visited before this range`
+        : "Already visited before the selected range",
   },
   {
     key: "conversionRate",
